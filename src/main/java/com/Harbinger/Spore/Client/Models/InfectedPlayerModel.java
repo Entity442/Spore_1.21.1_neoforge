@@ -77,6 +77,7 @@ public class InfectedPlayerModel<T extends InfectedPlayer> extends HumanoidModel
 	public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 		super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
 		this.jaw.xRot = Mth.sin(ageInTicks/6)/7;
+		this.setupAttackAnimation(entity, ageInTicks);
 	}
 	@Override
 	public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int alpha) {
@@ -88,4 +89,5 @@ public class InfectedPlayerModel<T extends InfectedPlayer> extends HumanoidModel
 		right_leg.render(poseStack, vertexConsumer, packedLight, packedOverlay,  alpha);
 		hat.render(poseStack, vertexConsumer, packedLight, packedOverlay,  alpha);
 	}
+
 }

@@ -19,6 +19,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.RangedCrossbowAttackGoal;
 import net.minecraft.world.entity.monster.CrossbowAttackMob;
+import net.minecraft.world.item.CrossbowItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ProjectileWeaponItem;
@@ -37,7 +38,7 @@ public class InfectedPillager extends Infected implements CrossbowAttackMob , Ev
     }
 
     public boolean canFireProjectileWeapon(ProjectileWeaponItem p_33280_) {
-        return p_33280_ == Items.CROSSBOW;
+        return p_33280_ instanceof CrossbowItem;
     }
 
     public boolean isChargingCrossbow() {
@@ -98,7 +99,7 @@ public class InfectedPillager extends Infected implements CrossbowAttackMob , Ev
     }
 
 
-    public void performRangedAttack(LivingEntity p_33272_, float p_33273_) {
+    public void performRangedAttack(LivingEntity target, float distanceFactor) {
         this.performCrossbowAttack(this, 1.6F);
     }
 
