@@ -75,6 +75,8 @@ public class ClientModEvents {
         event.registerLayerDefinition(InfectedSpearModel.LAYER_LOCATION, InfectedSpearModel::createBodyLayer);
         event.registerLayerDefinition(SickleModel.LAYER_LOCATION, SickleModel::createBodyLayer);
         event.registerLayerDefinition(SyringeProjectileModel.LAYER_LOCATION, SickleModel::createBodyLayer);
+        event.registerLayerDefinition(TridentNaiadCharge.LAYER_LOCATION, TridentNaiadCharge::createBodyLayer);
+
 
         event.registerLayerDefinition(brainMatterModel.LAYER_LOCATION, brainMatterModel::createBodyLayer);
         event.registerLayerDefinition(BrainTentacleModel.LAYER_LOCATION, BrainTentacleModel::createBodyLayer);

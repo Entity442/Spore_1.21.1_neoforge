@@ -25,6 +25,7 @@ import net.minecraft.tags.BiomeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
@@ -53,8 +54,8 @@ public class Naiad extends EvolvedInfected implements WaterInfected , VariantKee
     public static final EntityDataAccessor<BlockPos> TERRITORY = SynchedEntityData.defineId(Naiad.class, EntityDataSerializers.BLOCK_POS);
     private static final EntityDataAccessor<Integer> DATA_ID_TYPE_VARIANT = SynchedEntityData.defineId(Naiad.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> TRIDENT_CHARGE = SynchedEntityData.defineId(Naiad.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Integer> CHARGE_TICKS = SynchedEntityData.defineId(Naiad.class, EntityDataSerializers.INT);
     public int aggroTicks;
-    public int chargeTicks;
     private Vec3 chargeTarget;
     public Naiad(EntityType<? extends EvolvedInfected> p_33002_, Level p_33003_) {
         super(p_33002_, p_33003_);
@@ -111,6 +112,7 @@ public class Naiad extends EvolvedInfected implements WaterInfected , VariantKee
         builder.define(TERRITORY,BlockPos.ZERO);
         builder.define(DATA_ID_TYPE_VARIANT,0);
         builder.define(TRIDENT_CHARGE,0);
+        builder.define(CHARGE_TICKS,0);
     }
 
     @Override
@@ -147,7 +149,7 @@ public class Naiad extends EvolvedInfected implements WaterInfected , VariantKee
         if (this.isEffectiveAi() && this.isInFluidType()) {
             this.moveRelative(0.1F, p_32858_);
             this.move(MoverType.SELF, this.getDeltaMovement());
-            this.setDeltaMovement(this.getDeltaMovement().scale(0.85D));
+            this.setDeltaMovement(this.getDeltaMovement().scale(isCharging() ? 2 : 0.85D));
         } else {
             super.travel(p_32858_);
         }
@@ -161,6 +163,9 @@ public class Naiad extends EvolvedInfected implements WaterInfected , VariantKee
     public void tickCharge(){
         entityData.set(TRIDENT_CHARGE,entityData.get(TRIDENT_CHARGE)+1);
     }
+    public boolean isCharging(){
+        return entityData.get(CHARGE_TICKS) > 0;
+    }
 
     @Override
     public List<? extends String> getDropList() {
@@ -168,6 +173,9 @@ public class Naiad extends EvolvedInfected implements WaterInfected , VariantKee
     }
     @Override
     public DamageSource getCustomDamage(LivingEntity entity) {
+        if (this.getVariant() == NaiadVariants.TRITON){
+            return damageSources().trident(this,this);
+        }
         if (Math.random() < 0.3){
             return SdamageTypes.knight_damage(this);
         }
@@ -544,10 +552,13 @@ public class Naiad extends EvolvedInfected implements WaterInfected , VariantKee
         } else if (aggroTicks > 0) {
             aggroTicks--;
         }
-        if (getTridentCharge() < 200 && getVariant() == NaiadVariants.TRITON){
+        if (!isCharging() && getTridentCharge() < 200 && getVariant() == NaiadVariants.TRITON){
             tickCharge();
         }
         if (isInWater()){
+            if (isCharging() && chargeTarget != null) {
+                performChargeMovement();
+            }
             LivingEntity target = this.getTarget();
             Vec3 vec3 = target == null ? this.getDeltaMovement() : target.position();
 
@@ -582,78 +593,126 @@ public class Naiad extends EvolvedInfected implements WaterInfected , VariantKee
 
         return Mth.lerp(0.2F, currentRotation, targetRotation);
     }
+    private void performChargeMovement() {
+        if (!(this.level() instanceof ServerLevel serverLevel)) return;
 
-    private static class NaiadChargeGoal extends Goal{
+        LivingEntity currentTarget = getTarget();
+
+        // If target is dead or gone, stop charge
+        if (currentTarget == null || !currentTarget.isAlive()) {
+            stopCharge();
+            return;
+        }
+
+        // Calculate direction to target
+        Vec3 targetPos = currentTarget.position();
+        Vec3 currentPos = this.position();
+        Vec3 direction = targetPos.subtract(currentPos);
+
+        // Stop if we're very close
+        if (direction.lengthSqr() < 1.0) {
+            stopCharge();
+            return;
+        }
+
+        // Normalize direction and apply charge speed
+        direction = direction.normalize();
+        if (this.tickCount % 2 == 0) {
+            serverLevel.sendParticles(ParticleTypes.BUBBLE,
+                    this.getX(), this.getY(), this.getZ(),
+                    3, 0.3, 0.3, 0.3, 0.02);
+            serverLevel.sendParticles(ParticleTypes.BUBBLE_POP,
+                    this.getX(), this.getY(), this.getZ(),
+                    2, 0.2, 0.2, 0.2, 0.01);
+        }
+
+        // Check for collision with target
+        double collisionDistance = this.getBbWidth() + currentTarget.getBbWidth() + 0.5;
+        if (currentPos.distanceToSqr(targetPos) < collisionDistance * collisionDistance) {
+            // Hit the target
+            float damage = (float) this.getAttributeValue(Attributes.ATTACK_DAMAGE) + 4;
+            currentTarget.hurt(this.level().damageSources().trident(this, this), damage);
+
+            // Apply knockback
+            currentTarget.setDeltaMovement(direction.scale(1.5));
+
+            // Stop the charge
+            stopCharge();
+        }
+
+        // Decrement charge timer
+        entityData.set(CHARGE_TICKS,entityData.get(CHARGE_TICKS)-1);
+        if (entityData.get(CHARGE_TICKS) <= 0) {
+            stopCharge();
+        }
+    }
+    public void startCharge() {
+        LivingEntity target = getTarget();
+        if (target != null && isInWater()) {
+            entityData.set(CHARGE_TICKS,40);
+            this.chargeTarget = target.position();
+            this.getNavigation().stop();
+
+            // Play charge sound
+            this.playSound(SoundEvents.TRIDENT_RIPTIDE_3.value(), 1.0F, 1.0F);
+
+            // Initial boost
+            Vec3 direction = target.position().subtract(this.position()).normalize();
+            this.setDeltaMovement(direction.scale(0.5));
+
+            // Reset charge cooldown
+            setTridentCharge(0);
+        }
+    }
+
+    public void stopCharge() {
+        entityData.set(CHARGE_TICKS,0);
+        this.chargeTarget = null;
+
+        Vec3 currentMotion = this.getDeltaMovement();
+        this.setDeltaMovement(currentMotion.scale(0.3));
+    }
+    private static class NaiadChargeGoal extends Goal {
         private final Naiad naiad;
-        private int ticks;
+        private int cooldown;
+
         private NaiadChargeGoal(Naiad naiad) {
             this.naiad = naiad;
-            this.setFlags(EnumSet.of(Flag.MOVE, Flag.LOOK));
+            this.cooldown = 0;
         }
 
         @Override
         public boolean canUse() {
+            if (cooldown > 0) {
+                cooldown--;
+                return false;
+            }
+
+            LivingEntity target = naiad.getTarget();
             return naiad.getVariant() == NaiadVariants.TRITON
                     && naiad.getTridentCharge() >= 200
-                    && naiad.getTarget() != null
-                    && naiad.isInWater();
+                    && target != null
+                    && target.isAlive()
+                    && naiad.isInWater()
+                    && naiad.distanceToSqr(target) > 4.0
+                    && naiad.distanceToSqr(target) < 256.0
+                    && naiad.hasLineOfSight(target);
         }
-
 
         @Override
         public boolean canContinueToUse() {
-            return ticks > 0;
+            return false;
         }
 
         @Override
         public void start() {
-            LivingEntity target = naiad.getTarget();
-            if (target == null) return;
-
-            ticks = 40;
-            naiad.chargeTicks = ticks;
-
-            naiad.chargeTarget = target.position();
-
-            naiad.getNavigation().stop();
-            naiad.playSound(SoundEvents.TRIDENT_RIPTIDE_3.value());
+            naiad.startCharge();
+            cooldown = 100;
         }
 
-
         @Override
-        public void tick() {
-            if (naiad.chargeTarget == null) return;
-            ticks--;
-            naiad.chargeTicks = ticks;
-
-
-            Vec3 dir = naiad.chargeTarget.subtract(naiad.position());
-            if (dir.lengthSqr() < 1e-4) return;
-
-            dir = dir.normalize().scale(1.5);
-            naiad.setDeltaMovement(dir);
-
-            if (naiad.level() instanceof ServerLevel sl) {
-                sl.sendParticles(ParticleTypes.BUBBLE, naiad.getX(), naiad.getY(), naiad.getZ(),
-                        4, 0.2, 0.2, 0.2, 0.05);
-            }
-
-            LivingEntity target = naiad.getTarget();
-            if (target != null && target.distanceTo(naiad) < 2.2) {
-                target.hurt(naiad.level().damageSources().trident(naiad,naiad),
-                        (float) naiad.getAttributeValue(Attributes.ATTACK_DAMAGE) + 4);
-                target.setDeltaMovement(dir.normalize().scale(1.2));
-
-                ticks = 0;
-            }
-        }
-
-
-        @Override
-        public void stop() {
-            naiad.setTridentCharge(0); // cooldown reset
-            naiad.chargeTicks = 0;
-            naiad.chargeTarget = null;
+        public boolean requiresUpdateEveryTick() {
+            return false;
         }
     }
 }

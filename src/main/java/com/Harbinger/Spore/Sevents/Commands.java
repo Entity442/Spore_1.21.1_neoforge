@@ -209,6 +209,7 @@ public class Commands {
                                 }
                                 if (infected instanceof Naiad scamper){
                                     player.displayClientMessage(Component.literal("get nest location ? " + scamper.getTerritory()),false);
+                                    player.displayClientMessage(Component.literal("Trident Charge ? " + scamper.getTridentCharge()),false);
                                 }
                                 player.displayClientMessage(Component.literal("-------------------------"),false);
 
