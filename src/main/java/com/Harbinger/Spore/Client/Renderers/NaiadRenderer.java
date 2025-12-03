@@ -68,7 +68,7 @@ public class NaiadRenderer<Type extends Naiad> extends BaseInfectedRenderer<Type
         public void render(PoseStack stack, MultiBufferSource multiBufferSource, int value, T type, float v1, float v2, float v3, float v4, float v5, float v6) {
             if (type.isCharging() && type.getVariant() == NaiadVariants.TRITON){
                 stack.pushPose();
-                stack.translate(0,1,0);
+                stack.translate(0,0.5,0);
                 VertexConsumer vertexconsumer = multiBufferSource.getBuffer(RenderType.entityCutoutNoCull(TEXTURE));
                 this.model.prepareMobModel(type, v1, v2, v3);
                 this.model.setupAnim(type, v1, v2, v4, v5, v6);
