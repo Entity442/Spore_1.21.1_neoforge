@@ -74,6 +74,8 @@ public class UtilityEntity extends PathfinderMob {
             this.setLastHurtMob(entity);
             this.playAttackSound();
         }
+        this.swinging = true;
+        this.swingTime = 0;
 
         return flag;
     }
