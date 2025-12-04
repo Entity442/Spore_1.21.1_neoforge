@@ -13,6 +13,8 @@ import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
+import java.util.List;
+
 public class VanguardModel<T extends Vanguard> extends EntityModel<T> implements TentacledModel{
 	// This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
 	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "vanguardmodel"), "main");
@@ -100,6 +102,7 @@ public class VanguardModel<T extends Vanguard> extends EntityModel<T> implements
 	private final ModelPart LeftLegBottomTumors;
 	private final ModelPart LeftLegBottomOvergrownTumors;
 	private final ModelPart LeftLegBottomFoliage;
+	public final List<ModelPart> partList;
 
 	public VanguardModel(ModelPart root) {
 		this.Vanguard = root.getChild("Vanguard");
@@ -186,6 +189,7 @@ public class VanguardModel<T extends Vanguard> extends EntityModel<T> implements
 		this.LeftLegBottomTumors = this.LeftLegBloatage.getChild("LeftLegBottomTumors");
 		this.LeftLegBottomOvergrownTumors = this.LeftLegBloatage.getChild("LeftLegBottomOvergrownTumors");
 		this.LeftLegBottomFoliage = this.LeftLegBottom.getChild("LeftLegBottomFoliage");
+		partList = List.of(Vanguard,TorsoPivot,Arms,RightArm,RightArmBottom);
 	}
 
 	public static LayerDefinition createBodyLayer() {
@@ -609,7 +613,13 @@ public class VanguardModel<T extends Vanguard> extends EntityModel<T> implements
 		this.LowerJaw.yRot = Mth.cos(ageInTicks/7)/7;
 		this.RightArm.xRot = val1;
 		this.RightArmBottom.xRot = this.RightArm.xRot < 0 ? this.RightArm.xRot : 0;
-		this.LeftBladeArm.xRot = -val1;
+		int attackAnimationTick = entity.getAttackAnimationTick();
+		if (attackAnimationTick > 0) {
+			float swing = -2.0F + 1.5F * Mth.triangleWave((float)attackAnimationTick, 20.0F);
+			this.animateTentacleX(LeftBladeArm,swing);
+		}else {
+			this.LeftBladeArm.xRot = -val1;
+		}
 		animateTentacleX(LT1,val2);
 		animateTentacleX(LT1Seg2,val2);
 		animateTentacleZ(LT2,val3);

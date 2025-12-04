@@ -37,8 +37,8 @@ public class InfectedPillager extends Infected implements CrossbowAttackMob , Ev
         super(type, level);
     }
 
-    public boolean canFireProjectileWeapon(ProjectileWeaponItem p_33280_) {
-        return p_33280_ instanceof CrossbowItem;
+    public boolean canFireProjectileWeapon(ProjectileWeaponItem projectileWeapon) {
+        return projectileWeapon == Items.CROSSBOW;
     }
 
     public boolean isChargingCrossbow() {
