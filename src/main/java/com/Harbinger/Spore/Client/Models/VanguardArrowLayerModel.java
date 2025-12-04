@@ -76,7 +76,7 @@ public class VanguardArrowLayerModel<T extends Vanguard> extends EntityModel<T> 
 
 		PartDefinition cross_6 = arrow3.addOrReplaceChild("cross_6", CubeListBuilder.create().texOffs(0, 0).addBox(-12.0F, -2.5F, 0.0F, 16.0F, 5.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, 4.0F, -2.3562F, 1.5708F, 0.0F));
 
-		PartDefinition back3 = arrow3.addOrReplaceChild("back3", CubeListBuilder.create().texOffs(0, 0).addBox(0.0F, -2.5F, -2.75F, 0.0F, 5.0F, 5.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, 15.0F, -2.3562F, 1.5708F, 0.0F));
+		PartDefinition back3 = arrow3.addOrReplaceChild("back3", CubeListBuilder.create().texOffs(0, 0).addBox(0.0F, -2.5F, -2.5F, 0.0F, 5.0F, 5.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, 15.0F, -2.3562F, 1.5708F, 0.0F));
 
 		return LayerDefinition.create(meshdefinition, 32, 32);
 	}
