@@ -636,14 +636,11 @@ public class Naiad extends EvolvedInfected implements WaterInfected , VariantKee
         // Collision detection
         List<Entity> entities = level().getEntities(this, this.getBoundingBox().inflate(1.5));
         for (Entity entity : entities) {
-            if (entity == this) continue;
-
-            float damage = (float) this.getAttributeValue(Attributes.ATTACK_DAMAGE) + 4;
-            entity.hurt(this.level().damageSources().trident(this, this), damage);
-            entity.setDeltaMovement(direction.scale(1.5));
-
-            stopCharge();
-            return;
+            if (entity instanceof LivingEntity living && Utilities.TARGET_SELECTOR.Test(living)){
+                float damage = (float) this.getAttributeValue(Attributes.ATTACK_DAMAGE) + 4;
+                entity.hurt(this.level().damageSources().trident(this, this), damage);
+                entity.setDeltaMovement(direction.scale(1.5));
+            }
         }
 
         // Tick down timer

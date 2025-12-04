@@ -289,6 +289,9 @@ public class Sitems {
     public  static final DeferredItem<Item> CONSTRUCT_SPAWNEGG = ITEMS.register("construct_spawnegg",
             () -> new SporeSpawnEgg(Sentities.INF_CONSTRUCT,-65242341,SpawnEggType.UNKNOWN));
 
+    public  static final DeferredItem<Item> VANGUARD_SPAWNEGG = ITEMS.register("vanguard_spawnegg",
+            () -> new SporeSpawnEgg(Sentities.VANGUARD,-87345354,SpawnEggType.UNKNOWN));
+
     public  static final DeferredItem<Item> MOUND_SPAWNEGG = ITEMS.register("mound_spawnegg",
             () -> new SporeSpawnEgg(Sentities.MOUND,-5750208,SpawnEggType.ORGANOID));
 
