@@ -1,16 +1,20 @@
 package com.Harbinger.Spore.Client.Renderers;
 
+import com.Harbinger.Spore.Client.Models.VanguardArrowLayerModel;
 import com.Harbinger.Spore.Client.Models.VanguardModel;
 import com.Harbinger.Spore.Client.Special.BaseInfectedRenderer;
 import com.Harbinger.Spore.Sentities.Utility.Vanguard;
 import com.Harbinger.Spore.Spore;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.ItemInHandRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.resources.ResourceLocation;
@@ -31,6 +35,7 @@ public class VanguardRenderer<Type extends Vanguard> extends BaseInfectedRendere
     public VanguardRenderer(EntityRendererProvider.Context context) {
         super(context, new VanguardModel<>(context.bakeLayer(VanguardModel.LAYER_LOCATION)), 0.5f);
         this.addLayer(new VanguardCrossbowHold<>(this,context.getItemInHandRenderer()));
+        this.addLayer(new VanguardArrowLayer<>(this));
     }
 
     @Override
@@ -53,6 +58,9 @@ public class VanguardRenderer<Type extends Vanguard> extends BaseInfectedRendere
 
         @Override
         public void render(PoseStack poseStack, MultiBufferSource multiBufferSource, int i, T t, float v, float v1, float v2, float v3, float v4, float v5) {
+            if (t.isInvisible()){
+                return;
+            }
             ItemStack stack = t.getItemInHand(InteractionHand.MAIN_HAND);
             poseStack.pushPose();
             for(ModelPart part : getParentModel().partList){
@@ -65,6 +73,23 @@ public class VanguardRenderer<Type extends Vanguard> extends BaseInfectedRendere
             poseStack.mulPose(Axis.XP.rotationDegrees(-90.0F));
             itemInHandRenderer.renderItem(t,stack, ItemDisplayContext.THIRD_PERSON_LEFT_HAND,true,poseStack,multiBufferSource,i);
             poseStack.popPose();
+        }
+    }
+    private static class VanguardArrowLayer<T extends Vanguard, M extends VanguardModel<T>> extends RenderLayer<T, M>{
+        private final VanguardArrowLayerModel<T> model;
+        private static final ResourceLocation ARROW_LOCATION = ResourceLocation.parse("minecraft:textures/entity/projectiles/arrow.png");
+        public VanguardArrowLayer(RenderLayerParent<T, M> renderer) {
+            super(renderer);
+            model = new VanguardArrowLayerModel<>();
+        }
+
+        @Override
+        public void render(PoseStack poseStack, MultiBufferSource multiBufferSource, int i, T t, float v, float v1, float v2, float v3, float v4, float v5) {
+            if (t.isInvisible()){
+                return;
+            }
+            VertexConsumer vertexconsumer = multiBufferSource.getBuffer(RenderType.entityCutoutNoCull(ARROW_LOCATION));
+            model.renderToBuffer(poseStack,vertexconsumer,i, LivingEntityRenderer.getOverlayCoords(t, 0.0F));
         }
     }
 }
