@@ -54,7 +54,7 @@ public class Vanguard extends UtilityEntity implements CrossbowAttackMob, Enemy 
     @Override
     protected void registerGoals() {
         addTargettingGoals();
-        this.goalSelector.addGoal(3, new CustomMeleeAttackGoal(this, 1.5, false) {
+        this.goalSelector.addGoal(3, new CustomMeleeAttackGoal(this, 1, false) {
             @Override
             protected double getAttackReachSqr(LivingEntity entity) {
                 return 6.0 + entity.getBbWidth() * entity.getBbWidth();}});

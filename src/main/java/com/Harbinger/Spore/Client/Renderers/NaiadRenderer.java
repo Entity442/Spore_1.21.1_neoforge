@@ -38,6 +38,12 @@ public class NaiadRenderer<Type extends Naiad> extends BaseInfectedRenderer<Type
         this.addLayer(new NaiadChargeRenderer<>(this));
     }
 
+    @Override
+    protected void scale(Type livingEntity, PoseStack poseStack, float partialTickTime) {
+        float value = livingEntity.getVariant() == NaiadVariants.TRITON ? 1.2f : 1f;
+        poseStack.scale(value,value,value);
+        super.scale(livingEntity, poseStack, partialTickTime);
+    }
 
     @Override
     public ResourceLocation getTextureLocation(Type entity) {

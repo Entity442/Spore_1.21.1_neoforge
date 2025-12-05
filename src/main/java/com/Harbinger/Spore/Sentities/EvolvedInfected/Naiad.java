@@ -153,7 +153,7 @@ public class Naiad extends EvolvedInfected implements WaterInfected , VariantKee
         if (this.isEffectiveAi() && this.isInFluidType()) {
             this.moveRelative(0.1F, input);
             this.move(MoverType.SELF, this.getDeltaMovement());
-            this.setDeltaMovement(this.getDeltaMovement().scale(0.85D));
+            this.setDeltaMovement(this.getDeltaMovement().scale(this.getVariant() == NaiadVariants.TRITON ? 0.75D : 0.85D));
         } else {
             super.travel(input);
         }
@@ -195,7 +195,25 @@ public class Naiad extends EvolvedInfected implements WaterInfected , VariantKee
                 .add(Attributes.FOLLOW_RANGE, 48)
                 .add(Attributes.STEP_HEIGHT, 1);
     }
+    @Override
+    public void onSyncedDataUpdated(EntityDataAccessor<?> dataAccessor) {
+        if (DATA_ID_TYPE_VARIANT.equals(dataAccessor)) {
+            updateAttributes();
+        }
+        super.onSyncedDataUpdated(dataAccessor);
+    }
 
+    private void updateAttributes() {
+        double val = getVariant() == NaiadVariants.TRITON ? 1.2 : 1;
+        double health = SConfig.SERVER.naiad_hp.get() * val * SConfig.SERVER.global_health.get();
+        double armor = SConfig.SERVER.naiad_armor.get() * val * SConfig.SERVER.global_armor.get();
+
+        AttributeInstance healthAttr = this.getAttribute(Attributes.MAX_HEALTH);
+        AttributeInstance armorAttr = this.getAttribute(Attributes.ARMOR);
+
+        if (healthAttr != null) healthAttr.setBaseValue(health);
+        if (armorAttr != null) armorAttr.setBaseValue(armor);
+    }
     @Override
     public boolean doHurtTarget(Entity entity) {
         if (entity.isInFluidType()){
