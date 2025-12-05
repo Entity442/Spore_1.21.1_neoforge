@@ -8,7 +8,6 @@ import com.Harbinger.Spore.Spore;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.ItemInHandRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -21,6 +20,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
@@ -72,6 +72,17 @@ public class VanguardRenderer<Type extends Vanguard> extends BaseInfectedRendere
             poseStack.mulPose(Axis.YP.rotationDegrees(-90.0F));
             poseStack.mulPose(Axis.XP.rotationDegrees(-90.0F));
             itemInHandRenderer.renderItem(t,stack, ItemDisplayContext.THIRD_PERSON_LEFT_HAND,true,poseStack,multiBufferSource,i);
+            poseStack.popPose();
+            ItemStack itemStack = new ItemStack(Items.FIREWORK_ROCKET);
+            poseStack.pushPose();
+            for(ModelPart part : getParentModel().pouchPartList){
+                part.translateAndRotate(poseStack);
+            }
+            poseStack.translate(-0.2, 0.35, 0.55);
+            poseStack.scale(1.25f, 1.25f, 1.25f);
+            poseStack.mulPose(Axis.ZP.rotationDegrees(180.0F));
+            poseStack.mulPose(Axis.YP.rotationDegrees(180.0F));
+            itemInHandRenderer.renderItem(t,itemStack, ItemDisplayContext.THIRD_PERSON_LEFT_HAND,true,poseStack,multiBufferSource,i);
             poseStack.popPose();
         }
     }
