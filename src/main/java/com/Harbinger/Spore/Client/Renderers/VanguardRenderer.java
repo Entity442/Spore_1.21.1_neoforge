@@ -51,6 +51,7 @@ public class VanguardRenderer<Type extends Vanguard> extends BaseInfectedRendere
 
     private static class VanguardCrossbowHold<T extends Vanguard, M extends VanguardModel<T>> extends RenderLayer<T, M> {
         private final ItemInHandRenderer itemInHandRenderer;
+        private static final ItemStack itemStack = new ItemStack(Items.FIREWORK_ROCKET);
         public VanguardCrossbowHold(RenderLayerParent<T, M> renderLayerParent, ItemInHandRenderer itemInHandRenderer) {
             super(renderLayerParent);
             this.itemInHandRenderer = itemInHandRenderer;
@@ -73,7 +74,6 @@ public class VanguardRenderer<Type extends Vanguard> extends BaseInfectedRendere
             poseStack.mulPose(Axis.XP.rotationDegrees(-90.0F));
             itemInHandRenderer.renderItem(t,stack, ItemDisplayContext.THIRD_PERSON_LEFT_HAND,true,poseStack,multiBufferSource,i);
             poseStack.popPose();
-            ItemStack itemStack = new ItemStack(Items.FIREWORK_ROCKET);
             poseStack.pushPose();
             for(ModelPart part : getParentModel().pouchPartList){
                 part.translateAndRotate(poseStack);
