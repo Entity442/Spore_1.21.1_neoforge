@@ -74,6 +74,16 @@ public class VanguardRenderer<Type extends Vanguard> extends BaseInfectedRendere
             poseStack.mulPose(Axis.XP.rotationDegrees(-90.0F));
             itemInHandRenderer.renderItem(t,stack, ItemDisplayContext.THIRD_PERSON_LEFT_HAND,true,poseStack,multiBufferSource,i);
             poseStack.popPose();
+            ItemStack leftStack = t.getItemInHand(InteractionHand.OFF_HAND);
+            poseStack.pushPose();
+            for(ModelPart part : getParentModel().partList){
+                part.translateAndRotate(poseStack);
+            }
+            poseStack.translate(0.05f, 0.55F, 0.1F);
+            poseStack.scale(1.25f, 1.25f, 1.25f);
+            poseStack.mulPose(Axis.YP.rotationDegrees(-90.0F));
+            itemInHandRenderer.renderItem(t,leftStack, ItemDisplayContext.THIRD_PERSON_LEFT_HAND,true,poseStack,multiBufferSource,i);
+            poseStack.popPose();
             poseStack.pushPose();
             for(ModelPart part : getParentModel().pouchPartList){
                 part.translateAndRotate(poseStack);
