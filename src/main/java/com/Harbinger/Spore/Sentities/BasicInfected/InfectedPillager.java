@@ -6,6 +6,7 @@ import com.Harbinger.Spore.Sentities.BaseEntities.Infected;
 import com.Harbinger.Spore.Sentities.EvolvingInfected;
 import com.Harbinger.Spore.Sentities.Variants.ScamperVariants;
 import com.Harbinger.Spore.core.SConfig;
+import com.Harbinger.Spore.core.Seffects;
 import com.Harbinger.Spore.core.Ssounds;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -14,11 +15,15 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.RangedCrossbowAttackGoal;
 import net.minecraft.world.entity.monster.CrossbowAttackMob;
+import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.entity.projectile.Arrow;
+import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.item.CrossbowItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -100,9 +105,24 @@ public class InfectedPillager extends Infected implements CrossbowAttackMob , Ev
 
 
     public void performRangedAttack(LivingEntity target, float distanceFactor) {
-        this.performCrossbowAttack(this, 1.6F);
+        ItemStack itemstack = this.getProjectile(this.getItemInHand(ProjectileUtil.getWeaponHoldingHand(this, item -> item instanceof net.minecraft.world.item.BowItem)));
+        AbstractArrow abstractarrow = this.getArrow(itemstack, distanceFactor);
+        if (this.getMainHandItem().getItem() instanceof net.minecraft.world.item.BowItem)
+            abstractarrow = ((net.minecraft.world.item.BowItem)this.getMainHandItem().getItem()).customArrow(abstractarrow,ItemStack.EMPTY,ItemStack.EMPTY);
+        double d0 = target.getX() - this.getX();
+        double d1 = target.getY(0.3333333333333333D) - abstractarrow.getY();
+        double d2 = target.getZ() - this.getZ();
+        double d3 = Math.sqrt(d0 * d0 + d2 * d2);
+        if(abstractarrow instanceof Arrow arrow){
+            arrow.addEffect(new MobEffectInstance(Seffects.MYCELIUM, 600));
+        }
+        abstractarrow.shoot(d0, d1 + d3 * (double)0.2F, d2, 1.6F, (float)(14 - this.level().getDifficulty().getId() * 4));
+        this.playSound(SoundEvents.CROSSBOW_SHOOT, 1.0F, 1.0F / (this.getRandom().nextFloat() * 0.4F + 0.8F));
+        this.level().addFreshEntity(abstractarrow);
     }
-
+    protected AbstractArrow getArrow(ItemStack p_32156_, float p_32157_) {
+        return ProjectileUtil.getMobArrow(this, p_32156_, p_32157_,null);
+    }
 
     @Override
     public @Nullable SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType spawnType, @Nullable SpawnGroupData spawnGroupData) {
