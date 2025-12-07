@@ -120,7 +120,7 @@ public class UtilityEntity extends PathfinderMob {
     };
 
     protected void addTargettingGoals(){
-        this.goalSelector.addGoal(2, new HurtByTargetGoal(this).setAlertOthers(Infected.class,Utilities.class));
+        this.goalSelector.addGoal(2, new HurtByTargetGoal(this, UtilityEntity.class).setAlertOthers(Infected.class,Utilities.class));
         this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>
                 (this, LivingEntity.class,  true,livingEntity -> {return livingEntity instanceof Player || SConfig.SERVER.whitelist.get().contains(livingEntity.getEncodeId());}){
             @Override

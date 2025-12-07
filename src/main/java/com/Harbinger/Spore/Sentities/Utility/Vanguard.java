@@ -5,11 +5,15 @@ import com.Harbinger.Spore.Sentities.AI.CustomMeleeAttackGoal;
 import com.Harbinger.Spore.Sentities.AI.FloatDiveGoal;
 import com.Harbinger.Spore.Sentities.ArmorPersentageBypass;
 import com.Harbinger.Spore.Sentities.BaseEntities.UtilityEntity;
+import com.Harbinger.Spore.Sentities.MovementControls.InfectedWallMovementControl;
 import com.Harbinger.Spore.core.SConfig;
 import com.Harbinger.Spore.core.Sblocks;
 import com.Harbinger.Spore.core.Seffects;
+import com.Harbinger.Spore.core.Senchantments;
+import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -24,11 +28,18 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
+import net.minecraft.world.entity.ai.navigation.WallClimberNavigation;
 import net.minecraft.world.entity.monster.CrossbowAttackMob;
 import net.minecraft.world.entity.monster.Enemy;
+import net.minecraft.world.entity.projectile.ProjectileUtil;
+import net.minecraft.world.item.CrossbowItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ProjectileWeaponItem;
+import net.minecraft.world.item.component.ChargedProjectiles;
+import net.minecraft.world.item.component.FireworkExplosion;
+import net.minecraft.world.item.component.Fireworks;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.*;
@@ -50,6 +61,8 @@ public class Vanguard extends UtilityEntity implements CrossbowAttackMob, Enemy 
     private int attackAnimationTick;
     public Vanguard(EntityType<? extends PathfinderMob> type, Level level) {
         super(type, level);
+        this.moveControl = new InfectedWallMovementControl(this);
+        this.navigation = new WallClimberNavigation(this,level);
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -66,6 +79,7 @@ public class Vanguard extends UtilityEntity implements CrossbowAttackMob, Enemy 
     @Override
     protected void registerGoals() {
         addTargettingGoals();
+        this.goalSelector.addGoal(1,new VanguardRangedCrossbowAttackGoal<>(this,12));
         this.goalSelector.addGoal(2, new CustomMeleeAttackGoal(this, 1, false) {
             @Override
             protected double getAttackReachSqr(LivingEntity entity) {
@@ -117,6 +131,10 @@ public class Vanguard extends UtilityEntity implements CrossbowAttackMob, Enemy 
 
     protected void populateDefaultEquipmentSlots(RandomSource p_219059_, DifficultyInstance p_219060_) {
         this.setItemSlot(EquipmentSlot.MAINHAND,new ItemStack(Items.CROSSBOW));
+        ItemStack itemstack = this.getMainHandItem();
+        if (itemstack.is(Items.CROSSBOW)) {
+            Senchantments.EnchantItem(level(),itemstack, Enchantments.MULTISHOT);
+        }
     }
     @Override
     public @Nullable SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType spawnType, @Nullable SpawnGroupData spawnGroupData) {
@@ -195,7 +213,7 @@ public class Vanguard extends UtilityEntity implements CrossbowAttackMob, Enemy 
             targetPositions.clear();
             firePositions.clear();
             AABB aabb = this.vanguard.getBoundingBox().inflate(10, 6, 10);
-
+            boolean thereAreBurnAbleBlocks = false;
             for(BlockPos blockpos : BlockPos.betweenClosed(
                     Mth.floor(aabb.minX), Mth.floor(aabb.minY), Mth.floor(aabb.minZ),
                     Mth.floor(aabb.maxX), Mth.floor(aabb.maxY), Mth.floor(aabb.maxZ))) {
@@ -209,9 +227,12 @@ public class Vanguard extends UtilityEntity implements CrossbowAttackMob, Enemy 
                 if (block instanceof FireBlock){
                     firePositions.add(blockpos.immutable());
                 }
+                if (block.isFlammable(blockstate,vanguard.level(),blockpos,Direction.UP)){
+                    thereAreBurnAbleBlocks = true;
+                }
             }
 
-            if (!targetPositions.isEmpty()) {
+            if (!targetPositions.isEmpty() && thereAreBurnAbleBlocks) {
                 this.targetPos = targetPositions.get(vanguard.getRandom().nextInt(targetPositions.size()));
                 boolean hasFireNearby = firePositions.stream()
                         .anyMatch(pos -> pos.distSqr(targetPos) < 36);
@@ -329,6 +350,155 @@ public class Vanguard extends UtilityEntity implements CrossbowAttackMob, Enemy 
             firePositions.clear();
             vanguard.setItemSlot(EquipmentSlot.OFFHAND, ItemStack.EMPTY);
             this.vanguard.navigation.stop();
+        }
+    }
+
+    public static class VanguardRangedCrossbowAttackGoal<T extends Mob & CrossbowAttackMob> extends Goal {
+        private final T mob;
+        private VanguardRangedCrossbowAttackGoal.CrossbowState crossbowState;
+        private final float attackRadiusSqr;
+        private int attackDelay;
+
+
+        public VanguardRangedCrossbowAttackGoal(T mob, float attackRadiusSqr) {
+            this.crossbowState = VanguardRangedCrossbowAttackGoal.CrossbowState.UNCHARGED;
+            this.mob = mob;
+            this.attackRadiusSqr = attackRadiusSqr * attackRadiusSqr;
+        }
+
+        public boolean canUse() {
+            return this.isHoldingCrossbow() && hasTargetTooClose();
+        }
+        boolean hasTargetTooClose(){
+            LivingEntity living = mob.getTarget();
+            return living == null || !living.isAlive() || (living.distanceToSqr(mob) > attackRadiusSqr / 2) || living.getY()-2 > mob.getY();
+        }
+
+        private boolean isHoldingCrossbow() {
+            return this.mob.isHolding((is) -> {
+                return is.getItem() instanceof CrossbowItem;
+            });
+        }
+
+        public boolean canContinueToUse() {
+            return this.isHoldingCrossbow() && hasTargetTooClose();
+        }
+
+
+        public void stop() {
+            super.stop();
+            if (this.mob.isUsingItem()) {
+                this.mob.stopUsingItem();
+                this.mob.setChargingCrossbow(false);
+                this.mob.getUseItem().set(DataComponents.CHARGED_PROJECTILES, ChargedProjectiles.EMPTY);
+            }
+
+        }
+
+        public boolean requiresUpdateEveryTick() {
+            return true;
+        }
+        private ItemStack createExplosiveRocket() {
+            ItemStack rocket = new ItemStack(Items.FIREWORK_ROCKET);
+
+            FireworkExplosion explosion = new FireworkExplosion(
+                    FireworkExplosion.Shape.BURST,
+                    IntList.of(3887386),
+                    IntList.of(4312372),
+                    true,
+                    true
+            );
+            FireworkExplosion explosion2 = new FireworkExplosion(
+                    FireworkExplosion.Shape.LARGE_BALL,
+                    IntList.of(15435844),
+                    IntList.of(14602026),
+                    true,
+                    true
+            );
+            FireworkExplosion explosion3 = new FireworkExplosion(
+                    FireworkExplosion.Shape.STAR,
+                    IntList.of(2437522),
+                    IntList.of(2651799),
+                    true,
+                    true
+            );
+            Fireworks fireworks = new Fireworks(
+                    1,
+                    List.of(explosion,explosion2,explosion3)
+            );
+            rocket.set(DataComponents.FIREWORKS, fireworks);
+            return rocket;
+        }
+        public void tick() {
+            LivingEntity target = this.mob.getTarget();
+
+            boolean hasLOS = target != null && this.mob.getSensing().hasLineOfSight(target);
+            double dist = target == null ? 0 : this.mob.distanceToSqr(target);
+
+
+
+            // ------------ CROSSBOW LOGIC ------------
+            switch (this.crossbowState) {
+
+                case UNCHARGED:
+                    // BEGIN CHARGE
+                    this.mob.startUsingItem(ProjectileUtil.getWeaponHoldingHand(
+                            this.mob, i -> i instanceof CrossbowItem));
+                    this.mob.setChargingCrossbow(true);
+                    this.crossbowState = CrossbowState.CHARGING;
+                    break;
+
+
+                case CHARGING:
+                    if (!this.mob.isUsingItem()) {
+                        this.crossbowState = CrossbowState.UNCHARGED;
+                        break;
+                    }
+
+                    int useTicks = this.mob.getTicksUsingItem();
+                    ItemStack chargingStack = this.mob.getUseItem();
+
+                    if (useTicks >= CrossbowItem.getChargeDuration(chargingStack, this.mob)) {
+
+                        // ===== FINISH CHARGE =====
+                        this.mob.releaseUsingItem();
+                        this.mob.setChargingCrossbow(false);
+
+                        // ===== LOAD FIREWORK ROCKETS HERE (NOW IT WORKS) =====
+                        ItemStack bow = this.mob.getItemInHand(
+                                ProjectileUtil.getWeaponHoldingHand(this.mob, i -> i instanceof CrossbowItem));
+                        bow.set(DataComponents.CHARGED_PROJECTILES,
+                                ChargedProjectiles.of(createExplosiveRocket()));
+
+                        this.crossbowState = CrossbowState.CHARGED;
+                        this.attackDelay = 10;
+                    }
+                    break;
+
+
+                case CHARGED:
+                    if (--this.attackDelay <= 0) {
+                        this.crossbowState = CrossbowState.READY_TO_ATTACK;
+                    }
+                    break;
+
+
+                case READY_TO_ATTACK:
+                    if (hasLOS && dist != 0 && dist <= this.attackRadiusSqr) {
+                        this.mob.performRangedAttack(target, 1.0F);
+                        this.crossbowState = CrossbowState.UNCHARGED;
+                    }
+                    break;
+            }
+
+        }
+
+         enum CrossbowState {
+            UNCHARGED,
+            CHARGING,
+            CHARGED,
+            READY_TO_ATTACK;
+
         }
     }
 }

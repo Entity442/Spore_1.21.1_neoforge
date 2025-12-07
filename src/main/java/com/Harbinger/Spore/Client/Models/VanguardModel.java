@@ -620,8 +620,9 @@ public class VanguardModel<T extends Vanguard> extends EntityModel<T> implements
 		this.RightLegBottom.xRot = this.RightLeg.xRot < 0 ? -this.RightLeg.xRot : 0;
 		this.LowerJaw.xRot = Mth.sin(ageInTicks/6)/10;
 		this.LowerJaw.yRot = Mth.cos(ageInTicks/7)/7;
-		this.RightArm.xRot = val1;
+		this.RightArm.xRot =entity.isChargingCrossbow() ?  -0.75f + (headPitch /  ( 90F / (float) Math.PI)) : val1;
 		this.RightArmBottom.xRot = this.RightArm.xRot < 0 ? this.RightArm.xRot : 0;
+		this.RightArmBottom.yRot = entity.isChargingCrossbow() ? -0.5f : 0;
 		int attackAnimationTick = entity.getAttackAnimationTick();
 		if (attackAnimationTick > 0) {
 			float swing = -2.0F + 1.5F * Mth.triangleWave((float)attackAnimationTick, 20.0F);
