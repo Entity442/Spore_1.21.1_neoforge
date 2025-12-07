@@ -61,7 +61,6 @@ public class Vanguard extends UtilityEntity implements CrossbowAttackMob, Enemy 
     private int attackAnimationTick;
     public Vanguard(EntityType<? extends PathfinderMob> type, Level level) {
         super(type, level);
-        this.moveControl = new InfectedWallMovementControl(this);
         this.navigation = new WallClimberNavigation(this,level);
     }
 
