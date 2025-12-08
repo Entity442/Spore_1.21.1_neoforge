@@ -92,7 +92,7 @@ public class Vanguard extends UtilityEntity implements CrossbowAttackMob, Enemy 
             @Override
             protected double getAttackReachSqr(LivingEntity entity) {
                 return 6.0 + entity.getBbWidth() * entity.getBbWidth();}});
-        this.goalSelector.addGoal(3,new VanguardFireGoal(this));
+        this.goalSelector.addGoal(2,new VanguardFireGoal(this));
         this.goalSelector.addGoal(4,new VanguardCallRaid(this));
         this.goalSelector.addGoal(4, new RandomStrollGoal(this, 0.8));
         this.goalSelector.addGoal(5, new RandomLookAroundGoal(this));
@@ -408,6 +408,7 @@ public class Vanguard extends UtilityEntity implements CrossbowAttackMob, Enemy 
 
             vanguard.level().removeBlock(targetPos,true);
             vanguard.playSound(Ssounds.VANGUARD_GRIEF.value());
+            targetPos = null;
         }
 
         @Override
