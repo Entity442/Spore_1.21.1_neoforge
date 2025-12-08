@@ -5,15 +5,12 @@ import com.Harbinger.Spore.Sentities.AI.CustomMeleeAttackGoal;
 import com.Harbinger.Spore.Sentities.AI.FloatDiveGoal;
 import com.Harbinger.Spore.Sentities.ArmorPersentageBypass;
 import com.Harbinger.Spore.Sentities.BaseEntities.UtilityEntity;
-import com.Harbinger.Spore.Sentities.MovementControls.InfectedWallMovementControl;
-import com.Harbinger.Spore.core.SConfig;
-import com.Harbinger.Spore.core.Sblocks;
-import com.Harbinger.Spore.core.Seffects;
-import com.Harbinger.Spore.core.Senchantments;
+import com.Harbinger.Spore.core.*;
 import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -21,7 +18,10 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -36,6 +36,7 @@ import net.minecraft.world.item.CrossbowItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ProjectileWeaponItem;
+import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.component.ChargedProjectiles;
 import net.minecraft.world.item.component.FireworkExplosion;
 import net.minecraft.world.item.component.Fireworks;
@@ -58,6 +59,8 @@ import static com.Harbinger.Spore.ExtremelySusThings.Utilities.biomass;
 
 public class Vanguard extends UtilityEntity implements CrossbowAttackMob, Enemy , ArmorPersentageBypass {
     private static final EntityDataAccessor<Boolean> IS_CHARGING_CROSSBOW = SynchedEntityData.defineId(Vanguard.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Integer> KILLS = SynchedEntityData.defineId(Vanguard.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Integer> RAID_TIME_OUT = SynchedEntityData.defineId(Vanguard.class, EntityDataSerializers.INT);
     private int attackAnimationTick;
     public Vanguard(EntityType<? extends PathfinderMob> type, Level level) {
         super(type, level);
@@ -66,12 +69,13 @@ public class Vanguard extends UtilityEntity implements CrossbowAttackMob, Enemy 
 
     public static AttributeSupplier.Builder createAttributes() {
         return Mob.createMobAttributes()
-                .add(Attributes.MAX_HEALTH, SConfig.SERVER.specter_hp.get() * SConfig.SERVER.global_health.get())
+                .add(Attributes.MAX_HEALTH, SConfig.SERVER.vanguard_hp.get() * SConfig.SERVER.global_health.get())
                 .add(Attributes.MOVEMENT_SPEED, 0.35)
-                .add(Attributes.ATTACK_DAMAGE, SConfig.SERVER.specter_damage.get() * SConfig.SERVER.global_damage.get())
-                .add(Attributes.ARMOR, SConfig.SERVER.specter_armor.get() * SConfig.SERVER.global_armor.get())
+                .add(Attributes.ATTACK_DAMAGE, SConfig.SERVER.vanguard_damage.get() * SConfig.SERVER.global_damage.get())
+                .add(Attributes.ARMOR, SConfig.SERVER.vanguard_armor.get() * SConfig.SERVER.global_armor.get())
                 .add(Attributes.FOLLOW_RANGE, 48)
-                .add(Attributes.ATTACK_KNOCKBACK, 3);
+                .add(Attributes.ATTACK_KNOCKBACK, 2)
+                .add(Attributes.KNOCKBACK_RESISTANCE, 1);
 
     }
 
@@ -104,6 +108,21 @@ public class Vanguard extends UtilityEntity implements CrossbowAttackMob, Enemy 
     protected void defineSynchedData(SynchedEntityData.@NotNull Builder builder) {
         super.defineSynchedData(builder);
         builder.define(IS_CHARGING_CROSSBOW, false);
+        builder.define(KILLS, 0);
+        builder.define(RAID_TIME_OUT, 0);
+    }
+    @Override
+    public void readAdditionalSaveData(CompoundTag tag) {
+        super.readAdditionalSaveData(tag);
+        entityData.set(KILLS,tag.getInt("kills"));
+        entityData.set(RAID_TIME_OUT,tag.getInt("raid"));
+    }
+
+    @Override
+    public void addAdditionalSaveData(CompoundTag tag) {
+        super.addAdditionalSaveData(tag);
+        tag.putInt("kills",entityData.get(KILLS));
+        tag.putInt("raid",entityData.get(RAID_TIME_OUT));
     }
     @Override
     public boolean doHurtTarget(Entity entity) {
@@ -113,6 +132,20 @@ public class Vanguard extends UtilityEntity implements CrossbowAttackMob, Enemy 
             livingEntity.addEffect(new MobEffectInstance(Seffects.MYCELIUM,600,0));
         }
         return super.doHurtTarget(entity);
+    }
+
+    @Override
+    public void awardKillScore(Entity killed, int scoreValue, DamageSource source) {
+        super.awardKillScore(killed, scoreValue, source);
+        entityData.set(KILLS,entityData.get(KILLS)+1);
+    }
+
+    @Override
+    public boolean hurt(DamageSource source, float amount) {
+        if (source.is(DamageTypes.ON_FIRE) || source.is(DamageTypes.IN_FIRE)){
+            amount = amount/2;
+        }
+        return super.hurt(source, amount);
     }
 
     public void handleEntityEvent(byte value) {
@@ -133,6 +166,7 @@ public class Vanguard extends UtilityEntity implements CrossbowAttackMob, Enemy 
         ItemStack itemstack = this.getMainHandItem();
         if (itemstack.is(Items.CROSSBOW)) {
             Senchantments.EnchantItem(level(),itemstack, Enchantments.MULTISHOT);
+            Senchantments.EnchantItem(level(),itemstack, Enchantments.QUICK_CHARGE,3);
         }
     }
     @Override
@@ -188,6 +222,13 @@ public class Vanguard extends UtilityEntity implements CrossbowAttackMob, Enemy 
         super.tick();
         if (tickCount % 40 == 0 && horizontalCollision && EventHooks.canEntityGrief(this.level(), this)){
             griefBlocks(this.getTarget());
+        }
+        if (tickCount % 20 == 0 && this.getHealth() < this.getMaxHealth() && !hasEffect(MobEffects.REGENERATION) && entityData.get(KILLS) > 0){
+            this.addEffect(new MobEffectInstance(MobEffects.REGENERATION,400,0));
+            entityData.set(KILLS,entityData.get(KILLS)-1);
+        }
+        if (entityData.get(RAID_TIME_OUT) > 0){
+            entityData.set(RAID_TIME_OUT,entityData.get(RAID_TIME_OUT)-1);
         }
     }
 
@@ -366,11 +407,7 @@ public class Vanguard extends UtilityEntity implements CrossbowAttackMob, Enemy 
         }
 
         public boolean canUse() {
-            return this.isHoldingCrossbow() && hasTargetTooClose();
-        }
-        boolean hasTargetTooClose(){
-            LivingEntity living = mob.getTarget();
-            return living == null || !living.isAlive() || (living.distanceToSqr(mob) > attackRadiusSqr / 2) || living.getY()-2 > mob.getY();
+            return this.isHoldingCrossbow();
         }
 
         private boolean isHoldingCrossbow() {
@@ -380,7 +417,7 @@ public class Vanguard extends UtilityEntity implements CrossbowAttackMob, Enemy 
         }
 
         public boolean canContinueToUse() {
-            return this.isHoldingCrossbow() && hasTargetTooClose();
+            return this.isHoldingCrossbow();
         }
 
 
@@ -428,6 +465,9 @@ public class Vanguard extends UtilityEntity implements CrossbowAttackMob, Enemy 
             rocket.set(DataComponents.FIREWORKS, fireworks);
             return rocket;
         }
+        private ItemStack getArrow(){
+            return PotionContents.createItemStack(Items.TIPPED_ARROW, Spotion.MYCELIUM_POTION);
+        }
         public void tick() {
             LivingEntity target = this.mob.getTarget();
 
@@ -466,8 +506,7 @@ public class Vanguard extends UtilityEntity implements CrossbowAttackMob, Enemy 
                         // ===== LOAD FIREWORK ROCKETS HERE (NOW IT WORKS) =====
                         ItemStack bow = this.mob.getItemInHand(
                                 ProjectileUtil.getWeaponHoldingHand(this.mob, i -> i instanceof CrossbowItem));
-                        bow.set(DataComponents.CHARGED_PROJECTILES,
-                                ChargedProjectiles.of(createExplosiveRocket()));
+                        bow.set(DataComponents.CHARGED_PROJECTILES,Math.random() <= 0.2f ? ChargedProjectiles.of(createExplosiveRocket()) : ChargedProjectiles.of(getArrow()));
 
                         this.crossbowState = CrossbowState.CHARGED;
                         this.attackDelay = 10;
