@@ -356,6 +356,7 @@ public class Vanguard extends UtilityEntity implements CrossbowAttackMob, Enemy 
                         if (awayPath != null) {
                             this.vanguard.navigation.moveTo(awayPath, 1.5);
                         }
+                        stop();
                     }
                 } else {
                     // Keep moving toward target
@@ -372,7 +373,7 @@ public class Vanguard extends UtilityEntity implements CrossbowAttackMob, Enemy 
         @Override
         public boolean canContinueToUse() {
             // Continue if we have a target and haven't reached timeout
-            return targetPos != null && vanguard.tickCount % 400 != 0; // Timeout after 20 seconds
+            return targetPos != null && vanguard.tickCount % 400 != 0;
         }
 
         public void setFire(){
@@ -405,10 +406,8 @@ public class Vanguard extends UtilityEntity implements CrossbowAttackMob, Enemy 
                     }
                 }
             }
-
             vanguard.level().removeBlock(targetPos,true);
             vanguard.playSound(Ssounds.VANGUARD_GRIEF.value());
-            targetPos = null;
         }
 
         @Override
