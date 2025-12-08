@@ -17,6 +17,7 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
@@ -34,6 +35,7 @@ import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
 import net.minecraft.world.entity.ai.navigation.WallClimberNavigation;
 import net.minecraft.world.entity.monster.CrossbowAttackMob;
 import net.minecraft.world.entity.monster.Enemy;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.item.CrossbowItem;
 import net.minecraft.world.item.ItemStack;
@@ -91,13 +93,31 @@ public class Vanguard extends UtilityEntity implements CrossbowAttackMob, Enemy 
             protected double getAttackReachSqr(LivingEntity entity) {
                 return 6.0 + entity.getBbWidth() * entity.getBbWidth();}});
         this.goalSelector.addGoal(3,new VanguardFireGoal(this));
+        this.goalSelector.addGoal(4,new VanguardCallRaid(this));
         this.goalSelector.addGoal(4, new RandomStrollGoal(this, 0.8));
         this.goalSelector.addGoal(5, new RandomLookAroundGoal(this));
         this.goalSelector.addGoal(6,new FloatDiveGoal(this));
-        this.goalSelector.addGoal(7,new VanguardCallRaid(this));
         super.registerGoals();
     }
+    @Override
+    protected int calculateFallDamage(float p_21237_, float p_21238_) {
+        return super.calculateFallDamage(p_21237_, p_21238_) - 15;
+    }
+    protected SoundEvent getAmbientSound() {
+        return isInvisible() ? null : Ssounds.VANGUARD_AMBIENT.value();
+    }
 
+    protected SoundEvent getHurtSound(DamageSource p_34327_) {
+        return Ssounds.EVOLVE_HURT.value();
+    }
+
+    protected SoundEvent getDeathSound() {
+        return Ssounds.INF_DAMAGE.value();
+    }
+
+    protected SoundEvent getStepSound() {
+        return SoundEvents.ZOMBIE_STEP;
+    }
     @Override
     public void aiStep() {
         super.aiStep();
@@ -135,6 +155,7 @@ public class Vanguard extends UtilityEntity implements CrossbowAttackMob, Enemy 
         if (entity instanceof LivingEntity livingEntity){
             livingEntity.addEffect(new MobEffectInstance(Seffects.MYCELIUM,600,0));
         }
+        this.playSound(Ssounds.VANGUARD_SLASH.value());
         return super.doHurtTarget(entity);
     }
 
@@ -146,6 +167,9 @@ public class Vanguard extends UtilityEntity implements CrossbowAttackMob, Enemy 
 
     @Override
     public boolean hurt(DamageSource source, float amount) {
+        if (source.is(DamageTypes.FIREWORKS)){
+            return false;
+        }
         if (source.is(DamageTypes.ON_FIRE) || source.is(DamageTypes.IN_FIRE)){
             amount = amount/2;
         }
@@ -382,8 +406,8 @@ public class Vanguard extends UtilityEntity implements CrossbowAttackMob, Enemy 
                 }
             }
 
-            // Also play sound effect
-            vanguard.playSound(SoundEvents.FLINTANDSTEEL_USE);
+            vanguard.level().removeBlock(targetPos,true);
+            vanguard.playSound(Ssounds.VANGUARD_GRIEF.value());
         }
 
         @Override
@@ -402,7 +426,7 @@ public class Vanguard extends UtilityEntity implements CrossbowAttackMob, Enemy 
         private VanguardRangedCrossbowAttackGoal.CrossbowState crossbowState;
         private final float attackRadiusSqr;
         private int attackDelay;
-
+        private boolean fireworks;
 
         public VanguardRangedCrossbowAttackGoal(T mob, float attackRadiusSqr) {
             this.crossbowState = VanguardRangedCrossbowAttackGoal.CrossbowState.UNCHARGED;
@@ -440,7 +464,7 @@ public class Vanguard extends UtilityEntity implements CrossbowAttackMob, Enemy 
         }
         private ItemStack createExplosiveRocket() {
             ItemStack rocket = new ItemStack(Items.FIREWORK_ROCKET);
-
+            this.fireworks = true;
             FireworkExplosion explosion = new FireworkExplosion(
                     FireworkExplosion.Shape.BURST,
                     IntList.of(3887386),
@@ -470,6 +494,7 @@ public class Vanguard extends UtilityEntity implements CrossbowAttackMob, Enemy 
             return rocket;
         }
         private ItemStack getArrow(){
+            this.fireworks = false;
             return PotionContents.createItemStack(Items.TIPPED_ARROW, Spotion.MYCELIUM_POTION);
         }
         public void tick() {
@@ -529,6 +554,7 @@ public class Vanguard extends UtilityEntity implements CrossbowAttackMob, Enemy 
                     if (hasLOS && dist != 0 && dist <= this.attackRadiusSqr) {
                         this.mob.performRangedAttack(target, 1.0F);
                         this.crossbowState = CrossbowState.UNCHARGED;
+                        this.mob.playSound(fireworks ? Ssounds.VANGUARD_FIREWORKS.value() : Ssounds.VANGUARD_SHOOT.value());
                     }
                     break;
             }
@@ -562,7 +588,7 @@ public class Vanguard extends UtilityEntity implements CrossbowAttackMob, Enemy 
             if (living == null){
                 return false;
             }
-            return SConfig.SERVER.proto_sapient_target.get().contains(living.getEncodeId()) || living.getHealth() >= 100;
+            return SConfig.SERVER.proto_sapient_target.get().contains(living.getEncodeId()) || living.getHealth() >= 100 || living instanceof Player;
         }
 
         @Override
@@ -573,13 +599,14 @@ public class Vanguard extends UtilityEntity implements CrossbowAttackMob, Enemy 
         @Override
         public void start() {
             super.start();
+
             this.vanguard.setItemSlot(EquipmentSlot.OFFHAND,stack);
             callReinforcements();
         }
 
         @Override
         public boolean canContinueToUse() {
-            return vanguard.getVanguardRaid() <= 0;
+            return false;
         }
 
 
@@ -594,7 +621,7 @@ public class Vanguard extends UtilityEntity implements CrossbowAttackMob, Enemy 
             while (ids.size() < SConfig.SERVER.vanguard_raid_size.get()){
                 for (String s : SConfig.SERVER.vanguard_members.get()){
                     String[] str = s.split("\\|");
-                    if (Math.random() < Integer.parseUnsignedInt(str[1])){
+                    if (Math.random() < (Integer.parseUnsignedInt(str[1])/100f)){
                         ids.add(str[0]);
                         break;
                     }
@@ -607,7 +634,7 @@ public class Vanguard extends UtilityEntity implements CrossbowAttackMob, Enemy 
                 EntityType<?> entityType = Utilities.tryToCreateEntity(entityId);
                 Entity entity = entityType.create(vanguard.level());
                 if (entity instanceof Mob mob && vanguard.level() instanceof ServerLevelAccessor accessor) {
-                    mob.teleportRelative(vec3.x, vec3.y, vec3.z);
+                    mob.randomTeleport(vec3.x, vanguard.getY(), vec3.z,false);
                     mob.finalizeSpawn(
                             accessor,
                             accessor.getCurrentDifficultyAt(BlockPos.containing(vanguard.position())),
@@ -620,6 +647,7 @@ public class Vanguard extends UtilityEntity implements CrossbowAttackMob, Enemy 
                     accessor.addFreshEntity(mob);
                 }
             }
+            vanguard.playSound(Ssounds.VANGUARD_CALL.value());
             vanguard.setVanguardRaid(6000);
         }
     }
