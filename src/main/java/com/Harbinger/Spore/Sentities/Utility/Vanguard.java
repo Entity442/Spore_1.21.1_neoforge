@@ -1,9 +1,11 @@
 package com.Harbinger.Spore.Sentities.Utility;
 
 
+import com.Harbinger.Spore.ExtremelySusThings.Utilities;
 import com.Harbinger.Spore.Sentities.AI.CustomMeleeAttackGoal;
 import com.Harbinger.Spore.Sentities.AI.FloatDiveGoal;
 import com.Harbinger.Spore.Sentities.ArmorPersentageBypass;
+import com.Harbinger.Spore.Sentities.BaseEntities.Infected;
 import com.Harbinger.Spore.Sentities.BaseEntities.UtilityEntity;
 import com.Harbinger.Spore.core.*;
 import it.unimi.dsi.fastutil.ints.IntList;
@@ -14,6 +16,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
@@ -91,6 +94,7 @@ public class Vanguard extends UtilityEntity implements CrossbowAttackMob, Enemy 
         this.goalSelector.addGoal(4, new RandomStrollGoal(this, 0.8));
         this.goalSelector.addGoal(5, new RandomLookAroundGoal(this));
         this.goalSelector.addGoal(6,new FloatDiveGoal(this));
+        this.goalSelector.addGoal(7,new VanguardCallRaid(this));
         super.registerGoals();
     }
 
@@ -537,6 +541,86 @@ public class Vanguard extends UtilityEntity implements CrossbowAttackMob, Enemy 
             CHARGED,
             READY_TO_ATTACK;
 
+        }
+    }
+    public int getVanguardRaid(){
+        return entityData.get(RAID_TIME_OUT);
+    }
+    public void setVanguardRaid(int val){
+        entityData.set(RAID_TIME_OUT,val);
+    }
+
+
+    private static class VanguardCallRaid extends Goal {
+        private final Vanguard vanguard;
+        private static final ItemStack stack = new ItemStack(Items.GOAT_HORN);
+
+        private VanguardCallRaid(Vanguard vanguard) {
+            this.vanguard = vanguard;
+        }
+        public boolean compareTarget(LivingEntity living){
+            if (living == null){
+                return false;
+            }
+            return SConfig.SERVER.proto_sapient_target.get().contains(living.getEncodeId()) || living.getHealth() >= 100;
+        }
+
+        @Override
+        public boolean canUse() {
+            return vanguard.tickCount % 20 == 0 && vanguard.getVanguardRaid() <= 0 && compareTarget(vanguard.getTarget());
+        }
+
+        @Override
+        public void start() {
+            super.start();
+            this.vanguard.setItemSlot(EquipmentSlot.OFFHAND,stack);
+            callReinforcements();
+        }
+
+        @Override
+        public boolean canContinueToUse() {
+            return vanguard.getVanguardRaid() <= 0;
+        }
+
+
+        @Override
+        public void stop() {
+            super.stop();
+            this.vanguard.setItemSlot(EquipmentSlot.OFFHAND,ItemStack.EMPTY);
+        }
+
+        private void callReinforcements(){
+            List<String> ids = new ArrayList<>();
+            while (ids.size() < SConfig.SERVER.vanguard_raid_size.get()){
+                for (String s : SConfig.SERVER.vanguard_members.get()){
+                    String[] str = s.split("\\|");
+                    if (Math.random() < Integer.parseUnsignedInt(str[1])){
+                        ids.add(str[0]);
+                        break;
+                    }
+                }
+            }
+
+            for (String id : ids){
+                Vec3 vec3 = Utilities.generatePositionAway(vanguard.position(),30);
+                ResourceLocation entityId = ResourceLocation.parse(id);
+                EntityType<?> entityType = Utilities.tryToCreateEntity(entityId);
+                Entity entity = entityType.create(vanguard.level());
+                if (entity instanceof Mob mob && vanguard.level() instanceof ServerLevelAccessor accessor) {
+                    mob.teleportRelative(vec3.x, vec3.y, vec3.z);
+                    mob.finalizeSpawn(
+                            accessor,
+                            accessor.getCurrentDifficultyAt(BlockPos.containing(vanguard.position())),
+                            MobSpawnType.NATURAL,
+                            null
+                    );
+                    if (mob instanceof Infected infected){
+                        infected.setSearchPos(vanguard.getOnPos());
+                    }
+                    accessor.addFreshEntity(mob);
+                }
+            }
+            vanguard.setVanguardRaid(6000);
         }
     }
 }
