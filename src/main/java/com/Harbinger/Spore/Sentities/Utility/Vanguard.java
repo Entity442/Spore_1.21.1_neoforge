@@ -3,11 +3,11 @@ package com.Harbinger.Spore.Sentities.Utility;
 
 import com.Harbinger.Spore.ExtremelySusThings.ChunkLoadRequest;
 import com.Harbinger.Spore.ExtremelySusThings.ChunkLoaderHelper;
+import com.Harbinger.Spore.ExtremelySusThings.SporeSavedData;
 import com.Harbinger.Spore.ExtremelySusThings.Utilities;
 import com.Harbinger.Spore.Sentities.AI.CustomMeleeAttackGoal;
 import com.Harbinger.Spore.Sentities.AI.FloatDiveGoal;
 import com.Harbinger.Spore.Sentities.ArmorPersentageBypass;
-import com.Harbinger.Spore.Sentities.BaseEntities.Calamity;
 import com.Harbinger.Spore.Sentities.BaseEntities.Infected;
 import com.Harbinger.Spore.Sentities.BaseEntities.UtilityEntity;
 import com.Harbinger.Spore.Sentities.ChunkLoaderMob;
@@ -15,9 +15,7 @@ import com.Harbinger.Spore.core.*;
 import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderSet;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -61,7 +59,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.pathfinder.Path;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -139,6 +136,9 @@ public class Vanguard extends UtilityEntity implements CrossbowAttackMob, Enemy 
     }
     public boolean canFireProjectileWeapon(ProjectileWeaponItem projectileWeapon) {
         return projectileWeapon == Items.CROSSBOW;
+    }
+    public void setKills(int val){
+        entityData.set(KILLS,val);
     }
     @Override
     protected void defineSynchedData(SynchedEntityData.@NotNull Builder builder) {
@@ -666,7 +666,7 @@ public class Vanguard extends UtilityEntity implements CrossbowAttackMob, Enemy 
 
         private void callReinforcements(){
             List<String> ids = new ArrayList<>();
-            while (ids.size() < SConfig.SERVER.vanguard_raid_size.get()){
+            while (ids.size() <= SConfig.SERVER.vanguard_raid_size.get()){
                 for (String s : SConfig.SERVER.vanguard_members.get()){
                     String[] str = s.split("\\|");
                     if (Math.random() < (Integer.parseUnsignedInt(str[1])/100f)){
@@ -776,7 +776,14 @@ public class Vanguard extends UtilityEntity implements CrossbowAttackMob, Enemy 
         String id = "vanguard_" + this.getUUID();
         ChunkLoaderHelper.removeRequest(id);
     }
-
+    @Override
+    public boolean removeWhenFarAway(double value) {
+        if (this.level() instanceof ServerLevel serverLevel){
+            SporeSavedData data = SporeSavedData.getDataLocation(serverLevel);
+            return data != null && data.getAmountOfHiveminds() >= SConfig.SERVER.proto_spawn_world_mod.get() && value > 256;
+        }
+        return false;
+    }
     private void locateVillageOnSpawn(ServerLevel serverLevel) {
 
         List<Villager> villagers =
