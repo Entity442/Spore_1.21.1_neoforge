@@ -1,24 +1,33 @@
 package com.Harbinger.Spore.Sentities.Utility;
 
 
+import com.Harbinger.Spore.ExtremelySusThings.ChunkLoadRequest;
+import com.Harbinger.Spore.ExtremelySusThings.ChunkLoaderHelper;
 import com.Harbinger.Spore.ExtremelySusThings.Utilities;
 import com.Harbinger.Spore.Sentities.AI.CustomMeleeAttackGoal;
 import com.Harbinger.Spore.Sentities.AI.FloatDiveGoal;
 import com.Harbinger.Spore.Sentities.ArmorPersentageBypass;
+import com.Harbinger.Spore.Sentities.BaseEntities.Calamity;
 import com.Harbinger.Spore.Sentities.BaseEntities.Infected;
 import com.Harbinger.Spore.Sentities.BaseEntities.UtilityEntity;
+import com.Harbinger.Spore.Sentities.ChunkLoaderMob;
 import com.Harbinger.Spore.core.*;
 import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderSet;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.StructureTags;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
@@ -35,6 +44,7 @@ import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
 import net.minecraft.world.entity.ai.navigation.WallClimberNavigation;
 import net.minecraft.world.entity.monster.CrossbowAttackMob;
 import net.minecraft.world.entity.monster.Enemy;
+import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.item.CrossbowItem;
@@ -46,10 +56,12 @@ import net.minecraft.world.item.component.ChargedProjectiles;
 import net.minecraft.world.item.component.FireworkExplosion;
 import net.minecraft.world.item.component.Fireworks;
 import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.pathfinder.Path;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -57,15 +69,15 @@ import net.neoforged.neoforge.event.EventHooks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import static com.Harbinger.Spore.ExtremelySusThings.Utilities.biomass;
 
-public class Vanguard extends UtilityEntity implements CrossbowAttackMob, Enemy , ArmorPersentageBypass {
+public class Vanguard extends UtilityEntity implements CrossbowAttackMob, Enemy , ArmorPersentageBypass, ChunkLoaderMob {
     private static final EntityDataAccessor<Boolean> IS_CHARGING_CROSSBOW = SynchedEntityData.defineId(Vanguard.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Integer> KILLS = SynchedEntityData.defineId(Vanguard.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> RAID_TIME_OUT = SynchedEntityData.defineId(Vanguard.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<BlockPos> VILLAGE = SynchedEntityData.defineId(Vanguard.class, EntityDataSerializers.BLOCK_POS);
     private int attackAnimationTick;
     public Vanguard(EntityType<? extends PathfinderMob> type, Level level) {
         super(type, level);
@@ -94,6 +106,7 @@ public class Vanguard extends UtilityEntity implements CrossbowAttackMob, Enemy 
                 return 6.0 + entity.getBbWidth() * entity.getBbWidth();}});
         this.goalSelector.addGoal(2,new VanguardFireGoal(this));
         this.goalSelector.addGoal(4,new VanguardCallRaid(this));
+        this.goalSelector.addGoal(4,new GoToLocation(this,this.getVillage()));
         this.goalSelector.addGoal(4, new RandomStrollGoal(this, 0.8));
         this.goalSelector.addGoal(5, new RandomLookAroundGoal(this));
         this.goalSelector.addGoal(6,new FloatDiveGoal(this));
@@ -134,12 +147,23 @@ public class Vanguard extends UtilityEntity implements CrossbowAttackMob, Enemy 
         builder.define(IS_CHARGING_CROSSBOW, false);
         builder.define(KILLS, 0);
         builder.define(RAID_TIME_OUT, 0);
+        builder.define(VILLAGE, BlockPos.ZERO);
+    }
+    public BlockPos getVillage(){
+        return entityData.get(VILLAGE);
+    }
+    public void setVillage(BlockPos pos){
+        entityData.set(VILLAGE,pos);
     }
     @Override
     public void readAdditionalSaveData(CompoundTag tag) {
         super.readAdditionalSaveData(tag);
         entityData.set(KILLS,tag.getInt("kills"));
         entityData.set(RAID_TIME_OUT,tag.getInt("raid"));
+        int x = tag.getInt("villageX");
+        int y = tag.getInt("villageY");
+        int z = tag.getInt("villageZ");
+        setVillage(new BlockPos(x,y,z));
     }
 
     @Override
@@ -147,6 +171,9 @@ public class Vanguard extends UtilityEntity implements CrossbowAttackMob, Enemy 
         super.addAdditionalSaveData(tag);
         tag.putInt("kills",entityData.get(KILLS));
         tag.putInt("raid",entityData.get(RAID_TIME_OUT));
+        tag.putInt("villageX",getVillage().getX());
+        tag.putInt("villageY",getVillage().getY());
+        tag.putInt("villageZ",getVillage().getZ());
     }
     @Override
     public boolean doHurtTarget(Entity entity) {
@@ -199,6 +226,9 @@ public class Vanguard extends UtilityEntity implements CrossbowAttackMob, Enemy 
     }
     @Override
     public @Nullable SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType spawnType, @Nullable SpawnGroupData spawnGroupData) {
+        if (level instanceof ServerLevel serverLevel){
+            locateVillageOnSpawn(serverLevel);
+        }
         this.populateDefaultEquipmentSlots(this.random, difficulty);
         return super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData);
     }
@@ -263,6 +293,22 @@ public class Vanguard extends UtilityEntity implements CrossbowAttackMob, Enemy 
     @Override
     public float amountOfDamage(float value) {
         return value * 0.25f;
+    }
+
+    @Override
+    public String getChunkId() {
+        UUID uuid1 = this.getUUID();
+        return "vanguard_"+uuid1+"_";
+    }
+
+    @Override
+    public boolean shouldLoadChunk() {
+        return SConfig.SERVER.vanguard_chunk_load.get() && getVillage() != BlockPos.ZERO;
+    }
+
+    @Override
+    public int chunkLifeTicks() {
+        return 20*30;
     }
 
     public static class VanguardFireGoal extends Goal {
@@ -651,4 +697,166 @@ public class Vanguard extends UtilityEntity implements CrossbowAttackMob, Enemy 
             vanguard.setVanguardRaid(6000);
         }
     }
+
+    public static class GoToLocation extends Goal {
+        private final Vanguard vanguard;
+        private BlockPos village;
+        private int tickCounter = 0;
+        private boolean arrivalSoundPlayed = false;
+
+        public GoToLocation(Vanguard vanguard, BlockPos village) {
+            this.vanguard = vanguard;
+            this.village = village;
+            this.setFlags(EnumSet.of(Flag.MOVE));
+        }
+
+        @Override
+        public boolean canUse() {
+            if (village == null || village == BlockPos.ZERO) return false;
+            if (vanguard.getTarget() != null) return false;
+
+            return vanguard.distanceToSqr(Vec3.atCenterOf(village)) > (16 * 16);
+        }
+
+        @Override
+        public void start() {
+            tickCounter = 0;
+            arrivalSoundPlayed = false;
+
+            tryTeleportIfFar();
+            moveTowardVillage();
+        }
+
+        @Override
+        public boolean canContinueToUse() {
+            return village != null && village != BlockPos.ZERO;
+        }
+
+        @Override
+        public void tick() {
+            tickCounter++;
+
+            tryTeleportIfFar();
+
+            if (tickCounter % 40 == 0) {
+                moveTowardVillage();
+            }
+
+            if (!arrivalSoundPlayed && vanguard.distanceToSqr(Vec3.atCenterOf(village)) < (10 * 10)) {
+                playArrivalSound();
+                arrivalSoundPlayed = true;
+
+                // Clear destination
+                vanguard.setVillage(BlockPos.ZERO);
+                village = BlockPos.ZERO;
+            }
+        }
+
+        @Override
+        public void stop() {
+            removeChunkLoad();
+            vanguard.getNavigation().stop();
+        }
+
+        private void tryTeleportIfFar() {
+            double distSqr = vanguard.distanceToSqr(Vec3.atCenterOf(village));
+            if (distSqr < (200 * 200)) return;
+
+            ServerLevel server = (ServerLevel) vanguard.level();
+
+            if (!server.isLoaded(village)) return;
+
+            BlockPos tp = findSafeGround(village);
+
+            if (tp != null) {
+                vanguard.teleportTo(tp.getX() + 0.5, tp.getY(), tp.getZ() + 0.5);
+                addChunkLoad(tp);
+            }
+        }
+
+        private void moveTowardVillage() {
+            Path path = vanguard.getNavigation().createPath(village, 1);
+            if (path != null) {
+                vanguard.getNavigation().moveTo(path, 1.2);
+            }
+        }
+
+        private void playArrivalSound() {
+            List<Player> players = vanguard.level().getEntitiesOfClass(
+                    Player.class,
+                    vanguard.getBoundingBox().inflate(100)
+            );
+
+            for (Player p : players) {
+                p.playNotifySound(Ssounds.VANGUARD_RAID.value(), SoundSource.MASTER, 1f, 1f);
+            }
+        }
+
+        private BlockPos findSafeGround(BlockPos pos) {
+            ServerLevel level = (ServerLevel) vanguard.level();
+
+            BlockPos.MutableBlockPos mutable = pos.mutable();
+
+            for (int y = 0; y < 20; y++) {
+                if (level.getBlockState(mutable).isAir() &&
+                        level.getBlockState(mutable.below()).isSolid()) {
+                    return mutable.immutable();
+                }
+                mutable.move(Direction.UP);
+            }
+            return null;
+        }
+
+        private void addChunkLoad(BlockPos pos) {
+            ServerLevel server = (ServerLevel)vanguard.level();
+            ChunkPos chunk = new ChunkPos(pos);
+
+            String id = "vanguard_" + vanguard.getUUID();
+
+            ChunkLoaderHelper.addRequest(new ChunkLoadRequest(
+                    server.dimension(),
+                    new ChunkPos[]{chunk},
+                    0,
+                    id,
+                    vanguard.chunkLifeTicks(),
+                    vanguard.getUUID()
+            ));
+        }
+
+        private void removeChunkLoad() {
+            String id = "vanguard_" + vanguard.getUUID();
+            ChunkLoaderHelper.removeRequest(id);
+        }
+    }
+
+
+    private void locateVillageOnSpawn(ServerLevel serverLevel) {
+
+        List<Villager> villagers =
+                serverLevel.getEntitiesOfClass(
+                        Villager.class,
+                        new AABB(this.blockPosition()).inflate(256)  // search 256 blocks
+                );
+
+        if (!villagers.isEmpty()) {
+            Villager nearest = villagers.stream()
+                    .min((a,b) -> Double.compare(this.distanceToSqr(a), this.distanceToSqr(b)))
+                    .orElse(null);
+
+            BlockPos villPos = nearest.blockPosition();
+            this.setVillage(villPos);
+            return;
+        }
+        int radius = 128;
+
+        BlockPos foundVillage = serverLevel.findNearestMapStructure(
+                StructureTags.VILLAGE,
+                this.blockPosition(),
+                radius,
+                false
+        );
+
+        this.setVillage(Objects.requireNonNullElse(foundVillage, BlockPos.ZERO));
+    }
+
 }

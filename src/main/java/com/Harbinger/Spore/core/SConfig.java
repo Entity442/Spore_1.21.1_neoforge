@@ -250,6 +250,7 @@ public class SConfig {
         public final ModConfigSpec.ConfigValue<Double> vanguard_armor;
         public final ModConfigSpec.ConfigValue<Integer> vanguard_raid_size;
         public final ModConfigSpec.ConfigValue<List<? extends String>> vanguard_members;
+        public final ModConfigSpec.ConfigValue<Boolean> vanguard_chunk_load;
 
         public final ModConfigSpec.ConfigValue<Double> scamper_hp;
         public final ModConfigSpec.ConfigValue<Double> scamper_damage;
@@ -1085,12 +1086,13 @@ public class SConfig {
             builder.pop();
 
             builder.push("Vanguard");
-            this.vanguard_hp = builder.comment("Default 70").defineInRange("Sets Vanguard Max health", 110, 1, Double.MAX_VALUE);
-            this.vanguard_damage = builder.comment("Default 10").defineInRange("Sets Vanguard Damage", 12, 1, Double.MAX_VALUE);
+            this.vanguard_hp = builder.comment("Default 110").defineInRange("Sets Vanguard Max health", 110, 1, Double.MAX_VALUE);
+            this.vanguard_damage = builder.comment("Default 12").defineInRange("Sets Vanguard Damage", 12, 1, Double.MAX_VALUE);
             this.vanguard_armor = builder.comment("Default 8").defineInRange("Sets Vanguard Armor", 8, 0, Double.MAX_VALUE);
             this.vanguard_raid_size = builder.comment("Default 8").defineInRange("Sets The size of the Vanguard raid", 8, 2, Integer.MAX_VALUE);
             this.vanguard_members = builder.defineList("Raid Mobs , mob_id|value",
                     Lists.newArrayList("spore:inf_pillager|60","spore:inf_witch|30","spore:inf_vindicator|40","spore:inf_evoker|50","spore:stalker|20","spore:brute|20","spore:volatile|20","spore:mephitic|20") , o -> o instanceof String);
+            this.vanguard_chunk_load = builder.comment("Should a Vanguard load chunks on its way towards a village ?").define("Default true",true);
             builder.pop();
 
             builder.push("Plagued");
