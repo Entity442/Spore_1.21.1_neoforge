@@ -332,6 +332,13 @@ public class Commands {
                                 player.displayClientMessage(Component.literal("Machine hp " + construct.getMachineHealth()),false);
                                 player.displayClientMessage(Component.literal("Metal " + construct.getMetalReserve()),false);
                                 player.displayClientMessage(Component.literal("-------------------------"),false);
+                            }else if(entity1 instanceof Vanguard construct) {
+                                player.displayClientMessage(Component.literal("Entity "+ construct.getEncodeId() + " " + construct.getCustomName()),false);
+                                player.displayClientMessage(Component.literal("Current Health " + construct.getHealth()),false);
+                                player.displayClientMessage(Component.literal("Buffs " + construct.getActiveEffects()),false);
+                                player.displayClientMessage(Component.literal("Target ? " + construct.getTarget()),false);
+                                player.displayClientMessage(Component.literal("Village " + construct.getVillage()),false);
+                                player.displayClientMessage(Component.literal("-------------------------"),false);
                             }
                         }
                     }

@@ -106,7 +106,6 @@ public class Vanguard extends UtilityEntity implements CrossbowAttackMob, Enemy 
                 return 6.0 + entity.getBbWidth() * entity.getBbWidth();}});
         this.goalSelector.addGoal(2,new VanguardFireGoal(this));
         this.goalSelector.addGoal(4,new VanguardCallRaid(this));
-        this.goalSelector.addGoal(4,new GoToLocation(this,this.getVillage()));
         this.goalSelector.addGoal(4, new RandomStrollGoal(this, 0.8));
         this.goalSelector.addGoal(5, new RandomLookAroundGoal(this));
         this.goalSelector.addGoal(6,new FloatDiveGoal(this));
@@ -287,6 +286,9 @@ public class Vanguard extends UtilityEntity implements CrossbowAttackMob, Enemy 
         }
         if (entityData.get(RAID_TIME_OUT) > 0){
             entityData.set(RAID_TIME_OUT,entityData.get(RAID_TIME_OUT)-1);
+        }
+        if (tickCount % 40 == 0 && getVillage() != BlockPos.ZERO && getTarget() == null && level() instanceof ServerLevel serverLevel){
+            tickMovement(serverLevel);
         }
     }
 
@@ -698,137 +700,82 @@ public class Vanguard extends UtilityEntity implements CrossbowAttackMob, Enemy 
         }
     }
 
-    public static class GoToLocation extends Goal {
-        private final Vanguard vanguard;
-        private BlockPos village;
-        private int tickCounter = 0;
-        private boolean arrivalSoundPlayed = false;
-
-        public GoToLocation(Vanguard vanguard, BlockPos village) {
-            this.vanguard = vanguard;
-            this.village = village;
-            this.setFlags(EnumSet.of(Flag.MOVE));
-        }
-
-        @Override
-        public boolean canUse() {
-            if (village == null || village == BlockPos.ZERO) return false;
-            if (vanguard.getTarget() != null) return false;
-
-            return vanguard.distanceToSqr(Vec3.atCenterOf(village)) > (16 * 16);
-        }
-
-        @Override
-        public void start() {
-            tickCounter = 0;
-            arrivalSoundPlayed = false;
-
-            tryTeleportIfFar();
-            moveTowardVillage();
-        }
-
-        @Override
-        public boolean canContinueToUse() {
-            return village != null && village != BlockPos.ZERO;
-        }
-
-        @Override
-        public void tick() {
-            tickCounter++;
-
-            tryTeleportIfFar();
-
-            if (tickCounter % 40 == 0) {
-                moveTowardVillage();
-            }
-
-            if (!arrivalSoundPlayed && vanguard.distanceToSqr(Vec3.atCenterOf(village)) < (10 * 10)) {
-                playArrivalSound();
-                arrivalSoundPlayed = true;
-
-                // Clear destination
-                vanguard.setVillage(BlockPos.ZERO);
-                village = BlockPos.ZERO;
-            }
-        }
-
-        @Override
-        public void stop() {
+    private void tickMovement(ServerLevel serverLevel){
+        tryTeleportIfFar(serverLevel);
+        moveTowardVillage();
+        if (this.distanceToSqr(Vec3.atCenterOf(getVillage())) < (10 * 10)) {
+            playArrivalSound();
+            this.setVillage(BlockPos.ZERO);
             removeChunkLoad();
-            vanguard.getNavigation().stop();
-        }
-
-        private void tryTeleportIfFar() {
-            double distSqr = vanguard.distanceToSqr(Vec3.atCenterOf(village));
-            if (distSqr < (200 * 200)) return;
-
-            ServerLevel server = (ServerLevel) vanguard.level();
-
-            if (!server.isLoaded(village)) return;
-
-            BlockPos tp = findSafeGround(village);
-
-            if (tp != null) {
-                vanguard.teleportTo(tp.getX() + 0.5, tp.getY(), tp.getZ() + 0.5);
-                addChunkLoad(tp);
-            }
-        }
-
-        private void moveTowardVillage() {
-            Path path = vanguard.getNavigation().createPath(village, 1);
-            if (path != null) {
-                vanguard.getNavigation().moveTo(path, 1.2);
-            }
-        }
-
-        private void playArrivalSound() {
-            List<Player> players = vanguard.level().getEntitiesOfClass(
-                    Player.class,
-                    vanguard.getBoundingBox().inflate(100)
-            );
-
-            for (Player p : players) {
-                p.playNotifySound(Ssounds.VANGUARD_RAID.value(), SoundSource.MASTER, 1f, 1f);
-            }
-        }
-
-        private BlockPos findSafeGround(BlockPos pos) {
-            ServerLevel level = (ServerLevel) vanguard.level();
-
-            BlockPos.MutableBlockPos mutable = pos.mutable();
-
-            for (int y = 0; y < 20; y++) {
-                if (level.getBlockState(mutable).isAir() &&
-                        level.getBlockState(mutable.below()).isSolid()) {
-                    return mutable.immutable();
-                }
-                mutable.move(Direction.UP);
-            }
-            return null;
-        }
-
-        private void addChunkLoad(BlockPos pos) {
-            ServerLevel server = (ServerLevel)vanguard.level();
-            ChunkPos chunk = new ChunkPos(pos);
-
-            String id = "vanguard_" + vanguard.getUUID();
-
-            ChunkLoaderHelper.addRequest(new ChunkLoadRequest(
-                    server.dimension(),
-                    new ChunkPos[]{chunk},
-                    0,
-                    id,
-                    vanguard.chunkLifeTicks(),
-                    vanguard.getUUID()
-            ));
-        }
-
-        private void removeChunkLoad() {
-            String id = "vanguard_" + vanguard.getUUID();
-            ChunkLoaderHelper.removeRequest(id);
         }
     }
 
+    private void tryTeleportIfFar(ServerLevel serverLevel) {
+        double distSqr = this.distanceToSqr(Vec3.atCenterOf(getVillage()));
+        if (distSqr < (200 * 200)) return;
+        if (!serverLevel.isLoaded(getVillage())) return;
+
+        BlockPos tp = findSafeGround(getVillage());
+
+        if (tp != null) {
+            this.teleportTo(tp.getX() + 0.5, tp.getY(), tp.getZ() + 0.5);
+            addChunkLoad(tp,serverLevel);
+        }
+    }
+
+    private void moveTowardVillage() {
+        this.navigation.stop();
+        Path path = this.navigation.createPath(getVillage(), 1);
+        if (path != null){
+            this.getNavigation().moveTo(path, 1.2);
+        }
+    }
+
+    private void playArrivalSound() {
+        List<Player> players = this.level().getEntitiesOfClass(
+                Player.class,
+                this.getBoundingBox().inflate(100)
+        );
+
+        for (Player p : players) {
+            p.playNotifySound(Ssounds.VANGUARD_RAID.value(), SoundSource.MASTER, 1f, 1f);
+        }
+    }
+
+    private BlockPos findSafeGround(BlockPos pos) {
+        ServerLevel level = (ServerLevel) this.level();
+
+        BlockPos.MutableBlockPos mutable = pos.mutable();
+
+        for (int y = 0; y < 20; y++) {
+            if (level.getBlockState(mutable).isAir() &&
+                    level.getBlockState(mutable.below()).isSolid()) {
+                return mutable.immutable();
+            }
+            mutable.move(Direction.UP);
+        }
+        return null;
+    }
+
+    private void addChunkLoad(BlockPos pos,ServerLevel serverLevel) {
+        ChunkPos chunk = new ChunkPos(pos);
+
+        String id = "vanguard_" + this.getUUID();
+
+        ChunkLoaderHelper.addRequest(new ChunkLoadRequest(
+                serverLevel.dimension(),
+                new ChunkPos[]{chunk},
+                0,
+                id,
+                this.chunkLifeTicks(),
+                this.getUUID()
+        ));
+    }
+
+    private void removeChunkLoad() {
+        String id = "vanguard_" + this.getUUID();
+        ChunkLoaderHelper.removeRequest(id);
+    }
 
     private void locateVillageOnSpawn(ServerLevel serverLevel) {
 
