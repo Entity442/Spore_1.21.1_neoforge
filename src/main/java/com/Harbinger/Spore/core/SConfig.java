@@ -1538,6 +1538,7 @@ public class SConfig {
         public final ModConfigSpec.ConfigValue<List<? extends String>> inf_volatile_loot;
         public final ModConfigSpec.ConfigValue<List<? extends String>> inf_mep_loot;
         public final ModConfigSpec.ConfigValue<List<? extends String>> gastgaber_loot;
+        public final ModConfigSpec.ConfigValue<List<? extends String>> vanguard_loot;
         public final ModConfigSpec.ConfigValue<List<? extends String>> sca_loot;
         public final ModConfigSpec.ConfigValue<List<? extends String>> sieger_loot;
         public final ModConfigSpec.ConfigValue<List<? extends String>> gazen_loot;
@@ -1694,6 +1695,8 @@ public class SConfig {
                     Lists.newArrayList("spore:mutated_fiber|80|5|12","spore:armor_fragment|80|2|6","spore:mutated_heart|10|1|3","spore:claw_fragment|80|6|9","spore:innards|50|1|2","spore:tumor|100|4|8","spore:tendons|60|3|7") , o -> o instanceof String);
             this.specter_loot = builder.defineList("Specter",
                     Lists.newArrayList("spore:mutated_fiber|80|5|17","spore:fang|50|1|2","spore:armor_fragment|80|2|9","spore:mutated_heart|10|1|3","spore:claw_fragment|80|6|9","spore:innards|50|1|2","spore:tumor|100|4|8","spore:tendons|60|3|7") , o -> o instanceof String);
+            this.vanguard_loot = builder.defineList("Vanguard",
+                    Lists.newArrayList("spore:mutated_fiber|80|5|17","minecraft:emerald_block|50|1|2","spore:armor_fragment|80|2|9","spore:mutated_heart|10|1|3","spore:claw_fragment|80|6|9","spore:innards|50|1|2","spore:tumor|100|4|8","spore:tendons|60|3|7","minecraft:arrow|60|3|7") , o -> o instanceof String);
             this.construct_loot = builder.defineList("Construct",
                     Lists.newArrayList("spore:mutated_fiber|80|5|17","spore:mutated_heart|10|1|3","spore:innards|50|1|2","spore:tumor|100|4|8","spore:tendons|60|3|7") , o -> o instanceof String);
             this.inebriater_loot = builder.defineList("Inebriater",

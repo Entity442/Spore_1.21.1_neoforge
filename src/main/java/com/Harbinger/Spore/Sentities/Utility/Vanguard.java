@@ -102,7 +102,7 @@ public class Vanguard extends UtilityEntity implements CrossbowAttackMob, Enemy 
             protected double getAttackReachSqr(LivingEntity entity) {
                 return 6.0 + entity.getBbWidth() * entity.getBbWidth();}});
         this.goalSelector.addGoal(2,new VanguardFireGoal(this));
-        this.goalSelector.addGoal(4,new VanguardCallRaid(this));
+        this.goalSelector.addGoal(3,new VanguardCallRaid(this));
         this.goalSelector.addGoal(4, new RandomStrollGoal(this, 0.8));
         this.goalSelector.addGoal(5, new RandomLookAroundGoal(this));
         this.goalSelector.addGoal(6,new FloatDiveGoal(this));
@@ -302,7 +302,10 @@ public class Vanguard extends UtilityEntity implements CrossbowAttackMob, Enemy 
         UUID uuid1 = this.getUUID();
         return "vanguard_"+uuid1+"_";
     }
-
+    @Override
+    public List<? extends String> getDropList() {
+        return SConfig.DATAGEN.vanguard_loot.get();
+    }
     @Override
     public boolean shouldLoadChunk() {
         return SConfig.SERVER.vanguard_chunk_load.get() && getVillage() != BlockPos.ZERO;
@@ -647,9 +650,8 @@ public class Vanguard extends UtilityEntity implements CrossbowAttackMob, Enemy 
         @Override
         public void start() {
             super.start();
-
             this.vanguard.setItemSlot(EquipmentSlot.OFFHAND,stack);
-            callReinforcements();
+            this.vanguard.callReinforcements();
         }
 
         @Override
@@ -664,42 +666,43 @@ public class Vanguard extends UtilityEntity implements CrossbowAttackMob, Enemy 
             this.vanguard.setItemSlot(EquipmentSlot.OFFHAND,ItemStack.EMPTY);
         }
 
-        private void callReinforcements(){
-            List<String> ids = new ArrayList<>();
-            while (ids.size() <= SConfig.SERVER.vanguard_raid_size.get()){
-                for (String s : SConfig.SERVER.vanguard_members.get()){
-                    String[] str = s.split("\\|");
-                    if (Math.random() < (Integer.parseUnsignedInt(str[1])/100f)){
-                        ids.add(str[0]);
-                        break;
-                    }
-                }
-            }
-
-            for (String id : ids){
-                Vec3 vec3 = Utilities.generatePositionAway(vanguard.position(),30);
-                ResourceLocation entityId = ResourceLocation.parse(id);
-                EntityType<?> entityType = Utilities.tryToCreateEntity(entityId);
-                Entity entity = entityType.create(vanguard.level());
-                if (entity instanceof Mob mob && vanguard.level() instanceof ServerLevelAccessor accessor) {
-                    mob.randomTeleport(vec3.x, vanguard.getY(), vec3.z,false);
-                    mob.finalizeSpawn(
-                            accessor,
-                            accessor.getCurrentDifficultyAt(BlockPos.containing(vanguard.position())),
-                            MobSpawnType.NATURAL,
-                            null
-                    );
-                    if (mob instanceof Infected infected){
-                        infected.setSearchPos(vanguard.getOnPos());
-                    }
-                    accessor.addFreshEntity(mob);
-                }
-            }
-            vanguard.playSound(Ssounds.VANGUARD_CALL.value());
-            vanguard.setVanguardRaid(6000);
-        }
     }
 
+    private void callReinforcements(){
+        List<String> ids = new ArrayList<>();
+        while (ids.size() < SConfig.SERVER.vanguard_raid_size.get()){
+            for (String s : SConfig.SERVER.vanguard_members.get()){
+                String[] str = s.split("\\|");
+                if (Math.random() < (Integer.parseUnsignedInt(str[1])/100f)){
+                    ids.add(str[0]);
+                    break;
+                }
+            }
+        }
+
+        for (String id : ids){
+            Vec3 vec3 = Utilities.generatePositionAway(this.position(),15);
+            ResourceLocation entityId = ResourceLocation.parse(id);
+            EntityType<?> entityType = Utilities.tryToCreateEntity(entityId);
+            Entity entity = entityType.create(this.level());
+            if (entity instanceof Mob mob && this.level() instanceof ServerLevelAccessor accessor) {
+                mob.randomTeleport(vec3.x, this.getY(), vec3.z,false);
+                mob.finalizeSpawn(
+                        accessor,
+                        accessor.getCurrentDifficultyAt(BlockPos.containing(this.position())),
+                        MobSpawnType.NATURAL,
+                        null
+                );
+                if (mob instanceof Infected infected){
+                    infected.setSearchPos(this.getOnPos());
+                    infected.setFollowPartner(this);
+                }
+                accessor.addFreshEntity(mob);
+            }
+        }
+        this.playSound(Ssounds.VANGUARD_CALL.value());
+        this.setVanguardRaid(6000);
+    }
     private void tickMovement(ServerLevel serverLevel){
         tryTeleportIfFar(serverLevel);
         moveTowardVillage();
