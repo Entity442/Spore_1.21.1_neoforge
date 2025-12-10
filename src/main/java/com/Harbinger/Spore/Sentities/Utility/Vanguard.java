@@ -15,6 +15,7 @@ import com.Harbinger.Spore.core.*;
 import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Vec3i;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
@@ -710,7 +711,7 @@ public class Vanguard extends UtilityEntity implements CrossbowAttackMob, Enemy 
     private void tickMovement(ServerLevel serverLevel){
         tryTeleportIfFar(serverLevel);
         moveTowardVillage();
-        if (this.distanceToSqr(Vec3.atCenterOf(getVillage())) < (10 * 10)) {
+        if (this.distanceToSqr(Vec3.atCenterOf(new Vec3i(getVillage().getX(), (int) this.position().y(),getVillage().getZ()))) < (10 * 10)) {
             playArrivalSound();
             this.setVillage(BlockPos.ZERO);
             removeChunkLoad();
