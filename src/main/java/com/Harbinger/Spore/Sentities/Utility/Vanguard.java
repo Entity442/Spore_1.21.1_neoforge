@@ -17,10 +17,14 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerEntity;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -714,9 +718,9 @@ public class Vanguard extends UtilityEntity implements CrossbowAttackMob, Enemy 
     }
 
     private void tryTeleportIfFar(ServerLevel serverLevel) {
+        if (!serverLevel.isLoaded(getVillage())) return;
         double distSqr = this.distanceToSqr(Vec3.atCenterOf(getVillage()));
         if (distSqr < (200 * 200)) return;
-        if (!serverLevel.isLoaded(getVillage())) return;
 
         BlockPos tp = findSafeGround(getVillage());
 
