@@ -70,6 +70,10 @@ public class SConfig {
         public final ModConfigSpec.ConfigValue<Double> inf_human_damage;
         public final ModConfigSpec.ConfigValue<Double> inf_human_armor;
 
+        public final ModConfigSpec.ConfigValue<Double> bairn_hp;
+        public final ModConfigSpec.ConfigValue<Double> bairn_damage;
+        public final ModConfigSpec.ConfigValue<Double> bairn_armor;
+
         public final ModConfigSpec.ConfigValue<Double> inf_husk_hp;
         public final ModConfigSpec.ConfigValue<Double> inf_husk_damage;
         public final ModConfigSpec.ConfigValue<Double> inf_husk_armor;
@@ -1078,7 +1082,11 @@ public class SConfig {
             this.stalker_damage = builder.comment("Default 10").defineInRange("Sets Stalker Damage", 10, 1, Double.MAX_VALUE);
             this.stalker_armor = builder.comment("Default 3").defineInRange("Sets Stalker Armor", 3, 0, Double.MAX_VALUE);
             builder.pop();
-
+            builder.push("Bairn");
+            this.bairn_hp = builder.comment("Default 12").defineInRange("Sets Bairn Max health", 12, 1, Double.MAX_VALUE);
+            this.bairn_damage = builder.comment("Default 4").defineInRange("Sets Bairn Damage", 4, 1, Double.MAX_VALUE);
+            this.bairn_armor = builder.comment("Default 1").defineInRange("Sets Bairn Armor", 1, 0, Double.MAX_VALUE);
+            builder.pop();
             builder.push("Specter");
             this.specter_hp = builder.comment("Default 70").defineInRange("Sets Specter Max health", 70, 1, Double.MAX_VALUE);
             this.specter_damage = builder.comment("Default 10").defineInRange("Sets Specter Damage", 10, 1, Double.MAX_VALUE);
@@ -1570,6 +1578,7 @@ public class SConfig {
         public final ModConfigSpec.ConfigValue<List<? extends String>> bloater_loot;
         public final ModConfigSpec.ConfigValue<List<? extends String>> scavenger_loot;
         public final ModConfigSpec.ConfigValue<List<? extends String>> nucke_loot;
+        public final ModConfigSpec.ConfigValue<List<? extends String>> bairn_loot;
         public final ModConfigSpec.ConfigValue<List<? extends String>> hevoker_loot;
         public final ModConfigSpec.ConfigValue<List<? extends String>> womb_loot;
         public final ModConfigSpec.ConfigValue<List<? extends String>> verwa_loot;
@@ -1693,6 +1702,8 @@ public class SConfig {
 
             this.gastgaber_loot = builder.defineList("Gastgaber",
                     Lists.newArrayList("spore:mutated_fiber|80|5|12","spore:armor_fragment|80|2|6","spore:mutated_heart|10|1|3","spore:claw_fragment|80|6|9","spore:innards|50|1|2","spore:tumor|100|4|8","spore:tendons|60|3|7") , o -> o instanceof String);
+            this.bairn_loot = builder.defineList("Bairn",
+                    Lists.newArrayList("spore:mutated_fiber|80|1|5","spore:mutated_heart|10|1|1","spore:claw_fragment|80|1|3") , o -> o instanceof String);
             this.specter_loot = builder.defineList("Specter",
                     Lists.newArrayList("spore:mutated_fiber|80|5|17","spore:fang|50|1|2","spore:armor_fragment|80|2|9","spore:mutated_heart|10|1|3","spore:claw_fragment|80|6|9","spore:innards|50|1|2","spore:tumor|100|4|8","spore:tendons|60|3|7") , o -> o instanceof String);
             this.vanguard_loot = builder.defineList("Vanguard",

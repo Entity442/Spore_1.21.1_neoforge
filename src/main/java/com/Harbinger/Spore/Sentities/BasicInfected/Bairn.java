@@ -63,13 +63,13 @@ public class Bairn extends Infected implements VariantKeeper {
     @Override
     protected void registerGoals() {
         this.goalSelector.addGoal(1, new LeapAtTargetGoal(this,0.4F));
-        this.goalSelector.addGoal(2, new CustomMeleeAttackGoal(this, 1.5, false) {
+        this.goalSelector.addGoal(2,new SearchAroundGoal(this));
+        this.goalSelector.addGoal(3, new CustomMeleeAttackGoal(this, 1.5, false) {
             @Override
             protected double getAttackReachSqr(LivingEntity entity) {
                 return 1.5 + entity.getBbWidth() * entity.getBbWidth();
             }
         });
-        this.goalSelector.addGoal(3,new SearchAroundGoal(this));
         this.goalSelector.addGoal(4, new RandomStrollGoal(this, 0.8));
         this.goalSelector.addGoal(5, new RandomLookAroundGoal(this));
         super.registerGoals();
@@ -153,15 +153,15 @@ public class Bairn extends Infected implements VariantKeeper {
     }
     @Override
     public List<? extends String> getDropList() {
-        return SConfig.DATAGEN.inf_human_loot.get();
+        return SConfig.DATAGEN.bairn_loot.get();
     }
 
     public static AttributeSupplier.Builder createAttributes() {
         return Mob.createMobAttributes()
-                .add(Attributes.MAX_HEALTH, SConfig.SERVER.inf_human_hp.get() * SConfig.SERVER.global_health.get())
+                .add(Attributes.MAX_HEALTH, SConfig.SERVER.bairn_hp.get() * SConfig.SERVER.global_health.get())
                 .add(Attributes.MOVEMENT_SPEED, 0.22)
-                .add(Attributes.ATTACK_DAMAGE, SConfig.SERVER.inf_human_damage.get() * SConfig.SERVER.global_damage.get())
-                .add(Attributes.ARMOR, SConfig.SERVER.inf_human_armor.get() * SConfig.SERVER.global_armor.get())
+                .add(Attributes.ATTACK_DAMAGE, SConfig.SERVER.bairn_damage.get() * SConfig.SERVER.global_damage.get())
+                .add(Attributes.ARMOR, SConfig.SERVER.bairn_armor.get() * SConfig.SERVER.global_armor.get())
                 .add(Attributes.FOLLOW_RANGE, 16)
                 .add(Attributes.ATTACK_KNOCKBACK, 0.3);
 
@@ -235,7 +235,6 @@ public class Bairn extends Infected implements VariantKeeper {
         }
 
         protected void moveToBlock(BlockPos pos){
-            specter.navigation.stop();
             Path path = specter.navigation.createPath(pos, 1);
             if (path != null){
                 specter.getNavigation().moveTo(path, 1);
@@ -327,5 +326,13 @@ public class Bairn extends Infected implements VariantKeeper {
             level().destroyBlock(pos,true,this);
         }
         return true;
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        if (tickCount % 100 == 0){
+            searchBlocks();
+        }
     }
 }
