@@ -190,6 +190,7 @@ public class ClientModEvents {
         event.registerLayerDefinition(NaiadTritonModel.LAYER_LOCATION, NaiadTritonModel::createBodyLayer);
         event.registerLayerDefinition(VanguardModel.LAYER_LOCATION, VanguardModel::createBodyLayer);
         event.registerLayerDefinition(InfectedPillagerCaptainModel.LAYER_LOCATION, InfectedPillagerCaptainModel::createBodyLayer);
+        event.registerLayerDefinition(BairnModel.LAYER_LOCATION, BairnModel::createBodyLayer);
     }
     @SubscribeEvent
     public static void registerRenderers(final EntityRenderersEvent.RegisterRenderers event) {
@@ -259,6 +260,7 @@ public class ClientModEvents {
         event.registerEntityRenderer(Sentities.SCAMPER.get(), ScamperHumanRenderer::new);
         event.registerEntityRenderer(Sentities.GASTGABER.get(), GastGaverRenderer::new);
         event.registerEntityRenderer(Sentities.VANGUARD.get(), VanguardRenderer::new);
+        event.registerEntityRenderer(Sentities.BAIRN.get(), BairnRenderer::new);
 
         event.registerEntityRenderer(Sentities.MOUND.get(), MoundRenderer::new);
         event.registerEntityRenderer(Sentities.UMARMED.get(), UmarmedRenderer::new);
