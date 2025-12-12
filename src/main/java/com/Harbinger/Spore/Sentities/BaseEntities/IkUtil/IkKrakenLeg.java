@@ -2,6 +2,7 @@ package com.Harbinger.Spore.Sentities.BaseEntities.IkUtil;
 
 import com.Harbinger.Spore.Sentities.Calamities.Grakensenker;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
@@ -9,18 +10,25 @@ import net.minecraft.world.phys.Vec3;
 
 
 public class IkKrakenLeg {
+    protected final RandomSource randomSource = RandomSource.create();
     protected final Grakensenker owner;
     protected final Vec3[] entities;
+    protected int[] segmentVar;
     protected final Vec3 defaultBodyOffset;
     protected final Vec3 defaultLimbOffset;
     protected final float maxDistance;
     protected Vec3 sitPosition =  null;
     protected Vec3 lastSitPosition = null;
-    public IkKrakenLeg(Grakensenker owner, Vec3[] entities, Vec3 defaultBodyOffset,
+    public IkKrakenLeg(Grakensenker owner, int amount, Vec3 defaultBodyOffset,
                        Vec3 defaultLimbOffset,
                        float maxDistance) {
         this.owner = owner;
-        this.entities = entities;
+        this.entities = new Vec3[amount];
+        this.segmentVar = new int[amount];
+        for(int i = 0;i<amount;i++){
+            entities[i] = new Vec3(0,0,0);
+            segmentVar[i] = randomSource.nextInt(3);
+        }
         this.defaultBodyOffset = defaultBodyOffset;
         this.defaultLimbOffset = defaultLimbOffset;
         this.maxDistance = maxDistance;
@@ -37,7 +45,15 @@ public class IkKrakenLeg {
     public Vec3 getLastSitPosition() {
         return lastSitPosition;
     }
-
+    public int[] getSegmentVar(){
+        return segmentVar;
+    }
+    public void writeVariants(CompoundTag tag,int ikN){
+        tag.putIntArray("variants"+ikN,segmentVar);
+    }
+    public void readVariants(CompoundTag tag,int ikN){
+        segmentVar = tag.getIntArray("variants"+ikN);
+    }
 
     public Vec3 applyYaw(Vec3 offset) {
         return (offset).yRot(-owner.getYRot() * ((float)Math.PI / 180F) - ((float)Math.PI / 2F));

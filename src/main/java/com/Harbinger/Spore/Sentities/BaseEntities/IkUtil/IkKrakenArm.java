@@ -4,26 +4,78 @@ import com.Harbinger.Spore.Sentities.Calamities.Grakensenker;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
 
-public class IkKrakenArm extends IkKrakenLeg{
-    public IkKrakenArm(Grakensenker owner, Vec3[] entities, Vec3 defaultBodyOffset, Vec3 defaultLimbOffset, float maxDistance) {
-        super(owner, entities, defaultBodyOffset, defaultLimbOffset, maxDistance);
+public class IkKrakenArm extends IkKrakenLeg {
+    private boolean isTargeting = false;
+
+    public IkKrakenArm(Grakensenker owner, int amount, Vec3 defaultBodyOffset, Vec3 defaultLimbOffset, float maxDistance) {
+        super(owner, amount, defaultBodyOffset, defaultLimbOffset, maxDistance);
     }
 
     @Override
     public void refreshLegStandingPoint() {
-        sitPosition = findStableFooting(defaultLimbOffset);
-        if (!sitPosition.equals(lastSitPosition)) lastSitPosition = sitPosition;
-    }
-
-    @Override
-    protected Vec3 findStableFooting(Vec3 tip) {
         LivingEntity target = owner.getTarget();
-        return target != null && owner.distanceTo(target) < 32 && target.isAlive() ? target.position() : getLegBasePos();
+
+        if (target != null && owner.distanceTo(target) < maxDistance && target.isAlive()) {
+            Vec3 targetPos = target.getBoundingBox().getCenter();
+            if (owner.level().random.nextFloat() < 0.1f) {
+                float offsetX = (owner.level().random.nextFloat() - 0.5f) * 0.3f;
+                float offsetY = (owner.level().random.nextFloat() - 0.5f) * 0.3f;
+                float offsetZ = (owner.level().random.nextFloat() - 0.5f) * 0.3f;
+                targetPos = targetPos.add(offsetX, offsetY, offsetZ);
+            }
+
+            sitPosition = targetPos;
+            lastSitPosition = sitPosition;
+            isTargeting = true;
+        } else {
+            if (sitPosition == null || !isTargeting) {
+                sitPosition = getLegBasePos();
+            } else {
+                sitPosition = sitPosition.lerp(getLegBasePos(), 0.1f);
+            }
+            if (sitPosition.distanceToSqr(getLegBasePos()) < 0.1) {
+                isTargeting = false;
+            }
+            lastSitPosition = sitPosition;
+        }
     }
 
     @Override
-    public Vec3 getLegBasePos() {
-        Vec3 pivot = owner.position().add(0, owner.getExtendedHeight(), 0);
-        return pivot.add(applyYaw(defaultLimbOffset));
+    public void applyIK() {
+        if (entities.length == 0) return;
+
+        Vec3 basePos = getBodyOffset();
+        LivingEntity target = owner.getTarget();
+
+        if (target != null && target.isAlive()) {
+            sitPosition = target.getBoundingBox().getCenter();
+        }
+
+        Vec3 targetPos = sitPosition == null ? getLegBasePos() : sitPosition;
+        entities[0] = basePos;
+
+        for (int i = entities.length - 1; i >= 0; i--) {
+            if (i == entities.length - 1) {
+                Vec3 newTipPos = entities[i].lerp(targetPos, 0.25f);
+                entities[i] = newTipPos;
+            } else {
+                Vec3 nextPos = entities[i + 1];
+                Vec3 dir = entities[i].subtract(nextPos).normalize();
+                Vec3 newPos = nextPos.add(dir);
+                entities[i] = entities[i].lerp(newPos, 0.5f);
+            }
+        }
+        entities[0] = basePos;
+        for (int i = 1; i < entities.length; i++) {
+            Vec3 prevPos = entities[i - 1];
+            Vec3 dir = entities[i].subtract(prevPos).normalize();
+            Vec3 newPos = prevPos.add(dir);
+            entities[i] = entities[i].lerp(newPos, 0.5f);
+        }
+        entities[entities.length - 1] = entities[entities.length - 1].lerp(targetPos, 0.3f);
+    }
+
+    public boolean isTargeting() {
+        return isTargeting;
     }
 }

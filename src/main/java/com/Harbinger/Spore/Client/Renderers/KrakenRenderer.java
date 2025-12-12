@@ -1,15 +1,15 @@
 package com.Harbinger.Spore.Client.Renderers;
 
 
-import com.Harbinger.Spore.Client.Models.KrakenClaw;
 import com.Harbinger.Spore.Client.Models.KrakenModel;
-import com.Harbinger.Spore.Client.Models.TentacleSegment;
+import com.Harbinger.Spore.Client.Models.KrakenTentacles.*;
 import com.Harbinger.Spore.Client.Special.CalamityRenderer;
 import com.Harbinger.Spore.Sentities.Calamities.Grakensenker;
 import com.Harbinger.Spore.Spore;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
+import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -22,22 +22,39 @@ import net.neoforged.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class KrakenRenderer<Type extends Grakensenker> extends CalamityRenderer<Type , KrakenModel<Type>> {
-    private final TentacleSegment<Type> tentacleSegmentModel;
+    private final KrakenTentacle1<Type> tentacleSegmentModel;
+    private final KrakenTentacle2<Type> tentacleSegmentModel1;
+    private final KrakenTentacle3<Type> tentacleSegmentModel2;
+    private final KrakenTentacleFoot<Type> foot;
     private final KrakenClaw<Type> armModel;
     private static final ResourceLocation TEXTURE =  ResourceLocation.fromNamespaceAndPath(Spore.MODID,
             "textures/entity/blank.png");
+    private static final ResourceLocation TENTACLES =  ResourceLocation.fromNamespaceAndPath(Spore.MODID,
+            "textures/entity/kraken/kraken_t1.png");
+    private static final ResourceLocation KRAKEN_HAND =  ResourceLocation.fromNamespaceAndPath(Spore.MODID,
+            "textures/entity/kraken/hand.png");
     private static final ResourceLocation EYES_TEXTURE =  ResourceLocation.fromNamespaceAndPath(Spore.MODID,
             "textures/entity/empty.png");
 
     public KrakenRenderer(EntityRendererProvider.Context context) {
         super(context, new KrakenModel<>(context.bakeLayer(KrakenModel.LAYER_LOCATION)), 4f);
-        tentacleSegmentModel = new TentacleSegment<>();
+        tentacleSegmentModel = new KrakenTentacle1<>();
+        tentacleSegmentModel1 = new KrakenTentacle2<>();
+        tentacleSegmentModel2 = new KrakenTentacle3<>();
+        foot = new KrakenTentacleFoot<>();
         armModel = new KrakenClaw<>();
     }
 
     @Override
     public ResourceLocation getTextureLocation(Type entity) {
         return TEXTURE;
+    }
+    public EntityModel<Type> getTentacleModel(int i){
+        return switch (i) {
+            case 0 -> tentacleSegmentModel;
+            case 1 -> tentacleSegmentModel2;
+            default -> tentacleSegmentModel1;
+        };
     }
 
 
@@ -56,19 +73,19 @@ public class KrakenRenderer<Type extends Grakensenker> extends CalamityRenderer<
         stack.pushPose();
         {
             stack.translate(-entityPos.x, -entityPos.y, -entityPos.z);
-            renderTentacle(stack,entity, bufferSource, entity.getBackRightTentacle().getEntities(), entity,partialTicks,false);
-            renderTentacle(stack,entity, bufferSource, entity.getBackLeftTentacle().getEntities(), entity,partialTicks,false);
-            renderTentacle(stack,entity, bufferSource, entity.getMiddleLeftTentacle().getEntities(), entity,partialTicks,false);
-            renderTentacle(stack,entity, bufferSource, entity.getMiddleRightTentacle().getEntities(), entity,partialTicks,false);
-            renderTentacle(stack,entity, bufferSource, entity.getFrontLeftTentacle().getEntities(), entity,partialTicks,false);
-            renderTentacle(stack,entity, bufferSource, entity.getFrontRightTentacle().getEntities(), entity,partialTicks,false);
-            renderTentacle(stack,entity, bufferSource, entity.getRightArmTentacle().getEntities(), entity,partialTicks,true);
-            renderTentacle(stack,entity, bufferSource, entity.getLeftArmTentacle().getEntities(), entity,partialTicks,true);
+            renderTentacle(stack,entity, bufferSource, entity.getBackRightTentacle().getEntities(),entity.getBackRightTentacle().getSegmentVar(), entity,partialTicks,false);
+            renderTentacle(stack,entity, bufferSource, entity.getBackLeftTentacle().getEntities(),entity.getBackLeftTentacle().getSegmentVar(), entity,partialTicks,false);
+            renderTentacle(stack,entity, bufferSource, entity.getMiddleLeftTentacle().getEntities(),entity.getMiddleLeftTentacle().getSegmentVar(), entity,partialTicks,false);
+            renderTentacle(stack,entity, bufferSource, entity.getMiddleRightTentacle().getEntities(),entity.getMiddleRightTentacle().getSegmentVar(), entity,partialTicks,false);
+            renderTentacle(stack,entity, bufferSource, entity.getFrontLeftTentacle().getEntities(),entity.getFrontLeftTentacle().getSegmentVar(), entity,partialTicks,false);
+            renderTentacle(stack,entity, bufferSource, entity.getFrontRightTentacle().getEntities(),entity.getFrontRightTentacle().getSegmentVar(), entity,partialTicks,false);
+            renderTentacle(stack,entity, bufferSource, entity.getRightArmTentacle().getEntities(),entity.getRightArmTentacle().getSegmentVar(), entity,partialTicks,true);
+            renderTentacle(stack,entity, bufferSource, entity.getLeftArmTentacle().getEntities(),entity.getLeftArmTentacle().getSegmentVar(), entity,partialTicks,true);
         }
         stack.popPose();
     }
 
-    private void renderTentacle(PoseStack stack,Type type, MultiBufferSource buffer, Vec3[] segments, LivingEntity parent, float partial,boolean arm) {
+    private void renderTentacle(PoseStack stack,Type type, MultiBufferSource buffer, Vec3[] segments,int[] var, LivingEntity parent, float partial,boolean arm) {
         if (segments == null || segments.length < 2) return;
         float hurtTime = parent.hurtTime - partial;
         float flashIntensity = 0.0F;
@@ -82,7 +99,7 @@ public class KrakenRenderer<Type extends Grakensenker> extends CalamityRenderer<
         int color = packColorARGB(1.0F, red, green, blue);
         for (int i = 0; i < segments.length; i++) {
             Vec3 currentPos = segments[i];
-            renderConnection(origin, currentPos,type, stack, buffer, i,partial,color,arm);
+            renderConnection(origin, currentPos,type, stack, buffer, i,var[i],partial,color,i == segments.length-1, arm);
             origin = currentPos;
         }
     }
@@ -92,8 +109,8 @@ public class KrakenRenderer<Type extends Grakensenker> extends CalamityRenderer<
                 ((int)(g * 255) << 8)  |
                 (int)(b * 255);
     }
-    private void renderConnection(Vec3 from, Vec3 to,Type parent, PoseStack stack, MultiBufferSource buffer,int index , float partial
-            ,int color,boolean arm) {
+    private void renderConnection(Vec3 from, Vec3 to,Type parent, PoseStack stack, MultiBufferSource buffer,int index,int var , float partial
+            ,int color,boolean last,boolean arm) {
         if (from == null || to == null) return;
         Vec3 direction = to.subtract(from);
         float length = (float) direction.length();
@@ -109,22 +126,24 @@ public class KrakenRenderer<Type extends Grakensenker> extends CalamityRenderer<
             stack.translate(from.x, from.y, from.z);
             stack.mulPose(Axis.YP.rotation(yaw));
             stack.mulPose(Axis.XP.rotation(pitch));
-            VertexConsumer consumer = buffer.getBuffer(RenderType.entityCutout(TEXTURE));
             stack.pushPose();
             {
+                VertexConsumer consumer = buffer.getBuffer(RenderType.entityCutoutNoCull(TENTACLES));
+                EntityModel<Type> typeEntityModel = last && !arm ? foot : getTentacleModel(var);
                 stack.mulPose(Axis.XP.rotationDegrees(90));
                 stack.translate(0,-length/2,0);
                 stack.scale(size,length*1.05f,size);
-                tentacleSegmentModel.setupAnim(parent,0,0,parent.tickCount + partial,0,0);
-                tentacleSegmentModel.renderToBuffer(stack,consumer,15728880, OverlayTexture.NO_OVERLAY, color);
+                typeEntityModel.setupAnim(parent,0,0,parent.tickCount + partial,0,0);
+                typeEntityModel.renderToBuffer(stack,consumer,15728880, OverlayTexture.NO_OVERLAY, color);
             }
             stack.popPose();
-            if (arm && index == 5){
+            if (arm && last){
+                VertexConsumer consumerArm = buffer.getBuffer(RenderType.entityCutoutNoCull(KRAKEN_HAND));
                 stack.pushPose();
                 stack.mulPose(Axis.XP.rotationDegrees(-90));
                 stack.translate(0,-length * 2,0);
                 armModel.setupAnim(parent,0,0,parent.tickCount + partial,0,0);
-                armModel.renderToBuffer(stack,consumer,15728880, OverlayTexture.NO_OVERLAY, color);
+                armModel.renderToBuffer(stack,consumerArm,15728880, OverlayTexture.NO_OVERLAY, color);
                 stack.popPose();
             }
         }

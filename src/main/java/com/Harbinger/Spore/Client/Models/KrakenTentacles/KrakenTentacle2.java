@@ -1,7 +1,6 @@
-package com.Harbinger.Spore.Client.Models;// Made with Blockbench 5.0.5
+package com.Harbinger.Spore.Client.Models.KrakenTentacles;// Made with Blockbench 5.0.5
 // Exported for Minecraft version 1.17 or later with Mojang mappings
 // Paste this class into your mod and generate all required imports
-
 
 import com.Harbinger.Spore.Spore;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -14,12 +13,12 @@ import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 
-public class TentacleSegment<T extends Entity> extends EntityModel<T> {
+public class KrakenTentacle2<T extends Entity> extends EntityModel<T> {
 	// This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
-	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "tentaclesegment"), "main");
+	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "krakententacle3"), "main");
 	private final ModelPart body;
 
-	public TentacleSegment() {
+	public KrakenTentacle2() {
 		ModelPart root = createBodyLayer().bakeRoot();
 		this.body = root.getChild("body");
 	}
@@ -28,9 +27,9 @@ public class TentacleSegment<T extends Entity> extends EntityModel<T> {
 		MeshDefinition meshdefinition = new MeshDefinition();
 		PartDefinition partdefinition = meshdefinition.getRoot();
 
-		PartDefinition body = partdefinition.addOrReplaceChild("body", CubeListBuilder.create().texOffs(-9, -6).addBox(-4.0F, -16.0F, -4.0F, 8.0F, 16.0F, 8.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 24.0F, 0.0F));
+		PartDefinition body = partdefinition.addOrReplaceChild("body", CubeListBuilder.create().texOffs(38, 0).addBox(-4.5F, -16.0F, -4.5F, 9.0F, 16.0F, 9.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 24.0F, 0.0F));
 
-		return LayerDefinition.create(meshdefinition, 16, 16);
+		return LayerDefinition.create(meshdefinition, 128, 128);
 	}
 
 	@Override

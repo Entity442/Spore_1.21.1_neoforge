@@ -45,24 +45,14 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
     private final IkKrakenLeg[] TickTentacles;
     public Grakensenker(EntityType<? extends PathfinderMob> type, Level level) {
         super(type, level);
-        Vec3 BRT1 = new Vec3(0,0,0);Vec3 BRT2 = new Vec3(0,0,0);Vec3 BRT3 = new Vec3(0,0,0);Vec3 BRT4 = new Vec3(0,0,0);Vec3 BRT5 = new Vec3(0,0,0);Vec3 BRT6 = new Vec3(0,0,0);Vec3 BRT7 = new Vec3(0,0,0);
-        BackRightTentacle = new IkKrakenLeg(this,new Vec3[]{BRT1,BRT2,BRT3,BRT4,BRT5,BRT6,BRT7},GrakenLegsModifiers.BACK_RIGHT_TENTACLE.bodySet, GrakenLegsModifiers.BACK_RIGHT_TENTACLE.offset, 4);
-        Vec3 BLT1 = new Vec3(0,0,0);Vec3 BLT2 = new Vec3(0,0,0);Vec3 BLT3 = new Vec3(0,0,0);Vec3 BLT4 = new Vec3(0,0,0);Vec3 BLT5 = new Vec3(0,0,0);Vec3 BLT6 = new Vec3(0,0,0);Vec3 BLT7 = new Vec3(0,0,0);
-        BackLeftTentacle = new IkKrakenLeg(this,new Vec3[]{BLT1,BLT2,BLT3,BLT4,BLT5,BLT6,BLT7},GrakenLegsModifiers.BACK_LEFT_TENTACLE.bodySet, GrakenLegsModifiers.BACK_LEFT_TENTACLE.offset, 4);
-        Vec3 MRT1 = new Vec3(0,0,0);Vec3 MRT2 = new Vec3(0,0,0);Vec3 MRT3 = new Vec3(0,0,0);Vec3 MRT4 = new Vec3(0,0,0);Vec3 MRT5 = new Vec3(0,0,0);Vec3 MRT6 = new Vec3(0,0,0);Vec3 MRT7 = new Vec3(0,0,0);
-        MiddleRightTentacle = new IkKrakenLeg(this,new Vec3[]{MRT1,MRT2,MRT3,MRT4,MRT5,MRT6,MRT7},GrakenLegsModifiers.MIDDLE_RIGHT_TENTACLE.bodySet, GrakenLegsModifiers.MIDDLE_RIGHT_TENTACLE.offset, 6);
-        Vec3 MLT1 = new Vec3(0,0,0);Vec3 MLT2 = new Vec3(0,0,0);Vec3 MLT3 = new Vec3(0,0,0);Vec3 MLT4 = new Vec3(0,0,0);Vec3 MLT5 = new Vec3(0,0,0);Vec3 MLT6 = new Vec3(0,0,0);Vec3 MLT7 = new Vec3(0,0,0);
-        MiddleLeftTentacle = new IkKrakenLeg(this,new Vec3[]{MLT1,MLT2,MLT3,MLT4,MLT5,MLT6,MLT7},GrakenLegsModifiers.MIDDLE_LEFT_TENTACLE.bodySet, GrakenLegsModifiers.MIDDLE_LEFT_TENTACLE.offset, 6);
-        Vec3 FRT1 = new Vec3(0,0,0);Vec3 FRT2 = new Vec3(0,0,0);Vec3 FRT3 = new Vec3(0,0,0);Vec3 FRT4 = new Vec3(0,0,0);Vec3 FRT5 = new Vec3(0,0,0);Vec3 FRT6 = new Vec3(0,0,0);Vec3 FRT7 = new Vec3(0,0,0);Vec3 FRT8 = new Vec3(0,0,0);Vec3 FRT9 = new Vec3(0,0,0);Vec3 FRT10 = new Vec3(0,0,0);
-        FrontRightTentacle = new IkKrakenLeg(this,new Vec3[]{FRT1,FRT2,FRT3,FRT4,FRT5,FRT6,FRT7,FRT8,FRT9,FRT10},GrakenLegsModifiers.FRONT_RIGHT_TENTACLE.bodySet, GrakenLegsModifiers.FRONT_RIGHT_TENTACLE.offset, 8);
-        Vec3 FLT1 = new Vec3(0,0,0);Vec3 FLT2 = new Vec3(0,0,0);Vec3 FLT3 = new Vec3(0,0,0);Vec3 FLT4 = new Vec3(0,0,0);Vec3 FLT5 = new Vec3(0,0,0);Vec3 FLT6 = new Vec3(0,0,0);Vec3 FLT7 = new Vec3(0,0,0);Vec3 FLT8 = new Vec3(0,0,0);Vec3 FLT9 = new Vec3(0,0,0);Vec3 FLT10 = new Vec3(0,0,0);
-        FrontLeftTentacle = new IkKrakenLeg(this,new Vec3[]{FLT1,FLT2,FLT3,FLT4,FLT5,FLT6,FLT7,FLT8,FLT9,FLT10},GrakenLegsModifiers.FRONT_LEFT_TENTACLE.bodySet, GrakenLegsModifiers.FRONT_LEFT_TENTACLE.offset, 8);
-
-        Vec3 RAT1 = new Vec3(0,0,0);Vec3 RAT2 = new Vec3(0,0,0);Vec3 RAT3 = new Vec3(0,0,0);Vec3 RAT4 = new Vec3(0,0,0);Vec3 RAT5 = new Vec3(0,0,0);Vec3 RAT6 = new Vec3(0,0,0);
-        RightArmTentacle = new IkKrakenArm(this,new Vec3[]{RAT1,RAT2,RAT3,RAT4,RAT5,RAT6},GrakenLegsModifiers.LEFT_ARM.bodySet, GrakenLegsModifiers.LEFT_ARM.offset, 8);
-        Vec3 LET1 = new Vec3(0,0,0);Vec3 LET2 = new Vec3(0,0,0);Vec3 LET3 = new Vec3(0,0,0);Vec3 LET4 = new Vec3(0,0,0);Vec3 LET5 = new Vec3(0,0,0);Vec3 LET6 = new Vec3(0,0,0);
-        LeftArmTentacle = new IkKrakenArm(this,new Vec3[]{LET1,LET2,LET3,LET4,LET5,LET6},GrakenLegsModifiers.RIGHT_ARM.bodySet, GrakenLegsModifiers.RIGHT_ARM.offset, 8);
-
+        BackRightTentacle = new IkKrakenLeg(this,7,GrakenLegsModifiers.BACK_RIGHT_TENTACLE.bodySet, GrakenLegsModifiers.BACK_RIGHT_TENTACLE.offset, 4);
+        BackLeftTentacle = new IkKrakenLeg(this,7,GrakenLegsModifiers.BACK_LEFT_TENTACLE.bodySet, GrakenLegsModifiers.BACK_LEFT_TENTACLE.offset, 4);
+        MiddleRightTentacle = new IkKrakenLeg(this,7,GrakenLegsModifiers.MIDDLE_RIGHT_TENTACLE.bodySet, GrakenLegsModifiers.MIDDLE_RIGHT_TENTACLE.offset, 6);
+        MiddleLeftTentacle = new IkKrakenLeg(this,7,GrakenLegsModifiers.MIDDLE_LEFT_TENTACLE.bodySet, GrakenLegsModifiers.MIDDLE_LEFT_TENTACLE.offset, 6);
+        FrontRightTentacle = new IkKrakenLeg(this,10,GrakenLegsModifiers.FRONT_RIGHT_TENTACLE.bodySet, GrakenLegsModifiers.FRONT_RIGHT_TENTACLE.offset, 8);
+        FrontLeftTentacle = new IkKrakenLeg(this,10,GrakenLegsModifiers.FRONT_LEFT_TENTACLE.bodySet, GrakenLegsModifiers.FRONT_LEFT_TENTACLE.offset, 8);
+        RightArmTentacle = new IkKrakenArm(this,8,GrakenLegsModifiers.LEFT_ARM.bodySet, GrakenLegsModifiers.LEFT_ARM.offset, 8);
+        LeftArmTentacle = new IkKrakenArm(this,8,GrakenLegsModifiers.RIGHT_ARM.bodySet, GrakenLegsModifiers.RIGHT_ARM.offset, 8);
         TickTentacles = new IkKrakenLeg[]{BackRightTentacle,BackLeftTentacle,MiddleRightTentacle,MiddleLeftTentacle,FrontRightTentacle,FrontLeftTentacle,RightArmTentacle,LeftArmTentacle};
     }
     enum GrakenLegsModifiers{
@@ -171,12 +161,18 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
         super.addAdditionalSaveData(tag);
         tag.putFloat("height", entityData.get(HEIGHT));
         tag.putInt("water", entityData.get(WATER_TICKS));
+        for(int e = 0;e<TickTentacles.length;e++){
+            TickTentacles[e].writeVariants(tag,e);
+        }
     }
     @Override
     public void readAdditionalSaveData(CompoundTag tag) {
         super.readAdditionalSaveData(tag);
         entityData.set(HEIGHT,tag.getFloat("height"));
         entityData.set(WATER_TICKS,tag.getInt("water"));
+        for(int e = 0;e<TickTentacles.length;e++){
+            TickTentacles[e].readVariants(tag,e);
+        }
     }
 
     @Override
@@ -190,12 +186,8 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
     public void tick() {
         super.tick();
         updateHeight();
-        if (tickCount % 5 == 0) {
-            for (IkKrakenLeg leg : TickTentacles) {
-                leg.refreshLegStandingPoint();
-            }
-        }
         for (IkKrakenLeg leg : TickTentacles) {
+            leg.refreshLegStandingPoint();
             leg.applyIK();
         }
 
