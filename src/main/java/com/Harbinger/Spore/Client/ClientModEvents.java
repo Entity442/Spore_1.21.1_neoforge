@@ -191,6 +191,8 @@ public class ClientModEvents {
         event.registerLayerDefinition(VanguardModel.LAYER_LOCATION, VanguardModel::createBodyLayer);
         event.registerLayerDefinition(InfectedPillagerCaptainModel.LAYER_LOCATION, InfectedPillagerCaptainModel::createBodyLayer);
         event.registerLayerDefinition(BairnModel.LAYER_LOCATION, BairnModel::createBodyLayer);
+        event.registerLayerDefinition(KrakenModel.LAYER_LOCATION, KrakenModel::createBodyLayer);
+        event.registerLayerDefinition(TentacleSegment.LAYER_LOCATION, TentacleSegment::createBodyLayer);
     }
     @SubscribeEvent
     public static void registerRenderers(final EntityRenderersEvent.RegisterRenderers event) {
@@ -273,6 +275,7 @@ public class ClientModEvents {
         event.registerEntityRenderer(Sentities.RECONSTRUCTOR.get(), BiomassReconfiguratorRenderer::new);
         event.registerEntityRenderer(Sentities.CHEMIST.get(), ChemistRenderer::new);
         event.registerEntityRenderer(Sentities.NAIAD.get(), NaiadRenderer::new);
+        event.registerEntityRenderer(Sentities.KRAKEN.get(), KrakenRenderer::new);
     }
     public static void renderBlockEntities(EntityRenderersEvent.RegisterRenderers event){
         event.registerBlockEntityRenderer(SblockEntities.OVERGROWN_SPAWNER.get(), new OvergrownSpawnerRenderer());

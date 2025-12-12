@@ -396,6 +396,10 @@ public class Sentities {
             () -> EntityType.Builder.of(Gazenbrecher::new, INFECTED).sized(3.5f, 3f)
                     .build(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "gazenbreacher").toString()));
 
+    public static final Supplier<EntityType<Grakensenker>> KRAKEN = SPORE_ENTITIES.register("kraken",
+            () -> EntityType.Builder.of(Grakensenker::new, INFECTED).sized(3f, 3f)
+                    .build(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "kraken").toString()));
+
     public static final Supplier<EntityType<Licker>> LICKER = SPORE_ENTITIES.register("licker",
             () -> EntityType.Builder.of(Licker::new, MobCategory.MISC).sized(1.4f, 1f)
                     .build(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "licker").toString()));

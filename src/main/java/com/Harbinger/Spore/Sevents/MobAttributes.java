@@ -93,5 +93,6 @@ public class MobAttributes {
         event.put(Sentities.NAIAD.get(), Naiad.createAttributes().build());
         event.put(Sentities.VANGUARD.get(), Vanguard.createAttributes().build());
         event.put(Sentities.BAIRN.get(), Bairn.createAttributes().build());
+        event.put(Sentities.KRAKEN.get(), Grakensenker.createAttributes().build());
     }
 }

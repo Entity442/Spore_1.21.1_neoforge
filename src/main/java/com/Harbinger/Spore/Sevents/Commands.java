@@ -5,10 +5,8 @@ import com.Harbinger.Spore.ExtremelySusThings.SporeSavedData;
 import com.Harbinger.Spore.SBlockEntities.CDUBlockEntity;
 import com.Harbinger.Spore.SBlockEntities.LivingStructureBlocks;
 import com.Harbinger.Spore.Sentities.BaseEntities.*;
-import com.Harbinger.Spore.Sentities.Calamities.Gazenbrecher;
-import com.Harbinger.Spore.Sentities.Calamities.Hinderburg;
-import com.Harbinger.Spore.Sentities.Calamities.Hohlfresser;
-import com.Harbinger.Spore.Sentities.Calamities.Sieger;
+import com.Harbinger.Spore.Sentities.BaseEntities.IkUtil.IkKrakenLeg;
+import com.Harbinger.Spore.Sentities.Calamities.*;
 import com.Harbinger.Spore.Sentities.EvolvedInfected.Naiad;
 import com.Harbinger.Spore.Sentities.EvolvedInfected.Scamper;
 import com.Harbinger.Spore.Sentities.HitboxesForParts;
@@ -28,6 +26,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.util.FakePlayerFactory;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 
@@ -230,6 +229,15 @@ public class Commands {
                                 }
                                 if (calamity instanceof Hinderburg sieger){
                                     player.displayClientMessage(Component.literal("Is armed "+ sieger.isArmed()),false);
+                                }
+                                if (calamity instanceof Grakensenker sieger){
+                                    int i = 0;
+                                    for (IkKrakenLeg leg : sieger.getTentacles()){
+                                        ++i;
+                                        for (Vec3 vec3 : leg.getEntities()){
+                                            player.displayClientMessage(Component.literal("Vector_"+ vec3 + "_" + i),false);
+                                        }
+                                    }
                                 }
                                 if (calamity instanceof Hohlfresser sieger){
                                     player.displayClientMessage(Component.literal("Underground "+ sieger.isUnderground()),false);
