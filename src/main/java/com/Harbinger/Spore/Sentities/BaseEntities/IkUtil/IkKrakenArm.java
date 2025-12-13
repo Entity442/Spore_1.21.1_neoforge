@@ -48,8 +48,8 @@ public class IkKrakenArm extends IkKrakenLeg {
         Level level = owner.level();
         Vec3 pivot = applyYaw(rightArm ? RightVec : LeftVec);
         AABB searchBox = new AABB(
-                owner.getX() - 10, owner.getY() - 6,  owner.getZ() - 10,
-                owner.getX() + 10, owner.getY() + 6,  owner.getZ() + 10
+                owner.getX() - 10, owner.getY(),  owner.getZ() - 10,
+                owner.getX() + 10, owner.getY() + owner.getExtendedHeight() + 4,  owner.getZ() + 10
         ).move(pivot);
         return level.getEntitiesOfClass(
                 LivingEntity.class,
