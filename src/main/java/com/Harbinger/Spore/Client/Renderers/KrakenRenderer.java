@@ -22,11 +22,13 @@ import net.neoforged.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class KrakenRenderer<Type extends Grakensenker> extends CalamityRenderer<Type , KrakenModel<Type>> {
-    private final KrakenTentacle1<Type> tentacleSegmentModel;
-    private final KrakenTentacle2<Type> tentacleSegmentModel1;
-    private final KrakenTentacle3<Type> tentacleSegmentModel2;
-    private final KrakenTentacleFoot<Type> foot;
-    private final KrakenClaw<Type> armModel;
+    private final KrakenTentacle1<Type> tentacleSegmentModel = new KrakenTentacle1<>();
+    private final KrakenTentacle2<Type> tentacleSegmentModel1 = new KrakenTentacle2<>();
+    private final KrakenTentacle3<Type> tentacleSegmentModel2 = new KrakenTentacle3<>();
+    private final KrakenTentacle4<Type> tentacleSegmentModel3 = new KrakenTentacle4<>();
+    private final KrakenTentacle5<Type> tentacleSegmentModel4 = new KrakenTentacle5<>();
+    private final KrakenTentacleFoot<Type> foot = new KrakenTentacleFoot<>();
+    private final KrakenClaw<Type> armModel = new KrakenClaw<>();
     private static final ResourceLocation TEXTURE =  ResourceLocation.fromNamespaceAndPath(Spore.MODID,
             "textures/entity/blank.png");
     private static final ResourceLocation TENTACLES =  ResourceLocation.fromNamespaceAndPath(Spore.MODID,
@@ -38,11 +40,6 @@ public class KrakenRenderer<Type extends Grakensenker> extends CalamityRenderer<
 
     public KrakenRenderer(EntityRendererProvider.Context context) {
         super(context, new KrakenModel<>(context.bakeLayer(KrakenModel.LAYER_LOCATION)), 4f);
-        tentacleSegmentModel = new KrakenTentacle1<>();
-        tentacleSegmentModel1 = new KrakenTentacle2<>();
-        tentacleSegmentModel2 = new KrakenTentacle3<>();
-        foot = new KrakenTentacleFoot<>();
-        armModel = new KrakenClaw<>();
     }
 
     @Override
@@ -53,6 +50,8 @@ public class KrakenRenderer<Type extends Grakensenker> extends CalamityRenderer<
         return switch (i) {
             case 0 -> tentacleSegmentModel;
             case 1 -> tentacleSegmentModel2;
+            case 2 -> tentacleSegmentModel3;
+            case 3 -> tentacleSegmentModel4;
             default -> tentacleSegmentModel1;
         };
     }
@@ -142,6 +141,7 @@ public class KrakenRenderer<Type extends Grakensenker> extends CalamityRenderer<
                 stack.pushPose();
                 stack.mulPose(Axis.XP.rotationDegrees(-90));
                 stack.translate(0,-length * 2,0);
+                stack.scale(1,length,1);
                 armModel.setupAnim(parent,0,0,parent.tickCount + partial,0,0);
                 armModel.renderToBuffer(stack,consumerArm,15728880, OverlayTexture.NO_OVERLAY, color);
                 stack.popPose();

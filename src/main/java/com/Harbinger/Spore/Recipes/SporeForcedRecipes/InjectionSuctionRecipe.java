@@ -63,7 +63,7 @@ public class InjectionSuctionRecipe {
     public static final Recipe SKELETAL_SYRINGE = new Recipe(List.of(new Pair("spore:inquisitor",0),new Pair("spore:nuclea",0))
             , Sitems.SKELETAL_SYRINGE.get());
 
-    public static final Recipe DROWNED = new Recipe(List.of(new Pair("spore:inquisitor",0),new Pair("spore:nuclea",0))
+    public static final Recipe DROWNED = new Recipe(List.of(new Pair("spore:bloater",0),new Pair("spore:naiad",0),new Pair("spore:naiad",1))
             ,Sitems.DROWNED_SYRINGE.get());
 
     public static final Recipe CHARRED = new Recipe(List.of(new Pair("spore:griefer",4),new Pair("spore:umarmed",1))

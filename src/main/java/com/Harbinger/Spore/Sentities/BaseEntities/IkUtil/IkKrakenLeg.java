@@ -27,7 +27,7 @@ public class IkKrakenLeg {
         this.segmentVar = new int[amount];
         for(int i = 0;i<amount;i++){
             entities[i] = new Vec3(0,0,0);
-            segmentVar[i] = randomSource.nextInt(3);
+            segmentVar[i] = randomSource.nextInt(5);
         }
         this.defaultBodyOffset = defaultBodyOffset;
         this.defaultLimbOffset = defaultLimbOffset;
@@ -61,7 +61,7 @@ public class IkKrakenLeg {
 
     public Vec3 getLegBasePos() {
         Vec3 pivot = owner.position();
-        return pivot.add(applyYaw(defaultLimbOffset));
+        return sitPosition == null ? pivot.add(applyYaw(defaultLimbOffset)) : sitPosition;
     }
 
     public Vec3 getBodyOffset() {
@@ -69,14 +69,14 @@ public class IkKrakenLeg {
         return pivot.add(applyYaw(defaultBodyOffset));
     }
 
-    private void moveSegmentTowards(int index, Vec3 target,boolean far) {
+    protected void moveSegmentTowards(int index, Vec3 target,boolean far) {
         Vec3 currentPos = entities[index];
-        Vec3 newPos = currentPos.lerp(target, 0.25f);
+        Vec3 newPos = currentPos.lerp(target, 0.35f);
         entities[index] = (far ? target : newPos);
     }
-    private void moveTipTowards(int index, Vec3 target) {
+    protected void moveTipTowards(int index, Vec3 target) {
         Vec3 currentPos = entities[index];
-        Vec3 newPos = currentPos.lerp(target, 0.15f);
+        Vec3 newPos = currentPos.lerp(target, 0.35f);
         entities[index] = newPos;
     }
 
@@ -85,26 +85,37 @@ public class IkKrakenLeg {
 
         Vec3 basePos = getBodyOffset();
         Vec3 defaultTipPos = getLegBasePos();
-        boolean tooFar = entities[entities.length - 1].distanceToSqr(defaultTipPos) > 100;
+        boolean tooFar = entities[entities.length - 1].distanceToSqr(defaultTipPos) > 225;
 
-        Vec3 targetPos = sitPosition == null ? defaultTipPos : sitPosition;
-
-        entities[0] = basePos;
-
-        moveTipTowards(entities.length - 1, targetPos);
+        moveTipTowards(entities.length - 1, defaultTipPos);
 
         for (int i = entities.length - 2; i >= 0; i--) {
             Vec3 nextPos = entities[i + 1];
-            Vec3 dir = entities[i].subtract(nextPos).normalize();
+            Vec3 dir = entities[i].subtract(nextPos);
+
+            float segmentLength = 1.0f;
+            if (dir.lengthSqr() > 0.0001f) {
+                dir = dir.normalize().scale(segmentLength);
+            } else {
+                dir = new Vec3(segmentLength, 0, 0);
+            }
+
             Vec3 solvedPos = nextPos.add(dir);
             moveSegmentTowards(i, solvedPos, tooFar);
         }
+        moveSegmentTowards(0, basePos, tooFar);
 
-        // 🦴 Forward pass (base → tip)
-        entities[0] = basePos;
         for (int i = 1; i < entities.length; i++) {
             Vec3 prevPos = entities[i - 1];
-            Vec3 dir = entities[i].subtract(prevPos).normalize();
+            Vec3 dir = entities[i].subtract(prevPos);
+
+            float segmentLength = 1.0f;
+            if (dir.lengthSqr() > 0.0001f) {
+                dir = dir.normalize().scale(segmentLength);
+            } else {
+                dir = new Vec3(segmentLength, 0, 0);
+            }
+
             Vec3 solvedPos = prevPos.add(dir);
             moveSegmentTowards(i, solvedPos, tooFar);
         }
@@ -115,32 +126,63 @@ public class IkKrakenLeg {
         if (lastSitPosition != null && getLegBasePos().distanceTo(lastSitPosition) < maxDistance){
             return;
         }
-        sitPosition = findStableFooting(defaultLimbOffset);
+        sitPosition = findStableFooting();
         if (!sitPosition.equals(lastSitPosition)) lastSitPosition = sitPosition;
     }
 
-    protected Vec3 findStableFooting(Vec3 tip) {
+    protected Vec3 findStableFooting() {
         Level level = owner.level();
-        Vec3 legBasePos = getLegBasePos();
-        if (level.isClientSide){
-            return legBasePos;
+
+        if (level.isClientSide()) {
+            return getLegBasePos();
         }
-        int area = 3;
-        for (int x = -area;x < area;x++){
-            for (int y = -area;y < area;y++){
-                for (int z = -area;z < area;z++){
-                    BlockPos checkPos = new BlockPos((int) (tip.x+x), (int) (tip.y+y), (int) (tip.z+z));
-                    if (owner.level().getBlockState(checkPos).isSolidRender(owner.level(), checkPos)) {
-                        return new Vec3(
-                                checkPos.getX() + 0.5,
-                                checkPos.getY() - 0.5,
-                                checkPos.getZ() + 0.5
-                        );
+
+        Vec3 worldBasePos = getLegBasePos();
+        int searchRadius = 2;
+        int maxSearchDown = 8;
+        int maxSearchUp = 3;
+
+        BlockPos.MutableBlockPos checkPos = new BlockPos.MutableBlockPos();
+
+        for (int y = 0; y >= -maxSearchDown; y--) {
+            checkPos.set(worldBasePos.x, worldBasePos.y + y, worldBasePos.z);
+
+            if (isSolidGround(level, checkPos)) {
+                return new Vec3(
+                        checkPos.getX() + 0.5,
+                        checkPos.getY() + 1.0,
+                        checkPos.getZ() + 0.5
+                );
+            }
+        }
+
+        for (int x = -searchRadius; x <= searchRadius; x++) {
+            for (int z = -searchRadius; z <= searchRadius; z++) {
+                for (int y = maxSearchUp; y >= -maxSearchDown; y--) {
+                    checkPos.set(
+                            worldBasePos.x + x,
+                            worldBasePos.y + y,
+                            worldBasePos.z + z
+                    );
+
+                    if (isSolidGround(level, checkPos)) {
+                        if (level.isEmptyBlock(checkPos.above())) {
+                            return new Vec3(
+                                    checkPos.getX() + 0.5,
+                                    checkPos.getY() + 1.0,
+                                    checkPos.getZ() + 0.5
+                            );
+                        }
                     }
                 }
             }
         }
 
-        return legBasePos;
+        return worldBasePos;
+    }
+
+    private boolean isSolidGround(Level level, BlockPos pos) {
+        return level.getBlockState(pos).isSolid() ||
+                !level.getBlockState(pos).getCollisionShape(level, pos).isEmpty();
     }
 }

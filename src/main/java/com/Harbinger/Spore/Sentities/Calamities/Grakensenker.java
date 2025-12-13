@@ -26,6 +26,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.fluids.FluidType;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -51,8 +52,8 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
         MiddleLeftTentacle = new IkKrakenLeg(this,7,GrakenLegsModifiers.MIDDLE_LEFT_TENTACLE.bodySet, GrakenLegsModifiers.MIDDLE_LEFT_TENTACLE.offset, 6);
         FrontRightTentacle = new IkKrakenLeg(this,10,GrakenLegsModifiers.FRONT_RIGHT_TENTACLE.bodySet, GrakenLegsModifiers.FRONT_RIGHT_TENTACLE.offset, 8);
         FrontLeftTentacle = new IkKrakenLeg(this,10,GrakenLegsModifiers.FRONT_LEFT_TENTACLE.bodySet, GrakenLegsModifiers.FRONT_LEFT_TENTACLE.offset, 8);
-        RightArmTentacle = new IkKrakenArm(this,8,GrakenLegsModifiers.LEFT_ARM.bodySet, GrakenLegsModifiers.LEFT_ARM.offset, 8);
-        LeftArmTentacle = new IkKrakenArm(this,8,GrakenLegsModifiers.RIGHT_ARM.bodySet, GrakenLegsModifiers.RIGHT_ARM.offset, 8);
+        RightArmTentacle = new IkKrakenArm(this,8,GrakenLegsModifiers.LEFT_ARM.bodySet, GrakenLegsModifiers.LEFT_ARM.offset, 32);
+        LeftArmTentacle = new IkKrakenArm(this,8,GrakenLegsModifiers.RIGHT_ARM.bodySet, GrakenLegsModifiers.RIGHT_ARM.offset, 32);
         TickTentacles = new IkKrakenLeg[]{BackRightTentacle,BackLeftTentacle,MiddleRightTentacle,MiddleLeftTentacle,FrontRightTentacle,FrontLeftTentacle,RightArmTentacle,LeftArmTentacle};
     }
     enum GrakenLegsModifiers{
@@ -181,6 +182,14 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
         return baseDimensions.scale(1,1+(getExtendedHeight() * 0.5f));
     }
 
+    @Override
+    public void setTarget(@Nullable LivingEntity entity) {
+        super.setTarget(entity);
+        if (entity != null){
+            getRightArmTentacle().setTarget(entity);
+            getLeftArmTentacle().setTarget(entity);
+        }
+    }
 
     @Override
     public void tick() {
@@ -208,7 +217,7 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
         }
         boolean deepWater = isInDeepWater();
         double wantedY = moveControl.getWantedY() + 2;
-        boolean wantsLowStance = (wantedY < this.getY() + this.getBbHeight()) && moveControl.hasWanted();
+        boolean wantsLowStance = (wantedY < this.getY() + this.getBbHeight()) && this.horizontalCollision;
 
         if (wantsLowStance || deepWater) {
             target -= 0.05f;
