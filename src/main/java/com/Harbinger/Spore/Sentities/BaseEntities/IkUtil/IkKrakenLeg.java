@@ -61,7 +61,7 @@ public class IkKrakenLeg {
 
     public Vec3 getLegBasePos() {
         Vec3 pivot = owner.position();
-        return sitPosition == null ? pivot.add(applyYaw(defaultLimbOffset)) : sitPosition;
+        return pivot.add(applyYaw(defaultLimbOffset));
     }
 
     public Vec3 getBodyOffset() {
@@ -84,7 +84,7 @@ public class IkKrakenLeg {
         if (entities == null || entities.length == 0) return;
 
         Vec3 basePos = getBodyOffset();
-        Vec3 defaultTipPos = getLegBasePos();
+        Vec3 defaultTipPos = sitPosition == null ? getLegBasePos() : sitPosition;
         boolean tooFar = entities[entities.length - 1].distanceToSqr(defaultTipPos) > 225;
 
         moveTipTowards(entities.length - 1, defaultTipPos);
@@ -139,8 +139,8 @@ public class IkKrakenLeg {
 
         Vec3 worldBasePos = getLegBasePos();
         int searchRadius = 2;
-        int maxSearchDown = 8;
-        int maxSearchUp = 3;
+        int maxSearchDown = 12;
+        int maxSearchUp = 6;
 
         BlockPos.MutableBlockPos checkPos = new BlockPos.MutableBlockPos();
 
@@ -150,7 +150,7 @@ public class IkKrakenLeg {
             if (isSolidGround(level, checkPos)) {
                 return new Vec3(
                         checkPos.getX() + 0.5,
-                        checkPos.getY() + 1.0,
+                        checkPos.getY() - 1.0,
                         checkPos.getZ() + 0.5
                 );
             }
@@ -169,7 +169,7 @@ public class IkKrakenLeg {
                         if (level.isEmptyBlock(checkPos.above())) {
                             return new Vec3(
                                     checkPos.getX() + 0.5,
-                                    checkPos.getY() + 1.0,
+                                    checkPos.getY() - 1.0,
                                     checkPos.getZ() + 0.5
                             );
                         }
