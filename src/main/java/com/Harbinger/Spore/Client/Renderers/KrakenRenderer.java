@@ -128,7 +128,7 @@ public class KrakenRenderer<Type extends Grakensenker> extends CalamityRenderer<
             stack.pushPose();
             {
                 VertexConsumer consumer = buffer.getBuffer(RenderType.entityCutoutNoCull(TENTACLES));
-                EntityModel<Type> typeEntityModel = last ? arm ? armModel : foot : getTentacleModel(var);
+                EntityModel<Type> typeEntityModel = last && !arm ? foot : getTentacleModel(var);
                 stack.mulPose(Axis.XP.rotationDegrees(90));
                 stack.translate(0,-length/2,0);
                 stack.scale(size,length*1.05f,size);
