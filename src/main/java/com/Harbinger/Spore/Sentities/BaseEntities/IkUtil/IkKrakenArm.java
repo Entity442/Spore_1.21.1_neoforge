@@ -13,15 +13,21 @@ public class IkKrakenArm extends IkKrakenLeg {
 
     @Override
     public void refreshLegStandingPoint() {
+        sitPosition = getLegBasePos();
+    }
+
+    @Override
+    public Vec3 getLegBasePos() {
         if (targetCooldown > 0) {
             targetCooldown--;
         } else {
             targetPosition = null;
         }
-        sitPosition = targetPosition == null ? getLegBasePos() : targetPosition;
+        return targetPosition == null ? super.getLegBasePos() : targetPosition;
     }
+
     public void setTarget(Entity target){
-        if (target != null){
+        if (target != null && !owner.level().isClientSide && targetCooldown <= 0){
             targetPosition = target.getPosition(owner.tickCount).add(0, (target.getBbHeight() / 2), 0);
             targetCooldown = 40;
         }

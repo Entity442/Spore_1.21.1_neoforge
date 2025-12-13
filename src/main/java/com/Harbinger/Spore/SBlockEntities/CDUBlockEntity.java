@@ -45,7 +45,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CDUBlockEntity extends BlockEntity implements MenuProvider {
-    private static final TagKey<Block> foliage = TagKey.create(BuiltInRegistries.BLOCK.key(), ResourceLocation.parse("removable_foliage"));
+    private static final TagKey<Block> foliage = TagKey.create(BuiltInRegistries.BLOCK.key(), ResourceLocation.parse("spore:removable_foliage"));
     public final int maxFuel = SConfig.DATAGEN.cryo_time.get();
     public int fuel;
     private final List<StoreDouble> blockMap;
