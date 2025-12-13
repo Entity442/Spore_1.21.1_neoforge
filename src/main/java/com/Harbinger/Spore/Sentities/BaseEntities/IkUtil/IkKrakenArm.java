@@ -6,11 +6,14 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
 public class IkKrakenArm extends IkKrakenLeg {
     protected final boolean rightArm;
+    @Nullable
+    protected LivingEntity target;
     private final Vec3 RightVec = new Vec3(4,0,-10);
     private final Vec3 LeftVec = new Vec3(4,0,10);
     public IkKrakenArm(Grakensenker owner, int amount, Vec3 defaultBodyOffset, Vec3 defaultLimbOffset, float maxDistance, boolean rightArm) {
@@ -20,6 +23,8 @@ public class IkKrakenArm extends IkKrakenLeg {
 
     @Override
     public void refreshLegStandingPoint() {
+        sitPosition = this.target == null ? getLegBasePos() : this.target.position().add(0, this.target.getBbHeight() * 0.5, 0);
+        lastSitPosition = sitPosition;
         if (owner.tickCount % 10 == 0){
             setTarget();
         }
@@ -31,14 +36,12 @@ public class IkKrakenArm extends IkKrakenLeg {
     }
 
     public void setTarget(){
-        Optional<LivingEntity> target = findAndSetTarget();
-        if (target.isPresent()){
-            LivingEntity trueTarget = target.get();
-            sitPosition = trueTarget.position().add(0, trueTarget.getBbHeight() * 0.5, 0);
+        Optional<LivingEntity> targetOp = findAndSetTarget();
+        if (targetOp.isPresent()){
+            this.target = targetOp.get();
         }else {
-            sitPosition = getLegBasePos();
+            target = null;
         }
-        lastSitPosition = sitPosition;
     }
 
     public Optional<LivingEntity> findAndSetTarget() {
