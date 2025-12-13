@@ -21,16 +21,9 @@ public class IkKrakenArm extends IkKrakenLeg {
         sitPosition = targetPosition == null ? getLegBasePos() : targetPosition;
     }
     public void setTarget(Entity target){
-        if (target != null && targetCooldown <= 0){
-            targetPosition = target.getPosition(target.tickCount).add(0, (target.getBbHeight() / 2), 0);
+        if (target != null){
+            targetPosition = target.getPosition(owner.tickCount).add(0, (target.getBbHeight() / 2), 0);
             targetCooldown = 40;
         }
-    }
-
-    @Override
-    protected void moveTipTowards(int index, Vec3 target) {
-        Vec3 currentPos = entities[index];
-        Vec3 newPos = currentPos.lerp(targetPosition == null ? target : targetPosition, 0.65f);
-        entities[index] = newPos;
     }
 }

@@ -12,10 +12,12 @@ import com.Harbinger.Spore.core.SAttributes;
 import com.Harbinger.Spore.core.SConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -25,6 +27,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.entity.PartEntity;
 import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.Nullable;
 
@@ -44,6 +47,10 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
     private final IkKrakenArm RightArmTentacle;
     private final IkKrakenArm LeftArmTentacle;
     private final IkKrakenLeg[] TickTentacles;
+    private final CalamityMultipart[] subEntities;
+    public final CalamityMultipart Body;
+    public final CalamityMultipart RightHand;
+    public final CalamityMultipart LeftHand;
     public Grakensenker(EntityType<? extends PathfinderMob> type, Level level) {
         super(type, level);
         BackRightTentacle = new IkKrakenLeg(this,7,GrakenLegsModifiers.BACK_RIGHT_TENTACLE.bodySet, GrakenLegsModifiers.BACK_RIGHT_TENTACLE.offset, 4);
@@ -52,9 +59,44 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
         MiddleLeftTentacle = new IkKrakenLeg(this,7,GrakenLegsModifiers.MIDDLE_LEFT_TENTACLE.bodySet, GrakenLegsModifiers.MIDDLE_LEFT_TENTACLE.offset, 6);
         FrontRightTentacle = new IkKrakenLeg(this,10,GrakenLegsModifiers.FRONT_RIGHT_TENTACLE.bodySet, GrakenLegsModifiers.FRONT_RIGHT_TENTACLE.offset, 8);
         FrontLeftTentacle = new IkKrakenLeg(this,10,GrakenLegsModifiers.FRONT_LEFT_TENTACLE.bodySet, GrakenLegsModifiers.FRONT_LEFT_TENTACLE.offset, 8);
-        RightArmTentacle = new IkKrakenArm(this,8,GrakenLegsModifiers.LEFT_ARM.bodySet, GrakenLegsModifiers.LEFT_ARM.offset, 32);
-        LeftArmTentacle = new IkKrakenArm(this,8,GrakenLegsModifiers.RIGHT_ARM.bodySet, GrakenLegsModifiers.RIGHT_ARM.offset, 32);
+        RightArmTentacle = new IkKrakenArm(this,12,GrakenLegsModifiers.LEFT_ARM.bodySet, GrakenLegsModifiers.LEFT_ARM.offset, 32);
+        LeftArmTentacle = new IkKrakenArm(this,12,GrakenLegsModifiers.RIGHT_ARM.bodySet, GrakenLegsModifiers.RIGHT_ARM.offset, 32);
         TickTentacles = new IkKrakenLeg[]{BackRightTentacle,BackLeftTentacle,MiddleRightTentacle,MiddleLeftTentacle,FrontRightTentacle,FrontLeftTentacle,RightArmTentacle,LeftArmTentacle};
+        this.Body = new CalamityMultipart(this, "body", 5F, 5F);
+        this.RightHand = new CalamityMultipart(this, "right", 1.5F, 1.5F);
+        this.LeftHand = new CalamityMultipart(this, "left", 1.5F, 1.5F);
+        this.subEntities = new CalamityMultipart[]{ this.Body, this.RightHand,this.LeftHand};
+        this.setId(ENTITY_COUNTER.getAndAdd(this.subEntities.length + 1) + 1);
+    }
+    @Override
+    public void setId(int p_20235_) {
+        super.setId(p_20235_);
+        for (int i = 0; i < this.subEntities.length; i++)
+            this.subEntities[i].setId(p_20235_ + i + 1);
+    }
+    public CalamityMultipart[] getSubEntities() {
+        return this.subEntities;
+    }
+
+    @Override
+    public boolean isMultipartEntity() {
+        return true;
+    }
+
+    @Override
+    public @Nullable PartEntity<?>[] getParts() {
+        return subEntities;
+    }
+
+    public void recreateFromPacket(ClientboundAddEntityPacket p_218825_) {
+        super.recreateFromPacket(p_218825_);
+        if (true) return;
+        CalamityMultipart[] calamityMultiparts = this.getSubEntities();
+
+        for(int i = 0; i < calamityMultiparts.length; ++i) {
+            calamityMultiparts[i].setId(i + p_218825_.getId());
+        }
+
     }
     enum GrakenLegsModifiers{
         BACK_LEFT_TENTACLE(new Vec3(-3,3,1),new Vec3(-6, -1, 6)),
@@ -117,7 +159,8 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
 
     @Override
     public boolean hurt(CalamityMultipart calamityMultipart, DamageSource source, float value) {
-        return false;
+        value = calamityMultipart == this.Body ? value * 3 : value;
+        return this.hurt(source,value);
     }
 
     @Override
@@ -181,7 +224,32 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
         EntityDimensions baseDimensions = super.getDefaultDimensions(pose);
         return baseDimensions.scale(1,1+(getExtendedHeight() * 0.5f));
     }
-
+    @Override
+    public void aiStep() {
+        float f14 = this.getYRot() * ((float)Math.PI / 180F);
+        float f2 = Mth.sin(f14);
+        float f15 = Mth.cos(f14);
+        Vec3[] avec3 = new Vec3[this.subEntities.length];
+        for(int j = 0; j < this.subEntities.length; ++j) {
+            avec3[j] = new Vec3(this.subEntities[j].getX(), this.subEntities[j].getY(), this.subEntities[j].getZ());
+        }
+        this.tickPart(this.Body, (double)(f2 * 4.5F), 5.0D+getExtendedHeight(), (double)(-f15 * 4.5F));
+        Vec3 rightHandVec = getRightArmTentacle().getEntities()[getRightArmTentacle().getEntities().length-1];
+        Vec3 leftHandVec = getLeftArmTentacle().getEntities()[getLeftArmTentacle().getEntities().length-1];
+        Vec3 rightHVec3 = rightHandVec == null ? position() : rightHandVec;
+        Vec3 leftHVec3 = rightHandVec == null ? position() : leftHandVec;
+        this.RightHand.setPos(rightHVec3.x, rightHVec3.y-0.5, rightHVec3.z);
+        this.LeftHand.setPos(leftHVec3.x, leftHVec3.y-0.5, leftHVec3.z);
+        for(int l = 0; l < this.subEntities.length; ++l) {
+            this.subEntities[l].xo = avec3[l].x;
+            this.subEntities[l].yo = avec3[l].y;
+            this.subEntities[l].zo = avec3[l].z;
+            this.subEntities[l].xOld = avec3[l].x;
+            this.subEntities[l].yOld = avec3[l].y;
+            this.subEntities[l].zOld = avec3[l].z;
+        }
+        super.aiStep();
+    }
     @Override
     public void setTarget(@Nullable LivingEntity entity) {
         super.setTarget(entity);
