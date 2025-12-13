@@ -844,7 +844,7 @@ public class SConfig {
             this.verwa_effect = builder.defineList("Verwahrung buffs",
                     Lists.newArrayList("minecraft:speed", "minecraft:strength", "minecraft:resistance", "minecraft:regeneration") , o -> o instanceof String);
             this.verwa_summons = builder.defineList("Verwahrung summons",
-                    Lists.newArrayList("spore:knight", "spore:griefer", "spore:braiomil", "spore:leaper", "spore:slasher", "spore:scavenger", "spore:bloater", "spore:inf_evoker", "spore:busser", "spore:volatile","mephitic") , o -> o instanceof String);
+                    Lists.newArrayList("spore:knight", "spore:griefer", "spore:braiomil", "spore:leaper", "spore:slasher", "spore:scavenger", "spore:bloater", "spore:inf_evoker", "spore:busser", "spore:volatile","spore:mephitic") , o -> o instanceof String);
             builder.pop();
 
             builder.push("Braurei");
