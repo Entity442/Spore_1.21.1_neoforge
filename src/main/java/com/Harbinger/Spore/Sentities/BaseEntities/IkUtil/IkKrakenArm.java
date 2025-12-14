@@ -2,7 +2,6 @@ package com.Harbinger.Spore.Sentities.BaseEntities.IkUtil;
 
 import com.Harbinger.Spore.ExtremelySusThings.Utilities;
 import com.Harbinger.Spore.Sentities.BaseEntities.CalamityMultipart;
-import com.Harbinger.Spore.Sentities.BaseEntities.RideableCalamityPart;
 import com.Harbinger.Spore.Sentities.Calamities.Grakensenker;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
@@ -24,19 +23,19 @@ public class IkKrakenArm extends IkKrakenLeg {
     private final Vec3 LeftMidVec = new Vec3(4, 3.5, 5);
     private final Vec3 MouthPosition = new Vec3(2, 2.5, 0);
     protected int hitValues = 0;
-    protected final RideableCalamityPart calamityMultipart;
-    public IkKrakenArm(Grakensenker owner, RideableCalamityPart multipart, int amount, Vec3 defaultBodyOffset, Vec3 defaultLimbOffset, float maxDistance, boolean rightArm) {
+    protected final int hand;
+    public IkKrakenArm(Grakensenker owner,int hand, int amount, Vec3 defaultBodyOffset, Vec3 defaultLimbOffset, float maxDistance, boolean rightArm) {
         super(owner, amount, defaultBodyOffset, defaultLimbOffset, maxDistance);
         this.rightArm = rightArm;
-        calamityMultipart = multipart;
+        this.hand = hand;
     }
 
     @Override
     public void refreshLegStandingPoint() {
         sitPosition = this.target == null ? getLegBasePos() : this.target.position().add(0, this.target.getBbHeight() * 0.5, 0);
-        sitPosition = calamityMultipart.isVehicle() ? getMouthPosition() : sitPosition;
+        sitPosition = owner.isHandOccupied(hand) ? getMouthPosition() : sitPosition;
         lastSitPosition = sitPosition;
-        if (owner.tickCount % 10 == 0 && hitValues <= 0 && !calamityMultipart.isVehicle()){
+        if (owner.tickCount % 10 == 0 && hitValues <= 0 && !owner.isHandOccupied(hand)){
             setTarget();
         }
     }

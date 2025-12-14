@@ -7,7 +7,6 @@ import com.Harbinger.Spore.Sentities.BaseEntities.Calamity;
 import com.Harbinger.Spore.Sentities.BaseEntities.CalamityMultipart;
 import com.Harbinger.Spore.Sentities.BaseEntities.IkUtil.IkKrakenArm;
 import com.Harbinger.Spore.Sentities.BaseEntities.IkUtil.IkKrakenLeg;
-import com.Harbinger.Spore.Sentities.BaseEntities.RideableCalamityPart;
 import com.Harbinger.Spore.Sentities.TrueCalamity;
 import com.Harbinger.Spore.Sentities.WaterInfected;
 import com.Harbinger.Spore.core.SAttributes;
@@ -44,6 +43,10 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
     public static final EntityDataAccessor<Integer> WATER_TICKS = SynchedEntityData.defineId(Grakensenker.class, EntityDataSerializers.INT);
     public static final EntityDataAccessor<Vector3f> RIGHT_ARM_TIP = SynchedEntityData.defineId(Grakensenker.class, EntityDataSerializers.VECTOR3);
     public static final EntityDataAccessor<Vector3f> LEFT_ARM_TIP = SynchedEntityData.defineId(Grakensenker.class, EntityDataSerializers.VECTOR3);
+    public static final EntityDataAccessor<Integer> HAND_CODE = SynchedEntityData.defineId(Grakensenker.class, EntityDataSerializers.INT);
+    public static final int HAND_LEFT  = 0;
+    public static final int HAND_RIGHT = 1;
+    public static final int HAND_NONE  = -1;
     public static final float MIN_HEIGHT = 0f;
     public static final float MAX_HEIGHT = 4f;
     private final IkKrakenLeg BackRightTentacle;
@@ -57,23 +60,21 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
     private final IkKrakenLeg[] TickTentacles;
     private final CalamityMultipart[] subEntities;
     public final CalamityMultipart Body;
-    public final RideableCalamityPart RightHand;
-    public final RideableCalamityPart LeftHand;
-    private Entity rightArmVictim = null;
-    private Entity leftArmVictim = null;
+    public final CalamityMultipart RightHand;
+    public final CalamityMultipart LeftHand;
     public Grakensenker(EntityType<? extends PathfinderMob> type, Level level) {
         super(type, level);
         this.Body = new CalamityMultipart(this, "body", 5F, 5F);
-        this.RightHand = new RideableCalamityPart(this, "right", 1.5F, 1.5F);
-        this.LeftHand = new RideableCalamityPart(this, "left", 1.5F, 1.5F);
+        this.RightHand = new CalamityMultipart(this, "right", 1.5F, 1.5F);
+        this.LeftHand = new CalamityMultipart(this, "left", 1.5F, 1.5F);
         BackRightTentacle = new IkKrakenLeg(this,7,GrakenLegsModifiers.BACK_RIGHT_TENTACLE.bodySet, GrakenLegsModifiers.BACK_RIGHT_TENTACLE.offset, 4);
         BackLeftTentacle = new IkKrakenLeg(this,7,GrakenLegsModifiers.BACK_LEFT_TENTACLE.bodySet, GrakenLegsModifiers.BACK_LEFT_TENTACLE.offset, 4);
         MiddleRightTentacle = new IkKrakenLeg(this,7,GrakenLegsModifiers.MIDDLE_RIGHT_TENTACLE.bodySet, GrakenLegsModifiers.MIDDLE_RIGHT_TENTACLE.offset, 6);
         MiddleLeftTentacle = new IkKrakenLeg(this,7,GrakenLegsModifiers.MIDDLE_LEFT_TENTACLE.bodySet, GrakenLegsModifiers.MIDDLE_LEFT_TENTACLE.offset, 6);
         FrontRightTentacle = new IkKrakenLeg(this,10,GrakenLegsModifiers.FRONT_RIGHT_TENTACLE.bodySet, GrakenLegsModifiers.FRONT_RIGHT_TENTACLE.offset, 8);
         FrontLeftTentacle = new IkKrakenLeg(this,10,GrakenLegsModifiers.FRONT_LEFT_TENTACLE.bodySet, GrakenLegsModifiers.FRONT_LEFT_TENTACLE.offset, 8);
-        RightArmTentacle = new IkKrakenArm(this,RightHand,16,GrakenLegsModifiers.LEFT_ARM.bodySet, GrakenLegsModifiers.LEFT_ARM.offset, 4,false);
-        LeftArmTentacle = new IkKrakenArm(this,LeftHand,16,GrakenLegsModifiers.RIGHT_ARM.bodySet, GrakenLegsModifiers.RIGHT_ARM.offset, 4,true);
+        RightArmTentacle = new IkKrakenArm(this,1,16,GrakenLegsModifiers.LEFT_ARM.bodySet, GrakenLegsModifiers.LEFT_ARM.offset, 4,false);
+        LeftArmTentacle = new IkKrakenArm(this,0,16,GrakenLegsModifiers.RIGHT_ARM.bodySet, GrakenLegsModifiers.RIGHT_ARM.offset, 4,true);
         TickTentacles = new IkKrakenLeg[]{BackRightTentacle,BackLeftTentacle,MiddleRightTentacle,MiddleLeftTentacle,FrontRightTentacle,FrontLeftTentacle,RightArmTentacle,LeftArmTentacle};
         this.subEntities = new CalamityMultipart[]{ this.Body, this.RightHand,this.LeftHand};
         this.setId(ENTITY_COUNTER.getAndAdd(this.subEntities.length + 1) + 1);
@@ -220,6 +221,7 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
         builder.define(WATER_TICKS, 0);
         builder.define(RIGHT_ARM_TIP, new Vector3f(0));
         builder.define(LEFT_ARM_TIP,  new Vector3f(0));
+        builder.define(HAND_CODE, -1);
     }
 
     @Override
@@ -269,39 +271,72 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
         super.aiStep();
     }
 
-    public void grabCreatures(){
+    public void grabCreatures() {
         if (level().isClientSide()) return;
-        if (tickCount % 10 == 0){
-            findAndSetTarget(getRightArm(),true);
-            findAndSetTarget(getLeftArm(),false);
-        }
-        if (rightArmVictim != null && rightArmVictim.isAlive()){
-            rightArmVictim.setPos(getRightArm().x,getRightArm().y,getRightArm().z);
-        }
-        if (leftArmVictim != null && leftArmVictim.isAlive()){
-            leftArmVictim.setPos(getLeftArm().x,getLeftArm().y,getLeftArm().z);
+
+        if (tickCount % 10 == 0) {
+            tryGrab(getRightArm(), HAND_RIGHT);
+            tryGrab(getLeftArm(), HAND_LEFT);
         }
     }
-    public void findAndSetTarget(Vector3f vector3f,boolean right) {
-        AABB aabb = new AABB(vector3f.x-1,vector3f.y-1,vector3f.z-1,vector3f.x+1,vector3f.y+1,vector3f.z+1);
-        Optional<LivingEntity> entity = level().getEntitiesOfClass(
-                LivingEntity.class,
-                aabb,
-                e -> e.isAlive() && e != this && !(e.getVehicle() instanceof CalamityMultipart) && Utilities.TARGET_SELECTOR.Test(e) && TargetingConditions.forCombat().test(this,e)
-        ).stream().findFirst();
-        if (entity.isPresent()){
-            if (right){
-                rightArmVictim = entity.get();
-            }else {
-                leftArmVictim = entity.get();
-            }
-        }else {
-            if (right){
-                rightArmVictim = null;
-            }else {
-                leftArmVictim = null;
+    public boolean isHandOccupied(int handCode) {
+        for (Entity passenger : getPassengers()) {
+            if (passenger instanceof LivingEntity le) {
+                if (le.getEntityData().get(HAND_CODE) == handCode) {
+                    return true;
+                }
             }
         }
+        return false;
+    }
+
+    private void tryGrab(Vector3f handPos, int handCode) {
+        if (isHandOccupied(handCode)) return;
+
+        AABB aabb = new AABB(
+                handPos.x - 2, handPos.y - 2, handPos.z - 2,
+                handPos.x + 2, handPos.y + 2, handPos.z + 2
+        );
+
+        Optional<LivingEntity> target = level().getEntitiesOfClass(
+                LivingEntity.class,
+                aabb,
+                e -> e.isAlive()
+                        && e != this
+                        && !e.isPassenger()
+                        && Utilities.TARGET_SELECTOR.Test(e)
+                        && TargetingConditions.forCombat().test(this, e)
+        ).stream().findFirst();
+
+        target.ifPresent(victim -> grab(victim, handCode));
+    }
+    private void grab(LivingEntity victim, int handCode) {
+        if (victim.isPassenger()) return;
+
+        victim.startRiding(this, true);
+        victim.getEntityData().set(HAND_CODE, handCode);
+    }
+    @Override
+    public void positionRider(Entity passenger, MoveFunction move) {
+        if (passenger instanceof LivingEntity le) {
+            int hand = le.getEntityData().get(HAND_CODE);
+            if (hand == HAND_LEFT) {
+                Vector3f pos = getLeftArm();
+                move.accept(passenger, pos.x, pos.y, pos.z);
+                return;
+            }
+            if (hand == HAND_RIGHT) {
+                Vector3f pos = getRightArm();
+                move.accept(passenger, pos.x, pos.y, pos.z);
+                return;
+            }
+        }
+
+        super.positionRider(passenger, move);
+    }
+    public void release(LivingEntity victim) {
+        victim.getEntityData().set(HAND_CODE, HAND_NONE);
+        victim.stopRiding();
     }
 
     @Override
