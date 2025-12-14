@@ -74,10 +74,10 @@ public class IkKrakenLeg {
         Vec3 newPos = currentPos.lerp(target, 0.35f);
         entities[index] = (far ? target : newPos);
     }
-    protected void moveTipTowards(int index, Vec3 target) {
-        Vec3 currentPos = entities[index];
+    protected void moveTipTowards(Vec3 target) {
+        Vec3 currentPos = entities[entities.length - 1];
         Vec3 newPos = currentPos.lerp(target, 0.35f);
-        entities[index] = newPos;
+        entities[entities.length - 1] = newPos;
     }
 
     public void applyIK() {
@@ -87,7 +87,7 @@ public class IkKrakenLeg {
         Vec3 defaultTipPos = sitPosition == null ? getLegBasePos() : sitPosition;
         boolean tooFar = entities[entities.length - 1].distanceToSqr(defaultTipPos) > 225;
 
-        moveTipTowards(entities.length - 1, defaultTipPos);
+        moveTipTowards(defaultTipPos);
 
         for (int i = entities.length - 2; i >= 0; i--) {
             Vec3 nextPos = entities[i + 1];
