@@ -57,6 +57,7 @@ public class IkKrakenArm extends IkKrakenLeg {
         }
     }
 
+
     public Optional<LivingEntity> findAndSetTarget() {
         Level level = owner.level();
         Vec3 pivot = applyYaw(rightArm ? RightVec : LeftVec);

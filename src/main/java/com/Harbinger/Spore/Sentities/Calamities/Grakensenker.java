@@ -1,5 +1,6 @@
 package com.Harbinger.Spore.Sentities.Calamities;
 
+import com.Harbinger.Spore.ExtremelySusThings.Utilities;
 import com.Harbinger.Spore.Sentities.AI.AOEMeleeAttackGoal;
 import com.Harbinger.Spore.Sentities.AI.CalamitiesAI.*;
 import com.Harbinger.Spore.Sentities.BaseEntities.Calamity;
@@ -24,9 +25,11 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
+import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.entity.PartEntity;
 import net.neoforged.neoforge.fluids.FluidType;
@@ -34,6 +37,7 @@ import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
 import java.util.List;
+import java.util.Optional;
 
 public class Grakensenker extends Calamity implements TrueCalamity, WaterInfected {
     public static final EntityDataAccessor<Float> HEIGHT = SynchedEntityData.defineId(Grakensenker.class, EntityDataSerializers.FLOAT);
@@ -55,6 +59,8 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
     public final CalamityMultipart Body;
     public final RideableCalamityPart RightHand;
     public final RideableCalamityPart LeftHand;
+    private Entity rightArmVictim = null;
+    private Entity leftArmVictim = null;
     public Grakensenker(EntityType<? extends PathfinderMob> type, Level level) {
         super(type, level);
         this.Body = new CalamityMultipart(this, "body", 5F, 5F);
@@ -263,6 +269,41 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
         super.aiStep();
     }
 
+    public void grabCreatures(){
+        if (level().isClientSide()) return;
+        if (tickCount % 10 == 0){
+            findAndSetTarget(getRightArm(),true);
+            findAndSetTarget(getLeftArm(),false);
+        }
+        if (rightArmVictim != null && rightArmVictim.isAlive()){
+            rightArmVictim.setPos(getRightArm().x,getRightArm().y,getRightArm().z);
+        }
+        if (leftArmVictim != null && leftArmVictim.isAlive()){
+            leftArmVictim.setPos(getLeftArm().x,getLeftArm().y,getLeftArm().z);
+        }
+    }
+    public void findAndSetTarget(Vector3f vector3f,boolean right) {
+        AABB aabb = new AABB(vector3f.x-1,vector3f.y-1,vector3f.z-1,vector3f.x+1,vector3f.y+1,vector3f.z+1);
+        Optional<LivingEntity> entity = level().getEntitiesOfClass(
+                LivingEntity.class,
+                aabb,
+                e -> e.isAlive() && e != this && !(e.getVehicle() instanceof CalamityMultipart) && Utilities.TARGET_SELECTOR.Test(e) && TargetingConditions.forCombat().test(this,e)
+        ).stream().findFirst();
+        if (entity.isPresent()){
+            if (right){
+                rightArmVictim = entity.get();
+            }else {
+                leftArmVictim = entity.get();
+            }
+        }else {
+            if (right){
+                rightArmVictim = null;
+            }else {
+                leftArmVictim = null;
+            }
+        }
+    }
+
     @Override
     public void tick() {
         super.tick();
@@ -271,6 +312,7 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
             leg.refreshLegStandingPoint();
             leg.applyIK();
         }
+        grabCreatures();
     }
 
 
