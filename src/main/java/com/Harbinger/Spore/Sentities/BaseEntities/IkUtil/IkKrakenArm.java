@@ -17,14 +17,14 @@ public class IkKrakenArm extends IkKrakenLeg {
     protected final boolean rightArm;
     @Nullable
     protected LivingEntity target;
-    private final Vec3 RightVec = new Vec3(4,0,-16);
-    private final Vec3 LeftVec = new Vec3(4,0,16);
+    private final Vec3 RightVec = new Vec3(4,0,16);
+    private final Vec3 LeftVec = new Vec3(4,0,-16);
     private final Vec3 RightMidVec = new Vec3(4, 3.5, -5);
     private final Vec3 LeftMidVec = new Vec3(4, 3.5, 5);
-    private final Vec3 MouthPosition = new Vec3(2, 2.5, 0);
+    private final Vec3 MouthPosition = new Vec3(0, 2.5, 0);
     protected int hitValues = 0;
-    protected final int hand;
-    public IkKrakenArm(Grakensenker owner,int hand, int amount, Vec3 defaultBodyOffset, Vec3 defaultLimbOffset, float maxDistance, boolean rightArm) {
+    protected final boolean hand;
+    public IkKrakenArm(Grakensenker owner,boolean hand, int amount, Vec3 defaultBodyOffset, Vec3 defaultLimbOffset, float maxDistance, boolean rightArm) {
         super(owner, amount, defaultBodyOffset, defaultLimbOffset, maxDistance);
         this.rightArm = rightArm;
         this.hand = hand;
@@ -32,10 +32,11 @@ public class IkKrakenArm extends IkKrakenLeg {
 
     @Override
     public void refreshLegStandingPoint() {
+        boolean full = hand ? owner.isLeftArmFull() : owner.isRightArmFull();
         sitPosition = this.target == null ? getLegBasePos() : this.target.position().add(0, this.target.getBbHeight() * 0.5, 0);
-        sitPosition = owner.isHandOccupied(hand) ? getMouthPosition() : sitPosition;
+        sitPosition = full  ? getMouthPosition() : sitPosition;
         lastSitPosition = sitPosition;
-        if (owner.tickCount % 10 == 0 && hitValues <= 0 && !owner.isHandOccupied(hand)){
+        if (owner.tickCount % 10 == 0 && hitValues <= 0 && !full){
             setTarget();
         }
     }

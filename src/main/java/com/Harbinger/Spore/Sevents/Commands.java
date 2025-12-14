@@ -231,12 +231,11 @@ public class Commands {
                                     player.displayClientMessage(Component.literal("Is armed "+ sieger.isArmed()),false);
                                 }
                                 if (calamity instanceof Grakensenker sieger){
-                                    int i = 0;
-                                    for (IkKrakenLeg leg : sieger.getTentacles()){
-                                        ++i;
-                                        for (Vec3 vec3 : leg.getEntities()){
-                                            player.displayClientMessage(Component.literal("Vector_"+ vec3 + "_" + i),false);
-                                        }
+                                    player.displayClientMessage(Component.literal("RightArm " + sieger.getRightArmEntity()),false);
+                                    player.displayClientMessage(Component.literal("Left " + sieger.getLeftArmEntity()),false);
+                                    Entity living = sieger.getFirstPassenger();
+                                    if (living != null){
+                                        player.displayClientMessage(Component.literal("Victim " + living.getId()),false);
                                     }
                                 }
                                 if (calamity instanceof Hohlfresser sieger){
