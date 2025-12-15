@@ -32,6 +32,16 @@ public class IkKrakenArm extends IkKrakenLeg {
     }
 
     @Override
+    public float getWiggleAmplitude() {
+        return 0.01f;
+    }
+
+    @Override
+    public float getWiggleSpeed() {
+        return 0.5f;
+    }
+
+    @Override
     public void refreshLegStandingPoint() {
         int hitValues = hand ? owner.getRightArmDelay() : owner.getLeftArmDelay();
         boolean full = !hand ? owner.isRightArmFull() : owner.isLeftArmFull();

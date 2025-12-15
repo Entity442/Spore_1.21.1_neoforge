@@ -17,29 +17,72 @@ public class IkKrakenLeg {
     protected final Vec3 defaultBodyOffset;
     protected final Vec3 defaultLimbOffset;
     protected final float maxDistance;
+    protected final float[] wiggleTimers;
+    protected final float[] wiggleSpeeds;
+    protected final float[] wiggleAmplitudes;
+    protected final float[] wiggleOffsets;
     protected Vec3 sitPosition =  null;
     protected Vec3 lastSitPosition = null;
-    protected Vec3[] steps = null;
-    protected int stepCount = 0;
+    protected int stepUpTicks = 0;
     public IkKrakenLeg(Grakensenker owner, int amount, Vec3 defaultBodyOffset,
                        Vec3 defaultLimbOffset,
                        float maxDistance) {
         this.owner = owner;
         this.entities = new Vec3[amount];
         this.segmentVar = new int[amount];
+        this.wiggleTimers = new float[amount];
+        this.wiggleSpeeds = new float[amount];
+        this.wiggleAmplitudes = new float[amount];
+        this.wiggleOffsets = new float[amount];
         for(int i = 0;i<amount;i++){
             entities[i] = new Vec3(0,0,0);
             segmentVar[i] = randomSource.nextInt(5);
+            wiggleSpeeds[i] = 0.5f + randomSource.nextFloat() * getWiggleSpeed();
+            wiggleAmplitudes[i] = 0.02f + randomSource.nextFloat() * getWiggleAmplitude();
+            wiggleOffsets[i] = randomSource.nextFloat() * (float)Math.PI * 2;
+            wiggleTimers[i] = randomSource.nextFloat() * 100;
         }
         this.defaultBodyOffset = defaultBodyOffset;
         this.defaultLimbOffset = defaultLimbOffset;
         this.maxDistance = maxDistance;
     }
+    public float getWiggleSpeed(){
+        return 0.75f;
+    }
+    public float getWiggleAmplitude(){
+        return 0.03f;
+    }
+    protected void updateWiggleTimers() {
+        for (int i = 0; i < wiggleTimers.length; i++) {
+            wiggleTimers[i] += 0.05f * wiggleSpeeds[i];
 
+            if (wiggleTimers[i] > 1000) wiggleTimers[i] -= 1000;
+        }
+    }
     public Vec3 getSitPosition() {
         return sitPosition;
     }
+    protected void applyIdleWiggle() {
+        RandomSource rand = this.randomSource;
 
+        for (int i = 1; i < entities.length - 1; i++) {
+            Vec3 current = entities[i];
+
+            float time = wiggleTimers[i] + wiggleOffsets[i];
+
+            float xWiggle = (float)Math.sin(time * 0.7f) * wiggleAmplitudes[i];
+            float yWiggle = (float)Math.sin(time * 1.2f + 1.5f) * wiggleAmplitudes[i] * 0.8f;
+            float zWiggle = (float)Math.sin(time * 0.9f + 2.0f) * wiggleAmplitudes[i] * 0.6f;
+
+            if (rand.nextFloat() < 0.05f) {
+                xWiggle += (rand.nextFloat() - 0.5f) * 0.02f;
+                yWiggle += (rand.nextFloat() - 0.5f) * 0.01f;
+                zWiggle += (rand.nextFloat() - 0.5f) * 0.02f;
+            }
+
+            entities[i] = current.add(xWiggle, yWiggle, zWiggle);
+        }
+    }
     public Vec3[] getEntities() {
         return entities;
     }
@@ -77,28 +120,16 @@ public class IkKrakenLeg {
         entities[index] = (far ? target : newPos);
     }
     protected void moveTipTowards(Vec3 target) {
+        boolean val = stepUpTicks > 0 && isOwnerMoving();
         int tip = entities.length - 1;
-
-        if (steps != null && stepCount >= 0 && stepCount < steps.length) {
-            Vec3 stepTarget = steps[stepCount];
-
-            Vec3 current = entities[tip];
-            entities[tip] = current.lerp(stepTarget, 0.35f);
-
-            if (current.distanceToSqr(stepTarget) < 0.01) {
-                stepCount--;
-
-                if (stepCount < 0) {
-                    steps = null;
-                    stepCount = 0;
-                    entities[tip] = target;
-                    return;
-                }
-            }
-            return;
-        }
         Vec3 currentPos = entities[tip];
-        entities[tip] = currentPos.lerp(target, 0.35f);
+        entities[tip] = currentPos.lerp(target.add(0,val ? 2.5 : -1,0), 0.1f);
+        if (val){
+            entities[entities.length/2] = currentPos.lerp(target.add(0,5,0), 0.5f);
+        }
+    }
+    protected boolean isOwnerMoving(){
+        return owner.getDeltaMovement().lengthSqr() > 0.01;
     }
 
 
@@ -141,6 +172,11 @@ public class IkKrakenLeg {
             Vec3 solvedPos = prevPos.add(dir);
             moveSegmentTowards(i, solvedPos, tooFar);
         }
+        applyIdleWiggle();
+        updateWiggleTimers();
+        if (stepUpTicks > 0){
+            stepUpTicks--;
+        }
     }
 
 
@@ -149,7 +185,10 @@ public class IkKrakenLeg {
             return;
         }
         sitPosition = findStableFooting();
-        if (!sitPosition.equals(lastSitPosition)) lastSitPosition = sitPosition;
+        if (!sitPosition.equals(lastSitPosition)){
+            stepUpTicks = 10;
+            lastSitPosition = sitPosition;
+        }
     }
 
     protected Vec3 findStableFooting() {
@@ -189,14 +228,11 @@ public class IkKrakenLeg {
 
                     if (isSolidGround(level, checkPos)) {
                         if (level.isEmptyBlock(checkPos.above())) {
-                            Vec3 targetPos = new Vec3(
+                            return new Vec3(
                                     checkPos.getX() + 0.5,
                                     checkPos.getY() - 1.0,
                                     checkPos.getZ() + 0.5
                             );
-
-                            createStepAnimation(worldBasePos, targetPos);
-                            return targetPos;
                         }
                     }
                 }
@@ -208,23 +244,6 @@ public class IkKrakenLeg {
     private boolean isSolidGround(Level level, BlockPos pos) {
         return level.getBlockState(pos).isSolid() ||
                 !level.getBlockState(pos).getCollisionShape(level, pos).isEmpty();
-    }
-
-    private void createStepAnimation(Vec3 startPos, Vec3 targetPos) {
-        float height = 3.0f;
-
-        Vec3 midpoint = startPos.add(targetPos).scale(0.5);
-        midpoint = midpoint.add(0, height, 0);
-
-        steps = new Vec3[3];
-
-        steps[0] = startPos.add(0, height/2, 0);
-
-        steps[1] = midpoint;
-
-        steps[2] = targetPos;
-
-        stepCount = steps.length - 1;
     }
 
 }
