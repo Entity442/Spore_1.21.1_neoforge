@@ -371,15 +371,16 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
 
     @Override
     protected void positionRider(Entity passenger, MoveFunction callback) {
+        float tall = passenger.getBbHeight()/2;
+        passenger.setPose(Pose.STANDING);
         if (passenger.getId() == entityData.get(RIGHT_ARM_ENTITY)){
             Vector3f pos = getRightArm();
-            callback.accept(passenger, pos.x, pos.y, pos.z);
+            callback.accept(passenger, pos.x, pos.y-tall, pos.z);
         }else if (passenger.getId() == entityData.get(LEFT_ARM_ENTITY)){
             Vector3f pos = getLeftArm();
-            callback.accept(passenger, pos.x, pos.y, pos.z);
+            callback.accept(passenger, pos.x, pos.y-tall, pos.z);
         }else {
             callback.accept(passenger,this.getX(),this.getY()+getExtendedHeight(),this.getZ());
-            super.positionRider(passenger, callback);
         }
     }
 

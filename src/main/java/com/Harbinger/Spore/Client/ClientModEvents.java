@@ -191,7 +191,7 @@ public class ClientModEvents {
         event.registerLayerDefinition(VanguardModel.LAYER_LOCATION, VanguardModel::createBodyLayer);
         event.registerLayerDefinition(InfectedPillagerCaptainModel.LAYER_LOCATION, InfectedPillagerCaptainModel::createBodyLayer);
         event.registerLayerDefinition(BairnModel.LAYER_LOCATION, BairnModel::createBodyLayer);
-        event.registerLayerDefinition(KrakenModel.LAYER_LOCATION, KrakenModel::createBodyLayer);
+        event.registerLayerDefinition(GrakensenkerModel.LAYER_LOCATION, GrakensenkerModel::createBodyLayer);
     }
     @SubscribeEvent
     public static void registerRenderers(final EntityRenderersEvent.RegisterRenderers event) {

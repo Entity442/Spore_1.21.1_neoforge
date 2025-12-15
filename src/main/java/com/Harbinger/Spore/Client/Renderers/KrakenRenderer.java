@@ -1,7 +1,7 @@
 package com.Harbinger.Spore.Client.Renderers;
 
 
-import com.Harbinger.Spore.Client.Models.KrakenModel;
+import com.Harbinger.Spore.Client.Models.GrakensenkerModel;
 import com.Harbinger.Spore.Client.Models.KrakenTentacles.*;
 import com.Harbinger.Spore.Client.Special.CalamityRenderer;
 import com.Harbinger.Spore.Sentities.Calamities.Grakensenker;
@@ -21,7 +21,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class KrakenRenderer<Type extends Grakensenker> extends CalamityRenderer<Type , KrakenModel<Type>> {
+public class KrakenRenderer<Type extends Grakensenker> extends CalamityRenderer<Type , GrakensenkerModel<Type>> {
     private final KrakenTentacle1<Type> tentacleSegmentModel = new KrakenTentacle1<>();
     private final KrakenTentacle2<Type> tentacleSegmentModel1 = new KrakenTentacle2<>();
     private final KrakenTentacle3<Type> tentacleSegmentModel2 = new KrakenTentacle3<>();
@@ -30,16 +30,16 @@ public class KrakenRenderer<Type extends Grakensenker> extends CalamityRenderer<
     private final KrakenTentacleFoot<Type> foot = new KrakenTentacleFoot<>();
     private final KrakenClaw<Type> armModel = new KrakenClaw<>();
     private static final ResourceLocation TEXTURE =  ResourceLocation.fromNamespaceAndPath(Spore.MODID,
-            "textures/entity/blank.png");
+            "textures/entity/graken.png");
     private static final ResourceLocation TENTACLES =  ResourceLocation.fromNamespaceAndPath(Spore.MODID,
             "textures/entity/kraken/kraken_t1.png");
     private static final ResourceLocation KRAKEN_HAND =  ResourceLocation.fromNamespaceAndPath(Spore.MODID,
             "textures/entity/kraken/hand.png");
     private static final ResourceLocation EYES_TEXTURE =  ResourceLocation.fromNamespaceAndPath(Spore.MODID,
-            "textures/entity/empty.png");
+            "textures/entity/eyes/graken.png");
 
     public KrakenRenderer(EntityRendererProvider.Context context) {
-        super(context, new KrakenModel<>(context.bakeLayer(KrakenModel.LAYER_LOCATION)), 4f);
+        super(context, new GrakensenkerModel<>(context.bakeLayer(GrakensenkerModel.LAYER_LOCATION)), 4f);
     }
 
     @Override
