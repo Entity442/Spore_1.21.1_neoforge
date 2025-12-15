@@ -24,7 +24,6 @@ public class IkKrakenArm extends IkKrakenLeg {
     private final Vec3 RightMidVec2 = new Vec3(7, 1.5, -5);
     private final Vec3 LeftMidVec2 = new Vec3(7, 1.5, 5);
     private final Vec3 MouthPosition = new Vec3(0, 1.5, 0);
-    protected int hitValues = 0;
     protected final boolean hand;
     public IkKrakenArm(Grakensenker owner,boolean hand, int amount, Vec3 defaultBodyOffset, Vec3 defaultLimbOffset, float maxDistance, boolean rightArm) {
         super(owner, amount, defaultBodyOffset, defaultLimbOffset, maxDistance);
@@ -34,7 +33,8 @@ public class IkKrakenArm extends IkKrakenLeg {
 
     @Override
     public void refreshLegStandingPoint() {
-        boolean full = hand ? owner.isLeftArmFull() : owner.isRightArmFull();
+        int hitValues = hand ? owner.getRightArmDelay() : owner.getLeftArmDelay();
+        boolean full = hand ? owner.isRightArmFull() : owner.isLeftArmFull();
         sitPosition = this.target == null || hitValues > 0 ? getLegBasePos() : this.target.position().add(0, this.target.getBbHeight() * 0.5, 0);
         sitPosition = full  ? getMouthPosition() : sitPosition;
         lastSitPosition = sitPosition;
@@ -95,19 +95,11 @@ public class IkKrakenArm extends IkKrakenLeg {
         entities[index] = newPos;
     }
 
-    public void armHasBeenHit(){
-        hitValues = 100;
-        target = null;
-    }
-
     @Override
     public void applyIK() {
         super.applyIK();
         moveMidSegmentTowards(entities.length/4,getMidSecPivot());
         moveMidSegmentTowards(entities.length/2,getMidSecPivot2());
-        if (hitValues > 0){
-            hitValues--;
-        }
         float x = (float) entities[entities.length-1].x();
         float y = (float) entities[entities.length-1].y();
         float z = (float) entities[entities.length-1].z();

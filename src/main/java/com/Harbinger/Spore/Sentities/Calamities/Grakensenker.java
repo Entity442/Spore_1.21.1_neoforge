@@ -45,6 +45,8 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
     public static final EntityDataAccessor<Vector3f> LEFT_ARM_TIP = SynchedEntityData.defineId(Grakensenker.class, EntityDataSerializers.VECTOR3);
     public static final EntityDataAccessor<Integer> RIGHT_ARM_ENTITY = SynchedEntityData.defineId(Grakensenker.class, EntityDataSerializers.INT);
     public static final EntityDataAccessor<Integer> LEFT_ARM_ENTITY = SynchedEntityData.defineId(Grakensenker.class, EntityDataSerializers.INT);
+    public static final EntityDataAccessor<Integer> RIGHT_ARM_DELAY = SynchedEntityData.defineId(Grakensenker.class, EntityDataSerializers.INT);
+    public static final EntityDataAccessor<Integer> LEFT_ARM_DELAY = SynchedEntityData.defineId(Grakensenker.class, EntityDataSerializers.INT);
     public static final float MIN_HEIGHT = 0f;
     public static final float MAX_HEIGHT = 4f;
     private final IkKrakenLeg BackRightTentacle;
@@ -152,15 +154,6 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
         return LeftArmTentacle;
     }
 
-    @Override
-    public void handleEntityEvent(byte id) {
-        if (id == 4) {
-            this.getLeftArmTentacle().armHasBeenHit();
-        }else if (id == 5) {
-            this.getRightArmTentacle().armHasBeenHit();
-        }
-        super.handleEntityEvent(id);
-    }
 
     @Override
     public boolean doHurtTarget(Entity entity) {
@@ -184,12 +177,10 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
     @Override
     public boolean hurt(CalamityMultipart calamityMultipart, DamageSource source, float value) {
         if (calamityMultipart == RightHand){
-            this.getRightArmTentacle().armHasBeenHit();
-            this.level().broadcastEntityEvent(this, (byte)5);
+            this.entityData.set(RIGHT_ARM_DELAY,100);
         }
         if (calamityMultipart == LeftHand){
-            this.getLeftArmTentacle().armHasBeenHit();
-            this.level().broadcastEntityEvent(this, (byte)4);
+            this.entityData.set(LEFT_ARM_DELAY,100);
         }
         value = calamityMultipart == this.Body ? value * 3 : value;
         return this.hurt(source,value);
@@ -229,6 +220,9 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
     public Vector3f getLeftArm(){return entityData.get(LEFT_ARM_TIP);}
     public void setRightArm(Vector3f vector3f){ entityData.set(RIGHT_ARM_TIP,vector3f);}
     public void setLeftArm(Vector3f vector3f){ entityData.set(LEFT_ARM_TIP,vector3f);}
+    public int getRightArmDelay(){return entityData.get(RIGHT_ARM_DELAY);};
+    public int getLeftArmDelay(){return entityData.get(LEFT_ARM_DELAY);};
+
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
@@ -238,6 +232,8 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
         builder.define(LEFT_ARM_TIP,  new Vector3f(0));
         builder.define(RIGHT_ARM_ENTITY,  -1);
         builder.define(LEFT_ARM_ENTITY,  -1);
+        builder.define(RIGHT_ARM_DELAY,  0);
+        builder.define(LEFT_ARM_DELAY,  0);
     }
     @Override
     public void addAdditionalSaveData(CompoundTag tag) {
@@ -327,6 +323,12 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
         if (tickCount % 20 == 0){
             validateArms();
         }
+        if (getRightArmDelay() > 0){
+            entityData.set(RIGHT_ARM_DELAY,getRightArmDelay()-1);
+        }
+        if (getLeftArmDelay() > 0){
+            entityData.set(LEFT_ARM_DELAY,getLeftArmDelay()-1);
+        }
     }
 
 
@@ -403,10 +405,8 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
         if (passenger.getId() == entityData.get(LEFT_ARM_ENTITY)){
             entityData.set(LEFT_ARM_ENTITY,-1);
         }
-        this.level().broadcastEntityEvent(this, (byte)5);
-        this.level().broadcastEntityEvent(this, (byte)4);
-        this.getRightArmTentacle().armHasBeenHit();
-        this.getLeftArmTentacle().armHasBeenHit();
+        this.entityData.set(RIGHT_ARM_DELAY,100);
+        this.entityData.set(LEFT_ARM_DELAY,100);
     }
 
     public void updateHeight() {
