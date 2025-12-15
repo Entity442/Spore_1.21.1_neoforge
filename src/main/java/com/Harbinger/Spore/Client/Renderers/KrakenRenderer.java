@@ -1,6 +1,7 @@
 package com.Harbinger.Spore.Client.Renderers;
 
 
+import com.Harbinger.Spore.Client.Layers.GrakenMembraneLayer;
 import com.Harbinger.Spore.Client.Models.GrakensenkerModel;
 import com.Harbinger.Spore.Client.Models.KrakenTentacles.*;
 import com.Harbinger.Spore.Client.Special.CalamityRenderer;
@@ -21,7 +22,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class KrakenRenderer<Type extends Grakensenker> extends CalamityRenderer<Type , GrakensenkerModel<Type>> {
+public class KrakenRenderer<Type extends Grakensenker> extends CalamityRenderer<Type , EntityModel<Type>> {
     private final KrakenTentacle1<Type> tentacleSegmentModel = new KrakenTentacle1<>();
     private final KrakenTentacle2<Type> tentacleSegmentModel1 = new KrakenTentacle2<>();
     private final KrakenTentacle3<Type> tentacleSegmentModel2 = new KrakenTentacle3<>();
@@ -40,6 +41,7 @@ public class KrakenRenderer<Type extends Grakensenker> extends CalamityRenderer<
 
     public KrakenRenderer(EntityRendererProvider.Context context) {
         super(context, new GrakensenkerModel<>(context.bakeLayer(GrakensenkerModel.LAYER_LOCATION)), 4f);
+        this.addLayer(new GrakenMembraneLayer<>(this));
     }
 
     @Override

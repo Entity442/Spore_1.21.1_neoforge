@@ -21,6 +21,8 @@ public class IkKrakenArm extends IkKrakenLeg {
     private final Vec3 LeftVec = new Vec3(4,0,-16);
     private final Vec3 RightMidVec = new Vec3(4, 3.5, -5);
     private final Vec3 LeftMidVec = new Vec3(4, 3.5, 5);
+    private final Vec3 RightMidVec2 = new Vec3(7, 1.5, -5);
+    private final Vec3 LeftMidVec2 = new Vec3(7, 1.5, 5);
     private final Vec3 MouthPosition = new Vec3(1.5, 2.5, 0);
     protected int hitValues = 0;
     protected final boolean hand;
@@ -75,6 +77,10 @@ public class IkKrakenArm extends IkKrakenLeg {
         Vec3 pivot = applyYaw(rightArm ? RightMidVec : LeftMidVec);
         return owner.position().add(pivot).add(0, owner.getExtendedHeight(), 0);
     }
+    public Vec3 getMidSecPivot2(){
+        Vec3 pivot = applyYaw(rightArm ? RightMidVec2 : LeftMidVec2);
+        return owner.position().add(pivot).add(0, owner.getExtendedHeight(), 0);
+    }
     public Vec3 getMouthPosition(){
         Vec3 pivot = applyYaw(MouthPosition);
         return owner.position().add(pivot).add(0, owner.getExtendedHeight(), 0);
@@ -85,7 +91,7 @@ public class IkKrakenArm extends IkKrakenLeg {
             return;
         }
         Vec3 currentPos = entities[index];
-        Vec3 newPos = currentPos.lerp(target, 0.1f);
+        Vec3 newPos = currentPos.lerp(target, 0.2f);
         entities[index] = newPos;
     }
 
@@ -98,6 +104,7 @@ public class IkKrakenArm extends IkKrakenLeg {
     public void applyIK() {
         super.applyIK();
         moveMidSegmentTowards(entities.length/4,getMidSecPivot());
+        moveMidSegmentTowards(entities.length/2,getMidSecPivot2());
         if (hitValues > 0){
             hitValues--;
         }
