@@ -34,7 +34,7 @@ public class IkKrakenArm extends IkKrakenLeg {
     @Override
     public void refreshLegStandingPoint() {
         int hitValues = hand ? owner.getRightArmDelay() : owner.getLeftArmDelay();
-        boolean full = hand ? owner.isRightArmFull() : owner.isLeftArmFull();
+        boolean full = !hand ? owner.isRightArmFull() : owner.isLeftArmFull();
         sitPosition = this.target == null || hitValues > 0 ? getLegBasePos() : this.target.position().add(0, this.target.getBbHeight() * 0.5, 0);
         sitPosition = full  ? getMouthPosition() : sitPosition;
         lastSitPosition = sitPosition;

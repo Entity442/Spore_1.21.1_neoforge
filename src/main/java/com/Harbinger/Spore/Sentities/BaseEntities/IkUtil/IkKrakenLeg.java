@@ -19,6 +19,8 @@ public class IkKrakenLeg {
     protected final float maxDistance;
     protected Vec3 sitPosition =  null;
     protected Vec3 lastSitPosition = null;
+    protected Vec3[] steps = null;
+    protected int stepCount = 0;
     public IkKrakenLeg(Grakensenker owner, int amount, Vec3 defaultBodyOffset,
                        Vec3 defaultLimbOffset,
                        float maxDistance) {
@@ -75,10 +77,30 @@ public class IkKrakenLeg {
         entities[index] = (far ? target : newPos);
     }
     protected void moveTipTowards(Vec3 target) {
-        Vec3 currentPos = entities[entities.length - 1];
-        Vec3 newPos = currentPos.lerp(target, 0.35f);
-        entities[entities.length - 1] = newPos;
+        int tip = entities.length - 1;
+
+        if (steps != null && stepCount >= 0 && stepCount < steps.length) {
+            Vec3 stepTarget = steps[stepCount];
+
+            Vec3 current = entities[tip];
+            entities[tip] = current.lerp(stepTarget, 0.35f);
+
+            if (current.distanceToSqr(stepTarget) < 0.01) {
+                stepCount--;
+
+                if (stepCount < 0) {
+                    steps = null;
+                    stepCount = 0;
+                    entities[tip] = target;
+                    return;
+                }
+            }
+            return;
+        }
+        Vec3 currentPos = entities[tip];
+        entities[tip] = currentPos.lerp(target, 0.35f);
     }
+
 
     public void applyIK() {
         if (entities == null || entities.length == 0) return;
@@ -167,17 +189,19 @@ public class IkKrakenLeg {
 
                     if (isSolidGround(level, checkPos)) {
                         if (level.isEmptyBlock(checkPos.above())) {
-                            return new Vec3(
+                            Vec3 targetPos = new Vec3(
                                     checkPos.getX() + 0.5,
                                     checkPos.getY() - 1.0,
                                     checkPos.getZ() + 0.5
                             );
+
+                            createStepAnimation(worldBasePos, targetPos);
+                            return targetPos;
                         }
                     }
                 }
             }
         }
-
         return worldBasePos;
     }
 
@@ -185,4 +209,22 @@ public class IkKrakenLeg {
         return level.getBlockState(pos).isSolid() ||
                 !level.getBlockState(pos).getCollisionShape(level, pos).isEmpty();
     }
+
+    private void createStepAnimation(Vec3 startPos, Vec3 targetPos) {
+        float height = 3.0f;
+
+        Vec3 midpoint = startPos.add(targetPos).scale(0.5);
+        midpoint = midpoint.add(0, height, 0);
+
+        steps = new Vec3[3];
+
+        steps[0] = startPos.add(0, height/2, 0);
+
+        steps[1] = midpoint;
+
+        steps[2] = targetPos;
+
+        stepCount = steps.length - 1;
+    }
+
 }
