@@ -23,7 +23,7 @@ public class IkKrakenArm extends IkKrakenLeg {
     private final Vec3 LeftMidVec = new Vec3(4, 3.5, 5);
     private final Vec3 RightMidVec2 = new Vec3(7, 1.5, -5);
     private final Vec3 LeftMidVec2 = new Vec3(7, 1.5, 5);
-    private final Vec3 MouthPosition = new Vec3(1.5, 2.5, 0);
+    private final Vec3 MouthPosition = new Vec3(0, 1.5, 0);
     protected int hitValues = 0;
     protected final boolean hand;
     public IkKrakenArm(Grakensenker owner,boolean hand, int amount, Vec3 defaultBodyOffset, Vec3 defaultLimbOffset, float maxDistance, boolean rightArm) {
@@ -35,7 +35,7 @@ public class IkKrakenArm extends IkKrakenLeg {
     @Override
     public void refreshLegStandingPoint() {
         boolean full = hand ? owner.isLeftArmFull() : owner.isRightArmFull();
-        sitPosition = this.target == null ? getLegBasePos() : this.target.position().add(0, this.target.getBbHeight() * 0.5, 0);
+        sitPosition = this.target == null || hitValues > 0 ? getLegBasePos() : this.target.position().add(0, this.target.getBbHeight() * 0.5, 0);
         sitPosition = full  ? getMouthPosition() : sitPosition;
         lastSitPosition = sitPosition;
         if (owner.tickCount % 10 == 0 && hitValues <= 0 && !full){
@@ -70,7 +70,7 @@ public class IkKrakenArm extends IkKrakenLeg {
         return level.getEntitiesOfClass(
                 LivingEntity.class,
                 searchBox,
-                e -> e.isAlive() && e != owner && !(e.getVehicle() instanceof CalamityMultipart) && Utilities.TARGET_SELECTOR.Test(e) && TargetingConditions.forCombat().test(owner,e)
+                e -> e.isAlive() && e != owner && !(e.getVehicle() == owner) && Utilities.TARGET_SELECTOR.Test(e) && TargetingConditions.forCombat().test(owner,e)
         ).stream().findFirst();
     }
     public Vec3 getMidSecPivot(){
@@ -96,7 +96,7 @@ public class IkKrakenArm extends IkKrakenLeg {
     }
 
     public void armHasBeenHit(){
-        hitValues = 60;
+        hitValues = 100;
         target = null;
     }
 

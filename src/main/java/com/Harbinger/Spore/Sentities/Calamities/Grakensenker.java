@@ -11,6 +11,7 @@ import com.Harbinger.Spore.Sentities.TrueCalamity;
 import com.Harbinger.Spore.Sentities.WaterInfected;
 import com.Harbinger.Spore.core.SAttributes;
 import com.Harbinger.Spore.core.SConfig;
+import com.Harbinger.Spore.core.Ssounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
@@ -59,7 +60,6 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
     public final CalamityMultipart Body;
     public final CalamityMultipart RightHand;
     public final CalamityMultipart LeftHand;
-    private int attackAnimationTick;
     public Grakensenker(EntityType<? extends PathfinderMob> type, Level level) {
         super(type, level);
         this.Body = new CalamityMultipart(this, "body", 5F, 5F);
@@ -108,12 +108,12 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
 
     }
     enum GrakenLegsModifiers{
-        BACK_LEFT_TENTACLE(new Vec3(-3,3,1),new Vec3(-6, -1, 6)),
-        BACK_RIGHT_TENTACLE(new Vec3(-3,3,-1),new Vec3(-6, -1, -6)),
-        MIDDLE_LEFT_TENTACLE(new Vec3(-1,2,1),new Vec3(0, -1, 6)),
-        MIDDLE_RIGHT_TENTACLE(new Vec3(-1,2,-1),new Vec3(0, -1, -6)),
-        FRONT_LEFT_TENTACLE(new Vec3(-2,3,1),new Vec3(9, -1, 6)),
-        FRONT_RIGHT_TENTACLE(new Vec3(-2,3,-1),new Vec3(9, -1, -6)),
+        BACK_LEFT_TENTACLE(new Vec3(-3,3.5,0.75),new Vec3(-6, -1, 6)),
+        BACK_RIGHT_TENTACLE(new Vec3(-3,3.5,-0.75),new Vec3(-6, -1, -6)),
+        MIDDLE_LEFT_TENTACLE(new Vec3(-1,2,0.75),new Vec3(0, -1, 6)),
+        MIDDLE_RIGHT_TENTACLE(new Vec3(-1,2,-0.75),new Vec3(0, -1, -6)),
+        FRONT_LEFT_TENTACLE(new Vec3(-2,3,0.75),new Vec3(9, -1, 6)),
+        FRONT_RIGHT_TENTACLE(new Vec3(-2,3,-0.75),new Vec3(9, -1, -6)),
         LEFT_ARM(new Vec3(0,3,1),new Vec3(8, 2.5, 6)),
         RIGHT_ARM(new Vec3(0,3,-1),new Vec3(8, 2.5, -6));
         private final Vec3 bodySet;
@@ -151,21 +151,20 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
     public IkKrakenArm getLeftArmTentacle(){
         return LeftArmTentacle;
     }
-    public void handleEntityEvent(byte value) {
-        if (value == 4) {
-            this.attackAnimationTick = 10;
-        }else if (value == 5) {
-            this.getRightArmTentacle().armHasBeenHit();
-        }else if (value == 6) {
+
+    @Override
+    public void handleEntityEvent(byte id) {
+        if (id == 4) {
             this.getLeftArmTentacle().armHasBeenHit();
-        } else {
-            super.handleEntityEvent(value);
+        }else if (id == 5) {
+            this.getRightArmTentacle().armHasBeenHit();
         }
+        super.handleEntityEvent(id);
     }
+
     @Override
     public boolean doHurtTarget(Entity entity) {
-        this.attackAnimationTick = 10;
-        this.level().broadcastEntityEvent(this, (byte)4);
+        this.playSound(Ssounds.SIEGER_BITE.value());
         return super.doHurtTarget(entity);
     }
     public void travel(Vec3 vec) {
@@ -185,10 +184,12 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
     @Override
     public boolean hurt(CalamityMultipart calamityMultipart, DamageSource source, float value) {
         if (calamityMultipart == RightHand){
+            this.getRightArmTentacle().armHasBeenHit();
             this.level().broadcastEntityEvent(this, (byte)5);
         }
         if (calamityMultipart == LeftHand){
-            this.level().broadcastEntityEvent(this, (byte)6);
+            this.getLeftArmTentacle().armHasBeenHit();
+            this.level().broadcastEntityEvent(this, (byte)4);
         }
         value = calamityMultipart == this.Body ? value * 3 : value;
         return this.hurt(source,value);
@@ -257,6 +258,7 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
         }
     }
 
+
     @Override
     protected EntityDimensions getDefaultDimensions(Pose pose) {
         EntityDimensions baseDimensions = super.getDefaultDimensions(pose);
@@ -283,9 +285,6 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
             this.subEntities[l].zOld = avec3[l].z;
         }
         super.aiStep();
-        if (attackAnimationTick > 0){
-            attackAnimationTick--;
-        }
     }
     public void setRightArmEntity(int id){
         entityData.set(RIGHT_ARM_ENTITY,id);
@@ -329,6 +328,8 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
             validateArms();
         }
     }
+
+
     private void tryGrab(Vector3f handPos, boolean right) {
         boolean active = right ? isRightArmFull() : isLeftArmFull();
         if (active){
@@ -376,10 +377,19 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
         if (passenger.getId() == entityData.get(RIGHT_ARM_ENTITY)){
             Vector3f pos = getRightArm();
             callback.accept(passenger, pos.x, pos.y-tall, pos.z);
+            if (passenger.distanceTo(this)<6){
+                setRightArmEntity(-1);
+            }
         }else if (passenger.getId() == entityData.get(LEFT_ARM_ENTITY)){
             Vector3f pos = getLeftArm();
             callback.accept(passenger, pos.x, pos.y-tall, pos.z);
+            if (passenger.distanceTo(this)<6){
+                setLeftArmEntity(-1);
+            }
         }else {
+            if (tickCount % 20 == 0){
+                this.doHurtTarget(passenger);
+            }
             callback.accept(passenger,this.getX(),this.getY()+getExtendedHeight(),this.getZ());
         }
     }
@@ -393,6 +403,10 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
         if (passenger.getId() == entityData.get(LEFT_ARM_ENTITY)){
             entityData.set(LEFT_ARM_ENTITY,-1);
         }
+        this.level().broadcastEntityEvent(this, (byte)5);
+        this.level().broadcastEntityEvent(this, (byte)4);
+        this.getRightArmTentacle().armHasBeenHit();
+        this.getLeftArmTentacle().armHasBeenHit();
     }
 
     public void updateHeight() {
@@ -467,7 +481,7 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
         this.goalSelector.addGoal(4, new AOEMeleeAttackGoal(this, 1.5, false,2.5 ,6, livingEntity -> {return TARGET_SELECTOR.test(livingEntity);}){
             protected double getAttackReachSqr(LivingEntity entity) {
                 float f = Grakensenker.this.getBbWidth();
-                return (double)(f * 2F * f * 2F + entity.getBbWidth());
+                return (double)(f * 3F * f * 3F + entity.getBbWidth());
             }
         });
         this.goalSelector.addGoal(5, new RandomStrollGoal(this, 1.2));
