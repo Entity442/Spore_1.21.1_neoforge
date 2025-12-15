@@ -120,12 +120,13 @@ public class IkKrakenLeg {
         entities[index] = (far ? target : newPos);
     }
     protected void moveTipTowards(Vec3 target) {
+        float jumpVal = 2.5f;
         boolean val = stepUpTicks > 0 && isOwnerMoving();
         int tip = entities.length - 1;
         Vec3 currentPos = entities[tip];
-        entities[tip] = currentPos.lerp(target.add(0,val ? 2.5 : -1,0), 0.1f);
+        entities[tip] = currentPos.lerp(target.add(0,val ? jumpVal : -1,0), 0.1f);
         if (val){
-            entities[entities.length/2] = currentPos.lerp(target.add(0,5,0), 0.5f);
+            entities[entities.length/2] = currentPos.lerp(target.add(0,jumpVal,0), 0.5f);
         }
     }
     protected boolean isOwnerMoving(){

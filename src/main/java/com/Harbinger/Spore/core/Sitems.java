@@ -355,6 +355,9 @@ public class Sitems {
     public  static final DeferredItem<Item> HOHLFRESSER_SPAWNEGG = ITEMS.register("hohlfresser_spawnegg",
             () -> new SporeSpawnEgg(Sentities.HOHLFRESSER,76414394,SpawnEggType.CALAMITY));
 
+    public  static final DeferredItem<Item> KRAKEN_SPAWNEGG = ITEMS.register("kraken_spawnegg",
+            () -> new SporeSpawnEgg(Sentities.KRAKEN,214325443,SpawnEggType.CALAMITY));
+
     public  static final DeferredItem<Item> SABER = ITEMS.register("saber",
             InfectedSaber::new);
     public  static final DeferredItem<Item> GREATSWORD = ITEMS.register("greatsword",
