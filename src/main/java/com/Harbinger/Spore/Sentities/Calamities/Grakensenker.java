@@ -7,6 +7,7 @@ import com.Harbinger.Spore.Sentities.BaseEntities.Calamity;
 import com.Harbinger.Spore.Sentities.BaseEntities.CalamityMultipart;
 import com.Harbinger.Spore.Sentities.BaseEntities.IkUtil.IkKrakenArm;
 import com.Harbinger.Spore.Sentities.BaseEntities.IkUtil.IkKrakenLeg;
+import com.Harbinger.Spore.Sentities.BaseEntities.IkUtil.IkVortexFunnel;
 import com.Harbinger.Spore.Sentities.TrueCalamity;
 import com.Harbinger.Spore.Sentities.WaterInfected;
 import com.Harbinger.Spore.core.SAttributes;
@@ -57,6 +58,7 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
     private final IkKrakenLeg FrontLeftTentacle;
     private final IkKrakenArm RightArmTentacle;
     private final IkKrakenArm LeftArmTentacle;
+    private final IkVortexFunnel VortexFunnel;
     private final IkKrakenLeg[] TickTentacles;
     private final CalamityMultipart[] subEntities;
     public final CalamityMultipart Body;
@@ -75,7 +77,8 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
         FrontLeftTentacle = new IkKrakenLeg(this,10,GrakenLegsModifiers.FRONT_LEFT_TENTACLE.bodySet, GrakenLegsModifiers.FRONT_LEFT_TENTACLE.offset, 8);
         RightArmTentacle = new IkKrakenArm(this,true,16,GrakenLegsModifiers.RIGHT_ARM.bodySet, GrakenLegsModifiers.RIGHT_ARM.offset, 4,false);
         LeftArmTentacle = new IkKrakenArm(this,false,16,GrakenLegsModifiers.LEFT_ARM.bodySet, GrakenLegsModifiers.LEFT_ARM.offset, 4,true);
-        TickTentacles = new IkKrakenLeg[]{BackRightTentacle,BackLeftTentacle,MiddleRightTentacle,MiddleLeftTentacle,FrontRightTentacle,FrontLeftTentacle,RightArmTentacle,LeftArmTentacle};
+        VortexFunnel = new IkVortexFunnel(this);
+        TickTentacles = new IkKrakenLeg[]{BackRightTentacle,BackLeftTentacle,MiddleRightTentacle,MiddleLeftTentacle,FrontRightTentacle,FrontLeftTentacle,RightArmTentacle,LeftArmTentacle,VortexFunnel};
         this.subEntities = new CalamityMultipart[]{ this.Body, this.RightHand,this.LeftHand};
         this.setId(ENTITY_COUNTER.getAndAdd(this.subEntities.length + 1) + 1);
     }
@@ -153,6 +156,10 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
     public IkKrakenArm getLeftArmTentacle(){
         return LeftArmTentacle;
     }
+    public IkVortexFunnel getVortexFunnel(){
+        return VortexFunnel;
+    }
+
 
 
     @Override
