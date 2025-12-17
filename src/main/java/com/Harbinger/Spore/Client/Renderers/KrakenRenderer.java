@@ -21,20 +21,26 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
-import org.joml.Vector4f;
 
 @OnlyIn(Dist.CLIENT)
 public class KrakenRenderer<Type extends Grakensenker> extends CalamityRenderer<Type , EntityModel<Type>> {
-    private final KrakenTentacle1<Type> tentacleSegmentModel = new KrakenTentacle1<>();
-    private final KrakenTentacle2<Type> tentacleSegmentModel1 = new KrakenTentacle2<>();
-    private final KrakenTentacle3<Type> tentacleSegmentModel2 = new KrakenTentacle3<>();
-    private final KrakenTentacle4<Type> tentacleSegmentModel3 = new KrakenTentacle4<>();
-    private final KrakenTentacle5<Type> tentacleSegmentModel4 = new KrakenTentacle5<>();
-    private final KrakenTentacleFoot<Type> foot = new KrakenTentacleFoot<>();
-    private final KrakenClaw<Type> armModel = new KrakenClaw<>();
+    private final Seg1<Type> tentacleSegmentModel1 = new Seg1<>();
+    private final Seg2<Type> tentacleSegmentModel2 = new Seg2<>();
+    private final Seg3<Type> tentacleSegmentModel3 = new Seg3<>();
+    private final Seg4<Type> tentacleSegmentModel4 = new Seg4<>();
+    private final Seg5<Type> tentacleSegmentModel5 = new Seg5<>();
+    private final Seg6<Type> tentacleSegmentModel6 = new Seg6<>();
+    private final Seg7<Type> tentacleSegmentModel7 = new Seg7<>();
+    private final Seg8<Type> tentacleSegmentModel8 = new Seg8<>();
+    private final Seg9<Type> tentacleSegmentModel9 = new Seg9<>();
+    private final Seg10<Type> tentacleSegmentModel10 = new Seg10<>();
+    private final Seg11<Type> tentacleSegmentModel11 = new Seg11<>();
+    private final Seg12<Type> tentacleSegmentModel12 = new Seg12<>();
+    private final FootSeg<Type> foot = new FootSeg<>();
+    private final HandSeg1<Type> armModel1 = new HandSeg1<>();
+    private final HandSeg2<Type> armModel2 = new HandSeg2<>();
     private static final ResourceLocation TEXTURE =  ResourceLocation.fromNamespaceAndPath(Spore.MODID,
             "textures/entity/graken.png");
     private static final ResourceLocation TENTACLES =  ResourceLocation.fromNamespaceAndPath(Spore.MODID,
@@ -57,11 +63,18 @@ public class KrakenRenderer<Type extends Grakensenker> extends CalamityRenderer<
     }
     public EntityModel<Type> getTentacleModel(int i){
         return switch (i) {
-            case 0 -> tentacleSegmentModel;
+            case 0 -> tentacleSegmentModel1;
             case 1 -> tentacleSegmentModel2;
             case 2 -> tentacleSegmentModel3;
             case 3 -> tentacleSegmentModel4;
-            default -> tentacleSegmentModel1;
+            case 4 -> tentacleSegmentModel5;
+            case 5 -> tentacleSegmentModel6;
+            case 6 -> tentacleSegmentModel7;
+            case 7 -> tentacleSegmentModel8;
+            case 8 -> tentacleSegmentModel9;
+            case 9 -> tentacleSegmentModel10;
+            case 10 -> tentacleSegmentModel11;
+            default -> tentacleSegmentModel12;
         };
     }
 
@@ -72,6 +85,8 @@ public class KrakenRenderer<Type extends Grakensenker> extends CalamityRenderer<
 
     @Override
     public void render(Type entity, float entityYaw, float partialTicks, PoseStack stack, MultiBufferSource bufferSource, int light) {
+        int color = entity.level().getBiome(entity.getOnPos()).value().getWaterColor();
+        int packedColor = color | 0xFF000000;
         stack.pushPose();
         stack.translate(0,entity.getExtendedHeight(),0);
         super.render(entity, entityYaw, partialTicks, stack, bufferSource, light);
@@ -80,20 +95,21 @@ public class KrakenRenderer<Type extends Grakensenker> extends CalamityRenderer<
         stack.pushPose();
         {
             stack.translate(-entityPos.x, -entityPos.y, -entityPos.z);
-            renderTentacle(stack,entity,light, bufferSource, entity.getBackRightTentacle().getEntities(),entity.getBackRightTentacle().getSegmentVar(), entity,partialTicks,false);
-            renderTentacle(stack,entity,light, bufferSource, entity.getBackLeftTentacle().getEntities(),entity.getBackLeftTentacle().getSegmentVar(), entity,partialTicks,false);
-            renderTentacle(stack,entity,light, bufferSource, entity.getMiddleLeftTentacle().getEntities(),entity.getMiddleLeftTentacle().getSegmentVar(), entity,partialTicks,false);
-            renderTentacle(stack,entity,light, bufferSource, entity.getMiddleRightTentacle().getEntities(),entity.getMiddleRightTentacle().getSegmentVar(), entity,partialTicks,false);
-            renderTentacle(stack,entity,light, bufferSource, entity.getFrontLeftTentacle().getEntities(),entity.getFrontLeftTentacle().getSegmentVar(), entity,partialTicks,false);
-            renderTentacle(stack,entity,light, bufferSource, entity.getFrontRightTentacle().getEntities(),entity.getFrontRightTentacle().getSegmentVar(), entity,partialTicks,false);
-            renderTentacle(stack,entity,light, bufferSource, entity.getRightArmTentacle().getEntities(),entity.getRightArmTentacle().getSegmentVar(), entity,partialTicks,true);
-            renderTentacle(stack,entity,light, bufferSource, entity.getLeftArmTentacle().getEntities(),entity.getLeftArmTentacle().getSegmentVar(), entity, partialTicks,true);
-            renderFunnel(stack,entity,light, bufferSource, entity.getVortexFunnel().getEntities(),partialTicks);
+            renderTentacle(stack,entity,light, bufferSource, entity.getBackRightTentacle().getEntities(),entity.getBackRightTentacle().getSegmentVar(), entity,partialTicks,false,false);
+            renderTentacle(stack,entity,light, bufferSource, entity.getBackLeftTentacle().getEntities(),entity.getBackLeftTentacle().getSegmentVar(), entity,partialTicks,false,false);
+            renderTentacle(stack,entity,light, bufferSource, entity.getMiddleLeftTentacle().getEntities(),entity.getMiddleLeftTentacle().getSegmentVar(), entity,partialTicks,false,false);
+            renderTentacle(stack,entity,light, bufferSource, entity.getMiddleRightTentacle().getEntities(),entity.getMiddleRightTentacle().getSegmentVar(), entity,partialTicks,false,false);
+            renderTentacle(stack,entity,light, bufferSource, entity.getFrontLeftTentacle().getEntities(),entity.getFrontLeftTentacle().getSegmentVar(), entity,partialTicks,false,false);
+            renderTentacle(stack,entity,light, bufferSource, entity.getFrontRightTentacle().getEntities(),entity.getFrontRightTentacle().getSegmentVar(), entity,partialTicks,false,false);
+            renderTentacle(stack,entity,light, bufferSource, entity.getRightArmTentacle().getEntities(),entity.getRightArmTentacle().getSegmentVar(), entity,partialTicks,true,false);
+            renderTentacle(stack,entity,light, bufferSource, entity.getLeftArmTentacle().getEntities(),entity.getLeftArmTentacle().getSegmentVar(), entity, partialTicks,true,true);
+            renderFunnel(stack,entity,light, bufferSource, entity.getVortexFunnel().getEntities(),partialTicks,packedColor,1f,WATER);
+            renderFunnel(stack,entity,light, bufferSource, entity.getVortexFunnel().getEntities(),partialTicks,packedColor,2f,WATER);
         }
         stack.popPose();
     }
 
-    private void renderTentacle(PoseStack stack,Type type,int light, MultiBufferSource buffer, Vec3[] segments,int[] var, LivingEntity parent, float partial,boolean arm) {
+    private void renderTentacle(PoseStack stack,Type type,int light, MultiBufferSource buffer, Vec3[] segments,int[] var, LivingEntity parent, float partial,boolean arm,boolean right) {
         if (segments == null || segments.length < 2) return;
         float hurtTime = parent.hurtTime - partial;
         float flashIntensity = 0.0F;
@@ -107,7 +123,7 @@ public class KrakenRenderer<Type extends Grakensenker> extends CalamityRenderer<
         int color = packColorARGB(1.0F, red, green, blue);
         for (int i = 0; i < segments.length; i++) {
             Vec3 currentPos = segments[i];
-            renderConnection(origin, currentPos,type,light, stack, buffer, i,var[i],partial,color,i == segments.length-1, arm);
+            renderConnection(origin, currentPos,type,light, stack, buffer, i,var[i],partial,color,i == segments.length-1, arm,right);
             origin = currentPos;
         }
     }
@@ -118,7 +134,7 @@ public class KrakenRenderer<Type extends Grakensenker> extends CalamityRenderer<
                 (int)(b * 255);
     }
     private void renderConnection(Vec3 from, Vec3 to,Type parent,int light, PoseStack stack, MultiBufferSource buffer,int index,int var , float partial
-            ,int color,boolean last,boolean arm) {
+            ,int color,boolean last,boolean arm,boolean right) {
         if (from == null || to == null) return;
         Vec3 direction = to.subtract(from);
         float length = (float) direction.length();
@@ -146,10 +162,11 @@ public class KrakenRenderer<Type extends Grakensenker> extends CalamityRenderer<
             }
             stack.popPose();
             if (arm && last){
+                EntityModel<Type> armModel = right ? armModel1 : armModel2;
                 VertexConsumer consumerArm = buffer.getBuffer(RenderType.entityCutoutNoCull(KRAKEN_HAND));
                 stack.pushPose();
-                stack.mulPose(Axis.XP.rotationDegrees(-90));
-                stack.translate(0,-length * 2,0);
+                stack.mulPose(Axis.XP.rotationDegrees(90));
+                stack.translate(0,length/2,0);
                 stack.scale(1,length,1);
                 armModel.setupAnim(parent,0,0,parent.tickCount + partial,0,0);
                 armModel.renderToBuffer(stack,consumerArm,light, OverlayTexture.NO_OVERLAY, color);
@@ -175,7 +192,6 @@ public class KrakenRenderer<Type extends Grakensenker> extends CalamityRenderer<
         Vec3 forward = right.cross(direction).normalize();
 
         for (int i = 0; i < 8; i++) {
-            // ADD ROTATION OFFSET HERE - this creates the spiral!
             float angle = (i * Mth.TWO_PI / 8f) + rotationOffset;
             float x = Mth.cos(angle);
             float y = Mth.sin(angle);
@@ -210,15 +226,12 @@ public class KrakenRenderer<Type extends Grakensenker> extends CalamityRenderer<
             int light,
             MultiBufferSource buffer,
             Vec3[] segments,
-            float partial
+            float partial,int packedColor,float sizeA,ResourceLocation location
     ) {
         if (segments == null || segments.length < 2) return;
 
-        int color = type.level().getBiome(type.getOnPos()).value().getWaterColor();
-        int packedColor = color | 0xFF000000;
-
         Ring previousRing = null;
-        VertexConsumer consumer = buffer.getBuffer(RenderType.entityTranslucent(WATER));
+        VertexConsumer consumer = buffer.getBuffer(RenderType.entityTranslucent(location));
 
         float time = (type.tickCount + partial) * 0.05f;
 
@@ -226,7 +239,7 @@ public class KrakenRenderer<Type extends Grakensenker> extends CalamityRenderer<
             Vec3 from = segments[i - 1];
             Vec3 to   = segments[i];
             Vec3 dir  = to.subtract(from).normalize();
-            float size = calculateSize(i, segments.length);
+            float size = calculateSize(i, segments.length,sizeA);
 
             // KEY: Different rotation for each segment!
             float segmentProgress = (float)i / segments.length;
@@ -240,10 +253,11 @@ public class KrakenRenderer<Type extends Grakensenker> extends CalamityRenderer<
                         previousRing,
                         currentRing,
                         consumer,
-                        stack.last(),
+                        stack,
                         packedColor,
                         light,
-                        OverlayTexture.NO_OVERLAY
+                        OverlayTexture.NO_OVERLAY,
+                        sizeA
                 );
             }
 
@@ -255,11 +269,15 @@ public class KrakenRenderer<Type extends Grakensenker> extends CalamityRenderer<
             Ring a,
             Ring b,
             VertexConsumer consumer,
-            PoseStack.Pose pose,
+            PoseStack stack,
             int color,
             int light,
-            int overlay
+            int overlay,
+            float scale
     ) {
+        stack.pushPose();
+        stack.scale(scale,1,scale);
+        PoseStack.Pose pose = stack.last();
         for (int i = 0; i < 8; i++) {
             int next = (i + 1) % 8;
             float vA = 0f;
@@ -294,6 +312,7 @@ public class KrakenRenderer<Type extends Grakensenker> extends CalamityRenderer<
                     .setLight(light)
                     .setNormal(pose, b.normals[i].x(), b.normals[i].y(), b.normals[i].z());
         }
+        stack.popPose();
     }
 
     private static class Ring {
@@ -302,7 +321,7 @@ public class KrakenRenderer<Type extends Grakensenker> extends CalamityRenderer<
         Vector2f[] uvs = new Vector2f[8];  // ADD THIS
     }
 
-    private float calculateSize(int segmentIndex, int totalSegments) {
+    private float calculateSize(int segmentIndex, int totalSegments,float inflation) {
         float progress = Mth.clamp(
                 (float) segmentIndex / (totalSegments - 1),
                 0.0f, 1.0f
@@ -311,7 +330,7 @@ public class KrakenRenderer<Type extends Grakensenker> extends CalamityRenderer<
         float startSize = 0.5f;
         float endSize = 3f;
 
-        return startSize + (endSize - startSize) * progress
-                + 0.3f * Mth.sin(progress * Mth.PI);
+        return (startSize + (endSize - startSize) * progress
+                + 0.3f * Mth.sin(progress * Mth.PI)) * inflation;
     }
 }

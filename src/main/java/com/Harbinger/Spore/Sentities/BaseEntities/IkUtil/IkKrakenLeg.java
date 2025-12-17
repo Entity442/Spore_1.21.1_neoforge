@@ -36,7 +36,7 @@ public class IkKrakenLeg {
         this.wiggleOffsets = new float[amount];
         for(int i = 0;i<amount;i++){
             entities[i] = new Vec3(0,0,0);
-            segmentVar[i] = randomSource.nextInt(5);
+            segmentVar[i] = randomSource.nextInt(12);
             wiggleSpeeds[i] = 0.5f + randomSource.nextFloat() * getWiggleSpeed();
             wiggleAmplitudes[i] = 0.02f + randomSource.nextFloat() * getWiggleAmplitude();
             wiggleOffsets[i] = randomSource.nextFloat() * (float)Math.PI * 2;
