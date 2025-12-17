@@ -48,7 +48,11 @@ public class KrakenRenderer<Type extends Grakensenker> extends CalamityRenderer<
     private static final ResourceLocation EYES_TEXTURE =  ResourceLocation.fromNamespaceAndPath(Spore.MODID,
             "textures/entity/eyes/graken.png");
     private static final ResourceLocation WATER =  ResourceLocation.fromNamespaceAndPath(Spore.MODID,
-            "textures/entity/water_vortex.png");
+            "textures/entity/vortex/water_vortex.png");
+    private static final ResourceLocation WATER_RIPTIDE =  ResourceLocation.fromNamespaceAndPath(Spore.MODID,
+            "textures/entity/vortex/vortex_riptide.png");
+    private static final ResourceLocation WATER_BUBBLE =  ResourceLocation.fromNamespaceAndPath(Spore.MODID,
+            "textures/entity/vortex/vortex_bubbles.png");
 
     public KrakenRenderer(EntityRendererProvider.Context context) {
         super(context, new GrakensenkerModel<>(context.bakeLayer(GrakensenkerModel.LAYER_LOCATION)), 4f);
@@ -102,7 +106,8 @@ public class KrakenRenderer<Type extends Grakensenker> extends CalamityRenderer<
             renderTentacle(stack,entity,light, bufferSource, entity.getRightArmTentacle().getEntities(),entity.getRightArmTentacle().getSegmentVar(), entity,partialTicks,true,false);
             renderTentacle(stack,entity,light, bufferSource, entity.getLeftArmTentacle().getEntities(),entity.getLeftArmTentacle().getSegmentVar(), entity, partialTicks,true,true);
             SpecialEffects.renderFunnel(stack,entity,light, bufferSource, entity.getVortexFunnel().getEntities(),partialTicks,packedColor,1f,WATER);
-            SpecialEffects.renderFunnel(stack,entity,light, bufferSource, entity.getVortexFunnel().getEntities(),partialTicks,packedColor,2f,WATER);
+            SpecialEffects.renderFunnel(stack,entity,light, bufferSource, entity.getVortexFunnel().getEntities(),partialTicks,packedColor,1.1f,WATER_RIPTIDE);
+            SpecialEffects.renderFunnel(stack,entity,light, bufferSource, entity.getVortexFunnel().getEntities(),partialTicks,packedColor,0.9f,WATER_BUBBLE);
         }
         stack.popPose();
     }
