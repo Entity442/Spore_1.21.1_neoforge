@@ -23,11 +23,9 @@ public class IkKrakenArm extends IkKrakenLeg {
     private final Vec3 RightMidVec2 = new Vec3(7, 1.5, -5);
     private final Vec3 LeftMidVec2 = new Vec3(7, 1.5, 5);
     private final Vec3 MouthPosition = new Vec3(0, 1.5, 0);
-    protected final boolean hand;
-    public IkKrakenArm(Grakensenker owner,boolean hand, int amount, Vec3 defaultBodyOffset, Vec3 defaultLimbOffset,Vec3 underwater, float maxDistance, boolean rightArm) {
+    public IkKrakenArm(Grakensenker owner, int amount, Vec3 defaultBodyOffset, Vec3 defaultLimbOffset,Vec3 underwater, float maxDistance, boolean rightArm) {
         super(owner, amount, defaultBodyOffset, defaultLimbOffset,underwater, maxDistance);
         this.rightArm = rightArm;
-        this.hand = hand;
     }
 
     @Override
@@ -42,8 +40,8 @@ public class IkKrakenArm extends IkKrakenLeg {
 
     @Override
     public void refreshLegStandingPoint() {
-        int hitValues = hand ? owner.getRightArmDelay() : owner.getLeftArmDelay();
-        boolean full = hand ? owner.isRightArmFull() : owner.isLeftArmFull();
+        int hitValues = rightArm ? owner.getRightArmDelay() : owner.getLeftArmDelay();
+        boolean full = rightArm ? owner.isRightArmFull() : owner.isLeftArmFull();
         sitPosition = this.target == null || hitValues > 0 ? getLegBasePos() : this.target.position().add(0, this.target.getBbHeight() * 0.5, 0);
         sitPosition = full  ? owner.isInDeepWater() ? getUnderwaterLegOffset() : getMouthPosition() : sitPosition;
         lastSitPosition = sitPosition;
