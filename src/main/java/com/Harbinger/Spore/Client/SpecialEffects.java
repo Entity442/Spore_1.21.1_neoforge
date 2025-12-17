@@ -61,7 +61,6 @@ public class SpecialEffects {
 
     public static void renderFunnel(
             PoseStack stack,
-            Entity type,
             int light,
             MultiBufferSource buffer,
             Vec3[] segments,
@@ -72,7 +71,6 @@ public class SpecialEffects {
         Ring previousRing = null;
         VertexConsumer consumer = buffer.getBuffer(RenderType.entityTranslucent(location));
 
-        float time = (type.tickCount + partial) * 0.05f;
 
         for (int i = 1; i < segments.length; i++) {
             Vec3 from = segments[i - 1];
@@ -82,7 +80,7 @@ public class SpecialEffects {
 
             // KEY: Different rotation for each segment!
             float segmentProgress = (float)i / segments.length;
-            float rotation = time + (segmentProgress * 4f); // More rotation at the end
+            float rotation = partial + (segmentProgress * 4f); // More rotation at the end
 
             Ring currentRing = buildRing(to, dir, size, rotation);
 

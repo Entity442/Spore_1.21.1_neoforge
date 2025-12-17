@@ -51,8 +51,6 @@ public class KrakenRenderer<Type extends Grakensenker> extends CalamityRenderer<
             "textures/entity/vortex/water_vortex.png");
     private static final ResourceLocation WATER_RIPTIDE =  ResourceLocation.fromNamespaceAndPath(Spore.MODID,
             "textures/entity/vortex/vortex_riptide.png");
-    private static final ResourceLocation WATER_BUBBLE =  ResourceLocation.fromNamespaceAndPath(Spore.MODID,
-            "textures/entity/vortex/vortex_bubbles.png");
 
     public KrakenRenderer(EntityRendererProvider.Context context) {
         super(context, new GrakensenkerModel<>(context.bakeLayer(GrakensenkerModel.LAYER_LOCATION)), 4f);
@@ -89,6 +87,8 @@ public class KrakenRenderer<Type extends Grakensenker> extends CalamityRenderer<
     public void render(Type entity, float entityYaw, float partialTicks, PoseStack stack, MultiBufferSource bufferSource, int light) {
         int color = entity.level().getBiome(entity.getOnPos()).value().getWaterColor();
         int packedColor = color | 0xFF000000;
+        float time = (entity.tickCount + partialTicks) * 0.05f;
+        float time2 = (entity.tickCount + partialTicks) * 0.1f;
         stack.pushPose();
         stack.translate(0,entity.getExtendedHeight(),0);
         super.render(entity, entityYaw, partialTicks, stack, bufferSource, light);
@@ -105,9 +105,9 @@ public class KrakenRenderer<Type extends Grakensenker> extends CalamityRenderer<
             renderTentacle(stack,entity,light, bufferSource, entity.getFrontRightTentacle().getEntities(),entity.getFrontRightTentacle().getSegmentVar(), entity,partialTicks,false,false);
             renderTentacle(stack,entity,light, bufferSource, entity.getRightArmTentacle().getEntities(),entity.getRightArmTentacle().getSegmentVar(), entity,partialTicks,true,false);
             renderTentacle(stack,entity,light, bufferSource, entity.getLeftArmTentacle().getEntities(),entity.getLeftArmTentacle().getSegmentVar(), entity, partialTicks,true,true);
-            SpecialEffects.renderFunnel(stack,entity,light, bufferSource, entity.getVortexFunnel().getEntities(),partialTicks,packedColor,1f,WATER);
-            SpecialEffects.renderFunnel(stack,entity,light, bufferSource, entity.getVortexFunnel().getEntities(),partialTicks,packedColor,1.1f,WATER_RIPTIDE);
-            SpecialEffects.renderFunnel(stack,entity,light, bufferSource, entity.getVortexFunnel().getEntities(),partialTicks,packedColor,0.9f,WATER_BUBBLE);
+            SpecialEffects.renderFunnel(stack,light, bufferSource, entity.getVortexFunnel().getEntities(),time,packedColor,1f,WATER);
+            SpecialEffects.renderFunnel(stack,light, bufferSource, entity.getVortexFunnel().getEntities(),time,-1,1.1f,WATER_RIPTIDE);
+            SpecialEffects.renderFunnel(stack,light, bufferSource, entity.getVortexFunnel().getEntities(),time2,packedColor,0.9f,WATER);
         }
         stack.popPose();
     }
