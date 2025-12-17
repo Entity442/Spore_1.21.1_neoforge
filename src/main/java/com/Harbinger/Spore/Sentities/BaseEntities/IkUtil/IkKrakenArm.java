@@ -16,8 +16,8 @@ public class IkKrakenArm extends IkKrakenLeg {
     protected final boolean rightArm;
     @Nullable
     protected LivingEntity target;
-    private final Vec3 RightVec = new Vec3(4,0,16);
-    private final Vec3 LeftVec = new Vec3(4,0,-16);
+    private final Vec3 RightVec = new Vec3(4,0,-16);
+    private final Vec3 LeftVec = new Vec3(4,0,16);
     private final Vec3 RightMidVec = new Vec3(4, 3.5, -5);
     private final Vec3 LeftMidVec = new Vec3(4, 3.5, 5);
     private final Vec3 RightMidVec2 = new Vec3(7, 1.5, -5);
@@ -42,13 +42,10 @@ public class IkKrakenArm extends IkKrakenLeg {
 
     @Override
     public void refreshLegStandingPoint() {
-        if (owner.isInDeepWater()){
-            return;
-        }
         int hitValues = hand ? owner.getRightArmDelay() : owner.getLeftArmDelay();
-        boolean full = !hand ? owner.isRightArmFull() : owner.isLeftArmFull();
+        boolean full = hand ? owner.isRightArmFull() : owner.isLeftArmFull();
         sitPosition = this.target == null || hitValues > 0 ? getLegBasePos() : this.target.position().add(0, this.target.getBbHeight() * 0.5, 0);
-        sitPosition = full  ? getMouthPosition() : sitPosition;
+        sitPosition = full  ? owner.isInDeepWater() ? getUnderwaterLegOffset() : getMouthPosition() : sitPosition;
         lastSitPosition = sitPosition;
         if (owner.tickCount % 10 == 0 && hitValues <= 0 && !full){
             setTarget();
@@ -58,10 +55,6 @@ public class IkKrakenArm extends IkKrakenLeg {
     protected void moveTipTowards(Vec3 value) {
         int tip = entities.length - 1;
         Vec3 currentPos = entities[tip];
-        if (owner.isInDeepWater()){
-            entities[tip] = currentPos.lerp(getUnderwaterLegOffset(), 0.15f);
-            return;
-        }
         int val = entities.length - 1;
         Vec3 newPos = currentPos.lerp(value, 0.2f);
         entities[val] = newPos;

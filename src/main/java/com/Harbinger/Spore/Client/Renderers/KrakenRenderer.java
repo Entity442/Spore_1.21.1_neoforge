@@ -17,6 +17,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
@@ -98,17 +99,20 @@ public class KrakenRenderer<Type extends Grakensenker> extends CalamityRenderer<
         stack.pushPose();
         {
             stack.translate(-entityPos.x, -entityPos.y, -entityPos.z);
-            renderTentacle(stack,entity,light, bufferSource, entity.getBackRightTentacle().getEntities(),entity.getBackRightTentacle().getSegmentVar(), entity,partialTicks,false,false);
-            renderTentacle(stack,entity,light, bufferSource, entity.getBackLeftTentacle().getEntities(),entity.getBackLeftTentacle().getSegmentVar(), entity,partialTicks,false,false);
-            renderTentacle(stack,entity,light, bufferSource, entity.getMiddleLeftTentacle().getEntities(),entity.getMiddleLeftTentacle().getSegmentVar(), entity,partialTicks,false,false);
-            renderTentacle(stack,entity,light, bufferSource, entity.getMiddleRightTentacle().getEntities(),entity.getMiddleRightTentacle().getSegmentVar(), entity,partialTicks,false,false);
-            renderTentacle(stack,entity,light, bufferSource, entity.getFrontLeftTentacle().getEntities(),entity.getFrontLeftTentacle().getSegmentVar(), entity,partialTicks,false,false);
-            renderTentacle(stack,entity,light, bufferSource, entity.getFrontRightTentacle().getEntities(),entity.getFrontRightTentacle().getSegmentVar(), entity,partialTicks,false,false);
-            renderTentacle(stack,entity,light, bufferSource, entity.getRightArmTentacle().getEntities(),entity.getRightArmTentacle().getSegmentVar(), entity,partialTicks,true,false);
-            renderTentacle(stack,entity,light, bufferSource, entity.getLeftArmTentacle().getEntities(),entity.getLeftArmTentacle().getSegmentVar(), entity, partialTicks,true,true);
-            SpecialEffects.renderFunnel(stack,light, bufferSource, entity.getVortexFunnel().getEntities(),time,packedColor,1f,WATER);
-            SpecialEffects.renderFunnel(stack,light, bufferSource, entity.getVortexFunnel().getEntities(),time,-1,1.1f,WATER_RIPTIDE);
-            SpecialEffects.renderFunnel(stack,light, bufferSource, entity.getVortexFunnel().getEntities(),time2,packedColor,0.9f,WATER);
+            if (!entity.isInvisible()){
+                renderTentacle(stack,entity,light, bufferSource, entity.getBackRightTentacle().getEntities(),entity.getBackRightTentacle().getSegmentVar(), entity,partialTicks,false,false);
+                renderTentacle(stack,entity,light, bufferSource, entity.getBackLeftTentacle().getEntities(),entity.getBackLeftTentacle().getSegmentVar(), entity,partialTicks,false,false);
+                renderTentacle(stack,entity,light, bufferSource, entity.getMiddleLeftTentacle().getEntities(),entity.getMiddleLeftTentacle().getSegmentVar(), entity,partialTicks,false,false);
+                renderTentacle(stack,entity,light, bufferSource, entity.getMiddleRightTentacle().getEntities(),entity.getMiddleRightTentacle().getSegmentVar(), entity,partialTicks,false,false);
+                renderTentacle(stack,entity,light, bufferSource, entity.getFrontLeftTentacle().getEntities(),entity.getFrontLeftTentacle().getSegmentVar(), entity,partialTicks,false,false);
+                renderTentacle(stack,entity,light, bufferSource, entity.getFrontRightTentacle().getEntities(),entity.getFrontRightTentacle().getSegmentVar(), entity,partialTicks,false,false);
+                renderTentacle(stack,entity,light, bufferSource, entity.getRightArmTentacle().getEntities(),entity.getRightArmTentacle().getSegmentVar(), entity,partialTicks,true,false);
+                renderTentacle(stack,entity,light, bufferSource, entity.getLeftArmTentacle().getEntities(),entity.getLeftArmTentacle().getSegmentVar(), entity, partialTicks,true,true);
+
+            }
+            //SpecialEffects.renderFunnel(stack,light, bufferSource, entity.getVortexFunnel().getEntities(),time,packedColor,1f,WATER);
+           // SpecialEffects.renderFunnel(stack,light, bufferSource, entity.getVortexFunnel().getEntities(),time,-1,1.1f,WATER_RIPTIDE);
+           // SpecialEffects.renderFunnel(stack,light, bufferSource, entity.getVortexFunnel().getEntities(),time2,packedColor,0.9f,WATER);
         }
         stack.popPose();
     }
@@ -117,14 +121,19 @@ public class KrakenRenderer<Type extends Grakensenker> extends CalamityRenderer<
         if (segments == null || segments.length < 2) return;
         float hurtTime = parent.hurtTime - partial;
         float flashIntensity = 0.0F;
+        int mutationColor = type.getMutationColor() == 0 ? -1 : type.getMutationColor();
         Vec3 origin = null;
         if (hurtTime > 0) {
             flashIntensity = Math.min(hurtTime / 10.0F, 1.0F);
         }
-        float red = 1.0F;
-        float green = 1.0F - flashIntensity * 0.5F;
-        float blue = 1.0F - flashIntensity * 0.5F;
-        int color = packColorARGB(1.0F, red, green, blue);
+        float baseR = ((mutationColor >> 16) & 0xFF) / 255f;
+        float baseG = ((mutationColor >> 8) & 0xFF) / 255f;
+        float baseB = (mutationColor & 0xFF) / 255f;
+        float flash = flashIntensity * 0.5f;
+        float g = Mth.lerp(flash, baseG, 0.2f);
+        float b = Mth.lerp(flash, baseB, 0.2f);
+
+        int color = packColorARGB(1.0F, baseR, g, b);
         for (int i = 0; i < segments.length; i++) {
             Vec3 currentPos = segments[i];
             renderConnection(origin, currentPos,type,light, stack, buffer, i,var[i],partial,color,i == segments.length-1, arm,right);
@@ -156,8 +165,8 @@ public class KrakenRenderer<Type extends Grakensenker> extends CalamityRenderer<
             stack.mulPose(Axis.XP.rotation(pitch));
             stack.pushPose();
             {
-                VertexConsumer consumer = buffer.getBuffer(RenderType.entityCutoutNoCull(TENTACLES));
-                EntityModel<Type> typeEntityModel = last && !arm ? foot : getTentacleModel(var);
+                VertexConsumer consumer = buffer.getBuffer(RenderType.entityCutoutNoCull(arm ? KRAKEN_HAND : TENTACLES));
+                EntityModel<Type> typeEntityModel = last ? arm ? right ? armModel1 : armModel2 : foot : getTentacleModel(var);
                 stack.mulPose(Axis.XP.rotationDegrees(90));
                 stack.translate(0,-length/2,0);
                 stack.scale(size,length*1.05f,size);
@@ -165,17 +174,6 @@ public class KrakenRenderer<Type extends Grakensenker> extends CalamityRenderer<
                 typeEntityModel.renderToBuffer(stack,consumer,light, OverlayTexture.NO_OVERLAY, color);
             }
             stack.popPose();
-            if (arm && last){
-                EntityModel<Type> armModel = right ? armModel1 : armModel2;
-                VertexConsumer consumerArm = buffer.getBuffer(RenderType.entityCutoutNoCull(KRAKEN_HAND));
-                stack.pushPose();
-                stack.mulPose(Axis.XP.rotationDegrees(90));
-                stack.translate(0,length/2,0);
-                stack.scale(1,length,1);
-                armModel.setupAnim(parent,0,0,parent.tickCount + partial,0,0);
-                armModel.renderToBuffer(stack,consumerArm,light, OverlayTexture.NO_OVERLAY, color);
-                stack.popPose();
-            }
         }
         stack.popPose();
     }

@@ -332,8 +332,8 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
             leg.applyIK();
         }
         if (tickCount % 10 == 0){
-            tryGrab(getRightArm(),true);
-            tryGrab(getLeftArm(),false);
+            tryGrab(getRightArm(),true,getRightArmDelay() <= 0);
+            tryGrab(getLeftArm(),false,getLeftArmDelay() <= 0);
         }
         if (tickCount % 20 == 0){
             validateArms();
@@ -347,9 +347,9 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
     }
 
 
-    private void tryGrab(Vector3f handPos, boolean right) {
+    private void tryGrab(Vector3f handPos, boolean right ,boolean canGrab) {
         boolean active = right ? isRightArmFull() : isLeftArmFull();
-        if (active){
+        if (active && canGrab){
             return;
         }
         AABB aabb = new AABB(
@@ -404,10 +404,10 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
                 setLeftArmEntity(-1);
             }
         }else {
-            if (tickCount % 20 == 0){
-                this.doHurtTarget(passenger);
-            }
             callback.accept(passenger,this.getX(),this.getY()+getExtendedHeight(),this.getZ());
+            if (tickCount % 20 == 0 && passenger instanceof LivingEntity living){
+                this.doHurtTarget(living);
+            }
         }
     }
 
