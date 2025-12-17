@@ -120,29 +120,29 @@ public class HandSeg1<T extends Entity> extends EntityModel<T> implements Tentac
 
 		PartDefinition CalcifiedThorns = partdefinition.addOrReplaceChild("CalcifiedThorns", CubeListBuilder.create(), PartPose.offset(-3.2484F, 23.5056F, 16.1064F));
 
-		PartDefinition CalcifiedThorn1 = CalcifiedThorns.addOrReplaceChild("CalcifiedThorn1", CubeListBuilder.create().texOffs(33, 55).addBox(-0.9423F, -0.3335F, -0.9959F, 2.0F, 5.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(2.1F, -14.0F, -11.9F, 0.4815F, -0.0142F, -0.0044F));
+		PartDefinition CalcifiedThorn1 = CalcifiedThorns.addOrReplaceChild("CalcifiedThorn1", CubeListBuilder.create().texOffs(43, 49).addBox(-0.9423F, -0.3335F, -0.9959F, 2.0F, 5.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(2.1F, -14.0F, -11.9F, 0.4815F, -0.0142F, -0.0044F));
 
-		PartDefinition Plane2_r1 = CalcifiedThorn1.addOrReplaceChild("Plane2_r1", CubeListBuilder.create().texOffs(42, 50).addBox(0.0F, -2.0F, -0.5F, 0.0F, 5.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-0.3423F, 6.6665F, -0.2959F, 0.0F, 0.7854F, 0.0F));
+		PartDefinition Plane2_r1 = CalcifiedThorn1.addOrReplaceChild("Plane2_r1", CubeListBuilder.create().texOffs(62, 57).addBox(0.0F, -2.0F, -0.5F, 0.0F, 5.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-0.3423F, 6.6665F, -0.2959F, 0.0F, 0.7854F, 0.0F));
 
-		PartDefinition Plane1_r1 = CalcifiedThorn1.addOrReplaceChild("Plane1_r1", CubeListBuilder.create().texOffs(58, 51).addBox(0.0F, -2.0F, -0.5F, 0.0F, 5.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.3577F, 6.6665F, -0.2959F, 0.0F, -0.7854F, 0.0F));
+		PartDefinition Plane1_r1 = CalcifiedThorn1.addOrReplaceChild("Plane1_r1", CubeListBuilder.create().texOffs(62, 57).addBox(0.0F, -2.0F, -0.5F, 0.0F, 5.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.3577F, 6.6665F, -0.2959F, 0.0F, -0.7854F, 0.0F));
 
-		PartDefinition CalcifiedThorn2 = CalcifiedThorns.addOrReplaceChild("CalcifiedThorn2", CubeListBuilder.create().texOffs(33, 55).addBox(-0.9423F, -0.3335F, -0.9958F, 2.0F, 5.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-2.2F, -13.1F, -17.1F, -3.0863F, -1.3078F, -2.7947F));
+		PartDefinition CalcifiedThorn2 = CalcifiedThorns.addOrReplaceChild("CalcifiedThorn2", CubeListBuilder.create().texOffs(48, 48).addBox(-0.9423F, -0.3335F, -0.9958F, 2.0F, 5.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-2.2F, -13.1F, -17.1F, -3.0863F, -1.3078F, -2.7947F));
 
-		PartDefinition Plane3_r1 = CalcifiedThorn2.addOrReplaceChild("Plane3_r1", CubeListBuilder.create().texOffs(42, 50).addBox(0.0F, -2.0F, -0.5F, 0.0F, 5.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-0.3423F, 6.6665F, -0.2958F, 0.0F, 0.7854F, 0.0F));
+		PartDefinition Plane3_r1 = CalcifiedThorn2.addOrReplaceChild("Plane3_r1", CubeListBuilder.create().texOffs(62, 57).addBox(0.0F, -2.0F, -0.5F, 0.0F, 5.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-0.3423F, 6.6665F, -0.2958F, 0.0F, 0.7854F, 0.0F));
 
-		PartDefinition Plane2_r2 = CalcifiedThorn2.addOrReplaceChild("Plane2_r2", CubeListBuilder.create().texOffs(58, 51).addBox(0.0F, -2.0F, -0.5F, 0.0F, 5.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.3577F, 6.6665F, -0.2958F, 0.0F, -0.7854F, 0.0F));
+		PartDefinition Plane2_r2 = CalcifiedThorn2.addOrReplaceChild("Plane2_r2", CubeListBuilder.create().texOffs(62, 57).addBox(0.0F, -2.0F, -0.5F, 0.0F, 5.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.3577F, 6.6665F, -0.2958F, 0.0F, -0.7854F, 0.0F));
 
-		PartDefinition CalcifiedThorn3 = CalcifiedThorns.addOrReplaceChild("CalcifiedThorn3", CubeListBuilder.create().texOffs(33, 55).addBox(-0.9423F, -0.3335F, -0.9959F, 2.0F, 5.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(8.8F, -13.1F, -18.1F, 0.4158F, -1.203F, -0.8402F));
+		PartDefinition CalcifiedThorn3 = CalcifiedThorns.addOrReplaceChild("CalcifiedThorn3", CubeListBuilder.create().texOffs(50, 48).addBox(-0.9423F, -0.3335F, -0.9959F, 2.0F, 5.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(8.8F, -13.1F, -18.1F, 0.4158F, -1.203F, -0.8402F));
 
-		PartDefinition Plane4_r1 = CalcifiedThorn3.addOrReplaceChild("Plane4_r1", CubeListBuilder.create().texOffs(42, 50).addBox(0.0F, -2.0F, -0.5F, 0.0F, 5.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-0.3423F, 6.6665F, -0.2958F, 0.0F, 0.7854F, 0.0F));
+		PartDefinition Plane4_r1 = CalcifiedThorn3.addOrReplaceChild("Plane4_r1", CubeListBuilder.create().texOffs(62, 57).addBox(0.0F, -2.0F, -0.5F, 0.0F, 5.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-0.3423F, 6.6665F, -0.2958F, 0.0F, 0.7854F, 0.0F));
 
-		PartDefinition Plane3_r2 = CalcifiedThorn3.addOrReplaceChild("Plane3_r2", CubeListBuilder.create().texOffs(58, 51).addBox(0.0F, -2.0F, -0.5F, 0.0F, 5.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.3577F, 6.6665F, -0.2958F, 0.0F, -0.7854F, 0.0F));
+		PartDefinition Plane3_r2 = CalcifiedThorn3.addOrReplaceChild("Plane3_r2", CubeListBuilder.create().texOffs(62, 57).addBox(0.0F, -2.0F, -0.5F, 0.0F, 5.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.3577F, 6.6665F, -0.2958F, 0.0F, -0.7854F, 0.0F));
 
 		PartDefinition CalcifiedThorn4 = CalcifiedThorns.addOrReplaceChild("CalcifiedThorn4", CubeListBuilder.create().texOffs(33, 55).addBox(-0.9423F, -0.3335F, -0.9959F, 2.0F, 5.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(2.8F, -13.1F, -20.9F, -1.5833F, -1.1368F, 1.4906F));
 
-		PartDefinition Plane5_r1 = CalcifiedThorn4.addOrReplaceChild("Plane5_r1", CubeListBuilder.create().texOffs(42, 50).addBox(0.0F, -2.0F, -0.5F, 0.0F, 5.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-0.3423F, 6.6665F, -0.2959F, 0.0F, 0.7854F, 0.0F));
+		PartDefinition Plane5_r1 = CalcifiedThorn4.addOrReplaceChild("Plane5_r1", CubeListBuilder.create().texOffs(62, 47).addBox(0.0F, -2.0F, -0.5F, 0.0F, 5.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-0.3423F, 6.6665F, -0.2959F, 0.0F, 0.7854F, 0.0F));
 
-		PartDefinition Plane4_r2 = CalcifiedThorn4.addOrReplaceChild("Plane4_r2", CubeListBuilder.create().texOffs(58, 51).addBox(0.0F, -2.0F, -0.5F, 0.0F, 5.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.3577F, 6.6665F, -0.2959F, 0.0F, -0.7854F, 0.0F));
+		PartDefinition Plane4_r2 = CalcifiedThorn4.addOrReplaceChild("Plane4_r2", CubeListBuilder.create().texOffs(62, 51).addBox(0.0F, -2.0F, -0.5F, 0.0F, 5.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.3577F, 6.6665F, -0.2959F, 0.0F, -0.7854F, 0.0F));
 
 		PartDefinition Fingers = partdefinition.addOrReplaceChild("Fingers", CubeListBuilder.create(), PartPose.offset(0.0F, 24.0F, 0.0F));
 

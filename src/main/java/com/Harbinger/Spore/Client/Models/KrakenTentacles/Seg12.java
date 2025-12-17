@@ -88,9 +88,9 @@ public class Seg12<T extends Entity> extends EntityModel<T> {
 
 		PartDefinition CalcifiedThorn2 = CalcifiedThorns.addOrReplaceChild("CalcifiedThorn2", CubeListBuilder.create().texOffs(33, 55).addBox(-0.9423F, -0.3335F, -0.9958F, 2.0F, 5.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-15.8F, -8.3F, -19.0F, -2.6522F, -0.1746F, 1.0876F));
 
-		PartDefinition Plane3_r1 = CalcifiedThorn2.addOrReplaceChild("Plane3_r1", CubeListBuilder.create().texOffs(42, 50).addBox(0.0F, -2.0F, -0.5F, 0.0F, 5.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-0.3423F, 6.6665F, -0.2958F, 0.0F, 0.7854F, 0.0F));
+		PartDefinition Plane3_r1 = CalcifiedThorn2.addOrReplaceChild("Plane3_r1", CubeListBuilder.create().texOffs(62, 48).addBox(0.0F, -2.0F, -0.5F, 0.0F, 5.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-0.3423F, 6.6665F, -0.2958F, 0.0F, 0.7854F, 0.0F));
 
-		PartDefinition Plane2_r2 = CalcifiedThorn2.addOrReplaceChild("Plane2_r2", CubeListBuilder.create().texOffs(58, 51).addBox(0.0F, -2.0F, -0.5F, 0.0F, 5.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.3577F, 6.6665F, -0.2958F, 0.0F, -0.7854F, 0.0F));
+		PartDefinition Plane2_r2 = CalcifiedThorn2.addOrReplaceChild("Plane2_r2", CubeListBuilder.create().texOffs(62, 51).addBox(0.0F, -2.0F, -0.5F, 0.0F, 5.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.3577F, 6.6665F, -0.2958F, 0.0F, -0.7854F, 0.0F));
 
 		PartDefinition CalcifiedThorn3 = CalcifiedThorns.addOrReplaceChild("CalcifiedThorn3", CubeListBuilder.create().texOffs(33, 55).addBox(-0.9423F, -0.3335F, -0.9958F, 2.0F, 5.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-17.5F, -5.3F, -12.0F, 2.3032F, -0.3745F, 0.9965F));
 

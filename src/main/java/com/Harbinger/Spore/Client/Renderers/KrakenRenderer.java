@@ -5,6 +5,7 @@ import com.Harbinger.Spore.Client.Layers.GrakenMembraneLayer;
 import com.Harbinger.Spore.Client.Models.GrakensenkerModel;
 import com.Harbinger.Spore.Client.Models.KrakenTentacles.*;
 import com.Harbinger.Spore.Client.Special.CalamityRenderer;
+import com.Harbinger.Spore.Client.SpecialEffects;
 import com.Harbinger.Spore.Sentities.Calamities.Grakensenker;
 import com.Harbinger.Spore.Spore;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -16,13 +17,10 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import org.joml.Vector2f;
-import org.joml.Vector3f;
 
 @OnlyIn(Dist.CLIENT)
 public class KrakenRenderer<Type extends Grakensenker> extends CalamityRenderer<Type , EntityModel<Type>> {
@@ -103,8 +101,8 @@ public class KrakenRenderer<Type extends Grakensenker> extends CalamityRenderer<
             renderTentacle(stack,entity,light, bufferSource, entity.getFrontRightTentacle().getEntities(),entity.getFrontRightTentacle().getSegmentVar(), entity,partialTicks,false,false);
             renderTentacle(stack,entity,light, bufferSource, entity.getRightArmTentacle().getEntities(),entity.getRightArmTentacle().getSegmentVar(), entity,partialTicks,true,false);
             renderTentacle(stack,entity,light, bufferSource, entity.getLeftArmTentacle().getEntities(),entity.getLeftArmTentacle().getSegmentVar(), entity, partialTicks,true,true);
-            renderFunnel(stack,entity,light, bufferSource, entity.getVortexFunnel().getEntities(),partialTicks,packedColor,1f,WATER);
-            renderFunnel(stack,entity,light, bufferSource, entity.getVortexFunnel().getEntities(),partialTicks,packedColor,2f,WATER);
+            SpecialEffects.renderFunnel(stack,entity,light, bufferSource, entity.getVortexFunnel().getEntities(),partialTicks,packedColor,1f,WATER);
+            SpecialEffects.renderFunnel(stack,entity,light, bufferSource, entity.getVortexFunnel().getEntities(),partialTicks,packedColor,2f,WATER);
         }
         stack.popPose();
     }
@@ -176,161 +174,4 @@ public class KrakenRenderer<Type extends Grakensenker> extends CalamityRenderer<
         stack.popPose();
     }
 
-    private Ring buildRing(
-            Vec3 center,
-            Vec3 direction,
-            float radius,
-            float rotationOffset
-    ) {
-        Ring ring = new Ring();
-
-        Vec3 up = Math.abs(direction.y) > 0.99
-                ? new Vec3(1, 0, 0)
-                : new Vec3(0, 1, 0);
-
-        Vec3 right = direction.cross(up).normalize();
-        Vec3 forward = right.cross(direction).normalize();
-
-        for (int i = 0; i < 8; i++) {
-            float angle = (i * Mth.TWO_PI / 8f) + rotationOffset;
-            float x = Mth.cos(angle);
-            float y = Mth.sin(angle);
-
-            Vec3 offset = right.scale(x * radius)
-                    .add(forward.scale(y * radius));
-
-            ring.vertices[i] = new Vector3f(
-                    (float)(center.x + offset.x),
-                    (float)(center.y + offset.y),
-                    (float)(center.z + offset.z)
-            );
-
-            ring.normals[i] = new Vector3f(
-                    (float)offset.x,
-                    (float)offset.y,
-                    (float)offset.z
-            ).normalize();
-
-            ring.uvs[i] = new Vector2f(
-                    (float)i / 8f,
-                    0
-            );
-        }
-
-        return ring;
-    }
-
-    private void renderFunnel(
-            PoseStack stack,
-            Type type,
-            int light,
-            MultiBufferSource buffer,
-            Vec3[] segments,
-            float partial,int packedColor,float sizeA,ResourceLocation location
-    ) {
-        if (segments == null || segments.length < 2) return;
-
-        Ring previousRing = null;
-        VertexConsumer consumer = buffer.getBuffer(RenderType.entityTranslucent(location));
-
-        float time = (type.tickCount + partial) * 0.05f;
-
-        for (int i = 1; i < segments.length; i++) {
-            Vec3 from = segments[i - 1];
-            Vec3 to   = segments[i];
-            Vec3 dir  = to.subtract(from).normalize();
-            float size = calculateSize(i, segments.length,sizeA);
-
-            // KEY: Different rotation for each segment!
-            float segmentProgress = (float)i / segments.length;
-            float rotation = time + (segmentProgress * 4f); // More rotation at the end
-
-            Ring currentRing = buildRing(to, dir, size, rotation);
-
-            if (previousRing != null) {
-                // No rotation in stitchRings - rotation already applied in buildRing!
-                stitchRings(
-                        previousRing,
-                        currentRing,
-                        consumer,
-                        stack,
-                        packedColor,
-                        light,
-                        OverlayTexture.NO_OVERLAY,
-                        sizeA
-                );
-            }
-
-            previousRing = currentRing;
-        }
-    }
-
-    private void stitchRings(
-            Ring a,
-            Ring b,
-            VertexConsumer consumer,
-            PoseStack stack,
-            int color,
-            int light,
-            int overlay,
-            float scale
-    ) {
-        stack.pushPose();
-        stack.scale(scale,1,scale);
-        PoseStack.Pose pose = stack.last();
-        for (int i = 0; i < 8; i++) {
-            int next = (i + 1) % 8;
-            float vA = 0f;
-            float vB = 1f;
-
-            // Simple stitching - rotation already in vertices
-            consumer.addVertex(pose, a.vertices[i])
-                    .setColor(color)
-                    .setUv(a.uvs[i].x, vA)
-                    .setOverlay(overlay)
-                    .setLight(light)
-                    .setNormal(pose, a.normals[i].x(), a.normals[i].y(), a.normals[i].z());
-
-            consumer.addVertex(pose, a.vertices[next])
-                    .setColor(color)
-                    .setUv(a.uvs[next].x, vA)
-                    .setOverlay(overlay)
-                    .setLight(light)
-                    .setNormal(pose, a.normals[next].x(), a.normals[next].y(), a.normals[next].z());
-
-            consumer.addVertex(pose, b.vertices[next])
-                    .setColor(color)
-                    .setUv(b.uvs[next].x, vB)
-                    .setOverlay(overlay)
-                    .setLight(light)
-                    .setNormal(pose, b.normals[next].x(), b.normals[next].y(), b.normals[next].z());
-
-            consumer.addVertex(pose, b.vertices[i])
-                    .setColor(color)
-                    .setUv(b.uvs[i].x, vB)
-                    .setOverlay(overlay)
-                    .setLight(light)
-                    .setNormal(pose, b.normals[i].x(), b.normals[i].y(), b.normals[i].z());
-        }
-        stack.popPose();
-    }
-
-    private static class Ring {
-        Vector3f[] vertices = new Vector3f[8];
-        Vector3f[] normals = new Vector3f[8];
-        Vector2f[] uvs = new Vector2f[8];  // ADD THIS
-    }
-
-    private float calculateSize(int segmentIndex, int totalSegments,float inflation) {
-        float progress = Mth.clamp(
-                (float) segmentIndex / (totalSegments - 1),
-                0.0f, 1.0f
-        );
-
-        float startSize = 0.5f;
-        float endSize = 3f;
-
-        return (startSize + (endSize - startSize) * progress
-                + 0.3f * Mth.sin(progress * Mth.PI)) * inflation;
-    }
 }
