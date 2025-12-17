@@ -120,8 +120,8 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
         BACK_RIGHT_TENTACLE(new Vec3(-3,3.5,-0.75),new Vec3(-6, -1, -6),new Vec3(1, 1, -4)),
         MIDDLE_LEFT_TENTACLE(new Vec3(-1,2,0.75),new Vec3(0, -1, 6),new Vec3(2, 1, 7)),
         MIDDLE_RIGHT_TENTACLE(new Vec3(-1,2,-0.75),new Vec3(0, -1, -6),new Vec3(2, 1, -7)),
-        FRONT_LEFT_TENTACLE(new Vec3(-2,3,0.75),new Vec3(9, -1, 6),new Vec3(8, 1, 4)),
-        FRONT_RIGHT_TENTACLE(new Vec3(-2,3,-0.75),new Vec3(9, -1, -6),new Vec3(8, 1, -4)),
+        FRONT_LEFT_TENTACLE(new Vec3(-2,3,0.75),new Vec3(9, -1, 6),new Vec3(12, 1, 4)),
+        FRONT_RIGHT_TENTACLE(new Vec3(-2,3,-0.75),new Vec3(9, -1, -6),new Vec3(12, 1, -4)),
         LEFT_ARM(new Vec3(0,3,-1),new Vec3(8, 2.5, -6),new Vec3(12, 2.5, -8)),
         RIGHT_ARM(new Vec3(0,3,1),new Vec3(8, 2.5, 6),new Vec3(12, 2.5, 8));
         private final Vec3 bodySet;
