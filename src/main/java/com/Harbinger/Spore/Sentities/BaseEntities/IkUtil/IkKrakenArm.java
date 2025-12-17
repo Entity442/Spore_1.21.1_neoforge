@@ -24,8 +24,8 @@ public class IkKrakenArm extends IkKrakenLeg {
     private final Vec3 LeftMidVec2 = new Vec3(7, 1.5, 5);
     private final Vec3 MouthPosition = new Vec3(0, 1.5, 0);
     protected final boolean hand;
-    public IkKrakenArm(Grakensenker owner,boolean hand, int amount, Vec3 defaultBodyOffset, Vec3 defaultLimbOffset, float maxDistance, boolean rightArm) {
-        super(owner, amount, defaultBodyOffset, defaultLimbOffset, maxDistance);
+    public IkKrakenArm(Grakensenker owner,boolean hand, int amount, Vec3 defaultBodyOffset, Vec3 defaultLimbOffset,Vec3 underwater, float maxDistance, boolean rightArm) {
+        super(owner, amount, defaultBodyOffset, defaultLimbOffset,underwater, maxDistance);
         this.rightArm = rightArm;
         this.hand = hand;
     }
@@ -42,6 +42,9 @@ public class IkKrakenArm extends IkKrakenLeg {
 
     @Override
     public void refreshLegStandingPoint() {
+        if (owner.isInDeepWater()){
+            return;
+        }
         int hitValues = hand ? owner.getRightArmDelay() : owner.getLeftArmDelay();
         boolean full = !hand ? owner.isRightArmFull() : owner.isLeftArmFull();
         sitPosition = this.target == null || hitValues > 0 ? getLegBasePos() : this.target.position().add(0, this.target.getBbHeight() * 0.5, 0);
@@ -53,8 +56,13 @@ public class IkKrakenArm extends IkKrakenLeg {
     }
     @Override
     protected void moveTipTowards(Vec3 value) {
+        int tip = entities.length - 1;
+        Vec3 currentPos = entities[tip];
+        if (owner.isInDeepWater()){
+            entities[tip] = currentPos.lerp(getUnderwaterLegOffset(), 0.15f);
+            return;
+        }
         int val = entities.length - 1;
-        Vec3 currentPos = entities[val];
         Vec3 newPos = currentPos.lerp(value, 0.2f);
         entities[val] = newPos;
     }
@@ -96,7 +104,7 @@ public class IkKrakenArm extends IkKrakenLeg {
     }
 
     protected void moveMidSegmentTowards(int index, Vec3 target) {
-        if (this.target != null){
+        if (this.target != null || owner.isInDeepWater()){
             return;
         }
         Vec3 currentPos = entities[index];

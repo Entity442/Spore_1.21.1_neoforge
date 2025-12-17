@@ -23,6 +23,7 @@ import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
@@ -62,24 +63,26 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
     private final IkKrakenLeg[] TickTentacles;
     private final CalamityMultipart[] subEntities;
     public final CalamityMultipart Body;
+    public final CalamityMultipart Body2;
     public final CalamityMultipart RightHand;
     public final CalamityMultipart LeftHand;
     public Grakensenker(EntityType<? extends PathfinderMob> type, Level level) {
         super(type, level);
         this.Body = new CalamityMultipart(this, "body", 5F, 5F);
+        this.Body2 = new CalamityMultipart(this, "body2", 5F, 5F);
         this.RightHand = new CalamityMultipart(this, "right", 1.5F, 1.5F);
         this.LeftHand = new CalamityMultipart(this, "left", 1.5F, 1.5F);
-        BackRightTentacle = new IkKrakenLeg(this,7,GrakenLegsModifiers.BACK_RIGHT_TENTACLE.bodySet, GrakenLegsModifiers.BACK_RIGHT_TENTACLE.offset, 4);
-        BackLeftTentacle = new IkKrakenLeg(this,7,GrakenLegsModifiers.BACK_LEFT_TENTACLE.bodySet, GrakenLegsModifiers.BACK_LEFT_TENTACLE.offset, 4);
-        MiddleRightTentacle = new IkKrakenLeg(this,7,GrakenLegsModifiers.MIDDLE_RIGHT_TENTACLE.bodySet, GrakenLegsModifiers.MIDDLE_RIGHT_TENTACLE.offset, 6);
-        MiddleLeftTentacle = new IkKrakenLeg(this,7,GrakenLegsModifiers.MIDDLE_LEFT_TENTACLE.bodySet, GrakenLegsModifiers.MIDDLE_LEFT_TENTACLE.offset, 6);
-        FrontRightTentacle = new IkKrakenLeg(this,10,GrakenLegsModifiers.FRONT_RIGHT_TENTACLE.bodySet, GrakenLegsModifiers.FRONT_RIGHT_TENTACLE.offset, 8);
-        FrontLeftTentacle = new IkKrakenLeg(this,10,GrakenLegsModifiers.FRONT_LEFT_TENTACLE.bodySet, GrakenLegsModifiers.FRONT_LEFT_TENTACLE.offset, 8);
-        RightArmTentacle = new IkKrakenArm(this,true,16,GrakenLegsModifiers.RIGHT_ARM.bodySet, GrakenLegsModifiers.RIGHT_ARM.offset, 4,false);
-        LeftArmTentacle = new IkKrakenArm(this,false,16,GrakenLegsModifiers.LEFT_ARM.bodySet, GrakenLegsModifiers.LEFT_ARM.offset, 4,true);
+        BackRightTentacle = new IkKrakenLeg(this,7,GrakenLegsModifiers.BACK_RIGHT_TENTACLE.bodySet, GrakenLegsModifiers.BACK_RIGHT_TENTACLE.offset, GrakenLegsModifiers.BACK_RIGHT_TENTACLE.underwaterOffset, 4);
+        BackLeftTentacle = new IkKrakenLeg(this,7,GrakenLegsModifiers.BACK_LEFT_TENTACLE.bodySet, GrakenLegsModifiers.BACK_LEFT_TENTACLE.offset, GrakenLegsModifiers.BACK_LEFT_TENTACLE.underwaterOffset, 4);
+        MiddleRightTentacle = new IkKrakenLeg(this,7,GrakenLegsModifiers.MIDDLE_RIGHT_TENTACLE.bodySet, GrakenLegsModifiers.MIDDLE_RIGHT_TENTACLE.offset, GrakenLegsModifiers.MIDDLE_RIGHT_TENTACLE.underwaterOffset, 6);
+        MiddleLeftTentacle = new IkKrakenLeg(this,7,GrakenLegsModifiers.MIDDLE_LEFT_TENTACLE.bodySet, GrakenLegsModifiers.MIDDLE_LEFT_TENTACLE.offset, GrakenLegsModifiers.MIDDLE_LEFT_TENTACLE.underwaterOffset, 6);
+        FrontRightTentacle = new IkKrakenLeg(this,10,GrakenLegsModifiers.FRONT_RIGHT_TENTACLE.bodySet, GrakenLegsModifiers.FRONT_RIGHT_TENTACLE.offset, GrakenLegsModifiers.FRONT_RIGHT_TENTACLE.underwaterOffset, 8);
+        FrontLeftTentacle = new IkKrakenLeg(this,10,GrakenLegsModifiers.FRONT_LEFT_TENTACLE.bodySet, GrakenLegsModifiers.FRONT_LEFT_TENTACLE.offset, GrakenLegsModifiers.FRONT_LEFT_TENTACLE.underwaterOffset, 8);
+        RightArmTentacle = new IkKrakenArm(this,true,16,GrakenLegsModifiers.RIGHT_ARM.bodySet, GrakenLegsModifiers.RIGHT_ARM.offset, GrakenLegsModifiers.RIGHT_ARM.underwaterOffset, 4,false);
+        LeftArmTentacle = new IkKrakenArm(this,false,16,GrakenLegsModifiers.LEFT_ARM.bodySet, GrakenLegsModifiers.LEFT_ARM.offset, GrakenLegsModifiers.LEFT_ARM.underwaterOffset, 4,true);
         VortexFunnel = new IkVortexFunnel(this);
         TickTentacles = new IkKrakenLeg[]{BackRightTentacle,BackLeftTentacle,MiddleRightTentacle,MiddleLeftTentacle,FrontRightTentacle,FrontLeftTentacle,RightArmTentacle,LeftArmTentacle,VortexFunnel};
-        this.subEntities = new CalamityMultipart[]{ this.Body, this.RightHand,this.LeftHand};
+        this.subEntities = new CalamityMultipart[]{ this.Body,this.Body2, this.RightHand,this.LeftHand};
         this.setId(ENTITY_COUNTER.getAndAdd(this.subEntities.length + 1) + 1);
     }
     @Override
@@ -113,20 +116,22 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
 
     }
     enum GrakenLegsModifiers{
-        BACK_LEFT_TENTACLE(new Vec3(-3,3.5,0.75),new Vec3(-6, -1, 6)),
-        BACK_RIGHT_TENTACLE(new Vec3(-3,3.5,-0.75),new Vec3(-6, -1, -6)),
-        MIDDLE_LEFT_TENTACLE(new Vec3(-1,2,0.75),new Vec3(0, -1, 6)),
-        MIDDLE_RIGHT_TENTACLE(new Vec3(-1,2,-0.75),new Vec3(0, -1, -6)),
-        FRONT_LEFT_TENTACLE(new Vec3(-2,3,0.75),new Vec3(9, -1, 6)),
-        FRONT_RIGHT_TENTACLE(new Vec3(-2,3,-0.75),new Vec3(9, -1, -6)),
-        LEFT_ARM(new Vec3(0,3,-1),new Vec3(8, 2.5, -6)),
-        RIGHT_ARM(new Vec3(0,3,1),new Vec3(8, 2.5, 6));
+        BACK_LEFT_TENTACLE(new Vec3(-3,3.5,0.75),new Vec3(-6, -1, 6),new Vec3(1, 1, 4)),
+        BACK_RIGHT_TENTACLE(new Vec3(-3,3.5,-0.75),new Vec3(-6, -1, -6),new Vec3(1, 1, -4)),
+        MIDDLE_LEFT_TENTACLE(new Vec3(-1,2,0.75),new Vec3(0, -1, 6),new Vec3(2, 1, 7)),
+        MIDDLE_RIGHT_TENTACLE(new Vec3(-1,2,-0.75),new Vec3(0, -1, -6),new Vec3(2, 1, -7)),
+        FRONT_LEFT_TENTACLE(new Vec3(-2,3,0.75),new Vec3(9, -1, 6),new Vec3(8, 1, 4)),
+        FRONT_RIGHT_TENTACLE(new Vec3(-2,3,-0.75),new Vec3(9, -1, -6),new Vec3(8, 1, -4)),
+        LEFT_ARM(new Vec3(0,3,-1),new Vec3(8, 2.5, -6),new Vec3(12, 2.5, -8)),
+        RIGHT_ARM(new Vec3(0,3,1),new Vec3(8, 2.5, 6),new Vec3(12, 2.5, 8));
         private final Vec3 bodySet;
         private final Vec3 offset;
+        private final Vec3 underwaterOffset;
 
-        GrakenLegsModifiers(Vec3 bodySet, Vec3 offset) {
+        GrakenLegsModifiers(Vec3 bodySet, Vec3 offset, Vec3 underwaterOffset) {
             this.bodySet = bodySet;
             this.offset = offset;
+            this.underwaterOffset = underwaterOffset;
         }
     }
     public IkKrakenLeg getBackRightTentacle(){
@@ -221,15 +226,14 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
         entityData.set(WATER_TICKS,value);
     }
     public boolean isInDeepWater(){
-        return entityData.get(WATER_TICKS) > 40;
+        return entityData.get(WATER_TICKS) >= 40;
     }
     public Vector3f getRightArm(){return entityData.get(RIGHT_ARM_TIP);}
     public Vector3f getLeftArm(){return entityData.get(LEFT_ARM_TIP);}
     public void setRightArm(Vector3f vector3f){ entityData.set(RIGHT_ARM_TIP,vector3f);}
     public void setLeftArm(Vector3f vector3f){ entityData.set(LEFT_ARM_TIP,vector3f);}
     public int getRightArmDelay(){return entityData.get(RIGHT_ARM_DELAY);};
-    public int getLeftArmDelay(){return entityData.get(LEFT_ARM_DELAY);};
-
+    public int getLeftArmDelay(){return entityData.get(LEFT_ARM_DELAY);}
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
@@ -267,16 +271,20 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
         EntityDimensions baseDimensions = super.getDefaultDimensions(pose);
         return baseDimensions.scale(1,1+(getExtendedHeight() * 0.5f));
     }
+    public void applyYaw(CalamityMultipart part,Vec3 offset) {
+        float yawRad = this.getYRot() * Mth.DEG_TO_RAD;
+        float spinRad = this.getWaterTicks() * 0.05f;
+        Vec3 pos = this.position().add(offset.yRot(-yawRad - Mth.HALF_PI + spinRad));
+        part.setPos(pos.x, pos.y, pos.z);
+    }
     @Override
     public void aiStep() {
-        float f14 = this.getYRot() * ((float)Math.PI / 180F);
-        float f2 = Mth.sin(f14);
-        float f15 = Mth.cos(f14);
         Vec3[] avec3 = new Vec3[this.subEntities.length];
         for(int j = 0; j < this.subEntities.length; ++j) {
             avec3[j] = new Vec3(this.subEntities[j].getX(), this.subEntities[j].getY(), this.subEntities[j].getZ());
         }
-        this.tickPart(this.Body, (double)(f2 * 4.5F), 5.0D+getExtendedHeight(), (double)(-f15 * 4.5F));
+        this.applyYaw(this.Body,new Vec3 (-4.5, 5.0D+getExtendedHeight(), 0));
+        this.applyYaw(this.Body2,new Vec3 (-2.5, 2.0D+getExtendedHeight(), 0));
         this.RightHand.setPos(getRightArm().x, getRightArm().y-0.5, getRightArm().z);
         this.LeftHand.setPos(getLeftArm().x, getLeftArm().y-0.5, getLeftArm().z);
         for(int l = 0; l < this.subEntities.length; ++l) {
@@ -421,19 +429,22 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
 
         float current = getExtendedHeight();
         float target = current;
-        if (inDeepWater(getOnPos())){
-            if (getWaterTicks() <= 80){
-                setWaterTicks(getWaterTicks()+1);
+        boolean deep = inDeepWater(getOnPos());
+        if (deep){
+            if (getWaterTicks() <= 180){
+                setWaterTicks(getWaterTicks()+5);
             }
         }else {
             if (getWaterTicks() > 0){
-                setWaterTicks(getWaterTicks()-1);
+                setWaterTicks(getWaterTicks()-5);
             }
         }
         boolean deepWater = isInDeepWater();
         double wantedY = moveControl.getWantedY() + 2;
         boolean wantsLowStance = (wantedY < this.getY() + this.getBbHeight()) && this.horizontalCollision;
-
+        if (deepWater && moveControl.getWantedY()+2 > this.getY()){
+            this.setDeltaMovement(this.getDeltaMovement().add(0,-0.001,0));
+        }
         if (wantsLowStance || deepWater) {
             target -= 0.05f;
         }else {
@@ -446,8 +457,8 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
     }
 
     protected boolean inDeepWater(BlockPos pos){
-        BlockPos firstPos = pos.offset(-3,0,-3);
-        BlockPos secondPos = pos.offset(3,3,3);
+        BlockPos firstPos = pos.offset(-3,2,-3);
+        BlockPos secondPos = pos.offset(3,5,3);
         return BlockPos.betweenClosedStream(firstPos, secondPos).allMatch(this::checkForFluid);
     }
     boolean checkForFluid(BlockPos pos){
@@ -479,6 +490,10 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
     @Override
     public void onSyncedDataUpdated(EntityDataAccessor<?> dataAccessor) {
         if (HEIGHT.equals(dataAccessor)){
+            AttributeInstance instance = this.getAttribute(Attributes.STEP_HEIGHT);
+            if (instance != null){
+                instance.setBaseValue(1.5 + getExtendedHeight());
+            }
             this.refreshDimensions();
         }
         super.onSyncedDataUpdated(dataAccessor);

@@ -5,7 +5,7 @@ import net.minecraft.world.phys.Vec3;
 
 public class IkVortexFunnel extends IkKrakenLeg{
     public IkVortexFunnel(Grakensenker owner) {
-        super(owner, 20, new Vec3(-3, 5, 0.25), new Vec3(-12, 9, 0), 0);
+        super(owner, 20, new Vec3(-3, 5, 0.25), new Vec3(-12, 9, 0),Vec3.ZERO, 0);
     }
 
 

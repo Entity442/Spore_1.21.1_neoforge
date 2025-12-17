@@ -91,6 +91,7 @@ public class KrakenRenderer<Type extends Grakensenker> extends CalamityRenderer<
         float time2 = (entity.tickCount + partialTicks) * 0.1f;
         stack.pushPose();
         stack.translate(0,entity.getExtendedHeight(),0);
+        stack.mulPose(Axis.YP.rotationDegrees(entity.getWaterTicks()));
         super.render(entity, entityYaw, partialTicks, stack, bufferSource, light);
         stack.popPose();
         Vec3 entityPos = entity.getPosition(partialTicks);

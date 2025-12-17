@@ -3,6 +3,7 @@ package com.Harbinger.Spore.Sentities.BaseEntities.IkUtil;
 import com.Harbinger.Spore.Sentities.Calamities.Grakensenker;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
@@ -16,6 +17,7 @@ public class IkKrakenLeg {
     protected int[] segmentVar;
     protected final Vec3 defaultBodyOffset;
     protected final Vec3 defaultLimbOffset;
+    protected final Vec3 underwaterLimbOffset;
     protected final float maxDistance;
     protected final float[] wiggleTimers;
     protected final float[] wiggleSpeeds;
@@ -25,7 +27,7 @@ public class IkKrakenLeg {
     protected Vec3 lastSitPosition = null;
     protected int stepUpTicks = 0;
     public IkKrakenLeg(Grakensenker owner, int amount, Vec3 defaultBodyOffset,
-                       Vec3 defaultLimbOffset,
+                       Vec3 defaultLimbOffset,Vec3 underWaterOffset,
                        float maxDistance) {
         this.owner = owner;
         this.entities = new Vec3[amount];
@@ -44,6 +46,7 @@ public class IkKrakenLeg {
         }
         this.defaultBodyOffset = defaultBodyOffset;
         this.defaultLimbOffset = defaultLimbOffset;
+        this.underwaterLimbOffset = underWaterOffset;
         this.maxDistance = maxDistance;
     }
     public float getWiggleSpeed(){
@@ -101,7 +104,10 @@ public class IkKrakenLeg {
     }
 
     public Vec3 applyYaw(Vec3 offset) {
-        return (offset).yRot(-owner.getYRot() * ((float)Math.PI / 180F) - ((float)Math.PI / 2F));
+        float yawRad = owner.getYRot() * Mth.DEG_TO_RAD;
+        float spinRad = owner.getWaterTicks() * 0.05f;
+
+        return offset.yRot(-yawRad - Mth.HALF_PI + spinRad);
     }
 
     public Vec3 getLegBasePos() {
@@ -113,6 +119,10 @@ public class IkKrakenLeg {
         Vec3 pivot = owner.position().add(0, owner.getExtendedHeight(), 0);
         return pivot.add(applyYaw(defaultBodyOffset));
     }
+    public Vec3 getUnderwaterLegOffset() {
+        Vec3 pivot = owner.position().add(0, owner.getExtendedHeight(), 0);
+        return pivot.add(applyYaw(underwaterLimbOffset));
+    }
 
     protected void moveSegmentTowards(int index, Vec3 target,boolean far) {
         Vec3 currentPos = entities[index];
@@ -120,10 +130,14 @@ public class IkKrakenLeg {
         entities[index] = (far ? target : newPos);
     }
     protected void moveTipTowards(Vec3 target) {
-        float jumpVal = 3.5f;
-        boolean val = stepUpTicks > 0 && isOwnerMoving();
         int tip = entities.length - 1;
         Vec3 currentPos = entities[tip];
+        if (owner.isInDeepWater()){
+            entities[tip] = currentPos.lerp(getUnderwaterLegOffset(), 0.35f);
+            return;
+        }
+        float jumpVal = 3.5f;
+        boolean val = stepUpTicks > 0 && isOwnerMoving();
         entities[tip] = currentPos.lerp(target.add(0,val ? jumpVal : -1,0), 0.15f);
         if (val){
             for (int i = 1; i < entities.length-1; i++) {
@@ -184,6 +198,9 @@ public class IkKrakenLeg {
 
 
     public void refreshLegStandingPoint(){
+        if (owner.isInDeepWater()){
+            return;
+        }
         if (lastSitPosition != null && getLegBasePos().distanceTo(lastSitPosition) < maxDistance){
             return;
         }
