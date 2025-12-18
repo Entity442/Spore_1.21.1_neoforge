@@ -95,6 +95,7 @@ public class VomitHohlBall extends AbstractArrow {
         double dx = target.getX() - entity.getX();
         double dy = target.getY() + target.getEyeHeight() - 2;
         double dz = target.getZ() - entity.getZ();
+        entityarrow.moveTo(entity.getX(), entity.getY()+1.2D ,entity.getZ());
         entityarrow.shoot(dx, dy - entityarrow.getY() + Math.hypot(dx, dz) * 0.2F, dz, 2, 4.0F);
         entityarrow.setBaseDamage(damage);
         entityarrow.setOres(ore);

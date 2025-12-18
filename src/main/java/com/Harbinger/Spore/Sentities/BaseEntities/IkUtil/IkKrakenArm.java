@@ -23,6 +23,8 @@ public class IkKrakenArm extends IkKrakenLeg {
     private final Vec3 RightMidVec2 = new Vec3(7, 1.5, -5);
     private final Vec3 LeftMidVec2 = new Vec3(7, 1.5, 5);
     private final Vec3 MouthPosition = new Vec3(0, 1.5, 0);
+    private final Vec3 RightWaterVec = new Vec3(8, 4.5, -6);
+    private final Vec3 LeftWaterVec = new Vec3(8, 4.5, 6);
     private static final Vector3f nullVec = new Vector3f(0);
     public IkKrakenArm(Grakensenker owner, int amount, Vec3 defaultBodyOffset, Vec3 defaultLimbOffset,Vec3 underwater, float maxDistance, boolean rightArm) {
         super(owner, amount, defaultBodyOffset, defaultLimbOffset,underwater, maxDistance);
@@ -66,6 +68,7 @@ public class IkKrakenArm extends IkKrakenLeg {
         entities[val] = newPos;
     }
 
+
     public void setTarget(){
         Optional<LivingEntity> targetOp = findAndSetTarget();
         if (targetOp.isPresent()){
@@ -97,6 +100,10 @@ public class IkKrakenArm extends IkKrakenLeg {
         Vec3 pivot = applyYaw(rightArm ? RightMidVec2 : LeftMidVec2);
         return owner.position().add(pivot).add(0, owner.getExtendedHeight(), 0);
     }
+    public Vec3 getMidSecPivot3(){
+        Vec3 pivot = applyYaw(rightArm ? RightWaterVec : LeftWaterVec);
+        return owner.position().add(pivot).add(0, owner.getExtendedHeight(), 0);
+    }
     public Vec3 getMouthPosition(){
         Vec3 pivot = applyYaw(MouthPosition);
         return owner.position().add(pivot).add(0, owner.getExtendedHeight(), 0);
@@ -110,12 +117,20 @@ public class IkKrakenArm extends IkKrakenLeg {
         Vec3 newPos = currentPos.lerp(target, 0.2f);
         entities[index] = newPos;
     }
+    protected void moveMidSegmentWaterTowards(int index, Vec3 target) {
+        if (this.target == null && owner.isInDeepWater()){
+            Vec3 currentPos = entities[index];
+            Vec3 newPos = currentPos.lerp(target, 0.45f);
+            entities[index] = newPos;
+        }
+    }
 
     @Override
     public void applyIK() {
         super.applyIK();
         moveMidSegmentTowards(entities.length/4,getMidSecPivot());
         moveMidSegmentTowards(entities.length/2,getMidSecPivot2());
+        moveMidSegmentWaterTowards(entities.length/4,getMidSecPivot3());
         float x = (float) entities[entities.length-1].x();
         float y = (float) entities[entities.length-1].y();
         float z = (float) entities[entities.length-1].z();

@@ -293,6 +293,9 @@ public class HohlMultipart extends LivingEntity implements TrueCalamity {
     @Override
     protected void onEffectAdded(MobEffectInstance instance, @Nullable Entity source) {
         super.onEffectAdded(instance, source);
+        if (!instance.getEffect().value().isBeneficial() && instance.getAmplifier() < 2){
+            return;
+        }
         Entity parent = this.getParentSafe();
         if (!(parent instanceof LivingEntity livingParent)) return;
         MobEffectInstance existing = livingParent.getEffect(instance.getEffect());

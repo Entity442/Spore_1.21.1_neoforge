@@ -94,6 +94,7 @@ public class Vanguard extends UtilityEntity implements CrossbowAttackMob, Enemy 
                 .add(Attributes.ARMOR, SConfig.SERVER.vanguard_armor.get() * SConfig.SERVER.global_armor.get())
                 .add(Attributes.FOLLOW_RANGE, 48)
                 .add(Attributes.ATTACK_KNOCKBACK, 2)
+                .add(Attributes.STEP_HEIGHT, 1)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 1);
 
     }
