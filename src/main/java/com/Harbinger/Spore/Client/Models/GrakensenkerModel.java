@@ -19,7 +19,7 @@ public class GrakensenkerModel<T extends Grakensenker> extends EntityModel<T> im
 	private final ModelPart Kraken;
 	private final ModelPart body;
 	private final ModelPart Innerteeth;
-	private final ModelPart body2;
+	public final ModelPart body2;
 	private final ModelPart CenterCorpseDetails;
 	private final ModelPart CenterBody1;
 	private final ModelPart CenterBody2;
@@ -86,15 +86,15 @@ public class GrakensenkerModel<T extends Grakensenker> extends EntityModel<T> im
 	private final ModelPart Tumor9;
 	private final ModelPart Tumor10;
 	private final ModelPart Tumor11;
-	private final ModelPart BackJaw;
+	public final ModelPart BackJaw;
 	private final ModelPart Outer;
 	private final ModelPart OuterRingBase;
 	private final ModelPart Internal;
 	private final ModelPart OuterRingDetails;
 	private final ModelPart Teeth;
-	private final ModelPart BackBodyMouthProtection;
+	public final ModelPart BackBodyMouthProtection;
 	private final ModelPart HindeRotation;
-	private final ModelPart Hinge1;
+	public final ModelPart Hinge1;
 	private final ModelPart LeftHinge;
 	private final ModelPart HingeLowerMemebrane;
 	private final ModelPart HingeMiddleHinge;
@@ -102,7 +102,7 @@ public class GrakensenkerModel<T extends Grakensenker> extends EntityModel<T> im
 	private final ModelPart HingeTopHinge;
 	private final ModelPart LeftTopMemebrane;
 	private final ModelPart HindeRotation2;
-	private final ModelPart Hinge2;
+	public final ModelPart Hinge2;
 	private final ModelPart LeftHinge2;
 	private final ModelPart HingeLowerMemebrane2;
 	private final ModelPart HingeMiddleHinge2;
@@ -110,7 +110,7 @@ public class GrakensenkerModel<T extends Grakensenker> extends EntityModel<T> im
 	private final ModelPart HingeTopHinge2;
 	private final ModelPart LeftTopMemebrane2;
 	private final ModelPart HindeRotation3;
-	private final ModelPart Hinge3;
+	public final ModelPart Hinge3;
 	private final ModelPart LeftHinge3;
 	private final ModelPart HingeLowerMemebrane3;
 	private final ModelPart HingeMiddleHinge3;
@@ -118,7 +118,7 @@ public class GrakensenkerModel<T extends Grakensenker> extends EntityModel<T> im
 	private final ModelPart HingeTopHinge3;
 	private final ModelPart LeftTopMemebrane3;
 	private final ModelPart HindeRotation4;
-	private final ModelPart Hinge4;
+	public final ModelPart Hinge4;
 	private final ModelPart LeftHinge4;
 	private final ModelPart HingeLowerMemebrane4;
 	private final ModelPart HingeMiddleHinge4;
@@ -126,14 +126,14 @@ public class GrakensenkerModel<T extends Grakensenker> extends EntityModel<T> im
 	private final ModelPart HingeTopHinge4;
 	private final ModelPart LeftTopMemebrane4;
 	private final ModelPart HindeRotation5;
-	private final ModelPart Hinge5;
+	public final ModelPart Hinge5;
 	private final ModelPart LeftHinge5;
 	private final ModelPart HingeLowerMemebrane5;
 	private final ModelPart HingeMiddleHinge5;
 	private final ModelPart HingeMiddleMemebrane5;
 	private final ModelPart HingeTopHinge5;
 	private final ModelPart LeftTopMemebrane5;
-	private final ModelPart FrontJaw;
+	public final ModelPart FrontJaw;
 	private final ModelPart jawBottom;
 	private final ModelPart head1;
 	private final ModelPart head2;
@@ -168,13 +168,14 @@ public class GrakensenkerModel<T extends Grakensenker> extends EntityModel<T> im
 	private final ModelPart head16;
 	private final ModelPart head18;
 	private final ModelPart head20;
-	private final ModelPart head;
+	public final ModelPart head;
 	private final ModelPart bodyDetails;
 	private final ModelPart fin;
 	private final ModelPart growth;
 	private final ModelPart bodies;
 
-	public GrakensenkerModel(ModelPart root) {
+	public GrakensenkerModel() {
+		ModelPart root = createBodyLayer().bakeRoot();
 		this.Kraken = root.getChild("Kraken");
 		this.body = this.Kraken.getChild("body");
 		this.Innerteeth = this.body.getChild("Innerteeth");

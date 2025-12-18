@@ -54,7 +54,7 @@ public class KrakenRenderer<Type extends Grakensenker> extends CalamityRenderer<
             "textures/entity/vortex/vortex_riptide.png");
 
     public KrakenRenderer(EntityRendererProvider.Context context) {
-        super(context, new GrakensenkerModel<>(context.bakeLayer(GrakensenkerModel.LAYER_LOCATION)), 4f);
+        super(context, new GrakensenkerModel<>(), 4f);
         this.addLayer(new GrakenMembraneLayer<>(this));
     }
 

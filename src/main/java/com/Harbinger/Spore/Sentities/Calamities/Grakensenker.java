@@ -8,6 +8,7 @@ import com.Harbinger.Spore.Sentities.BaseEntities.CalamityMultipart;
 import com.Harbinger.Spore.Sentities.BaseEntities.IkUtil.IkKrakenArm;
 import com.Harbinger.Spore.Sentities.BaseEntities.IkUtil.IkKrakenLeg;
 import com.Harbinger.Spore.Sentities.BaseEntities.IkUtil.IkVortexFunnel;
+import com.Harbinger.Spore.Sentities.HitboxesForParts;
 import com.Harbinger.Spore.Sentities.TrueCalamity;
 import com.Harbinger.Spore.Sentities.WaterInfected;
 import com.Harbinger.Spore.core.SAttributes;
@@ -116,14 +117,14 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
 
     }
     enum GrakenLegsModifiers{
-        BACK_LEFT_TENTACLE(new Vec3(-3,3.5,0.75),new Vec3(-6, -1, 6),new Vec3(1, 1, 4)),
-        BACK_RIGHT_TENTACLE(new Vec3(-3,3.5,-0.75),new Vec3(-6, -1, -6),new Vec3(1, 1, -4)),
-        MIDDLE_LEFT_TENTACLE(new Vec3(-1,2,0.75),new Vec3(0, -1, 6),new Vec3(2, 1, 7)),
-        MIDDLE_RIGHT_TENTACLE(new Vec3(-1,2,-0.75),new Vec3(0, -1, -6),new Vec3(2, 1, -7)),
-        FRONT_LEFT_TENTACLE(new Vec3(-2,3,0.75),new Vec3(9, -1, 6),new Vec3(12, 1, 4)),
-        FRONT_RIGHT_TENTACLE(new Vec3(-2,3,-0.75),new Vec3(9, -1, -6),new Vec3(12, 1, -4)),
-        LEFT_ARM(new Vec3(0,3,1),new Vec3(8, 2.5, 6),new Vec3(16, 4.5, 8)),
-        RIGHT_ARM(new Vec3(0,3,-1),new Vec3(8, 2.5, -6),new Vec3(16, 4.5, -8));
+        BACK_LEFT_TENTACLE(new Vec3(-3,3.5,0.75),new Vec3(-6, -1, 6),new Vec3(1, -3, 4)),
+        BACK_RIGHT_TENTACLE(new Vec3(-3,3.5,-0.75),new Vec3(-6, -1, -6),new Vec3(1, -3, -4)),
+        MIDDLE_LEFT_TENTACLE(new Vec3(-1,2,0.75),new Vec3(0, -1, 6),new Vec3(0, 1, 7)),
+        MIDDLE_RIGHT_TENTACLE(new Vec3(-1,2,-0.75),new Vec3(0, -1, -6),new Vec3(0, 1, -7)),
+        FRONT_LEFT_TENTACLE(new Vec3(-2,3,0.75),new Vec3(9, -1, 6),new Vec3(8, 1, 4)),
+        FRONT_RIGHT_TENTACLE(new Vec3(-2,3,-0.75),new Vec3(9, -1, -6),new Vec3(8, 1, -4)),
+        LEFT_ARM(new Vec3(0,3,1),new Vec3(8, 2.5, 6),new Vec3(32, 4.5, 8)),
+        RIGHT_ARM(new Vec3(0,3,-1),new Vec3(8, 2.5, -6),new Vec3(32, 4.5, -8));
         private final Vec3 bodySet;
         private final Vec3 offset;
         private final Vec3 underwaterOffset;
@@ -196,6 +197,11 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
         }
         value = calamityMultipart == this.Body ? value * 3 : value;
         return this.hurt(source,value);
+    }
+
+    @Override
+    protected boolean canAddPassenger(Entity passenger) {
+        return true;
     }
 
     @Override
@@ -377,7 +383,7 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
         }else {
             setLeftArmEntity(living.getId());
         }
-        living.startRiding(this,true);
+        living.startRiding(this);
     }
     public boolean isRightArmFull(){return entityData.get(RIGHT_ARM_ENTITY) != -1;}
     public boolean isLeftArmFull(){return entityData.get(LEFT_ARM_ENTITY) != -1;}
@@ -442,9 +448,6 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
         boolean deepWater = isInDeepWater();
         double wantedY = moveControl.getWantedY() + 2;
         boolean wantsLowStance = (wantedY < this.getY() + this.getBbHeight()) && this.horizontalCollision;
-        if (deepWater && moveControl.getWantedY()+2 > this.getY()){
-            this.setDeltaMovement(this.getDeltaMovement().add(0,-0.001,0));
-        }
         if (wantsLowStance || deepWater) {
             target -= 0.05f;
         }else {
@@ -498,6 +501,12 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
         }
         super.onSyncedDataUpdated(dataAccessor);
     }
+
+    @Override
+    public List<? extends String> getDropList() {
+        return SConfig.DATAGEN.graken_loot.get();
+    }
+
     @Override
     public void registerGoals() {
         this.goalSelector.addGoal(4, new AOEMeleeAttackGoal(this, 1.5, false,2.5 ,6, livingEntity -> {return TARGET_SELECTOR.test(livingEntity);}){
@@ -511,5 +520,18 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
         this.goalSelector.addGoal(7,new SummonScentInCombat(this));
         this.goalSelector.addGoal(8,new SporeBurstSupport(this));
         super.registerGoals();
+    }
+    private final List<HitboxesForParts> innatePartList = List.of(HitboxesForParts.GRAKEN_FRONT_MAW,
+            HitboxesForParts.GRAKEN_HINGE, HitboxesForParts.GRAKEN_BODY,HitboxesForParts.GRAKEN_BACK_MAW);
+    @Override
+    public List<HitboxesForParts> parts() {
+        List<HitboxesForParts> values = new ArrayList<>();
+        for (HitboxesForParts hitboxes : innatePartList){
+            HitboxesForParts part = calculateChance(hitboxes,0.85f);
+            if (part != null){
+                values.add(part);
+            }
+        }
+        return values;
     }
 }
