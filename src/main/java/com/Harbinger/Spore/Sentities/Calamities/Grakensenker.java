@@ -122,8 +122,8 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
         MIDDLE_RIGHT_TENTACLE(new Vec3(-1,2,-0.75),new Vec3(0, -1, -6),new Vec3(2, 1, -7)),
         FRONT_LEFT_TENTACLE(new Vec3(-2,3,0.75),new Vec3(9, -1, 6),new Vec3(12, 1, 4)),
         FRONT_RIGHT_TENTACLE(new Vec3(-2,3,-0.75),new Vec3(9, -1, -6),new Vec3(12, 1, -4)),
-        LEFT_ARM(new Vec3(0,3,-1),new Vec3(8, 2.5, 6),new Vec3(12, 4.5, 8)),
-        RIGHT_ARM(new Vec3(0,3,1),new Vec3(8, 2.5, -6),new Vec3(12, 4.5, -8));
+        LEFT_ARM(new Vec3(0,3,1),new Vec3(8, 2.5, 6),new Vec3(12, 4.5, 8)),
+        RIGHT_ARM(new Vec3(0,3,-1),new Vec3(8, 2.5, -6),new Vec3(12, 4.5, -8));
         private final Vec3 bodySet;
         private final Vec3 offset;
         private final Vec3 underwaterOffset;
@@ -176,7 +176,7 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
         if (this.isEffectiveAi() && this.isInFluidType()) {
             this.moveRelative(0.1F, vec);
             this.move(MoverType.SELF, this.getDeltaMovement());
-            this.setDeltaMovement(this.getDeltaMovement().scale(0.95D));
+            this.setDeltaMovement(this.getDeltaMovement().scale(0.75D));
         } else {
             super.travel(vec);
         }
@@ -285,8 +285,8 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
         }
         this.applyYaw(this.Body,new Vec3 (-4.5, 5.0D+getExtendedHeight(), 0));
         this.applyYaw(this.Body2,new Vec3 (-2.5, 2.0D+getExtendedHeight(), 0));
-        this.RightHand.setPos(getRightArm().x, getRightArm().y-0.5, getRightArm().z);
-        this.LeftHand.setPos(getLeftArm().x, getLeftArm().y-0.5, getLeftArm().z);
+        this.RightHand.setPos(getRightArm().x, getRightArm().y, getRightArm().z);
+        this.LeftHand.setPos(getLeftArm().x, getLeftArm().y, getLeftArm().z);
         for(int l = 0; l < this.subEntities.length; ++l) {
             this.subEntities[l].xo = avec3[l].x;
             this.subEntities[l].yo = avec3[l].y;
@@ -345,6 +345,7 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
             entityData.set(LEFT_ARM_DELAY,getLeftArmDelay()-1);
         }
     }
+
 
 
     private void tryGrab(Vector3f handPos, boolean right ,boolean canGrab) {

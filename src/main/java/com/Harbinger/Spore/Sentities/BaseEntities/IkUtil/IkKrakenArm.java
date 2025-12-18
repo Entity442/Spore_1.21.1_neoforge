@@ -23,6 +23,7 @@ public class IkKrakenArm extends IkKrakenLeg {
     private final Vec3 RightMidVec2 = new Vec3(7, 1.5, -5);
     private final Vec3 LeftMidVec2 = new Vec3(7, 1.5, 5);
     private final Vec3 MouthPosition = new Vec3(0, 1.5, 0);
+    private static final Vector3f nullVec = new Vector3f(0);
     public IkKrakenArm(Grakensenker owner, int amount, Vec3 defaultBodyOffset, Vec3 defaultLimbOffset,Vec3 underwater, float maxDistance, boolean rightArm) {
         super(owner, amount, defaultBodyOffset, defaultLimbOffset,underwater, maxDistance);
         this.rightArm = rightArm;
@@ -42,11 +43,18 @@ public class IkKrakenArm extends IkKrakenLeg {
     public void refreshLegStandingPoint() {
         int hitValues = rightArm ? owner.getRightArmDelay() : owner.getLeftArmDelay();
         boolean full = rightArm ? owner.isRightArmFull() : owner.isLeftArmFull();
-        sitPosition = this.target == null || hitValues > 0 ? getLegBasePos() : this.target.position().add(0, this.target.getBbHeight() * 0.5, 0);
-        sitPosition = full  ? owner.isInDeepWater() ? getUnderwaterLegOffset() : getMouthPosition() : sitPosition;
-        lastSitPosition = sitPosition;
-        if (owner.tickCount % 10 == 0 && hitValues <= 0 && !full){
-            setTarget();
+        Vector3f vector3f = rightArm ? owner.getRightArm() : owner.getLeftArm();
+        if (owner.level().isClientSide){
+            sitPosition = vector3f == nullVec || hitValues > 0 ? getLegBasePos() : new Vec3(vector3f).add(0, 1, 0);
+            sitPosition = full  ? owner.isInDeepWater() ? getUnderwaterLegOffset() : getMouthPosition() : sitPosition;
+            lastSitPosition = sitPosition;
+        }else {
+            sitPosition = this.target == null || hitValues > 0 ? getLegBasePos() : this.target.position().add(0, 1, 0);
+            sitPosition = full  ? owner.isInDeepWater() ? getUnderwaterLegOffset() : getMouthPosition() : sitPosition;
+            lastSitPosition = sitPosition;
+            if (owner.tickCount % 10 == 0 && hitValues <= 0 && !full){
+                setTarget();
+            }
         }
     }
     @Override
@@ -54,7 +62,7 @@ public class IkKrakenArm extends IkKrakenLeg {
         int tip = entities.length - 1;
         Vec3 currentPos = entities[tip];
         int val = entities.length - 1;
-        Vec3 newPos = currentPos.lerp(value, 0.2f);
+        Vec3 newPos = currentPos.lerp(value, owner.level().isClientSide ? 0.35f : 0.2f);
         entities[val] = newPos;
     }
 
@@ -111,10 +119,12 @@ public class IkKrakenArm extends IkKrakenLeg {
         float x = (float) entities[entities.length-1].x();
         float y = (float) entities[entities.length-1].y();
         float z = (float) entities[entities.length-1].z();
-        if (rightArm){
-            owner.setRightArm(new Vector3f(x,y,z));
-        }else {
-            owner.setLeftArm(new Vector3f(x,y,z));
+        if (!owner.level().isClientSide){
+            if (rightArm){
+                owner.setRightArm(new Vector3f(x,y,z));
+            }else {
+                owner.setLeftArm(new Vector3f(x,y,z));
+            }
         }
     }
 }

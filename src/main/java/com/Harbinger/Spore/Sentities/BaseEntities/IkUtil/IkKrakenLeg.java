@@ -173,7 +173,7 @@ public class IkKrakenLeg {
             Vec3 solvedPos = nextPos.add(dir);
             moveSegmentTowards(i, solvedPos, tooFar);
         }
-        moveSegmentTowards(0, basePos, tooFar);
+        entities[0] = basePos;
 
         for (int i = 1; i < entities.length; i++) {
             Vec3 prevPos = entities[i - 1];
@@ -219,7 +219,7 @@ public class IkKrakenLeg {
         }
 
         Vec3 worldBasePos = getLegBasePos();
-        int searchRadius = 2;
+        int searchRadius = 6;
         int maxSearchDown = 12;
         int maxSearchUp = 6;
 
