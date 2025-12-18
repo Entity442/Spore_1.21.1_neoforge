@@ -73,7 +73,7 @@ public class CalamityPartsHandeling {
     public static final Part HOHL_SEG3 = new Part(29,List.of(worm_seg3Model.hohl_seg),0,0.5f,0,0,0,0,HOHL_ORGAN_SEG,HOHL_ORGAN_SEG);
     public static final Part HOHL_TAIL = new Part(30,List.of(worm_tailModel.tail),0,0,0.5f,0,0,0,HOHL_SEG,HOHL_SEG);
 
-    public static final Part GRAKEN_BODY = new Part(31,List.of(grakensenkerModel.body2),3,2f,1.5f,0,0,0,GRAKEN,GRAKEN);
+    public static final Part GRAKEN_BODY = new Part(31,List.of(grakensenkerModel.body2,grakensenkerModel.FrontSeg2CorpseDetails,grakensenkerModel.CenterCorpseDetails6,grakensenkerModel.CenterCorpseDetails3),3,2f,1.5f,0,0,0,GRAKEN,GRAKEN);
     public static final Part GRAKEN_BACK_MAW = new Part(32,List.of(grakensenkerModel.head),-1.5f,-2.5f,0,0,0,0,GRAKEN,GRAKEN);
     public static final Part GRAKEN_FRONT_MAW = new Part(33,List.of(grakensenkerModel.FrontJaw),-1,0,0,0,0,0,GRAKEN,GRAKEN);
     public static final Part GRAKEN_HINGE = new Part(34,List.of(grakensenkerModel.BackBodyMouthProtection),6,-6,0,0,0,0,GRAKEN,GRAKEN);

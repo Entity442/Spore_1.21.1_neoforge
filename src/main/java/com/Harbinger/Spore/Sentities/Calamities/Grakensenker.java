@@ -9,6 +9,7 @@ import com.Harbinger.Spore.Sentities.BaseEntities.IkUtil.IkKrakenArm;
 import com.Harbinger.Spore.Sentities.BaseEntities.IkUtil.IkKrakenLeg;
 import com.Harbinger.Spore.Sentities.BaseEntities.IkUtil.IkVortexFunnel;
 import com.Harbinger.Spore.Sentities.HitboxesForParts;
+import com.Harbinger.Spore.Sentities.MovementControls.WaterXlandMovement;
 import com.Harbinger.Spore.Sentities.TrueCalamity;
 import com.Harbinger.Spore.Sentities.WaterInfected;
 import com.Harbinger.Spore.core.SAttributes;
@@ -85,6 +86,7 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
         TickTentacles = new IkKrakenLeg[]{BackRightTentacle,BackLeftTentacle,MiddleRightTentacle,MiddleLeftTentacle,FrontRightTentacle,FrontLeftTentacle,RightArmTentacle,LeftArmTentacle,VortexFunnel};
         this.subEntities = new CalamityMultipart[]{ this.Body,this.Body2, this.RightHand,this.LeftHand};
         this.setId(ENTITY_COUNTER.getAndAdd(this.subEntities.length + 1) + 1);
+        this.moveControl = new WaterXlandMovement(this);
     }
     @Override
     public void setId(int p_20235_) {
@@ -177,7 +179,7 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
         if (this.isEffectiveAi() && this.isInFluidType()) {
             this.moveRelative(0.1F, vec);
             this.move(MoverType.SELF, this.getDeltaMovement());
-            this.setDeltaMovement(this.getDeltaMovement().scale(0.75D));
+            this.setDeltaMovement(this.getDeltaMovement().scale(0.9D));
         } else {
             super.travel(vec);
         }

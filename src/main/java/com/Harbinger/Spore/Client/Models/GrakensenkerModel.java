@@ -29,7 +29,7 @@ public class GrakensenkerModel<T extends Grakensenker> extends EntityModel<T> im
 	private final ModelPart CenterBody5;
 	private final ModelPart CenterBody6;
 	private final ModelPart CenterBody8;
-	private final ModelPart CenterCorpseDetails3;
+	public final ModelPart CenterCorpseDetails3;
 	private final ModelPart CenterBody7;
 	private final ModelPart CenterBody9;
 	private final ModelPart CenterBody10;
@@ -42,7 +42,7 @@ public class GrakensenkerModel<T extends Grakensenker> extends EntityModel<T> im
 	private final ModelPart CenterBody15;
 	private final ModelPart CenterBody16;
 	private final ModelPart CenterBody17;
-	private final ModelPart CenterCorpseDetails6;
+	public final ModelPart CenterCorpseDetails6;
 	private final ModelPart CenterBody18;
 	private final ModelPart CenterBody19;
 	private final ModelPart CenterBody20;
@@ -56,7 +56,7 @@ public class GrakensenkerModel<T extends Grakensenker> extends EntityModel<T> im
 	private final ModelPart FS1Body7;
 	private final ModelPart FS1Body8;
 	private final ModelPart FS1Body9;
-	private final ModelPart FrontSeg2CorpseDetails;
+	public final ModelPart FrontSeg2CorpseDetails;
 	private final ModelPart FS2Body1;
 	private final ModelPart FS2Body2;
 	private final ModelPart FS2Body3;
