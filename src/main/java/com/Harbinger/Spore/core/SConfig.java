@@ -972,7 +972,7 @@ public class SConfig {
                     Lists.newArrayList("minecraft:blindness|600|0", "spore:mycelium_ef|600|1", "minecraft:slowness|600|1") , o -> o instanceof String);
             this.howit_summmons = builder.defineList("Mobs that may spawn out of its dropped bombs",
                     Lists.newArrayList("spore:inf_vindicator", "spore:busser", "spore:brute",
-                            "spore:knight", "spore:griefer", "spore:leaper", "spore:inf_evoker","spore:mephitic", "spore:spitter", "spore:stalker", "spore:scavenger", "spore:bloater", "spore:braiomil") , o -> o instanceof String);
+                            "spore:knight", "spore:griefer", "spore:leaper", "spore:naiad", "spore:inf_evoker","spore:mephitic", "spore:spitter", "spore:stalker", "spore:scavenger", "spore:bloater", "spore:braiomil") , o -> o instanceof String);
             builder.pop();
 
             builder.push("Brute");
