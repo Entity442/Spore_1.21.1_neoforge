@@ -205,12 +205,12 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
 
     @Override
     public List<? extends String> buffs() {
-        return SConfig.SERVER.gazen_buffs.get();
+        return SConfig.SERVER.graken_buffs.get();
     }
 
     @Override
     public List<? extends String> debuffs() {
-        return SConfig.SERVER.gazen_debuffs.get();
+        return SConfig.SERVER.graken_debuffs.get();
     }
 
     public float getExtendedHeight(){
@@ -409,6 +409,11 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
     }
 
     @Override
+    public double getDamageCap() {
+        return SConfig.SERVER.graken_dpsr.get();
+    }
+
+    @Override
     protected void removePassenger(Entity passenger) {
         super.removePassenger(passenger);
         if (passenger.getId() == entityData.get(RIGHT_ARM_ENTITY)){
@@ -464,10 +469,10 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
 
     public static AttributeSupplier.Builder createAttributes() {
         return Mob.createMobAttributes()
-                .add(Attributes.MAX_HEALTH, SConfig.SERVER.gazen_hp.get() * SConfig.SERVER.global_health.get())
+                .add(Attributes.MAX_HEALTH, SConfig.SERVER.graken_hp.get() * SConfig.SERVER.global_health.get())
                 .add(Attributes.MOVEMENT_SPEED, 0.2)
-                .add(Attributes.ATTACK_DAMAGE, SConfig.SERVER.gazen_damage.get() * SConfig.SERVER.global_damage.get())
-                .add(Attributes.ARMOR, SConfig.SERVER.gazen_armor.get() * SConfig.SERVER.global_armor.get())
+                .add(Attributes.ATTACK_DAMAGE, SConfig.SERVER.graken_damage.get() * SConfig.SERVER.global_damage.get())
+                .add(Attributes.ARMOR, SConfig.SERVER.graken_armor.get() * SConfig.SERVER.global_armor.get())
                 .add(Attributes.FOLLOW_RANGE, 64)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 1)
                 .add(Attributes.STEP_HEIGHT, 1.5)
