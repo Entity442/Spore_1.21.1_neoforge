@@ -233,6 +233,7 @@ public class Commands {
                                 if (calamity instanceof Grakensenker sieger){
                                     player.displayClientMessage(Component.literal("RightArm " + sieger.getRightArmEntity()),false);
                                     player.displayClientMessage(Component.literal("Left " + sieger.getLeftArmEntity()),false);
+                                    player.displayClientMessage(Component.literal("VortexVector " + sieger.getVortexVector()),false);
                                     Entity living = sieger.getFirstPassenger();
                                     if (living != null){
                                         player.displayClientMessage(Component.literal("Victim " + living.getId()),false);

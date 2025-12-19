@@ -22,6 +22,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import org.joml.Vector3f;
 
 @OnlyIn(Dist.CLIENT)
 public class KrakenRenderer<Type extends Grakensenker> extends CalamityRenderer<Type , EntityModel<Type>> {
@@ -110,9 +111,11 @@ public class KrakenRenderer<Type extends Grakensenker> extends CalamityRenderer<
                 renderTentacle(stack,entity,light, bufferSource, entity.getLeftArmTentacle().getEntities(),entity.getLeftArmTentacle().getSegmentVar(), entity, partialTicks,true,true);
 
             }
-            //SpecialEffects.renderFunnel(stack,light, bufferSource, entity.getVortexFunnel().getEntities(),time,packedColor,1f,WATER);
-           // SpecialEffects.renderFunnel(stack,light, bufferSource, entity.getVortexFunnel().getEntities(),time,-1,1.1f,WATER_RIPTIDE);
-           // SpecialEffects.renderFunnel(stack,light, bufferSource, entity.getVortexFunnel().getEntities(),time2,packedColor,0.9f,WATER);
+            if (entity.hasVortex()){
+                SpecialEffects.renderFunnel(stack,light, bufferSource, entity.getVortexFunnel().getEntities(),time,packedColor,1f,WATER);
+                SpecialEffects.renderFunnel(stack,light, bufferSource, entity.getVortexFunnel().getEntities(),time,-1,1.1f,WATER_RIPTIDE);
+                SpecialEffects.renderFunnel(stack,light, bufferSource, entity.getVortexFunnel().getEntities(),time2,packedColor,0.9f,WATER);
+            }
         }
         stack.popPose();
     }

@@ -2,10 +2,12 @@ package com.Harbinger.Spore.Sentities.BaseEntities.IkUtil;
 
 import com.Harbinger.Spore.Sentities.Calamities.Grakensenker;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Vector3f;
 
 public class IkVortexFunnel extends IkKrakenLeg{
+    private static final Vector3f V0 = new Vector3f();
     public IkVortexFunnel(Grakensenker owner) {
-        super(owner, 20, new Vec3(-3, 5, 0.25), new Vec3(-12, 9, 0),Vec3.ZERO, 0);
+        super(owner, 10,Vec3.ZERO,Vec3.ZERO,Vec3.ZERO, 0);
     }
 
 
@@ -17,9 +19,15 @@ public class IkVortexFunnel extends IkKrakenLeg{
 
     @Override
     protected void moveTipTowards(Vec3 target) {
-        Vec3 currentPos = entities[entities.length - 1];
-        Vec3 newPos = currentPos.lerp(target, 0.35f);
-        entities[entities.length - 1] = newPos;
+        if (!owner.getVortexVector().equals(V0)){
+            target = new Vec3(owner.getVortexVector());
+        }
+        entities[entities.length - 1] = target;
+    }
+
+    @Override
+    protected void moveSegmentTowards(int index, Vec3 target, boolean far) {
+        entities[index] = (target);
     }
 
     public void applyIK() {
@@ -27,7 +35,6 @@ public class IkVortexFunnel extends IkKrakenLeg{
 
         Vec3 basePos = getBodyOffset();
         Vec3 defaultTipPos =  getLegBasePos();
-        boolean tooFar = entities[entities.length - 1].distanceToSqr(defaultTipPos) > 225;
 
         float totalDistance = (float) basePos.distanceTo(defaultTipPos);
 
@@ -55,10 +62,10 @@ public class IkVortexFunnel extends IkKrakenLeg{
             }
 
             Vec3 solvedPos = nextPos.add(dir);
-            moveSegmentTowards(i, solvedPos, tooFar);
+            moveSegmentTowards(i, solvedPos, false);
         }
 
-        moveSegmentTowards(0, basePos, tooFar);
+        moveSegmentTowards(0, basePos, false);
 
         for (int i = 1; i < entities.length; i++) {
             Vec3 prevPos = entities[i - 1];
@@ -77,7 +84,7 @@ public class IkVortexFunnel extends IkKrakenLeg{
             }
 
             Vec3 solvedPos = prevPos.add(dir);
-            moveSegmentTowards(i, solvedPos, tooFar);
+            moveSegmentTowards(i, solvedPos, false);
         }
     }
 }

@@ -31,6 +31,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.AABB;
@@ -51,6 +52,8 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
     public static final EntityDataAccessor<Integer> LEFT_ARM_ENTITY = SynchedEntityData.defineId(Grakensenker.class, EntityDataSerializers.INT);
     public static final EntityDataAccessor<Integer> RIGHT_ARM_DELAY = SynchedEntityData.defineId(Grakensenker.class, EntityDataSerializers.INT);
     public static final EntityDataAccessor<Integer> LEFT_ARM_DELAY = SynchedEntityData.defineId(Grakensenker.class, EntityDataSerializers.INT);
+    public static final EntityDataAccessor<Vector3f> VORTEX_VECTOR = SynchedEntityData.defineId(Grakensenker.class, EntityDataSerializers.VECTOR3);
+    public static final EntityDataAccessor<Integer> VORTEX_TIMEOUT = SynchedEntityData.defineId(Grakensenker.class, EntityDataSerializers.INT);
     public static final float MIN_HEIGHT = 0f;
     public static final float MAX_HEIGHT = 4f;
     private final IkKrakenLeg BackRightTentacle;
@@ -68,6 +71,7 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
     public final CalamityMultipart Body2;
     public final CalamityMultipart RightHand;
     public final CalamityMultipart LeftHand;
+    private static final Vector3f V0 = new Vector3f();
     public Grakensenker(EntityType<? extends PathfinderMob> type, Level level) {
         super(type, level);
         this.Body = new CalamityMultipart(this, "body", 5F, 5F);
@@ -242,17 +246,27 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
     public void setLeftArm(Vector3f vector3f){ entityData.set(LEFT_ARM_TIP,vector3f);}
     public int getRightArmDelay(){return entityData.get(RIGHT_ARM_DELAY);};
     public int getLeftArmDelay(){return entityData.get(LEFT_ARM_DELAY);}
+    public Vector3f getVortexVector(){return entityData.get(VORTEX_VECTOR);}
+    public int getVortexTimeOut(){return entityData.get(VORTEX_TIMEOUT);}
+    public void setVortexVector(Vector3f vector3f){entityData.set(VORTEX_VECTOR,vector3f);}
+    public boolean hasVortex() {
+        Vector3f v = getVortexVector();
+        return v != null && !v.equals(V0);
+    }
+    public void setVortexTimeout(int value){entityData.set(VORTEX_TIMEOUT,value);}
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
         builder.define(HEIGHT, 0f);
         builder.define(WATER_TICKS, 0);
-        builder.define(RIGHT_ARM_TIP, new Vector3f(0));
-        builder.define(LEFT_ARM_TIP,  new Vector3f(0));
+        builder.define(RIGHT_ARM_TIP, V0);
+        builder.define(LEFT_ARM_TIP,  V0);
         builder.define(RIGHT_ARM_ENTITY,  -1);
         builder.define(LEFT_ARM_ENTITY,  -1);
         builder.define(RIGHT_ARM_DELAY,  0);
         builder.define(LEFT_ARM_DELAY,  0);
+        builder.define(VORTEX_VECTOR,   V0);
+        builder.define(VORTEX_TIMEOUT,  0);
     }
     @Override
     public void addAdditionalSaveData(CompoundTag tag) {
@@ -335,6 +349,10 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
     public void tick() {
         super.tick();
         updateHeight();
+        handleVortexBehavior();
+        if (getVortexTimeOut() > 0) {
+            setVortexTimeout(getVortexTimeOut() - 1);
+        }
         for (IkKrakenLeg leg : TickTentacles) {
             leg.refreshLegStandingPoint();
             leg.applyIK();
@@ -345,6 +363,14 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
         }
         if (tickCount % 20 == 0){
             validateArms();
+            if (isInDeepWater()){
+                if (!hasVortex() && getVortexTimeOut() <= 0 && getTarget() == null){
+                    Vector3f vec3 = findVortexCenter(level(),this.getOnPos(),32);
+                    if (vec3 != null){
+                        setVortexVector(vec3);
+                    }
+                }
+            }
         }
         if (getRightArmDelay() > 0){
             entityData.set(RIGHT_ARM_DELAY,getRightArmDelay()-1);
@@ -354,9 +380,14 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
         }
     }
 
+    @Override
+    public boolean hurt(DamageSource source, float amount) {
+        setVortexTimeout(200);
+        setVortexVector(V0);
+        return super.hurt(source, amount);
+    }
 
-
-    private void tryGrab(Vector3f handPos, boolean right ,boolean canGrab) {
+    private void tryGrab(Vector3f handPos, boolean right , boolean canGrab) {
         boolean active = right ? isRightArmFull() : isLeftArmFull();
         if (active && canGrab){
             return;
@@ -535,5 +566,52 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
             }
         }
         return values;
+    }
+
+    @Nullable
+    public Vector3f findVortexCenter(Level level, BlockPos origin, int radius) {
+        if (!isInWater()){
+            return null;
+        }
+        int x;
+        for (x= 0;x<radius;x++){
+            BlockPos center = origin.offset(0, x, 0);
+            BlockState water = level.getBlockState(center);
+            BlockState air = level.getBlockState(center.above());
+            if (water.is(Blocks.WATER) && air.isAir()){
+                if (x <= 3){
+                    return null;
+                }
+                return new Vector3f(center.getX(),center.getY(),center.getZ());
+            }
+        }
+        return null;
+    }
+
+    public void handleVortexBehavior() {
+        if (!hasVortex()) return;
+        if (getVortexTimeOut() > 0) return;
+        this.getNavigation().stop();
+        this.setDeltaMovement(Vec3.ZERO);
+        this.hasImpulse = false;
+
+        lookAtVortex(getVortexVector());
+    }
+
+    private void lookAtVortex(Vector3f target) {
+        double dx = target.x() - this.getX();
+        double dz = target.z() - this.getZ();
+        double dy = target.y() - this.getEyeY();
+
+        double dist = Math.sqrt(dx * dx + dz * dz);
+
+        float yaw = (float)(Math.atan2(dz, dx) * (180F / Math.PI)) - 90F;
+        float pitch = (float)-(Math.atan2(dy, dist) * (180F / Math.PI));
+
+        this.setYRot(yaw);
+        this.setXRot(pitch);
+
+        this.yBodyRot = yaw;
+        this.yHeadRot = yaw;
     }
 }
