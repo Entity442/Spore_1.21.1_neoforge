@@ -5,10 +5,9 @@ import com.Harbinger.Spore.Sentities.FlyingInfected;
 import com.Harbinger.Spore.Sentities.WaterInfected;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.pathfinder.*;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.event.EventHooks;
@@ -16,12 +15,10 @@ import net.neoforged.neoforge.event.EventHooks;
 import javax.annotation.Nullable;
 
 public class CalamityPathNavigation extends GroundPathNavigation {
-    protected final Calamity calamity;
     @Nullable
     private BlockPos pathToPosition;
     public CalamityPathNavigation(Calamity calamity, Level level) {
         super(calamity, level);
-        this.calamity = calamity;
     }
 
     public Path createPath(BlockPos pos, int value) {
@@ -63,7 +60,9 @@ public class CalamityPathNavigation extends GroundPathNavigation {
 
         }
     }
-
+    protected static boolean canGrief(Mob mob) {
+        return mob != null && EventHooks.canEntityGrief(mob.level(), mob);
+    }
 
     @Override
     protected PathFinder createPathFinder(int value) {
@@ -99,7 +98,7 @@ public class CalamityPathNavigation extends GroundPathNavigation {
     protected static class CalamityNodeEvaluator extends WalkNodeEvaluator{
         @Override
         public PathType getPathType(PathfindingContext context, int x, int y, int z) {
-            if (EventHooks.canEntityGrief(mob.level(),mob)){
+            if (canGrief(mob)){
                 return PathType.OPEN;
             }
             return super.getPathType(context, x, y, z);
@@ -109,7 +108,7 @@ public class CalamityPathNavigation extends GroundPathNavigation {
     protected static class AirCalamityNodeEvaluator extends FlyNodeEvaluator{
         @Override
         public PathType getPathType(PathfindingContext context, int x, int y, int z) {
-            if (EventHooks.canEntityGrief(mob.level(),mob)){
+            if (canGrief(mob)){
                 return PathType.OPEN;
             }
             return super.getPathType(context, x, y, z);
@@ -125,7 +124,7 @@ public class CalamityPathNavigation extends GroundPathNavigation {
             if (context.getPathTypeFromState(x,y,z).equals(PathType.WATER)){
                 return PathType.WATER;
             }
-            if (EventHooks.canEntityGrief(mob.level(),mob)){
+            if (canGrief(mob)){
                 return PathType.OPEN;
             }
             return super.getPathType(context, x, y, z);

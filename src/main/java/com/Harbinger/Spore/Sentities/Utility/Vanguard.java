@@ -18,14 +18,10 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerEntity;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -108,7 +104,6 @@ public class Vanguard extends UtilityEntity implements CrossbowAttackMob, Enemy 
             protected double getAttackReachSqr(LivingEntity entity) {
                 return 6.0 + entity.getBbWidth() * entity.getBbWidth();}});
         this.goalSelector.addGoal(2,new VanguardFireGoal(this));
-        this.goalSelector.addGoal(3,new VanguardCallRaid(this));
         this.goalSelector.addGoal(4, new RandomStrollGoal(this, 0.8));
         this.goalSelector.addGoal(5, new RandomLookAroundGoal(this));
         this.goalSelector.addGoal(6,new FloatDiveGoal(this));
@@ -186,6 +181,8 @@ public class Vanguard extends UtilityEntity implements CrossbowAttackMob, Enemy 
         this.level().broadcastEntityEvent(this, (byte)4);
         if (entity instanceof LivingEntity livingEntity){
             livingEntity.addEffect(new MobEffectInstance(Seffects.MYCELIUM,600,0));
+            livingEntity.hurtTime = 0;
+            livingEntity.invulnerableTime = 0;
         }
         this.playSound(Ssounds.VANGUARD_SLASH.value());
         return super.doHurtTarget(entity);
@@ -297,6 +294,9 @@ public class Vanguard extends UtilityEntity implements CrossbowAttackMob, Enemy 
         if (tickCount % 40 == 0 && getVillage() != BlockPos.ZERO && getTarget() == null && level() instanceof ServerLevel serverLevel){
             tickMovement(serverLevel);
         }
+        if (this.tickCount % 20 == 0 && this.getVanguardRaid() <= 0 && compareTarget(this.getTarget())){
+            callReinforcements();
+        }
     }
 
     @Override
@@ -328,7 +328,6 @@ public class Vanguard extends UtilityEntity implements CrossbowAttackMob, Enemy 
         protected BlockPos targetPos;
         protected List<BlockPos> targetPositions = new ArrayList<>();
         protected List<BlockPos> firePositions = new ArrayList<>();
-        private static final ItemStack FLINT = new ItemStack(Items.FLINT_AND_STEEL);
         private int fireCooldown = 0;
 
         public VanguardFireGoal(Vanguard vanguard) {
@@ -385,7 +384,6 @@ public class Vanguard extends UtilityEntity implements CrossbowAttackMob, Enemy 
                 if (path != null) {
                     this.vanguard.navigation.moveTo(path, 1.0);
                 }
-                vanguard.setItemSlot(EquipmentSlot.OFFHAND, FLINT);
             }
             fireCooldown = 0;
         }
@@ -474,7 +472,6 @@ public class Vanguard extends UtilityEntity implements CrossbowAttackMob, Enemy 
             targetPos = null;
             targetPositions.clear();
             firePositions.clear();
-            vanguard.setItemSlot(EquipmentSlot.OFFHAND, ItemStack.EMPTY);
             this.vanguard.navigation.stop();
         }
     }
@@ -634,47 +631,12 @@ public class Vanguard extends UtilityEntity implements CrossbowAttackMob, Enemy 
         entityData.set(RAID_TIME_OUT,val);
     }
 
-
-    private static class VanguardCallRaid extends Goal {
-        private final Vanguard vanguard;
-        private static final ItemStack stack = new ItemStack(Items.GOAT_HORN);
-
-        private VanguardCallRaid(Vanguard vanguard) {
-            this.vanguard = vanguard;
-        }
-        public boolean compareTarget(LivingEntity living){
-            if (living == null){
-                return false;
-            }
-            return SConfig.SERVER.proto_sapient_target.get().contains(living.getEncodeId()) || living.getHealth() >= 100 || living instanceof Player;
-        }
-
-        @Override
-        public boolean canUse() {
-            return vanguard.tickCount % 20 == 0 && vanguard.getVanguardRaid() <= 0 && compareTarget(vanguard.getTarget());
-        }
-
-        @Override
-        public void start() {
-            super.start();
-            this.vanguard.setItemSlot(EquipmentSlot.OFFHAND,stack);
-            this.vanguard.callReinforcements();
-        }
-
-        @Override
-        public boolean canContinueToUse() {
+    public boolean compareTarget(LivingEntity living){
+        if (living == null){
             return false;
         }
-
-
-        @Override
-        public void stop() {
-            super.stop();
-            this.vanguard.setItemSlot(EquipmentSlot.OFFHAND,ItemStack.EMPTY);
-        }
-
+        return SConfig.SERVER.proto_sapient_target.get().contains(living.getEncodeId()) || living.getHealth() >= 100 || living instanceof Player;
     }
-
     private void callReinforcements(){
         List<String> ids = new ArrayList<>();
         while (ids.size() < SConfig.SERVER.vanguard_raid_size.get()){
