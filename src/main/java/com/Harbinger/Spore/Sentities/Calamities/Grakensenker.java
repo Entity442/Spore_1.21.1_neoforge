@@ -578,7 +578,7 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
         if (!isInWater()){
             return null;
         }
-        Vec3 vec3 = applyYaw(new Vec3(5,0,0));
+        Vec3 vec3 = applyYaw(new Vec3(random.nextInt(5,15),0,random.nextInt(-10,10)));
         int x;
         for (x= 0;x<radius;x++){
             BlockPos center = origin.offset((int) vec3.x, x, (int) vec3.z);

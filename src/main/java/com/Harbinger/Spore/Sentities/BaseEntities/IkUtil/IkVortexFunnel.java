@@ -5,14 +5,14 @@ import net.minecraft.world.phys.Vec3;
 
 public class IkVortexFunnel extends IkKrakenLeg{
     public IkVortexFunnel(Grakensenker owner) {
-        super(owner, 10,Vec3.ZERO,Vec3.ZERO,Vec3.ZERO, 0);
+        super(owner, 25,Vec3.ZERO,Vec3.ZERO,Vec3.ZERO, 0);
     }
 
 
     @Override
     public Vec3 getBodyOffset() {
         Vec3 pivot = owner.position().add(0, owner.getExtendedHeight(), 0);
-        return pivot.add(applyYaw(new Vec3(-5, 3.5, 1)));
+        return pivot.add(applyYaw(new Vec3(-4, 3.5, 1)));
     }
 
 
