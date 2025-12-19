@@ -567,22 +567,28 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
         }
         return values;
     }
+    public Vec3 applyYaw(Vec3 offset) {
+        float yawRad = this.getYRot() * Mth.DEG_TO_RAD;
+        float spinRad = this.getWaterTicks() * 0.05f;
 
+        return offset.yRot(-yawRad - Mth.HALF_PI + spinRad);
+    }
     @Nullable
     public Vector3f findVortexCenter(Level level, BlockPos origin, int radius) {
         if (!isInWater()){
             return null;
         }
+        Vec3 vec3 = applyYaw(new Vec3(5,0,0));
         int x;
         for (x= 0;x<radius;x++){
-            BlockPos center = origin.offset(0, x, 0);
+            BlockPos center = origin.offset((int) vec3.x, x, (int) vec3.z);
             BlockState water = level.getBlockState(center);
             BlockState air = level.getBlockState(center.above());
             if (water.is(Blocks.WATER) && air.isAir()){
                 if (x <= 3){
                     return null;
                 }
-                return new Vector3f(center.getX(),center.getY(),center.getZ());
+                return new Vector3f(center.getX(),center.getY()+1,center.getZ());
             }
         }
         return null;
