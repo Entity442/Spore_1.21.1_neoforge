@@ -35,7 +35,18 @@ public class IkVortexFunnel extends IkKrakenLeg{
 
         float totalDistance = (float) basePos.distanceTo(defaultTipPos);
 
-        float idealSegmentLength = totalDistance / entities.length;
+        float baseSegmentLength = 0.5f; // Base length when close
+        float maxSegmentLength = 5.0f;  // Maximum stretch per segment
+        float stretchFactor = 0.8f;     // How much segments stretch with distance
+
+        // Calculate dynamic segment length that scales with distance but has limits
+        float dynamicSegmentLength = Math.min(
+                baseSegmentLength + (totalDistance * stretchFactor / entities.length),
+                maxSegmentLength
+        );
+
+        // Also consider a minimum segment length to prevent compression at short distances
+        float idealSegmentLength = Math.max(dynamicSegmentLength, 0.3f);
 
         int firstElasticSegment = 1;
         int lastElasticSegment = entities.length - 2;

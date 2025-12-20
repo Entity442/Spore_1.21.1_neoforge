@@ -695,15 +695,7 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
         if (funnelPoints == null || funnelPoints.length < 2) return;
 
         // Get entrance (last segment) and base (segment 0)
-        Vec3 entrance = funnelPoints[funnelPoints.length - 1];
         Vec3 base = funnelPoints[0];
-        Vec3 funnelDirection = base.subtract(entrance).normalize(); // Direction FROM entrance TO base
-
-        System.out.printf("Vortex: Base(0)=%.1f,%.1f,%.1f | Entrance(%d)=%.1f,%.1f,%.1f | Dir=%.2f,%.2f,%.2f%n",
-                base.x, base.y, base.z,
-                funnelPoints.length - 1, entrance.x, entrance.y, entrance.z,
-                funnelDirection.x, funnelDirection.y, funnelDirection.z);
-        
         for (int i = 0; i < funnelPoints.length; i++) {
             Vec3 segmentPos = funnelPoints[i];
 
@@ -772,7 +764,6 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
         // 1. RADIAL PULL (toward segment center)
         double pullStrength;
         if (segmentIndex == 0) {
-            // At base: VERY strong inward pull to concentrate entities
             pullStrength = 0.25 * (1.0 + normalizedDistance * 0.5);
         } else if (segmentIndex < totalSegments / 3) {
             // Lower third: strong pull
@@ -838,7 +829,7 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
             motion = motion.normalize().scale(maxSpeed);
         }
 
-        if (segmentIndex == 0 && shouldConsumeEntity(entity, center)) {
+        if (segmentIndex <= 5 && shouldConsumeEntity(entity, center)) {
             consumeEntity(entity);
             return;
         }
@@ -869,7 +860,7 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
         if (!entity.isAlive()) return false;
         if (entity.isPassenger()) return false;
         double distSq = entity.position().distanceToSqr(baseCenter);
-        return distSq < 1.6 * 1.6 && entity instanceof LivingEntity;
+        return distSq < 3.2 * 3.2 && entity instanceof LivingEntity;
     }
 
     private void consumeEntity(Entity entity) {
