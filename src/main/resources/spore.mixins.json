@@ -2,11 +2,14 @@
   "required": true,
   "package": "com.Harbinger.Spore.mixin",
   "compatibilityLevel": "JAVA_21",
-  "mixins": [],
+  "minVersion": "0.8",
+  "refmap": "spore.refmap.json",
+  "mixins": [
+    "MobCategoryMixin"
+  ],
+  "client": [],
+  "server": [],
   "injectors": {
     "defaultRequire": 1
-  },
-  "overwrites": {
-    "requireAnnotations": true
   }
 }
