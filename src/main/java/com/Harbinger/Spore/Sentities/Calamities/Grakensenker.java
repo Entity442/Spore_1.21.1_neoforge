@@ -385,14 +385,14 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
             }
         }
         if (hasVortex()){
-            int range = 4;
+            int range = 8;
             for(int i = 0; i <=2* range; ++i) {
                 for(int k = 0; k <=2* range; ++k) {
                     double distance = Mth.sqrt((float) ((i-range)*(i-range) + (k-range)*(k-range)));
                     if (Math.abs(i) != 2 || Math.abs(k) != 2) {
-                        if (distance<range+(0.5)){
+                        if (distance<range+(0.5) && Math.random() < 0.1){
                             BlockPos vector3f = getVortexVector().offset( i- range,0,k- range);
-                            level().addParticle(ParticleTypes.BUBBLE,vector3f.getX(),vector3f.getY()+1,vector3f.getZ(),0,0.01,0);
+                            level().addParticle(ParticleTypes.BUBBLE,vector3f.getX(),vector3f.getY()+1,vector3f.getZ(),0,0.05,0);
                         }}}}
             applyVortexForces();
         }
