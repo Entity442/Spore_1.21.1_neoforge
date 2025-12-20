@@ -302,4 +302,29 @@ public class HandlerEvents {
             }
         }
     }
+    public static final TagKey<EntityType<?>> SPORE_MOBS =
+            TagKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(Spore.MODID, "fungus_entities"));
+    private static int countInfectedMobsInChunk(ServerLevel level, BlockPos pos) {
+        int count = 0;
+        ChunkPos chunkPos = new ChunkPos(pos);
+        for (Entity entity : level.getEntities().getAll()) {
+            if (entity.chunkPosition().equals(chunkPos) && entity instanceof Infected) {
+                count++;
+            }
+        }
+        return count;
+    }
+    @SubscribeEvent
+    public static void onCheckSpawn(MobSpawnEvent.SpawnPlacementCheck event) {
+        EntityType<?> entity = event.getEntityType();
+        ServerLevel serverLevel = event.getLevel().getLevel();
+        BlockPos pos = event.getPos();
+        if (entity.is(SPORE_MOBS)){
+            if (countInfectedMobsInChunk(serverLevel,pos) < SConfig.SERVER.mob_cap.get()){
+                event.setResult(MobSpawnEvent.SpawnPlacementCheck.Result.SUCCEED);
+            }else {
+                event.setResult(MobSpawnEvent.SpawnPlacementCheck.Result.FAIL);
+            }
+        }
+    }
 }
