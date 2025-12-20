@@ -116,10 +116,12 @@ public class KrakenRenderer<Type extends Grakensenker> extends CalamityRenderer<
                 renderTentacle(stack,entity,light, bufferSource, entity.getLeftArmTentacle().getEntities(),entity.getLeftArmTentacle().getSegmentVar(), entity, partialTicks,true,true);
 
             }
-            if (entity.hasVortex() && camera !=null && camera.isEyeInFluidType(Fluids.WATER.getFluidType())){
-                SpecialEffects.renderFunnel(stack,light, bufferSource, entity.getVortexFunnel().getEntities(),time,packedColor,1f,WATER);
-                SpecialEffects.renderFunnel(stack,light, bufferSource, entity.getVortexFunnel().getEntities(),time,-1,1.1f,WATER_RIPTIDE);
-                SpecialEffects.renderFunnel(stack,light, bufferSource, entity.getVortexFunnel().getEntities(),time2,packedColor,0.9f,WATER);
+            if (entity.hasVortex() && entity.getVortexTimeOut() <= 0){
+                if (camera != null && camera.isEyeInFluidType(Fluids.WATER.getFluidType())){
+                    SpecialEffects.renderFunnel(stack,light, bufferSource, entity.getVortexFunnel().getEntities(),time,packedColor,1f,WATER);
+                    SpecialEffects.renderFunnel(stack,light, bufferSource, entity.getVortexFunnel().getEntities(),time,-1,1.1f,WATER_RIPTIDE);
+                    SpecialEffects.renderFunnel(stack,light, bufferSource, entity.getVortexFunnel().getEntities(),time2,packedColor,0.9f,WATER);
+                }
             }
         }
         stack.popPose();

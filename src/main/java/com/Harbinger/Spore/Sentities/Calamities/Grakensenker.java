@@ -41,6 +41,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.entity.PartEntity;
 import net.neoforged.neoforge.fluids.FluidType;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
@@ -652,36 +653,59 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
     public void applyVortexForces() {
         if (level().isClientSide) return;
         Vec3[] funnelPoints = getVortexFunnel().getEntities();
-        if (funnelPoints == null) return;
+        if (funnelPoints == null || funnelPoints.length < 2) return;
 
-        // Process from base (index 0) to tip (last index)
+        // Get entrance (last segment) and base (segment 0)
+        Vec3 entrance = funnelPoints[funnelPoints.length - 1];
+        Vec3 base = funnelPoints[0];
+        Vec3 funnelDirection = base.subtract(entrance).normalize(); // Direction FROM entrance TO base
+
+        System.out.printf("Vortex: Base(0)=%.1f,%.1f,%.1f | Entrance(%d)=%.1f,%.1f,%.1f | Dir=%.2f,%.2f,%.2f%n",
+                base.x, base.y, base.z,
+                funnelPoints.length - 1, entrance.x, entrance.y, entrance.z,
+                funnelDirection.x, funnelDirection.y, funnelDirection.z);
+        
         for (int i = 0; i < funnelPoints.length; i++) {
-            Vec3 vortex = funnelPoints[i];
+            Vec3 segmentPos = funnelPoints[i];
 
-            // Radius increases toward the tip (wider vortex at the end)
-            double radius = 1.5 + i * 1.0; // Base is 1.5, tip is larger
-            Vec3 center = vortex.subtract(0, 1.0, 0); // Slight downward offset
+            // Calculate distance from base (0 = at base, 1 = at entrance)
+            double distanceFromBase = (double) i / (funnelPoints.length - 1);
 
-            AABB area = new AABB(
-                    center.x - radius, center.y - radius * 1.5,
-                    center.z - radius,
-                    center.x + radius, center.y + radius * 0.5,
-                    center.z + radius
-            );
+            // Radius: smaller at base, larger at entrance
+            double radius = 1.0 + distanceFromBase * 4.0 + i;
+            AABB area = getAabb(distanceFromBase, segmentPos, radius);
 
             List<Entity> entities = level().getEntitiesOfClass(
                     Entity.class,
                     area,
                     e -> ((e instanceof LivingEntity living
                             && living != this
-                            && Utilities.TARGET_SELECTOR.Test(living) && TargetingConditions.forCombat().test(this,living))
+                            && Utilities.TARGET_SELECTOR.Test(living)
+                            && TargetingConditions.forCombat().test(this, living))
                             || e instanceof Boat) && e.isInWater()
             );
 
             for (Entity entity : entities) {
-                applyVortexForceToEntity(entity, center, radius, i, funnelPoints.length);
+                applyVortexForceToEntity(entity, segmentPos, radius, i,
+                        funnelPoints.length, base);
             }
         }
+    }
+
+    private static @NotNull AABB getAabb(double distanceFromBase, Vec3 segmentPos, double radius) {
+        double verticalScale = 1.0 + (1.0 - distanceFromBase) * 2.0; // Taller near base
+        double horizontalScale = 0.8 + distanceFromBase * 1.2; // Wider near entrance
+
+        // Below segment
+        // Above segment (for capture)
+        return new AABB(
+                segmentPos.x - radius * horizontalScale,
+                segmentPos.y - radius * verticalScale * 0.5, // Below segment
+                segmentPos.z - radius * horizontalScale,
+                segmentPos.x + radius * horizontalScale,
+                segmentPos.y + radius * verticalScale * 1.5, // Above segment (for capture)
+                segmentPos.z + radius * horizontalScale
+        );
     }
 
     private void applyVortexForceToEntity(
@@ -689,51 +713,93 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
             Vec3 center,
             double radius,
             int segmentIndex,
-            int totalSegments
+            int totalSegments,
+            Vec3 basePosition
     ) {
-        boolean isTipSegment = segmentIndex == totalSegments - 1;
-        Vec3 pos = entity.position();
-        Vec3 toCenter = center.subtract(pos);
-
+        Vec3 entityPos = entity.position();
+        Vec3 toCenter = center.subtract(entityPos);
         double distance = toCenter.length();
-        if (distance < 0.4 || distance > radius) return;
 
-        double normalizedDistance = distance / radius; // 0 = center, 1 = edge
+        if (distance < 0.2 || distance > radius) return;
 
-        // INVERTED: Strongest at base (segment 0), weakest at tip
-        double depthFactor = 1.0 - ((double) segmentIndex / totalSegments);
+        double normalizedDistance = distance / radius;
 
-        // Pull force: stronger toward center, stronger at base
-        double pullStrength = 0.08 + 0.1 * normalizedDistance; // Increases with distance from center
-        Vec3 pull = toCenter.normalize().scale(pullStrength * depthFactor);
+        // Calculate position in funnel (0.0 = at base, 1.0 = at entrance)
+        double funnelPosition = (double) segmentIndex / (totalSegments - 1);
 
-        // Spin force: strongest at base, decreases toward tip
+        // Force multipliers based on position in funnel
+        double baseMultiplier = Math.pow(1.0 - funnelPosition, 2.0); // Strong near base
+
+        // 1. RADIAL PULL (toward segment center)
+        double pullStrength;
+        if (segmentIndex == 0) {
+            // At base: VERY strong inward pull to concentrate entities
+            pullStrength = 0.25 * (1.0 + normalizedDistance * 0.5);
+        } else if (segmentIndex < totalSegments / 3) {
+            // Lower third: strong pull
+            pullStrength = 0.18 * (0.8 + normalizedDistance * 0.4);
+        } else {
+            // Upper segments: moderate pull
+            pullStrength = 0.12 * (0.6 + normalizedDistance * 0.3);
+        }
+
+        Vec3 radialPull = toCenter.normalize().scale(pullStrength);
+
+        // 2. SPIN FORCE (tangential)
         Vec3 spinDir = new Vec3(-toCenter.z, 0, toCenter.x).normalize();
-        double spinStrength = 0.15 * (1.0 - normalizedDistance) * depthFactor; // Stronger near center, stronger at base
-        Vec3 spin = spinDir.scale(spinStrength);
+        double spinStrength = 0.8 * (1.0 - normalizedDistance) * (0.3 + baseMultiplier * 0.7);
+        Vec3 spinForce = spinDir.scale(spinStrength);
 
-        // Sink force: strongest at base
-        double sinkStrength = (1.0 - normalizedDistance);
-        sinkStrength = sinkStrength * sinkStrength; // Quadratic falloff from center
-        Vec3 sink = new Vec3(0, -0.12 * sinkStrength * depthFactor, 0);
+        // 3. FUNNEL FLOW FORCE (toward base - MOST IMPORTANT!)
+        Vec3 toBase = basePosition.subtract(entityPos);
+        double distanceToBase = toBase.length();
 
-        // Apply all forces
-        Vec3 motion = entity.getDeltaMovement()
-                .add(pull)
-                .add(spin)
-                .add(sink);
+        double flowStrength = getFlowStrength(segmentIndex, totalSegments, distanceToBase);
 
-        // Cap speed - lower max at base for stronger control
-        double maxSpeed = entity instanceof Boat ? 0.5 : 1.0;
-        // Allow slightly higher speed at tip where forces are weaker
-        maxSpeed *= (0.7 + 0.3 * (1.0 - depthFactor)); // Tip: ~30% faster allowed
+        Vec3 flowForce = toBase.normalize().scale(flowStrength);
+
+        double sinkStrength;
+        if (segmentIndex > totalSegments - 4) {
+            sinkStrength = 0.01 * (1.0 - funnelPosition);
+        } else {
+            sinkStrength = 0.01 * baseMultiplier;
+        }
+
+        Vec3 sinkForce = new Vec3(0, -sinkStrength * (1.0 - normalizedDistance), 0);
+        Vec3 totalForce;
+        if (segmentIndex == 0) {
+            // At base: Strong radial pull dominates
+            totalForce = radialPull.scale(2.0)
+                    .add(flowForce.scale(0.5))
+                    .add(spinForce.scale(0.3));
+        } else if (segmentIndex < 4) {
+            totalForce = flowForce.scale(1.5)
+                    .add(radialPull)
+                    .add(spinForce.scale(0.7))
+                    .add(sinkForce.scale(0.5));
+        } else {
+            totalForce = flowForce
+                    .add(radialPull.scale(0.8))
+                    .add(spinForce)
+                    .add(sinkForce.scale(0.8));
+        }
+
+        Vec3 motion = entity.getDeltaMovement().add(totalForce);
+
+        double maxSpeed;
+        if (segmentIndex == 0) {
+            maxSpeed = entity instanceof Boat ? 0.2 : 0.4;
+        } else if (segmentIndex < 4) {
+            maxSpeed = entity instanceof Boat ? 0.3 : 0.6;
+        } else {
+            maxSpeed = entity instanceof Boat ? 0.5 : 1.0;
+        }
 
         if (motion.length() > maxSpeed) {
             motion = motion.normalize().scale(maxSpeed);
         }
 
-        // Consume at tip if close enough
-        if (isTipSegment && shouldConsumeEntity(entity, center)) {
+        if (segmentIndex == 0 && shouldConsumeEntity(entity, center)) {
             consumeEntity(entity);
             return;
         }
@@ -742,17 +808,40 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
         entity.hurtMarked = true;
     }
 
+    private static double getFlowStrength(int segmentIndex, int totalSegments, double distanceToBase) {
+        double flowStrength;
+        if (segmentIndex == 0) {
+            // At base: minimal flow (they're already there)
+            flowStrength = 0.02;
+        } else if (segmentIndex < 3) {
+            // Very close to base: strong pull into base
+            flowStrength = 0.3 * (1.0 - (distanceToBase / 10.0));
+        } else if (segmentIndex < totalSegments / 2) {
+            // Middle segments: moderate flow
+            flowStrength = 0.15;
+        } else {
+            // Entrance segments: gentle guidance toward funnel
+            flowStrength = 0.08;
+        }
+        return flowStrength;
+    }
+
+    private boolean shouldConsumeEntity(Entity entity, Vec3 baseCenter) {
+        if (!entity.isAlive()) return false;
+        if (entity.isPassenger()) return false;
+        double distSq = entity.position().distanceToSqr(baseCenter);
+        return distSq < 1.6 * 1.6 && entity instanceof LivingEntity;
+    }
+
     private void consumeEntity(Entity entity) {
         entity.setDeltaMovement(Vec3.ZERO);
         entity.fallDistance = 0;
         entity.stopRiding();
+
+        Vec3 basePos = getVortexFunnel().getEntities()[0];
+        entity.setPos(basePos.x, basePos.y, basePos.z);
+
         entity.startRiding(this);
-    }
-    private boolean shouldConsumeEntity(Entity entity, Vec3 center) {
-        if (!entity.isAlive()) return false;
-        if (entity.isPassenger()) return false;
-        double distSq = entity.position().distanceToSqr(center);
-        return distSq < 2.5 * 2.5 && entity instanceof LivingEntity;
     }
 
 }

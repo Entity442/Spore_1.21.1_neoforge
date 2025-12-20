@@ -21,18 +21,20 @@ public class WaterCalamityCamo<T extends Calamity, M extends EntityModel<T>> ext
     @Override
     public void render(PoseStack stack, MultiBufferSource bufferSource, int value, T type, float p_117353_, float p_117354_, float p_117355_, float p_117356_, float p_117357_, float p_117358_) {
         Entity camera = Minecraft.getInstance().getCameraEntity();
-        if (camera == null || !camera.isEyeInFluidType(Fluids.WATER.getFluidType())){
+        if (camera == null){
             return;
         }
-        int color = type.level().getBiome(type.getOnPos()).value().getWaterColor();
-        if (!type.isInvisible()){
-            int r = (color >> 16) & 0xFF;
-            int g = (color >> 8) & 0xFF;
-            int b = color & 0xFF;
+        if (!camera.isEyeInFluidType(Fluids.WATER.getFluidType())){
+            int color = type.level().getBiome(type.getOnPos()).value().getWaterColor();
+            if (!type.isInvisible()){
+                int r = (color >> 16) & 0xFF;
+                int g = (color >> 8) & 0xFF;
+                int b = color & 0xFF;
 
-            int halfColor = (0x80 << 24) | (r << 16) | (g << 8) | b;
-            VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityTranslucent(getTextureLocation(type)));
-            getParentModel().renderToBuffer(stack,consumer,value, OverlayTexture.NO_OVERLAY,halfColor);
+                int halfColor = (0x80 << 24) | (r << 16) | (g << 8) | b;
+                VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityTranslucent(getTextureLocation(type)));
+                getParentModel().renderToBuffer(stack,consumer,value, OverlayTexture.NO_OVERLAY,halfColor);
+            }
         }
     }
 }
