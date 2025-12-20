@@ -702,7 +702,7 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
             double distanceFromBase = (double) i / (funnelPoints.length - 1);
 
             // Radius: smaller at base, larger at entrance
-            double radius = 1.0 + distanceFromBase * 4.0 + ((double) i /2);
+            double radius = 1.0 + distanceFromBase * 4.0 + ((double) i /4);
             AABB area = getAabb(distanceFromBase, segmentPos, radius);
 
             List<Entity> entities = level().getEntitiesOfClass(
@@ -716,7 +716,7 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
             );
 
             for (Entity entity : entities) {
-                if (entity.isVehicle()){
+                if (entity.isVehicle() && getVortexVector().distToCenterSqr(entity.position()) < 120){
                     entity.ejectPassengers();
                 }
                 applyVortexForceToEntity(entity, segmentPos, radius, i,
