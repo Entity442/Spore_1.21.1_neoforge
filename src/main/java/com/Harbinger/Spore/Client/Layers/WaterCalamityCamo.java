@@ -24,7 +24,7 @@ public class WaterCalamityCamo<T extends Calamity, M extends EntityModel<T>> ext
         if (camera == null){
             return;
         }
-        if (!camera.isEyeInFluidType(Fluids.WATER.getFluidType())){
+        if (!camera.isEyeInFluidType(Fluids.WATER.getFluidType()) && type.isInWater()){
             int color = type.level().getBiome(type.getOnPos()).value().getWaterColor();
             if (!type.isInvisible()){
                 int r = (color >> 16) & 0xFF;
