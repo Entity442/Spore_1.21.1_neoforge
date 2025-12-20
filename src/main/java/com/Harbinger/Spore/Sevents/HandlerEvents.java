@@ -9,22 +9,14 @@ import com.Harbinger.Spore.Sentities.BasicInfected.InfectedDrowned;
 import com.Harbinger.Spore.Sentities.ChunkLoaderMob;
 import com.Harbinger.Spore.Sentities.EvolvedInfected.Protector;
 import com.Harbinger.Spore.Sentities.Organoids.Proto;
-import com.Harbinger.Spore.Sentities.Utility.ScentEntity;
-import com.Harbinger.Spore.Sitems.BaseWeapons.LootModifierWeapon;
 import com.Harbinger.Spore.Sitems.BaseWeapons.SporeBaseArmor;
 import com.Harbinger.Spore.Spore;
 import com.Harbinger.Spore.core.*;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.SectionPos;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.*;
@@ -56,7 +48,6 @@ import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
 import java.util.*;
-import java.util.function.Supplier;
 
 @EventBusSubscriber(modid = Spore.MODID)
 public class HandlerEvents {
@@ -299,31 +290,6 @@ public class HandlerEvents {
             }
             if (living.getItemBySlot(EquipmentSlot.HEAD).getItem() == Sitems.INF_UP_HELMET.get() && instance.getEffect().equals(Seffects.MADNESS) && instance.getAmplifier() < 1){
                 event.setResult(MobEffectEvent.Applicable.Result.DO_NOT_APPLY);
-            }
-        }
-    }
-    public static final TagKey<EntityType<?>> SPORE_MOBS =
-            TagKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(Spore.MODID, "fungus_entities"));
-    private static int countInfectedMobsInChunk(ServerLevel level, BlockPos pos) {
-        int count = 0;
-        ChunkPos chunkPos = new ChunkPos(pos);
-        for (Entity entity : level.getEntities().getAll()) {
-            if (entity.chunkPosition().equals(chunkPos) && entity instanceof Infected) {
-                count++;
-            }
-        }
-        return count;
-    }
-    @SubscribeEvent
-    public static void onCheckSpawn(MobSpawnEvent.SpawnPlacementCheck event) {
-        EntityType<?> entity = event.getEntityType();
-        ServerLevel serverLevel = event.getLevel().getLevel();
-        BlockPos pos = event.getPos();
-        if (entity.is(SPORE_MOBS)){
-            if (countInfectedMobsInChunk(serverLevel,pos) < SConfig.SERVER.mob_cap.get()){
-                event.setResult(MobSpawnEvent.SpawnPlacementCheck.Result.SUCCEED);
-            }else {
-                event.setResult(MobSpawnEvent.SpawnPlacementCheck.Result.FAIL);
             }
         }
     }
