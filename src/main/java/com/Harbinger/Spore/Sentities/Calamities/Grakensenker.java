@@ -716,6 +716,9 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
             );
 
             for (Entity entity : entities) {
+                if (entity.isVehicle()){
+                    entity.ejectPassengers();
+                }
                 applyVortexForceToEntity(entity, segmentPos, radius, i,
                         funnelPoints.length, base);
             }
