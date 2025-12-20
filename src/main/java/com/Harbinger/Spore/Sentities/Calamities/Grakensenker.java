@@ -402,8 +402,39 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
         if (getLeftArmDelay() > 0){
             entityData.set(LEFT_ARM_DELAY,getLeftArmDelay()-1);
         }
-    }
+        if (isInWater()){
+            LivingEntity target = this.getTarget();
+            Vec3 vec3 = target == null ? this.getDeltaMovement() : target.position();
 
+            if (vec3.horizontalDistanceSqr() > 2.5E-7F) {
+                double dx = vec3.x;
+                double dy = vec3.y;
+                double dz = vec3.z;
+
+                double horizontal = Math.sqrt(dx * dx + dz * dz);
+
+                float yaw = (float)(Mth.atan2(dz, dx) * (180F / Math.PI)) - 90F;
+
+                float pitch = (float)(Mth.atan2(dy, horizontal) * (180F / Math.PI));
+
+                this.setYRot(yaw);
+                this.setXRot(pitch);
+
+                this.yBodyRot = lerpRotation(this.yRotO, this.getYRot());
+            }
+        }
+    }
+    protected static float lerpRotation(float currentRotation, float targetRotation) {
+        while(targetRotation - currentRotation < -180.0F) {
+            currentRotation -= 360.0F;
+        }
+
+        while(targetRotation - currentRotation >= 180.0F) {
+            currentRotation += 360.0F;
+        }
+
+        return Mth.lerp(0.2F, currentRotation, targetRotation);
+    }
     @Override
     public boolean hurt(DamageSource source, float amount) {
         setVortexTimeout(1200);

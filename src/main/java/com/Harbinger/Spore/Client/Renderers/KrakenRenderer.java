@@ -94,8 +94,8 @@ public class KrakenRenderer<Type extends Grakensenker> extends CalamityRenderer<
         int color = entity.level().getBiome(entity.getOnPos()).value().getWaterColor();
         int packedColor = color | 0xFF000000;
         Entity camera = Minecraft.getInstance().getCameraEntity();
-        float time = (entity.tickCount + partialTicks) * 0.25f;
-        float time2 = (entity.tickCount + partialTicks) * 0.35f;
+        float time = (entity.tickCount + partialTicks) * -0.25f;
+        float time2 = (entity.tickCount + partialTicks) * -0.35f;
         stack.pushPose();
         stack.translate(0,entity.getExtendedHeight(),0);
         stack.mulPose(Axis.YP.rotationDegrees(entity.getWaterTicks()));
