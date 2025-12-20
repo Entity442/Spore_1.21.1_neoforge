@@ -11,6 +11,7 @@ import com.Harbinger.Spore.Spore;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -18,10 +19,13 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.fluids.FluidType;
 import org.joml.Vector3f;
 
 @OnlyIn(Dist.CLIENT)
@@ -89,6 +93,7 @@ public class KrakenRenderer<Type extends Grakensenker> extends CalamityRenderer<
     public void render(Type entity, float entityYaw, float partialTicks, PoseStack stack, MultiBufferSource bufferSource, int light) {
         int color = entity.level().getBiome(entity.getOnPos()).value().getWaterColor();
         int packedColor = color | 0xFF000000;
+        Entity camera = Minecraft.getInstance().getCameraEntity();
         float time = (entity.tickCount + partialTicks) * 0.05f;
         float time2 = (entity.tickCount + partialTicks) * 0.1f;
         stack.pushPose();
@@ -111,7 +116,7 @@ public class KrakenRenderer<Type extends Grakensenker> extends CalamityRenderer<
                 renderTentacle(stack,entity,light, bufferSource, entity.getLeftArmTentacle().getEntities(),entity.getLeftArmTentacle().getSegmentVar(), entity, partialTicks,true,true);
 
             }
-            if (entity.hasVortex()){
+            if (entity.hasVortex() && camera !=null && camera.isEyeInFluidType(Fluids.WATER.getFluidType())){
                 SpecialEffects.renderFunnel(stack,light, bufferSource, entity.getVortexFunnel().getEntities(),time,packedColor,1f,WATER);
                 SpecialEffects.renderFunnel(stack,light, bufferSource, entity.getVortexFunnel().getEntities(),time,-1,1.1f,WATER_RIPTIDE);
                 SpecialEffects.renderFunnel(stack,light, bufferSource, entity.getVortexFunnel().getEntities(),time2,packedColor,0.9f,WATER);

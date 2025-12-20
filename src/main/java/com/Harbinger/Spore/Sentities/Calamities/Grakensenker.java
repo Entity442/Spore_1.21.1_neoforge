@@ -3,6 +3,7 @@ package com.Harbinger.Spore.Sentities.Calamities;
 import com.Harbinger.Spore.ExtremelySusThings.Utilities;
 import com.Harbinger.Spore.Sentities.AI.AOEMeleeAttackGoal;
 import com.Harbinger.Spore.Sentities.AI.CalamitiesAI.*;
+import com.Harbinger.Spore.Sentities.AI.HybridPathNavigation;
 import com.Harbinger.Spore.Sentities.BaseEntities.Calamity;
 import com.Harbinger.Spore.Sentities.BaseEntities.CalamityMultipart;
 import com.Harbinger.Spore.Sentities.BaseEntities.IkUtil.IkKrakenArm;
@@ -16,6 +17,7 @@ import com.Harbinger.Spore.core.SAttributes;
 import com.Harbinger.Spore.core.SConfig;
 import com.Harbinger.Spore.core.Ssounds;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -52,7 +54,7 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
     public static final EntityDataAccessor<Integer> LEFT_ARM_ENTITY = SynchedEntityData.defineId(Grakensenker.class, EntityDataSerializers.INT);
     public static final EntityDataAccessor<Integer> RIGHT_ARM_DELAY = SynchedEntityData.defineId(Grakensenker.class, EntityDataSerializers.INT);
     public static final EntityDataAccessor<Integer> LEFT_ARM_DELAY = SynchedEntityData.defineId(Grakensenker.class, EntityDataSerializers.INT);
-    public static final EntityDataAccessor<Vector3f> VORTEX_VECTOR = SynchedEntityData.defineId(Grakensenker.class, EntityDataSerializers.VECTOR3);
+    public static final EntityDataAccessor<BlockPos> VORTEX_VECTOR = SynchedEntityData.defineId(Grakensenker.class, EntityDataSerializers.BLOCK_POS);
     public static final EntityDataAccessor<Integer> VORTEX_TIMEOUT = SynchedEntityData.defineId(Grakensenker.class, EntityDataSerializers.INT);
     public static final float MIN_HEIGHT = 0f;
     public static final float MAX_HEIGHT = 4f;
@@ -91,6 +93,7 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
         this.subEntities = new CalamityMultipart[]{ this.Body,this.Body2, this.RightHand,this.LeftHand};
         this.setId(ENTITY_COUNTER.getAndAdd(this.subEntities.length + 1) + 1);
         this.moveControl = new WaterXlandMovement(this);
+        this.navigation = new HybridPathNavigation(this,this.level());
     }
     @Override
     public void setId(int p_20235_) {
@@ -183,7 +186,7 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
         if (this.isEffectiveAi() && this.isInFluidType()) {
             this.moveRelative(0.1F, vec);
             this.move(MoverType.SELF, this.getDeltaMovement());
-            this.setDeltaMovement(this.getDeltaMovement().scale(0.9D));
+            this.setDeltaMovement(this.getDeltaMovement().scale(0.9D).add(0,-0.01,0));
         } else {
             super.travel(vec);
         }
@@ -246,12 +249,11 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
     public void setLeftArm(Vector3f vector3f){ entityData.set(LEFT_ARM_TIP,vector3f);}
     public int getRightArmDelay(){return entityData.get(RIGHT_ARM_DELAY);};
     public int getLeftArmDelay(){return entityData.get(LEFT_ARM_DELAY);}
-    public Vector3f getVortexVector(){return entityData.get(VORTEX_VECTOR);}
+    public BlockPos getVortexVector(){return entityData.get(VORTEX_VECTOR);}
     public int getVortexTimeOut(){return entityData.get(VORTEX_TIMEOUT);}
-    public void setVortexVector(Vector3f vector3f){entityData.set(VORTEX_VECTOR,vector3f);}
+    public void setVortexVector(BlockPos vector3f){entityData.set(VORTEX_VECTOR,vector3f);}
     public boolean hasVortex() {
-        Vector3f v = getVortexVector();
-        return v != null && !v.equals(V0);
+        return getVortexVector() != BlockPos.ZERO;
     }
     public void setVortexTimeout(int value){entityData.set(VORTEX_TIMEOUT,value);}
     @Override
@@ -265,7 +267,7 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
         builder.define(LEFT_ARM_ENTITY,  -1);
         builder.define(RIGHT_ARM_DELAY,  0);
         builder.define(LEFT_ARM_DELAY,  0);
-        builder.define(VORTEX_VECTOR,   V0);
+        builder.define(VORTEX_VECTOR,   BlockPos.ZERO);
         builder.define(VORTEX_TIMEOUT,  0);
     }
     @Override
@@ -276,6 +278,10 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
         for(int e = 0;e<TickTentacles.length;e++){
             TickTentacles[e].writeVariants(tag,e);
         }
+        tag.putInt("VX",getVortexVector().getX());
+        tag.putInt("VY",getVortexVector().getY());
+        tag.putInt("VZ",getVortexVector().getZ());
+        tag.putInt("timeOut",getVortexTimeOut());
     }
     @Override
     public void readAdditionalSaveData(CompoundTag tag) {
@@ -285,6 +291,11 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
         for(int e = 0;e<TickTentacles.length;e++){
             TickTentacles[e].readVariants(tag,e);
         }
+        int x = tag.getInt("VX");
+        int y = tag.getInt("VY");
+        int z = tag.getInt("VZ");
+        this.setVortexVector(new BlockPos(x,y,z));
+        setVortexTimeout(tag.getInt("timeOut"));
     }
 
 
@@ -364,13 +375,24 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
         if (tickCount % 20 == 0){
             validateArms();
             if (isInDeepWater()){
-                if (!hasVortex() && getVortexTimeOut() <= 0 && getTarget() == null){
-                    Vector3f vec3 = findVortexCenter(level(),this.getOnPos(),32);
+                if (!hasVortex() && getVortexTimeOut() <= 0 && getTarget() == null && getSearchArea() == BlockPos.ZERO){
+                    BlockPos vec3 = findVortexCenter(level());
                     if (vec3 != null){
                         setVortexVector(vec3);
                     }
                 }
             }
+        }
+        if (hasVortex()){
+            int range = 4;
+            for(int i = 0; i <=2* range; ++i) {
+                for(int k = 0; k <=2* range; ++k) {
+                    double distance = Mth.sqrt((float) ((i-range)*(i-range) + (k-range)*(k-range)));
+                    if (Math.abs(i) != 2 || Math.abs(k) != 2) {
+                        if (distance<range+(0.5)){
+                            BlockPos vector3f = getVortexVector().offset( i- range,0,k- range);
+                            level().addParticle(ParticleTypes.BUBBLE,vector3f.getX(),vector3f.getY(),vector3f.getZ(),0,0.01,0);
+                        }}}}
         }
         if (getRightArmDelay() > 0){
             entityData.set(RIGHT_ARM_DELAY,getRightArmDelay()-1);
@@ -382,8 +404,8 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
 
     @Override
     public boolean hurt(DamageSource source, float amount) {
-        setVortexTimeout(200);
-        setVortexVector(V0);
+        setVortexTimeout(1200);
+        setVortexVector(BlockPos.ZERO);
         return super.hurt(source, amount);
     }
 
@@ -574,25 +596,25 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
         return offset.yRot(-yawRad - Mth.HALF_PI + spinRad);
     }
     @Nullable
-    public Vector3f findVortexCenter(Level level, BlockPos origin, int radius) {
-        if (!isInWater()){
-            return null;
-        }
-        Vec3 vec3 = applyYaw(new Vec3(random.nextInt(5,15),0,random.nextInt(-10,10)));
-        int x;
-        for (x= 0;x<radius;x++){
-            BlockPos center = origin.offset((int) vec3.x, x, (int) vec3.z);
-            BlockState water = level.getBlockState(center);
-            BlockState air = level.getBlockState(center.above());
-            if (water.is(Blocks.WATER) && air.isAir()){
-                if (x <= 3){
-                    return null;
-                }
-                return new Vector3f(center.getX(),center.getY()+1,center.getZ());
+    public BlockPos findVortexCenter(Level level) {
+        if (!isInWater()) return null;
+        Vec3 random = applyYaw(new Vec3(getRandom().nextInt(3,7),0,getRandom().nextInt(-5,5)));
+        Vec3 base = this.position().add(random);
+        for (int dy = 0; dy <= 32; dy++) {
+            BlockPos pos = BlockPos.containing(base.x, base.y + dy, base.z);
+
+            BlockState water = level.getBlockState(pos);
+            BlockState air = level.getBlockState(pos.above());
+
+            if (water.is(Blocks.WATER) && air.isAir()) {
+                if (dy <= 8) {return null;};
+
+                return pos;
             }
         }
         return null;
     }
+
 
     public void handleVortexBehavior() {
         if (!hasVortex()) return;
@@ -604,10 +626,10 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
         lookAtVortex(getVortexVector());
     }
 
-    private void lookAtVortex(Vector3f target) {
-        double dx = target.x() - this.getX();
-        double dz = target.z() - this.getZ();
-        double dy = target.y() - this.getEyeY();
+    private void lookAtVortex(BlockPos target) {
+        double dx = target.getX() - this.getX();
+        double dz = target.getZ() - this.getZ();
+        double dy = target.getY() - this.getEyeY();
 
         double dist = Math.sqrt(dx * dx + dz * dz);
 

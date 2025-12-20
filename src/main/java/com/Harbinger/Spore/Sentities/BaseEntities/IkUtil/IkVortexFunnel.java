@@ -1,6 +1,7 @@
 package com.Harbinger.Spore.Sentities.BaseEntities.IkUtil;
 
 import com.Harbinger.Spore.Sentities.Calamities.Grakensenker;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.Vec3;
 
 public class IkVortexFunnel extends IkKrakenLeg{
@@ -28,10 +29,9 @@ public class IkVortexFunnel extends IkKrakenLeg{
 
     public void applyIK() {
         if (entities == null || entities.length == 0) return;
-
+        BlockPos pos = owner.getVortexVector();
         Vec3 basePos = getBodyOffset();
-        Vec3 defaultTipPos =  new Vec3(owner.getVortexVector());
-        boolean tooFar = entities[entities.length - 1].distanceToSqr(defaultTipPos) > 225;
+        Vec3 defaultTipPos =  new Vec3(pos.getX(),pos.getY(),pos.getZ());
 
         float totalDistance = (float) basePos.distanceTo(defaultTipPos);
 
@@ -59,10 +59,10 @@ public class IkVortexFunnel extends IkKrakenLeg{
             }
 
             Vec3 solvedPos = nextPos.add(dir);
-            moveSegmentTowards(i, solvedPos, tooFar);
+            moveSegmentTowards(i, solvedPos, false);
         }
 
-        moveSegmentTowards(0, basePos, tooFar);
+        moveSegmentTowards(0, basePos, false);
 
         for (int i = 1; i < entities.length; i++) {
             Vec3 prevPos = entities[i - 1];
@@ -81,7 +81,7 @@ public class IkVortexFunnel extends IkKrakenLeg{
             }
 
             Vec3 solvedPos = prevPos.add(dir);
-            moveSegmentTowards(i, solvedPos, tooFar);
+            moveSegmentTowards(i, solvedPos, false);
         }
     }
 }

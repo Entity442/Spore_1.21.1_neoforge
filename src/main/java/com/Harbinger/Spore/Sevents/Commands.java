@@ -234,6 +234,7 @@ public class Commands {
                                     player.displayClientMessage(Component.literal("RightArm " + sieger.getRightArmEntity()),false);
                                     player.displayClientMessage(Component.literal("Left " + sieger.getLeftArmEntity()),false);
                                     player.displayClientMessage(Component.literal("VortexVector " + sieger.getVortexVector()),false);
+                                    player.displayClientMessage(Component.literal("VortexVectorInner " + sieger.getVortexFunnel().getEntities()[sieger.getVortexFunnel().getEntities().length-1]),false);
                                     Entity living = sieger.getFirstPassenger();
                                     if (living != null){
                                         player.displayClientMessage(Component.literal("Victim " + living.getId()),false);
