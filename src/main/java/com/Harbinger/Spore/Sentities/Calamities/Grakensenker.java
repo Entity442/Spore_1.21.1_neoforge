@@ -506,10 +506,7 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
     public void strangleVictim(Entity entity){
         if (entity instanceof LivingEntity living){
             int air = living.getAirSupply();
-            if (tickCount % 5 == 0){
-                air--;
-            }
-            living.setAirSupply(air);
+            living.setAirSupply(--air);
         }
     }
 
