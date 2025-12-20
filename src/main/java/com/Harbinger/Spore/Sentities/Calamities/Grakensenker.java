@@ -485,12 +485,14 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
         if (passenger.getId() == entityData.get(RIGHT_ARM_ENTITY)){
             Vector3f pos = getRightArm();
             callback.accept(passenger, pos.x, pos.y-tall, pos.z);
+            strangleVictim(passenger);
             if (passenger.distanceToSqr(this.position().add(0,getExtendedHeight(),0))<=4){
                 setRightArmEntity(-1);
             }
         }else if (passenger.getId() == entityData.get(LEFT_ARM_ENTITY)){
             Vector3f pos = getLeftArm();
             callback.accept(passenger, pos.x, pos.y-tall, pos.z);
+            strangleVictim(passenger);
             if (passenger.distanceToSqr(this.position().add(0,getExtendedHeight(),0))<=4){
                 setLeftArmEntity(-1);
             }
@@ -499,6 +501,15 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
             if (tickCount % 20 == 0 && passenger instanceof LivingEntity living){
                 this.doHurtTarget(living);
             }
+        }
+    }
+    public void strangleVictim(Entity entity){
+        if (entity instanceof LivingEntity living){
+            int air = living.getAirSupply();
+            if (tickCount % 5 == 0){
+                air--;
+            }
+            living.setAirSupply(air);
         }
     }
 
