@@ -2,6 +2,7 @@ package com.Harbinger.Spore.Client.Renderers;
 
 
 import com.Harbinger.Spore.Client.Layers.GrakenMembraneLayer;
+import com.Harbinger.Spore.Client.Layers.WaterCalamityCamo;
 import com.Harbinger.Spore.Client.Models.GrakensenkerModel;
 import com.Harbinger.Spore.Client.Models.KrakenTentacles.*;
 import com.Harbinger.Spore.Client.Special.CalamityRenderer;
@@ -25,8 +26,6 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.fluids.FluidType;
-import org.joml.Vector3f;
 
 @OnlyIn(Dist.CLIENT)
 public class KrakenRenderer<Type extends Grakensenker> extends CalamityRenderer<Type , EntityModel<Type>> {
@@ -61,6 +60,7 @@ public class KrakenRenderer<Type extends Grakensenker> extends CalamityRenderer<
     public KrakenRenderer(EntityRendererProvider.Context context) {
         super(context, new GrakensenkerModel<>(), 4f);
         this.addLayer(new GrakenMembraneLayer<>(this));
+        this.addLayer(new WaterCalamityCamo<>(this));
     }
 
     @Override
@@ -94,8 +94,8 @@ public class KrakenRenderer<Type extends Grakensenker> extends CalamityRenderer<
         int color = entity.level().getBiome(entity.getOnPos()).value().getWaterColor();
         int packedColor = color | 0xFF000000;
         Entity camera = Minecraft.getInstance().getCameraEntity();
-        float time = (entity.tickCount + partialTicks) * 0.05f;
-        float time2 = (entity.tickCount + partialTicks) * 0.1f;
+        float time = (entity.tickCount + partialTicks) * 0.25f;
+        float time2 = (entity.tickCount + partialTicks) * 0.35f;
         stack.pushPose();
         stack.translate(0,entity.getExtendedHeight(),0);
         stack.mulPose(Axis.YP.rotationDegrees(entity.getWaterTicks()));

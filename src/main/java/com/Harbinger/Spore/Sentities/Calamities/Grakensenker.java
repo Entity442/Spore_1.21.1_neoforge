@@ -32,6 +32,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
+import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -92,7 +93,6 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
         TickTentacles = new IkKrakenLeg[]{BackRightTentacle,BackLeftTentacle,MiddleRightTentacle,MiddleLeftTentacle,FrontRightTentacle,FrontLeftTentacle,RightArmTentacle,LeftArmTentacle,VortexFunnel};
         this.subEntities = new CalamityMultipart[]{ this.Body,this.Body2, this.RightHand,this.LeftHand};
         this.setId(ENTITY_COUNTER.getAndAdd(this.subEntities.length + 1) + 1);
-        this.moveControl = new WaterXlandMovement(this);
         this.navigation = new HybridPathNavigation(this,this.level());
     }
     @Override
@@ -186,7 +186,7 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
         if (this.isEffectiveAi() && this.isInFluidType()) {
             this.moveRelative(0.1F, vec);
             this.move(MoverType.SELF, this.getDeltaMovement());
-            this.setDeltaMovement(this.getDeltaMovement().scale(0.9D).add(0,-0.01,0));
+            this.setDeltaMovement(this.getDeltaMovement().scale(0.9D).add(0,-0.1,0));
         } else {
             super.travel(vec);
         }
@@ -253,7 +253,7 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
     public int getVortexTimeOut(){return entityData.get(VORTEX_TIMEOUT);}
     public void setVortexVector(BlockPos vector3f){entityData.set(VORTEX_VECTOR,vector3f);}
     public boolean hasVortex() {
-        return getVortexVector() != BlockPos.ZERO;
+        return entityData.get(VORTEX_VECTOR) != BlockPos.ZERO;
     }
     public void setVortexTimeout(int value){entityData.set(VORTEX_TIMEOUT,value);}
     @Override
@@ -391,8 +391,9 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
                     if (Math.abs(i) != 2 || Math.abs(k) != 2) {
                         if (distance<range+(0.5)){
                             BlockPos vector3f = getVortexVector().offset( i- range,0,k- range);
-                            level().addParticle(ParticleTypes.BUBBLE,vector3f.getX(),vector3f.getY(),vector3f.getZ(),0,0.01,0);
+                            level().addParticle(ParticleTypes.BUBBLE,vector3f.getX(),vector3f.getY()+1,vector3f.getZ(),0,0.01,0);
                         }}}}
+            applyVortexForces();
         }
         if (getRightArmDelay() > 0){
             entityData.set(RIGHT_ARM_DELAY,getRightArmDelay()-1);
@@ -565,6 +566,11 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
     @Override
     public void registerGoals() {
         this.goalSelector.addGoal(4, new AOEMeleeAttackGoal(this, 1.5, false,2.5 ,6, livingEntity -> {return TARGET_SELECTOR.test(livingEntity);}){
+            @Override
+            public boolean canUse() {
+                return !hasVortex() && super.canUse();
+            }
+
             protected double getAttackReachSqr(LivingEntity entity) {
                 float f = Grakensenker.this.getBbWidth();
                 return (double)(f * 2F * f * 2F + entity.getBbWidth());
@@ -607,7 +613,7 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
             BlockState air = level.getBlockState(pos.above());
 
             if (water.is(Blocks.WATER) && air.isAir()) {
-                if (dy <= 8) {return null;};
+                if (dy <= 12) {return null;};
 
                 return pos;
             }
@@ -642,4 +648,111 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
         this.yBodyRot = yaw;
         this.yHeadRot = yaw;
     }
+
+    public void applyVortexForces() {
+        if (level().isClientSide) return;
+        Vec3[] funnelPoints = getVortexFunnel().getEntities();
+        if (funnelPoints == null) return;
+
+        // Process from base (index 0) to tip (last index)
+        for (int i = 0; i < funnelPoints.length; i++) {
+            Vec3 vortex = funnelPoints[i];
+
+            // Radius increases toward the tip (wider vortex at the end)
+            double radius = 1.5 + i * 1.0; // Base is 1.5, tip is larger
+            Vec3 center = vortex.subtract(0, 1.0, 0); // Slight downward offset
+
+            AABB area = new AABB(
+                    center.x - radius, center.y - radius * 1.5,
+                    center.z - radius,
+                    center.x + radius, center.y + radius * 0.5,
+                    center.z + radius
+            );
+
+            List<Entity> entities = level().getEntitiesOfClass(
+                    Entity.class,
+                    area,
+                    e -> ((e instanceof LivingEntity living
+                            && living != this
+                            && Utilities.TARGET_SELECTOR.Test(living) && TargetingConditions.forCombat().test(this,living))
+                            || e instanceof Boat) && e.isInWater()
+            );
+
+            for (Entity entity : entities) {
+                applyVortexForceToEntity(entity, center, radius, i, funnelPoints.length);
+            }
+        }
+    }
+
+    private void applyVortexForceToEntity(
+            Entity entity,
+            Vec3 center,
+            double radius,
+            int segmentIndex,
+            int totalSegments
+    ) {
+        boolean isTipSegment = segmentIndex == totalSegments - 1;
+        Vec3 pos = entity.position();
+        Vec3 toCenter = center.subtract(pos);
+
+        double distance = toCenter.length();
+        if (distance < 0.4 || distance > radius) return;
+
+        double normalizedDistance = distance / radius; // 0 = center, 1 = edge
+
+        // INVERTED: Strongest at base (segment 0), weakest at tip
+        double depthFactor = 1.0 - ((double) segmentIndex / totalSegments);
+
+        // Pull force: stronger toward center, stronger at base
+        double pullStrength = 0.08 + 0.1 * normalizedDistance; // Increases with distance from center
+        Vec3 pull = toCenter.normalize().scale(pullStrength * depthFactor);
+
+        // Spin force: strongest at base, decreases toward tip
+        Vec3 spinDir = new Vec3(-toCenter.z, 0, toCenter.x).normalize();
+        double spinStrength = 0.15 * (1.0 - normalizedDistance) * depthFactor; // Stronger near center, stronger at base
+        Vec3 spin = spinDir.scale(spinStrength);
+
+        // Sink force: strongest at base
+        double sinkStrength = (1.0 - normalizedDistance);
+        sinkStrength = sinkStrength * sinkStrength; // Quadratic falloff from center
+        Vec3 sink = new Vec3(0, -0.12 * sinkStrength * depthFactor, 0);
+
+        // Apply all forces
+        Vec3 motion = entity.getDeltaMovement()
+                .add(pull)
+                .add(spin)
+                .add(sink);
+
+        // Cap speed - lower max at base for stronger control
+        double maxSpeed = entity instanceof Boat ? 0.5 : 1.0;
+        // Allow slightly higher speed at tip where forces are weaker
+        maxSpeed *= (0.7 + 0.3 * (1.0 - depthFactor)); // Tip: ~30% faster allowed
+
+        if (motion.length() > maxSpeed) {
+            motion = motion.normalize().scale(maxSpeed);
+        }
+
+        // Consume at tip if close enough
+        if (isTipSegment && shouldConsumeEntity(entity, center)) {
+            consumeEntity(entity);
+            return;
+        }
+
+        entity.setDeltaMovement(motion);
+        entity.hurtMarked = true;
+    }
+
+    private void consumeEntity(Entity entity) {
+        entity.setDeltaMovement(Vec3.ZERO);
+        entity.fallDistance = 0;
+        entity.stopRiding();
+        entity.startRiding(this);
+    }
+    private boolean shouldConsumeEntity(Entity entity, Vec3 center) {
+        if (!entity.isAlive()) return false;
+        if (entity.isPassenger()) return false;
+        double distSq = entity.position().distanceToSqr(center);
+        return distSq < 2.5 * 2.5 && entity instanceof LivingEntity;
+    }
+
 }
