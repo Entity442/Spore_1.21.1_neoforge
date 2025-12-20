@@ -13,7 +13,7 @@ public class IkVortexFunnel extends IkKrakenLeg{
     @Override
     public Vec3 getBodyOffset() {
         Vec3 pivot = owner.position().add(0, owner.getExtendedHeight(), 0);
-        return pivot.add(applyYaw(new Vec3(-4, 3.5, 1)));
+        return pivot.add(applyYaw(new Vec3(-4, 4.5, 1)));
     }
 
 

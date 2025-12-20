@@ -10,7 +10,6 @@ import com.Harbinger.Spore.Sentities.BaseEntities.IkUtil.IkKrakenArm;
 import com.Harbinger.Spore.Sentities.BaseEntities.IkUtil.IkKrakenLeg;
 import com.Harbinger.Spore.Sentities.BaseEntities.IkUtil.IkVortexFunnel;
 import com.Harbinger.Spore.Sentities.HitboxesForParts;
-import com.Harbinger.Spore.Sentities.MovementControls.WaterXlandMovement;
 import com.Harbinger.Spore.Sentities.TrueCalamity;
 import com.Harbinger.Spore.Sentities.WaterInfected;
 import com.Harbinger.Spore.core.SAttributes;
@@ -703,7 +702,7 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
             double distanceFromBase = (double) i / (funnelPoints.length - 1);
 
             // Radius: smaller at base, larger at entrance
-            double radius = 1.0 + distanceFromBase * 4.0 + i;
+            double radius = 1.0 + distanceFromBase * 4.0 + ((double) i /2);
             AABB area = getAabb(distanceFromBase, segmentPos, radius);
 
             List<Entity> entities = level().getEntitiesOfClass(
