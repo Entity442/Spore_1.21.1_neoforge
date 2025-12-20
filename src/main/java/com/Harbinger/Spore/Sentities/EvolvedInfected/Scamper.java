@@ -100,15 +100,11 @@ public class Scamper extends EvolvedInfected implements WaterInfected, VariantKe
 
     @Override
     public void travel(Vec3 vec3) {
-        super.travel(vec3);
         if (this.isEffectiveAi() && this.isInFluidType() && getVariant() == ScamperVariants.DROWNED) {
             this.moveRelative(0.1F, vec3);
             this.move(MoverType.SELF, this.getDeltaMovement());
             this.setDeltaMovement(this.getDeltaMovement().scale(0.85D));
         } else {
-            if (this.isInFluidType() && getVariant() != ScamperVariants.DROWNED){
-                this.setDeltaMovement(this.getDeltaMovement().add(0,0.01D,0));
-            }
             super.travel(vec3);
         }
     }
