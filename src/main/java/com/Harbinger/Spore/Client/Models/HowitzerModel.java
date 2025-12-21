@@ -5,6 +5,7 @@ package com.Harbinger.Spore.Client.Models;// Made with Blockbench 4.10.4
 
 import com.Harbinger.Spore.Sentities.Calamities.Howitzer;
 import com.Harbinger.Spore.Spore;
+import com.Harbinger.Spore.core.SConfig;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.EntityModel;
@@ -76,6 +77,13 @@ public class HowitzerModel<T extends Howitzer> extends EntityModel<T> {
 	private final ModelPart LeftArmTendril2;
 	private final ModelPart LeftArmTendril3;
 	private final ModelPart LeftArmTendril4;
+	private final ModelPart Jolly1;
+	private final ModelPart Jolly2;
+	private final ModelPart Jolly3;
+	private final ModelPart Jolly4;
+	private final ModelPart Jolly5;
+	private final ModelPart Jolly6;
+	private final ModelPart Jolly7;
 	protected final LocalDate localdate = LocalDate.now();
 	protected final int j = localdate.getMonth().getValue();
 	public HowitzerModel() {
@@ -136,9 +144,16 @@ public class HowitzerModel<T extends Howitzer> extends EntityModel<T> {
 		this.LeftArmTendril2 = LeftForForArm.getChild("Tendril2");
 		this.LeftArmTendril3 = LeftForForArm.getChild("LeftArmSeg4").getChild("Tendril3");
 		this.LeftArmTendril4 = LeftForForArm.getChild("LeftArmSeg4").getChild("Tendril4");
+		this.Jolly1 = Howi.getChild("Maw").getChild("Tree");
+		this.Jolly2 = Howi.getChild("CannonClusters").getChild("Cluster3").getChild("C3C1").getChild("C3C1Top").getChild("ThisIsSporeSlasher").getChild("CommanderHat");
+		this.Jolly3 = Howi.getChild("CannonClusters").getChild("Cluster3").getChild("C3C2").getChild("BilePresent1");
+		this.Jolly4 = Howi.getChild("CannonClusters").getChild("Cluster2").getChild("C2C1").getChild("Present1");
+		this.Jolly5 = Howi.getChild("CannonClusters").getChild("Cluster2").getChild("C2C2").getChild("IncendiaryPresent1");
+		this.Jolly6 = Howi.getChild("CannonClusters").getChild("Cluster1").getChild("C1C1").getChild("CorrosivePresent1");
+		this.Jolly7 = Howi.getChild("CannonClusters").getChild("Cluster1").getChild("C1C2").getChild("Present2");
 	}
 	boolean isJollyTime(){
-		return j == 12;
+		return (j == 12 && SConfig.SERVER.costumes.get()) || SConfig.SERVER.costumes_active.get();
 	}
 	public static LayerDefinition createBodyLayer() {
 		MeshDefinition meshdefinition = new MeshDefinition();
@@ -2067,7 +2082,14 @@ public class HowitzerModel<T extends Howitzer> extends EntityModel<T> {
 			this.LeftForArm.xRot = 0;
 			this.LeftForForArm.xRot = 0;
 		}
-
+		boolean jolly= isJollyTime();
+		Jolly1.visible = jolly;
+		Jolly2.visible = jolly;
+		Jolly3.visible = jolly;
+		Jolly4.visible = jolly;
+		Jolly5.visible = jolly;
+		Jolly6.visible = jolly;
+		Jolly7.visible = jolly;
 	}
 
 	@Override
