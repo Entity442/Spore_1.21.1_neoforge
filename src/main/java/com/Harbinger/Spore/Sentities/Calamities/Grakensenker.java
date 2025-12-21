@@ -525,6 +525,19 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
         }
     }
 
+    @Override
+    public @NotNull Vec3 getDismountLocationForPassenger(LivingEntity passenger) {
+        if (passenger.getId() == entityData.get(RIGHT_ARM_ENTITY)){
+            return new Vec3(getRightArm());
+        }
+        if (passenger.getId() == entityData.get(LEFT_ARM_ENTITY)){
+            return new Vec3(getLeftArm());
+        }
+        this.entityData.set(RIGHT_ARM_DELAY,100);
+        this.entityData.set(LEFT_ARM_DELAY,100);
+        return super.getDismountLocationForPassenger(passenger);
+    }
+
     public void updateHeight() {
         if (level().isClientSide) return;
 
