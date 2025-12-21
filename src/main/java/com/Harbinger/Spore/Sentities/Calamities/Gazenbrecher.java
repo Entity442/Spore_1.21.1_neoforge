@@ -13,6 +13,7 @@ import com.Harbinger.Spore.core.SAttributes;
 import com.Harbinger.Spore.core.SConfig;
 import com.Harbinger.Spore.core.Sentities;
 import com.Harbinger.Spore.core.Ssounds;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
@@ -121,6 +122,12 @@ public class Gazenbrecher extends Calamity implements WaterInfected , RangedAtta
         }
         if (!this.isAdaptedToFire() &&(this.tickCount % 40 == 0 && this.isOnFire())){
             this.entityData.set(ADAPTATION,this.entityData.get(ADAPTATION)+1);
+        }
+        if (tickCount % 1200 == 0 && getSearchArea() == BlockPos.ZERO && !isOcean(level().getBiome(this.getOnPos()))){
+            BlockPos pos = findOcean(level(),this.getOnPos());
+            if (pos != null){
+                setSearchArea(pos);
+            }
         }
     }
 
