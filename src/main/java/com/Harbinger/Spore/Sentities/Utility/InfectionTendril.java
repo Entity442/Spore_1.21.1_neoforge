@@ -2,6 +2,7 @@ package com.Harbinger.Spore.Sentities.Utility;
 
 
 import com.Harbinger.Spore.ExtremelySusThings.Utilities;
+import com.Harbinger.Spore.SBlockEntities.ContainerBlockEntity;
 import com.Harbinger.Spore.SBlockEntities.LivingStructureBlocks;
 import com.Harbinger.Spore.Sentities.BaseEntities.UtilityEntity;
 import com.Harbinger.Spore.Sentities.MovementControls.InfectedWallMovementControl;
@@ -24,7 +25,6 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.navigation.WallClimberNavigation;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -287,6 +287,9 @@ public class InfectionTendril extends UtilityEntity {
     }
 
     private boolean isChestWithFood(Container container){
+        if (container instanceof ContainerBlockEntity){
+            return false;
+        }
         return container.hasAnyMatching(item -> item.getFoodProperties(null) != null);
     }
 

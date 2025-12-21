@@ -607,6 +607,12 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
             }
             this.refreshDimensions();
         }
+        if (SEARCH_AREA.equals(dataAccessor)){
+            if (getSearchArea() != BlockPos.ZERO){
+                setVortexTimeout(1200);
+                setVortexVector(BlockPos.ZERO);
+            }
+        }
         super.onSyncedDataUpdated(dataAccessor);
     }
 
