@@ -75,6 +75,8 @@ public interface FoliageSpread {
         if (Math.random() < 0.1 && blockstate.isSolidRender(level,blockpos)
                 && (nordT || southT || westT || eastT || aboveT || belowT)){
             convertBlocks(blockstate,level,blockpos);
+        }
+        if (Math.random() < 0.1){
             convertFromJson(level,blockstate,blockpos);
         }
         if (Math.random() < 0.2){
