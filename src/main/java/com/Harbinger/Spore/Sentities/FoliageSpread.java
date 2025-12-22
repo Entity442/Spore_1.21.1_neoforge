@@ -1,6 +1,7 @@
 package com.Harbinger.Spore.Sentities;
 
 
+import com.Harbinger.Spore.ExtremelySusThings.CustomJsonReader.SporeConversionData;
 import com.Harbinger.Spore.ExtremelySusThings.Utilities;
 import com.Harbinger.Spore.Sblocks.GenericFoliageBlock;
 import com.Harbinger.Spore.core.SConfig;
@@ -8,6 +9,7 @@ import com.Harbinger.Spore.core.Sblocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
@@ -73,6 +75,7 @@ public interface FoliageSpread {
         if (Math.random() < 0.1 && blockstate.isSolidRender(level,blockpos)
                 && (nordT || southT || westT || eastT || aboveT || belowT)){
             convertBlocks(blockstate,level,blockpos);
+            convertFromJson(level,blockstate,blockpos);
         }
         if (Math.random() < 0.2){
             convertWood(level,blockstate,blockpos);
@@ -149,6 +152,34 @@ public interface FoliageSpread {
                 level.setBlock(blockpos.below(),block2.setValue(property, true),3);
             }else {
                 level.setBlock(blockpos.below(),block2,3);}}
+    }
+    default void convertFromJson(Level level, BlockState blockstate, BlockPos blockpos) {
+        ResourceLocation fromId = BuiltInRegistries.BLOCK.getKey(blockstate.getBlock());
+        ResourceLocation toId = SporeConversionData.get(fromId);
+        if (toId == null) {
+            return;
+        }
+        Block targetBlock = BuiltInRegistries.BLOCK.get(toId);
+        if (targetBlock == Blocks.AIR) {
+            return;
+        }
+        BlockState _bs = targetBlock.defaultBlockState();
+        for (Map.Entry<Property<?>, Comparable<?>> entry : blockstate.getValues().entrySet()) {
+            Property<?> property = _bs.getBlock()
+                    .getStateDefinition()
+                    .getProperty(entry.getKey().getName());
+
+            if (property != null) {
+                try {
+                    _bs = _bs.setValue(
+                            (Property) property,
+                            (Comparable) entry.getValue()
+                    );
+                } catch (Exception ignored) {
+                }
+            }
+        }
+        level.setBlock(blockpos, _bs, 3);
     }
     default void placeWallFoliage(BlockState nord,BlockState south,BlockState west,BlockState east,boolean nordT,boolean southT,boolean westT,boolean eastT,Level level,BlockPos blockpos,BlockState blockstate){
         if (blockstate.isSolidRender(level , blockpos) && (nordT || southT || westT || eastT)){
