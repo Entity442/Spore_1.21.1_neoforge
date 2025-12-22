@@ -302,6 +302,8 @@ public class Ssounds {
 
     public static final Holder<SoundEvent> VANGUARD_RAID = soundRegistry("vanguard_raid");
 
+    public static final Holder<SoundEvent> KRAKEN_GROWL = soundRegistry("kraken_growl");
+
     private Ssounds() {
     }
 
