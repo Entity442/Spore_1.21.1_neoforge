@@ -154,16 +154,13 @@ public interface FoliageSpread {
                 level.setBlock(blockpos.below(),block2,3);}}
     }
     default void convertFromJson(Level level, BlockState blockstate, BlockPos blockpos) {
-        ResourceLocation fromId = BuiltInRegistries.BLOCK.getKey(blockstate.getBlock());
-        ResourceLocation toId = SporeConversionData.get(fromId);
-        if (toId == null) {
+        Block targetBlock = SporeConversionData.getResult(blockstate.getBlock());
+        if (targetBlock == null) {
             return;
         }
-        Block targetBlock = BuiltInRegistries.BLOCK.get(toId);
-        if (targetBlock == Blocks.AIR) {
-            return;
-        }
+
         BlockState _bs = targetBlock.defaultBlockState();
+
         for (Map.Entry<Property<?>, Comparable<?>> entry : blockstate.getValues().entrySet()) {
             Property<?> property = _bs.getBlock()
                     .getStateDefinition()
@@ -175,10 +172,10 @@ public interface FoliageSpread {
                             (Property) property,
                             (Comparable) entry.getValue()
                     );
-                } catch (Exception ignored) {
-                }
+                } catch (Exception ignored) {}
             }
         }
+
         level.setBlock(blockpos, _bs, 3);
     }
     default void placeWallFoliage(BlockState nord,BlockState south,BlockState west,BlockState east,boolean nordT,boolean southT,boolean westT,boolean eastT,Level level,BlockPos blockpos,BlockState blockstate){
