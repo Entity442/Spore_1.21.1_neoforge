@@ -1,6 +1,8 @@
 package com.Harbinger.Spore.Sevents;
 
 
+import com.Harbinger.Spore.ExtremelySusThings.CustomJsonReader.SporeConversionData;
+import com.Harbinger.Spore.ExtremelySusThings.CustomJsonReader.SporeMobConversionData;
 import com.Harbinger.Spore.ExtremelySusThings.SporeSavedData;
 import com.Harbinger.Spore.ExtremelySusThings.Utilities;
 import com.Harbinger.Spore.Sentities.BaseEntities.EvolvedInfected;
@@ -34,6 +36,7 @@ import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 
@@ -143,6 +146,23 @@ public class Infection {
                         }
                     }
                 }
+                EntityType<?> JsonMob = SporeMobConversionData.getResult(entity.getType());
+                if (JsonMob != null) {
+                    Entity result = JsonMob.create(serverLevel);
+                    if (result != null) {
+                        result.setCustomName(entity.getCustomName());
+                        result.setPos(entity.position());
+                        if (result instanceof Mob mob) {
+                            mob.finalizeSpawn(serverLevel, serverLevel.getCurrentDifficultyAt(entity.blockPosition()), MobSpawnType.CONVERSION, null);
+                        }
+                        if (result instanceof Infected converted) {
+                            converted.setOrigin(entity.getEncodeId());
+                        }
+                        serverLevel.addFreshEntity(result);
+                        entity.discard();
+                    }
+                }
+
 
                 if (entity instanceof IronGolem golem && Math.random() < SConfig.SERVER.machine_infestation.get() / 100f) {
                     InfestedConstruct construct = new InfestedConstruct(Sentities.INF_CONSTRUCT.get(), serverLevel);
