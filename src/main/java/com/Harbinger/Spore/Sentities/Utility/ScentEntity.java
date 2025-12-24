@@ -200,6 +200,7 @@ public class ScentEntity extends UtilityEntity {
                 this.getPersistentData().putInt("summon", 0);
                 if (this.getOvercharged()){
                     List<? extends String> buffer = SConfig.SERVER.scent_effects_buff.get();
+                    int randomInt = random.nextInt(buffer.size());
                     if(waveentity instanceof Infected infected){
                         int k = SConfig.SERVER.scent_kills.get();
                         infected.setKills(random.nextInt(k ,k+3));
@@ -207,11 +208,9 @@ public class ScentEntity extends UtilityEntity {
                         infected.setEvolution(SConfig.SERVER.evolution_age_human.get()/2);
                         infected.setLinked(true);
                     }
-                    for (int l = 0; l < 1; ++l) {
-                        ResourceLocation randomElement2 = ResourceLocation.parse(buffer.get(randomIndex));
-                        Holder<MobEffect> randomElement3 = Utilities.tryToCreateEffect(randomElement2);
-                        waveentity.addEffect(new MobEffectInstance(randomElement3,3600,0));
-                    }
+                    ResourceLocation randomElement2 = ResourceLocation.parse(buffer.get(randomInt));
+                    Holder<MobEffect> randomElement3 = Utilities.tryToCreateEffect(randomElement2);
+                    waveentity.addEffect(new MobEffectInstance(randomElement3,3600,0));
                 }
                 level.addFreshEntity(waveentity);
             }
