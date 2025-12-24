@@ -449,7 +449,7 @@ public class Sitems {
     public  static final DeferredItem<Item> FORSAKEN_RECORD = ITEMS.register("forsaken_record",
             () -> new BaseItem2(new Item.Properties().stacksTo(1).jukeboxPlayable(Ssounds.FORSAKEN_FUTURE_SONG_KEY)));
     public  static final DeferredItem<Item> BUCKET_OF_BILE = ITEMS.register("bucket_of_bile",
-            () -> new SporeBucket(Sfluids.BILE_FLUID_FLOWING.get(),new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)));
+            () -> new SporeBucket(Sfluids.BILE_FLUID_SOURCE.get(),new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)));
     public  static final DeferredItem<Item> GAS_MASK = ITEMS.register("gas_mask",
             GasMaskItem::new);
     public  static final DeferredItem<Item> SCANNER = ITEMS.register("scanner",
