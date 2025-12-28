@@ -1,6 +1,8 @@
 package com.Harbinger.Spore.SBlockEntities;
 
 
+import com.Harbinger.Spore.ExtremelySusThings.CustomJsonReader.SporeCduConversionData;
+import com.Harbinger.Spore.ExtremelySusThings.CustomJsonReader.SporeConversionData;
 import com.Harbinger.Spore.ExtremelySusThings.Utilities;
 import com.Harbinger.Spore.Sblocks.CDUBlock;
 import com.Harbinger.Spore.Screens.CDUMenu;
@@ -37,23 +39,23 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class CDUBlockEntity extends BlockEntity implements MenuProvider {
     private static final TagKey<Block> foliage = TagKey.create(BuiltInRegistries.BLOCK.key(), ResourceLocation.parse("spore:removable_foliage"));
     public final int maxFuel = SConfig.DATAGEN.cryo_time.get();
     public int fuel;
     private final List<StoreDouble> blockMap;
-    private final List<BlockState> biomass;
     public CDUBlockEntity(BlockPos pos, BlockState state) {
         super(SblockEntities.CDU.get(), pos, state);
         blockMap = fabricateBlocks();
-        biomass = stateList();
     }
     record StoreDouble(Block value1, Block value2){}
 
@@ -99,17 +101,6 @@ public class CDUBlockEntity extends BlockEntity implements MenuProvider {
         return this.fuel;
     }
 
-    public List<BlockState> stateList(){
-        List<BlockState> states = new ArrayList<>();
-        states.add(Sblocks.BIOMASS_BLOCK.get().defaultBlockState());
-        states.add(Sblocks.SICKEN_BIOMASS_BLOCK.get().defaultBlockState());
-        states.add(Sblocks.CALCIFIED_BIOMASS_BLOCK.get().defaultBlockState());
-        states.add(Sblocks.MEMBRANE_BLOCK.get().defaultBlockState());
-        states.add(Sblocks.ROOTED_BIOMASS.get().defaultBlockState());
-        states.add(Sblocks.GASTRIC_BIOMASS.get().defaultBlockState());
-        states.add(Sblocks.ROOTED_MYCELIUM.get().defaultBlockState());
-        return states;
-    }
     public void cleanInfection(BlockPos blockPos){
         int range =2* SConfig.DATAGEN.cryo_range.get();
         AABB aabb = AABB.ofSize(new Vec3(blockPos.getX(), blockPos.getY(), blockPos.getZ()), range, range, range);
@@ -133,9 +124,10 @@ public class CDUBlockEntity extends BlockEntity implements MenuProvider {
                         level.setBlock(blockpos,storeDouble.value2.defaultBlockState(),3);
                     }
                 }
+                convertFromJson(level,state,blockpos);
             }
             if (Math.random() < 0.1){
-                if (biomass.contains(state)){
+                if (state.is(Utilities.biomass)){
                     level.setBlock(blockpos,Sblocks.FROST_BURNED_BIOMASS.get().defaultBlockState(),3);
                 }
                 if (state == Sblocks.BILE.get().defaultBlockState()){
@@ -164,6 +156,31 @@ public class CDUBlockEntity extends BlockEntity implements MenuProvider {
                 entity.discard();
             }
         }
+    }
+    void convertFromJson(Level level, BlockState blockstate, BlockPos blockpos) {
+        Block targetBlock = SporeCduConversionData.getResult(blockstate.getBlock());
+        if (targetBlock == null) {
+            return;
+        }
+
+        BlockState _bs = targetBlock.defaultBlockState();
+
+        for (Map.Entry<Property<?>, Comparable<?>> entry : blockstate.getValues().entrySet()) {
+            Property<?> property = _bs.getBlock()
+                    .getStateDefinition()
+                    .getProperty(entry.getKey().getName());
+
+            if (property != null) {
+                try {
+                    _bs = _bs.setValue(
+                            (Property) property,
+                            (Comparable) entry.getValue()
+                    );
+                } catch (Exception ignored) {}
+            }
+        }
+
+        level.setBlock(blockpos, _bs, 3);
     }
     public static float getDamageAfterArmor(float damage, LivingEntity target) {
         double armor = target.getArmorValue();

@@ -2,6 +2,7 @@ package com.Harbinger.Spore.Sevents;
 
 import com.Harbinger.Spore.ExtremelySusThings.ChunkLoadRequest;
 import com.Harbinger.Spore.ExtremelySusThings.ChunkLoaderHelper;
+import com.Harbinger.Spore.ExtremelySusThings.CustomJsonReader.SporeCduConversionReloadListener;
 import com.Harbinger.Spore.ExtremelySusThings.CustomJsonReader.SporeConversionReloadListener;
 import com.Harbinger.Spore.ExtremelySusThings.CustomJsonReader.SporeMobConversionReloadListener;
 import com.Harbinger.Spore.ExtremelySusThings.SporeSavedData;
@@ -301,5 +302,6 @@ public class HandlerEvents {
     public static void onRegisterReloadListeners(AddReloadListenerEvent event) {
         event.addListener(new SporeConversionReloadListener());
         event.addListener(new SporeMobConversionReloadListener());
+        event.addListener(new SporeCduConversionReloadListener());
     }
 }
