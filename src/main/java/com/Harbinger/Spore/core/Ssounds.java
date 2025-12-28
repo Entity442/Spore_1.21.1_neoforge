@@ -304,6 +304,8 @@ public class Ssounds {
 
     public static final Holder<SoundEvent> KRAKEN_GROWL = soundRegistry("kraken_growl");
 
+    public static final Holder<SoundEvent> BAIRN = soundRegistry("bairn");
+
     private Ssounds() {
     }
 

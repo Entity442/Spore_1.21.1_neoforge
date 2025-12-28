@@ -6,5 +6,7 @@
   "ingredient": {
     "item": "spore:biomass"
   },
-  "id": "spore:biomass_bacon"
+  "result":{
+    "id": "spore:biomass_bacon"
+  }
 }

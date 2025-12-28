@@ -23,11 +23,18 @@
       "spore:nuke"
     ]
   },
-"inf_damage" :{
+  "inf_damage" :{
   "subtitle": "sounds.spore.damage",
   "sounds": [
     "spore:slash",
     "spore:slash2"
+  ]
+},"bairn" :{
+  "subtitle": "sounds.spore.growl",
+  "sounds": [
+    "spore:bairn_ambient1",
+    "spore:bairn_ambient2",
+    "spore:bairn_ambient3"
   ]
 },
   "scientist_fuse" :{
