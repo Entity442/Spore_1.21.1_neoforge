@@ -16,6 +16,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
@@ -48,7 +49,6 @@ import java.util.stream.Collectors;
 
 
 public class Utilities {
-    public static final List<BlockState> biomass = createBiomass();
     public static void explodeCircle(ServerLevel level, Entity owner, BlockPos pos, double range, float damage,double blockHardness,Predicate<Entity> predicate) {
         explodeCircle(level,owner,pos,range,damage, ParticleTypes.EXPLOSION_EMITTER,false,blockHardness,predicate);
     }
@@ -231,20 +231,8 @@ public class Utilities {
         }
         return values;
     }
-    public static List<BlockState> biomass(){
-        return biomass;
-    }
-    private static List<BlockState> createBiomass(){
-        List<BlockState> states = new ArrayList<>();
-        states.add(Sblocks.BIOMASS_BLOCK.get().defaultBlockState());
-        states.add(Sblocks.SICKEN_BIOMASS_BLOCK.get().defaultBlockState());
-        states.add(Sblocks.CALCIFIED_BIOMASS_BLOCK.get().defaultBlockState());
-        states.add(Sblocks.MEMBRANE_BLOCK.get().defaultBlockState());
-        states.add(Sblocks.ROOTED_BIOMASS.get().defaultBlockState());
-        states.add(Sblocks.ROOTED_MYCELIUM.get().defaultBlockState());
-        states.add(Sblocks.GASTRIC_BIOMASS.get().defaultBlockState());
-        return states;
-    }
+    public static final TagKey<Block> biomass = TagKey.create(BuiltInRegistries.BLOCK.key(), ResourceLocation.parse("spore:biomass_to_membrane"));
+
 
     public static Vec3 generatePositionAway(Vec3 origin, double distance) {
         Random random = new Random();

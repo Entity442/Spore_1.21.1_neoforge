@@ -343,7 +343,7 @@ public class InfestedConstruct extends UtilityEntity implements RangedAttackMob,
 
     public boolean interactBlock(BlockPos blockPos, Level level) {
         BlockState state = level.getBlockState(blockPos);
-        if (biomass().contains(state)){
+        if (state.is(Utilities.biomass)){
             return level.setBlock(blockPos, Sblocks.MEMBRANE_BLOCK.get().defaultBlockState(), 3);
         }
         return level.destroyBlock(blockPos, false, this);

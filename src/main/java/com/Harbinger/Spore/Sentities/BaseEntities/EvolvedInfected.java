@@ -1,6 +1,7 @@
 package com.Harbinger.Spore.Sentities.BaseEntities;
 
 
+import com.Harbinger.Spore.ExtremelySusThings.Utilities;
 import com.Harbinger.Spore.core.SConfig;
 import com.Harbinger.Spore.core.Ssounds;
 import net.minecraft.core.BlockPos;
@@ -13,8 +14,6 @@ import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
-import static com.Harbinger.Spore.ExtremelySusThings.Utilities.biomass;
-
 public class EvolvedInfected extends Infected {
     public EvolvedInfected(EntityType<? extends PathfinderMob> type, Level level) {
         super(type, level);
@@ -22,7 +21,7 @@ public class EvolvedInfected extends Infected {
 
     @Override
     public boolean blockBreakingParameter(BlockState blockstate, BlockPos blockpos) {
-        return super.blockBreakingParameter(blockstate, blockpos) || biomass().contains(blockstate);
+        return super.blockBreakingParameter(blockstate, blockpos) || blockstate.is(Utilities.biomass);
     }
 
     @Override
