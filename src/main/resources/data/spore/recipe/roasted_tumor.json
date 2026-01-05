@@ -5,5 +5,7 @@
   "ingredient": {
     "item": "spore:tumor"
   },
-  "result": "spore:roasted_tumor"
+  "result":{
+    "id" : "spore:roasted_tumor"
+  }
 }
