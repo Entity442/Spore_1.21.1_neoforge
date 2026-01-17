@@ -57,8 +57,6 @@ import org.jetbrains.annotations.Nullable;
 import java.lang.reflect.Method;
 import java.util.*;
 
-import static com.Harbinger.Spore.ExtremelySusThings.Utilities.biomass;
-
 public class Calamity extends UtilityEntity implements Enemy, ArmorPersentageBypass, ChunkLoaderMob {
     public static final EntityDataAccessor<Integer> KILLS = SynchedEntityData.defineId(Calamity.class, EntityDataSerializers.INT);
     public static final EntityDataAccessor<Integer> MUTATION = SynchedEntityData.defineId(Calamity.class, EntityDataSerializers.INT);
@@ -341,7 +339,7 @@ public class Calamity extends UtilityEntity implements Enemy, ArmorPersentageByp
                 flag = this.level().setBlock(blockpos, Sblocks.MEMBRANE_BLOCK.get().defaultBlockState(), 3) || flag;
                 breakCounter = 0;
             }else{
-                if (blockstate.getDestroySpeed(level(), blockpos) < getDestroySpeed() && blockstate.getDestroySpeed(level(), blockpos) >= 0 && EventHooks.canEntityGrief(this.level(), this)) {
+                if (blockstate.getDestroySpeed(level(), blockpos) <= getDestroySpeed() && blockstate.getDestroySpeed(level(), blockpos) >= 0 && EventHooks.canEntityGrief(this.level(), this)) {
                     flag = this.level().destroyBlock(blockpos, false, this) || flag;
                     breakCounter = 0;
                 }

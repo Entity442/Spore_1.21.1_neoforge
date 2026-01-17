@@ -25,18 +25,24 @@ public class ArmorModelList {
     private static final RavenousJawModel<LivingEntity> jaw = new RavenousJawModel<>();
     private static final lacedThornsModel<LivingEntity> lacedThornsModel = new lacedThornsModel<>();
     private static final SyringeGunModel<LivingEntity> syringeGunModel = new SyringeGunModel<>();
+    private static final MistmakerModel<LivingEntity> mistmakerModel = new MistmakerModel<>();
+    private static final MistmakerModelArm<LivingEntity> mistmakerModelArm = new MistmakerModelArm<>();
     private static final SyringeGunModelArm<LivingEntity> syringeGunModelArm = new SyringeGunModelArm<>();
 
     private static final PCIHandModelItem RIGHT_PCI = new PCIHandModelItem(InteractionHand.MAIN_HAND,pci,pci.PCIBODY,0.95f, -0.7f, -0.35f,1,-90,90,0,psi_glow);
     private static final PCIHandModelItem LEFT_PCI = new PCIHandModelItem(InteractionHand.OFF_HAND,pci,pci.PCIBODY,-1f, -0.7f, -0.35f,1,-90,90,0,psi_glow);
     private static final SyringeGunPart RIGHT_SYRINGE_GUN = new SyringeGunPart(InteractionHand.MAIN_HAND,syringeGunModel,syringeGunModel.syringeGun,0.95f, 0.5f, -1.25f,1f,0,0,180);
     private static final SyringeGunPart LEFT_SYRINGE_GUN = new SyringeGunPart(InteractionHand.OFF_HAND,syringeGunModel,syringeGunModel.syringeGun,-1f, 0.5f, -1.25f,1f,0,0,180);
+    private static final MistMakerPart RIGHT_MISTMAKER = new MistMakerPart(InteractionHand.MAIN_HAND,mistmakerModel,mistmakerModel.gun,0.95f, 0.5f, -1.25f,1f,0,0,180);
+    private static final MistMakerPart LEFT_MISTMAKER = new MistMakerPart(InteractionHand.OFF_HAND,mistmakerModel,mistmakerModel.gun,-1f, 0.5f, -1.25f,1f,0,0,180);
 
     public static final List<ComplexHandModelItem> ITEM_RENDERING_BITS = new ArrayList<>(){{
         add(RIGHT_PCI);
         add(LEFT_PCI);
         add(RIGHT_SYRINGE_GUN);
         add(LEFT_SYRINGE_GUN);
+        add(RIGHT_MISTMAKER);
+        add(LEFT_MISTMAKER);
     }};
 
 
@@ -87,6 +93,8 @@ public class ArmorModelList {
     private static final LeftPCIArmorPart PCI_LEFT = new LeftPCIArmorPart(() -> pciL,() -> pciL.PCIBODY,psi_glow);
     private static final SyringeGunArmorPartRight SYRINGE_GUN_RIGHT = new SyringeGunArmorPartRight(syringeGunModelArm,() -> syringeGunModelArm,() -> syringeGunModelArm.syringeGun,0.2f, 0.5f, 0.1f, 0.4f);
     private static final SyringeGunArmorPartLeft SYRINGE_GUN_LEFT = new SyringeGunArmorPartLeft(syringeGunModelArm,() -> syringeGunModelArm,() -> syringeGunModelArm.syringeGun,0.1f, 0.5f, 0.1f, 0.4f);
+    private static final MistmakerPartRight MIST_MAKER_RIGHT = new MistmakerPartRight(mistmakerModelArm,() -> mistmakerModelArm,() -> mistmakerModelArm.gun,0.2f, 0.5f, 0.1f, 0.4f);
+    private static final MistmakerPartLeft MIST_MAKER_LEFT = new MistmakerPartLeft(mistmakerModelArm,() -> mistmakerModelArm,() -> mistmakerModelArm.gun,0.1f, 0.5f, 0.1f, 0.4f);
 
     private static final List<Item> fleshBlackList = List.of(Sitems.LIVING_HELMET.get(),Sitems.LIVING_CHEST.get(),Sitems.LIVING_PANTS.get(),Sitems.LIVING_BOOTS.get());
     private static final HelmetArmorPartEnchant JAW_PART = new HelmetArmorPartEnchant(() ->jaw,() ->jaw.jaw,0f,0f,0,1f, Senchantments.VORACIOUS_MAW,jaw_texture,List.of());
@@ -145,6 +153,8 @@ public class ArmorModelList {
         add(PCI_LEFT);
         add(SYRINGE_GUN_LEFT);
         add(SYRINGE_GUN_RIGHT);
+        add(MIST_MAKER_LEFT);
+        add(MIST_MAKER_RIGHT);
     }};
 
     public static final List<EnchantingPart> ENCHANTING_RENDERING_BITS = new ArrayList<>(){{

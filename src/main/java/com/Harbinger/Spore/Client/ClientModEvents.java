@@ -1,8 +1,6 @@
 package com.Harbinger.Spore.Client;
 
-import com.Harbinger.Spore.Client.AnimationTrackers.PCIAnimationTracker;
-import com.Harbinger.Spore.Client.AnimationTrackers.SGAnimationTracker;
-import com.Harbinger.Spore.Client.AnimationTrackers.SGReloadAnimationTracker;
+import com.Harbinger.Spore.Client.AnimationTrackers.*;
 import com.Harbinger.Spore.Client.ArmorParts.ComplexHandModelItem;
 import com.Harbinger.Spore.Client.Layers.CustomArmorLayer;
 import com.Harbinger.Spore.Client.Models.*;
@@ -192,6 +190,7 @@ public class ClientModEvents {
         event.registerLayerDefinition(InfectedPillagerCaptainModel.LAYER_LOCATION, InfectedPillagerCaptainModel::createBodyLayer);
         event.registerLayerDefinition(BairnModel.LAYER_LOCATION, BairnModel::createBodyLayer);
         event.registerLayerDefinition(GrakensenkerModel.LAYER_LOCATION, GrakensenkerModel::createBodyLayer);
+        event.registerLayerDefinition(StahlmorderModel.LAYER_LOCATION, StahlmorderModel::createBodyLayer);
     }
     @SubscribeEvent
     public static void registerRenderers(final EntityRenderersEvent.RegisterRenderers event) {
@@ -275,6 +274,7 @@ public class ClientModEvents {
         event.registerEntityRenderer(Sentities.CHEMIST.get(), ChemistRenderer::new);
         event.registerEntityRenderer(Sentities.NAIAD.get(), NaiadRenderer::new);
         event.registerEntityRenderer(Sentities.KRAKEN.get(), KrakenRenderer::new);
+        event.registerEntityRenderer(Sentities.STALH.get(), StalhRenderer::new);
     }
     public static void renderBlockEntities(EntityRenderersEvent.RegisterRenderers event){
         event.registerBlockEntityRenderer(SblockEntities.OVERGROWN_SPAWNER.get(), new OvergrownSpawnerRenderer());
@@ -425,6 +425,8 @@ public class ClientModEvents {
         PCIAnimationTracker.tickAll();
         SGAnimationTracker.tickAll();
         SGReloadAnimationTracker.tickAll();
+        MistMakerSawAnimationTracker.tickAll();
+        MistMakerShootAnimationTracker.tickAll();
     }
     @SubscribeEvent
     public static void onRenderHand(RenderHandEvent event) {

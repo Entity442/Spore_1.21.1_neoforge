@@ -394,6 +394,8 @@ public class Sitems {
             InfectedRapier::new);
     public  static final DeferredItem<Item> SHIELD = ITEMS.register("shield",
             InfectedShield::new);
+    public  static final DeferredItem<Item> MISTMAKER = ITEMS.register("mistmaker",
+            MistMaker::new);
     public  static final DeferredItem<Item> VIGIL_EYE = ITEMS.register("vigil_eye",
             VigilEye::new);
     public static final DeferredItem<Item> SYMBIOTIC_REAGENT = ITEMS.register("symbiotic_reagent",
