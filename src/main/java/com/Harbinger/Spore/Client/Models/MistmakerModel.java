@@ -3,6 +3,8 @@ package com.Harbinger.Spore.Client.Models;// Made with Blockbench 5.0.7
 // Paste this class into your mod and generate all required imports
 
 
+import com.Harbinger.Spore.Client.AnimationTrackers.MistMakerSawAnimationTracker;
+import com.Harbinger.Spore.Client.AnimationTrackers.MistMakerShootAnimationTracker;
 import com.Harbinger.Spore.Spore;
 import net.minecraft.client.model.EntityModel;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -12,9 +14,11 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 
-public class MistmakerModel<T extends LivingEntity> extends EntityModel<T> {
+public class MistmakerModel<T extends LivingEntity> extends EntityModel<T> implements TentacledModel{
 	// This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
 	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "mistmaker"), "main");
 	public final ModelPart gun;
@@ -214,10 +218,47 @@ public class MistmakerModel<T extends LivingEntity> extends EntityModel<T> {
 
 		return LayerDefinition.create(meshdefinition, 256, 256);
 	}
-
+	public void animateLung(ModelPart part,float val){
+		part.xScale = 1 + val;
+	}
+	int counter = 0;
 	@Override
 	public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-
+		counter++;
+		gun.getAllParts().forEach(ModelPart::resetPose);
+		float lungVal = Mth.sin(ageInTicks/7)/16;
+		float tum1 = Mth.sin(ageInTicks/6)/7;
+		float tum2 = Mth.sin(ageInTicks/7)/6;
+		float tum3 = Mth.sin(ageInTicks/7)/8;
+		float tum4 = Mth.sin(ageInTicks/8)/7;
+		float tum5 = Mth.sin(ageInTicks/7)/7;
+		animateLung(Lungs_L,lungVal);
+		animateLung(Lungs_R,lungVal);
+		animateTumor(tumor1,tum1);
+		animateTumor(tumor2,tum2);
+		animateTumor(tumor3,tum3);
+		animateTumor(tumor4,tum4);
+		animateTumor(tumor5,tum5);
+		if (counter >= 10){
+			counter = 0;
+		}
+		if (entity instanceof Player player){
+			float anim = MistMakerShootAnimationTracker.getProgress(player, 0);
+			this.B_L_end.z = B_L_end.z + anim;
+			this.B_R_end.z = B_R_end.z + anim;
+			this.Barrel_R.z = Barrel_R.z + anim;
+			this.Barrel_L.z = Barrel_L.z + anim;
+			this.gun.z = gun.z + anim/2;
+			float bite = MistMakerSawAnimationTracker.getProgress(player, 0);
+			float v = bite * 12;
+			tongue.z = tongue.z - v;
+			upperjaw.xRot = upperjaw.xRot - bite;
+			lowerjaw.xRot = lowerjaw.xRot + bite;
+			saw.z = saw.z - v;
+			saw2.z = saw2.z - v;
+			saw.visible = counter <= 5;
+			saw2.visible = counter > 5;
+		}
 	}
 
 	@Override

@@ -117,6 +117,17 @@ public class SItemProperties {
             return IClientItemExtensions.super.getArmPose(entityLiving, hand, itemStack);
         }
     }
+    public static class MistMakerClient implements IClientItemExtensions {
+        public static final MistMakerClient INSTANCE = new MistMakerClient();
+        @Override
+        public HumanoidModel.@org.jetbrains.annotations.Nullable ArmPose getArmPose(LivingEntity entityLiving, InteractionHand hand, ItemStack itemStack) {
+            ItemStack stack = entityLiving.getItemInHand(hand);
+            if (stack.getItem() instanceof MistMaker){
+                return HumanoidModel.ArmPose.CROSSBOW_HOLD;
+            }
+            return IClientItemExtensions.super.getArmPose(entityLiving, hand, itemStack);
+        }
+    }
     public static class BileClientExtension implements IClientFluidTypeExtensions {
         public static final BileClientExtension INSTANCE = new BileClientExtension();
         public static final ResourceLocation FLUID_STILL = ResourceLocation.parse("spore:block/bile_static");

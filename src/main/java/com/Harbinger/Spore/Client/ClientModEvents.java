@@ -372,6 +372,7 @@ public class ClientModEvents {
     @SubscribeEvent
     public static void onRegisterItemExtensions(RegisterClientExtensionsEvent event) {
         event.registerItem(SItemProperties.SyringeGunClient.INSTANCE, Sitems.SYRINGE_GUN.get());
+        event.registerItem(SItemProperties.MistMakerClient.INSTANCE, Sitems.MISTMAKER.get());
         event.registerFluidType(SItemProperties.BileClientExtension.INSTANCE, Sfluids.BILE_FLUID_TYPE);
     }
     @SubscribeEvent

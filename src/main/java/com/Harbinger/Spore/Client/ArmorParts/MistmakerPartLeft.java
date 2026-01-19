@@ -1,6 +1,5 @@
 package com.Harbinger.Spore.Client.ArmorParts;
 
-import com.Harbinger.Spore.Client.Models.MistmakerModelArm;
 import com.Harbinger.Spore.Sitems.CustomModelArmorData;
 import com.Harbinger.Spore.core.Sitems;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -16,13 +15,13 @@ import net.minecraft.world.entity.LivingEntity;
 import java.util.function.Supplier;
 
 public class MistmakerPartLeft extends BaseArmorRenderingBit {
-    public MistmakerPartLeft(MistmakerModelArm<LivingEntity> parentModel, Supplier<EntityModel<LivingEntity>> model, Supplier<ModelPart> part, float x, float y, float z, float expand) {
-        super(EquipmentSlot.OFFHAND, Sitems.SYRINGE_GUN.get(), model, part, x, y, z, expand);
+    public MistmakerPartLeft(Supplier<EntityModel<LivingEntity>> model, Supplier<ModelPart> part, float x, float y, float z, float expand) {
+        super(EquipmentSlot.OFFHAND, Sitems.MISTMAKER.get(), model, part, x, y, z, expand);
     }
 
     @Override
     protected VertexConsumer consumer(MultiBufferSource source, CustomModelArmorData data, HumanoidModel<LivingEntity> model, LivingEntity livingEntity) {
-        return ItemRenderer.getFoilBufferDirect(source, RenderType.entityTranslucent(data.getTextureLocation()), false, stack(livingEntity).hasFoil());
+        return ItemRenderer.getFoilBufferDirect(source, RenderType.entityCutoutNoCull(data.getTextureLocation()), false, stack(livingEntity).hasFoil());
     }
 
     @Override

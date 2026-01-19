@@ -24,6 +24,6 @@ public class MistMakerPart extends ComplexHandModelItem{
 
     @Override
     public RenderType type(ResourceLocation location) {
-        return RenderType.entityTranslucent(location);
+        return RenderType.entityCutout(location);
     }
 }

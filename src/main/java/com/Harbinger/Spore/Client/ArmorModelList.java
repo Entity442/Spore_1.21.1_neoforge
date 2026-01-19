@@ -33,8 +33,8 @@ public class ArmorModelList {
     private static final PCIHandModelItem LEFT_PCI = new PCIHandModelItem(InteractionHand.OFF_HAND,pci,pci.PCIBODY,-1f, -0.7f, -0.35f,1,-90,90,0,psi_glow);
     private static final SyringeGunPart RIGHT_SYRINGE_GUN = new SyringeGunPart(InteractionHand.MAIN_HAND,syringeGunModel,syringeGunModel.syringeGun,0.95f, 0.5f, -1.25f,1f,0,0,180);
     private static final SyringeGunPart LEFT_SYRINGE_GUN = new SyringeGunPart(InteractionHand.OFF_HAND,syringeGunModel,syringeGunModel.syringeGun,-1f, 0.5f, -1.25f,1f,0,0,180);
-    private static final MistMakerPart RIGHT_MISTMAKER = new MistMakerPart(InteractionHand.MAIN_HAND,mistmakerModel,mistmakerModel.gun,0.95f, 0.5f, -1.25f,1f,0,0,180);
-    private static final MistMakerPart LEFT_MISTMAKER = new MistMakerPart(InteractionHand.OFF_HAND,mistmakerModel,mistmakerModel.gun,-1f, 0.5f, -1.25f,1f,0,0,180);
+    private static final MistMakerPart RIGHT_MISTMAKER = new MistMakerPart(InteractionHand.MAIN_HAND,mistmakerModel,mistmakerModel.gun,0.95f, 0.25f, -1.75f,1f,0,0,180);
+    private static final MistMakerPart LEFT_MISTMAKER = new MistMakerPart(InteractionHand.OFF_HAND,mistmakerModel,mistmakerModel.gun,-1f, 0.25f, -1.75f,1f,0,0,180);
 
     public static final List<ComplexHandModelItem> ITEM_RENDERING_BITS = new ArrayList<>(){{
         add(RIGHT_PCI);
@@ -93,8 +93,8 @@ public class ArmorModelList {
     private static final LeftPCIArmorPart PCI_LEFT = new LeftPCIArmorPart(() -> pciL,() -> pciL.PCIBODY,psi_glow);
     private static final SyringeGunArmorPartRight SYRINGE_GUN_RIGHT = new SyringeGunArmorPartRight(syringeGunModelArm,() -> syringeGunModelArm,() -> syringeGunModelArm.syringeGun,0.2f, 0.5f, 0.1f, 0.4f);
     private static final SyringeGunArmorPartLeft SYRINGE_GUN_LEFT = new SyringeGunArmorPartLeft(syringeGunModelArm,() -> syringeGunModelArm,() -> syringeGunModelArm.syringeGun,0.1f, 0.5f, 0.1f, 0.4f);
-    private static final MistmakerPartRight MIST_MAKER_RIGHT = new MistmakerPartRight(mistmakerModelArm,() -> mistmakerModelArm,() -> mistmakerModelArm.gun,0.2f, 0.5f, 0.1f, 0.4f);
-    private static final MistmakerPartLeft MIST_MAKER_LEFT = new MistmakerPartLeft(mistmakerModelArm,() -> mistmakerModelArm,() -> mistmakerModelArm.gun,0.1f, 0.5f, 0.1f, 0.4f);
+    private static final MistmakerPartRight MIST_MAKER_RIGHT = new MistmakerPartRight(() -> mistmakerModelArm,() -> mistmakerModelArm.gun,0.1f, 1.2f, 0.3f, 0.4f);
+    private static final MistmakerPartLeft MIST_MAKER_LEFT = new MistmakerPartLeft(() -> mistmakerModelArm,() -> mistmakerModelArm.gun,0f, 1.2f, 0.3f, 0.4f);
 
     private static final List<Item> fleshBlackList = List.of(Sitems.LIVING_HELMET.get(),Sitems.LIVING_CHEST.get(),Sitems.LIVING_PANTS.get(),Sitems.LIVING_BOOTS.get());
     private static final HelmetArmorPartEnchant JAW_PART = new HelmetArmorPartEnchant(() ->jaw,() ->jaw.jaw,0f,0f,0,1f, Senchantments.VORACIOUS_MAW,jaw_texture,List.of());

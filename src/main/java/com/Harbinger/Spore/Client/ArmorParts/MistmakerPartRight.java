@@ -16,7 +16,7 @@ import net.minecraft.world.entity.LivingEntity;
 import java.util.function.Supplier;
 
 public class MistmakerPartRight extends BaseArmorRenderingBit{
-   public MistmakerPartRight(MistmakerModelArm<LivingEntity> parentModel, Supplier<EntityModel<LivingEntity>> model, Supplier<ModelPart> part, float x, float y, float z, float expand) {
+   public MistmakerPartRight(Supplier<EntityModel<LivingEntity>> model, Supplier<ModelPart> part, float x, float y, float z, float expand) {
         super(EquipmentSlot.MAINHAND, Sitems.MISTMAKER.get(), model, part, x, y, z, expand);
     }
 
@@ -27,6 +27,6 @@ public class MistmakerPartRight extends BaseArmorRenderingBit{
 
     @Override
     protected VertexConsumer consumer(MultiBufferSource source, CustomModelArmorData data, HumanoidModel<LivingEntity> model, LivingEntity livingEntity) {
-        return ItemRenderer.getFoilBufferDirect(source, RenderType.entityTranslucent(data.getTextureLocation()), false, stack(livingEntity).hasFoil());
+        return ItemRenderer.getFoilBufferDirect(source, RenderType.entityCutoutNoCull(data.getTextureLocation()), false, stack(livingEntity).hasFoil());
     }
 }
