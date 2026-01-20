@@ -1896,9 +1896,9 @@ public class StahlmorderModel<T extends Stahlmorder> extends HierarchicalModel<T
         float tendril6Val = Mth.sin(ageInTicks/6)/5;
 		float tendril7Val = Mth.cos(ageInTicks/6)/2;
 		float mawValue = Mth.sin(ageInTicks/6)/8;
-		float shoulderIdleVal = Mth.cos(ageInTicks/6)/6;
+		float shoulderIdleVal = Mth.cos(ageInTicks/8)/9;
         float shoulderIdleVal1 = Mth.sin(ageInTicks/8)/7;
-        float shoulderIdleVal2 = Mth.cos(ageInTicks/4)/5;
+        float shoulderIdleVal2 = Mth.cos(ageInTicks/7)/8;
 		animateTentacleX(Leftleg, Mth.cos(limbSwing * 0.5F) * 0.4F * limbSwingAmount);
 		animateTentacleX(Rightleg,Mth.cos(limbSwing * 0.5F) * 0.4F * -limbSwingAmount);
 		animateTentacleX(LeftForLeg,this.Leftleg.xRot < 0 ? -this.Leftleg.xRot : 0);
@@ -1946,6 +1946,17 @@ public class StahlmorderModel<T extends Stahlmorder> extends HierarchicalModel<T
 		animateTentacleZ(LowerRightfinger2,tendril7Val);
 		animateTentacleZ(LowerRightfinger,tendril7Val);
 		animateTentacleZ(Infectedarm219,tendril7Val);
+		animateTentacleZ(Infectedarm31,tendril4Val);
+		animateTentacleZ(Infectedarm45,tendril5Val);
+		animateTentacleX(Infectedarm25,tendril6Val);
+		animateTentacleX(Infectedarm23,tendril6Val);
+		animateTentacleX(Infectedarm27,tendril4Val);
+		animateTentacleZ(Infectedarm87,tendril4Val);
+		animateTentacleZ(Infectedarm201,tendril3Val);
+		animateTentacleY(Infectedarm213,tendril3Val);
+		animateTentacleX(Infectedarm197,tendril3Val);
+		animateTentacleZ(Infectedarm205,tendril3Val);
+
 	}
 	@Override
 	public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int alpha) {
