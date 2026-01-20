@@ -179,7 +179,6 @@ public class IkKrakenArm extends IkKrakenLeg {
         applyEntityMovementToLegs();
 
         Vec3 basePos = getBodyOffset();
-        entities[0] = basePos;
         Vec3 defaultTipPos = sitPosition == null ? getLegBasePos() : sitPosition;
 
         if (owner.isInDeepWater()) {
@@ -264,6 +263,7 @@ public class IkKrakenArm extends IkKrakenLeg {
                 owner.setLeftArm(new Vector3f(x,y,z));
             }
         }
+        entities[0] = basePos;
     }
 
     @Override
