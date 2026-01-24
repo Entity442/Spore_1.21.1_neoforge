@@ -166,7 +166,7 @@ public class HohlSegRenderer<Type extends HohlMultipart> extends LivingEntityRen
         stack.pushPose();
         {
             Vec3 vec3 = parent.position().subtract(parent.position()).scale(-1);
-            stack.translate(vec3.x, vec3.y+1, vec3.z);
+            stack.translate(vec3.x, vec3.y+ (adapted ? 2 : 1), vec3.z);
             stack.mulPose(Axis.YP.rotation(yaw));
             stack.mulPose(Axis.XP.rotation(pitch));
             float inf = parent.isAdapted() ? 0.35f : 0.6f;
