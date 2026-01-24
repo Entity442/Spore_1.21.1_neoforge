@@ -203,7 +203,7 @@ public class IkKrakenLeg {
             }
         } else {
             // On land, move all segments equally
-            for (int i = 0; i < entities.length; i++) {
+            for (int i = 0; i < entities.length-1; i++) {
                 entities[i] = entities[i].add(ownerMovementDelta);
             }
         }
@@ -284,6 +284,14 @@ public class IkKrakenLeg {
 
             Vec3 solvedPos = prevPos.add(dir);
             moveSegmentTowards(i, solvedPos, false);
+        }
+        for (int i = 1; i < entities.length; i++) {
+            Vec3 prevPos = entities[i - 1];
+            Vec3 dir = entities[i].subtract(prevPos);
+
+            if (dir.lengthSqr() > 5f) {
+                entities[i] = prevPos;
+            }
         }
 
         applyIdleWiggle();

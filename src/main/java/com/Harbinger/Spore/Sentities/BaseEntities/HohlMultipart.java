@@ -45,6 +45,7 @@ public class HohlMultipart extends LivingEntity implements TrueCalamity {
     private static final EntityDataAccessor<Integer> COLOR = SynchedEntityData.defineId(HohlMultipart.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Boolean> IS_TAIL = SynchedEntityData.defineId(HohlMultipart.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Integer> PARENT_ID = SynchedEntityData.defineId(HohlMultipart.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Boolean> ADAPTED = SynchedEntityData.defineId(HohlMultipart.class, EntityDataSerializers.BOOLEAN);
     private float spin = 0f;
     public HohlMultipart(EntityType<? extends LivingEntity> p_20966_, Level p_20967_) {
         super(p_20966_, p_20967_);
@@ -70,9 +71,12 @@ public class HohlMultipart extends LivingEntity implements TrueCalamity {
         builder.define(COLOR, 0);
         builder.define(IS_TAIL, false);
         builder.define(PARENT_ID,-1);
+        builder.define(ADAPTED,false);
     }
 
-
+    public boolean isAdapted(){
+        return entityData.get(ADAPTED);
+    }
     public Entity getChild() {
         UUID id = getChildId();
         if (id != null && level() instanceof ServerLevel serverLevel) {
@@ -120,6 +124,10 @@ public class HohlMultipart extends LivingEntity implements TrueCalamity {
 
         Vec3 currentPos = this.position();
         Vec3 smoothedPos = currentPos.lerp(targetPos, 0.25); // Smoother movement
+        Vec3 dir = this.position().subtract(targetPos);
+        if (dir.length() > 5){
+            setPos(targetPos);
+        }
 
         // Optional vertical adjustment
         double yOffset = 0.0;
@@ -324,6 +332,7 @@ public class HohlMultipart extends LivingEntity implements TrueCalamity {
         tag.putInt("variant",entityData.get(VARIANT));
         tag.putInt("color",entityData.get(COLOR));
         tag.putBoolean("tail",entityData.get(IS_TAIL));
+        tag.putBoolean("adapted",entityData.get(ADAPTED));
     }
 
     @Override
@@ -335,8 +344,12 @@ public class HohlMultipart extends LivingEntity implements TrueCalamity {
         entityData.set(VARIANT,tag.getInt("variant"));
         entityData.set(COLOR,tag.getInt("color"));
         entityData.set(IS_TAIL,tag.getBoolean("tail"));
+        entityData.set(ADAPTED,tag.getBoolean("adapted"));
     }
 
+    public void setAdapted(boolean val){
+        entityData.set(ADAPTED,val);
+    }
     public void setSize(float val){
         entityData.set(SIZE,val);
     }
@@ -387,14 +400,6 @@ public class HohlMultipart extends LivingEntity implements TrueCalamity {
     protected EntityDimensions getDefaultDimensions(Pose pose) {
         EntityDimensions baseDimensions = super.getDefaultDimensions(pose);
         return baseDimensions.scale(this.getSize());
-    }
-
-    private void setVariant(SegmentVariants variant) {
-        this.entityData.set(VARIANT, variant.getId() & 255);
-    }
-    public void setVariant(){
-        SegmentVariants variant = Util.getRandom(SegmentVariants.values(), this.random);
-        setVariant(variant);
     }
     public SegmentVariants getSegmentVariant() {
         return SegmentVariants.byId(this.entityData.get(VARIANT) & 255);

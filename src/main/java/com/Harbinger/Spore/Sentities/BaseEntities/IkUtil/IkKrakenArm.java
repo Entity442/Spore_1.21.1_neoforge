@@ -264,6 +264,14 @@ public class IkKrakenArm extends IkKrakenLeg {
             }
         }
         entities[0] = basePos;
+        for (int i = 1; i < entities.length; i++) {
+            Vec3 prevPos = entities[i - 1];
+            Vec3 dir = entities[i].subtract(prevPos);
+
+            if (dir.lengthSqr() > 5f) {
+                entities[i] = prevPos;
+            }
+        }
     }
 
     @Override

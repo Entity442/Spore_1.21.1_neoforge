@@ -17,9 +17,9 @@ public class SporeRenderTypes extends RenderType {
                 VertexFormat.Mode.QUADS,
                 512, // Increased buffer size
                 true,
-                false, // Try disabling sorting
+                true, // Try disabling sorting
                 CompositeState.builder()
-                        .setShaderState(RenderType.RENDERTYPE_EYES_SHADER) // Better translucent glow shader
+                        .setShaderState(RenderType.RENDERTYPE_ENTITY_TRANSLUCENT_EMISSIVE_SHADER) // Better translucent glow shader
                         .setTextureState(new TextureStateShard(texture, true, false)) // Enable mipmapping
                         .setTransparencyState(RenderType.TRANSLUCENT_TRANSPARENCY) // Makes glow effects stand out
                         .setCullState(RenderType.NO_CULL) // Renders both sides
