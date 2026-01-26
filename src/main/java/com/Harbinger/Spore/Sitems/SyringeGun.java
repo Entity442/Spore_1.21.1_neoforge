@@ -27,7 +27,7 @@ import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
 
-public class SyringeGun extends BaseItem2 implements CustomModelArmorData {
+public class SyringeGun extends BaseItem2 implements CustomModelArmorData,GunHeldItem {
     private static final ResourceLocation TEXTURE = ResourceLocation.parse("spore:textures/item/syringe_gun.png");
 
     public static final List<Item> AMMO = List.of(

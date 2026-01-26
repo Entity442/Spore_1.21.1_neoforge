@@ -371,8 +371,9 @@ public class ClientModEvents {
     }
     @SubscribeEvent
     public static void onRegisterItemExtensions(RegisterClientExtensionsEvent event) {
-        event.registerItem(SItemProperties.SyringeGunClient.INSTANCE, Sitems.SYRINGE_GUN.get());
-        event.registerItem(SItemProperties.MistMakerClient.INSTANCE, Sitems.MISTMAKER.get());
+        event.registerItem(SItemProperties.SporeGunItem.INSTANCE, Sitems.SYRINGE_GUN.get());
+        event.registerItem(SItemProperties.SporeGunItem.INSTANCE, Sitems.MISTMAKER.get());
+        event.registerItem(SItemProperties.SporeGunItem.INSTANCE, Sitems.BILE_BLASTER.get());
         event.registerFluidType(SItemProperties.BileClientExtension.INSTANCE, Sfluids.BILE_FLUID_TYPE);
     }
     @SubscribeEvent
@@ -428,6 +429,8 @@ public class ClientModEvents {
         SGReloadAnimationTracker.tickAll();
         MistMakerSawAnimationTracker.tickAll();
         MistMakerShootAnimationTracker.tickAll();
+        BileBlasterShootAnimationTracker.tickAll();
+        BileBlasterReloadAnimationTracker.tickAll();
     }
     @SubscribeEvent
     public static void onRenderHand(RenderHandEvent event) {

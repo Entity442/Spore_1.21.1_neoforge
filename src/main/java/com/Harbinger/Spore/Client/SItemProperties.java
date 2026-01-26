@@ -106,24 +106,13 @@ public class SItemProperties {
         });
     }
 
-    public static class SyringeGunClient implements IClientItemExtensions {
-        public static final SyringeGunClient INSTANCE = new SyringeGunClient();
+    public static class SporeGunItem implements IClientItemExtensions {
+        public static final SporeGunItem INSTANCE = new SporeGunItem();
         @Override
         public HumanoidModel.@org.jetbrains.annotations.Nullable ArmPose getArmPose(LivingEntity entityLiving, InteractionHand hand, ItemStack itemStack) {
             ItemStack stack = entityLiving.getItemInHand(hand);
-            if (stack.getItem() instanceof SyringeGun){
+            if (stack.getItem() instanceof GunHeldItem){
                return HumanoidModel.ArmPose.CROSSBOW_HOLD;
-            }
-            return IClientItemExtensions.super.getArmPose(entityLiving, hand, itemStack);
-        }
-    }
-    public static class MistMakerClient implements IClientItemExtensions {
-        public static final MistMakerClient INSTANCE = new MistMakerClient();
-        @Override
-        public HumanoidModel.@org.jetbrains.annotations.Nullable ArmPose getArmPose(LivingEntity entityLiving, InteractionHand hand, ItemStack itemStack) {
-            ItemStack stack = entityLiving.getItemInHand(hand);
-            if (stack.getItem() instanceof MistMaker){
-                return HumanoidModel.ArmPose.CROSSBOW_HOLD;
             }
             return IClientItemExtensions.super.getArmPose(entityLiving, hand, itemStack);
         }

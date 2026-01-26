@@ -14,9 +14,9 @@ import net.minecraft.world.entity.LivingEntity;
 
 import java.util.function.Supplier;
 
-public class MistmakerPartRight extends BaseArmorRenderingBit{
-   public MistmakerPartRight(Supplier<EntityModel<LivingEntity>> model, Supplier<ModelPart> part, float x, float y, float z, float expand) {
-        super(EquipmentSlot.MAINHAND, Sitems.MISTMAKER.get(), model, part, x, y, z, expand);
+public class BileBlasterPartRight extends BaseArmorRenderingBit{
+   public BileBlasterPartRight(Supplier<EntityModel<LivingEntity>> model, Supplier<ModelPart> part, float x, float y, float z, float expand) {
+        super(EquipmentSlot.MAINHAND, Sitems.BILE_BLASTER.get(), model, part, x, y, z, expand);
     }
 
     @Override
