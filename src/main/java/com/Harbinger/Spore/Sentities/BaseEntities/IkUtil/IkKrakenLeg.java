@@ -169,7 +169,7 @@ public class IkKrakenLeg {
             float followStrength = Mth.lerp(t, 0.5f, 0.05f);
             float drag = inWater
                     ? Mth.lerp(t, 0.90f, 0.65f)
-                    : 0.98f;
+                    : Mth.lerp(t, 0.90f, 0.1f);
 
             segmentVelocities[i] = segmentVelocities[i]
                     .add(ownerMovementDelta.scale(followStrength));
@@ -205,7 +205,7 @@ public class IkKrakenLeg {
             }
 
             Vec3 solvedPos = nextPos.add(dir);
-            moveSegmentTowards(i, solvedPos, entities[i+1].distanceTo(entities[i]) > 20);
+            moveSegmentTowards(i, solvedPos, entities[i+1].distanceTo(entities[i]) > 5);
         }
         entities[0] = basePos;
 
@@ -221,7 +221,7 @@ public class IkKrakenLeg {
             }
 
             Vec3 solvedPos = prevPos.add(dir);
-            moveSegmentTowards(i, solvedPos, entities[i-1].distanceTo(entities[i]) > 20);
+            moveSegmentTowards(i, solvedPos, entities[i-1].distanceTo(entities[i]) > 5);
         }
         applyIdleWiggle();
         updateWiggleTimers();
