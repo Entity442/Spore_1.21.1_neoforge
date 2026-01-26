@@ -824,9 +824,6 @@ public class Hohlfresser extends Calamity implements TrueCalamity, RangedAttackM
             return false;
         }
 
-        boolean jump(LivingEntity us , LivingEntity target){
-            return target.level().canSeeSky(target.getOnPos()) && us.level().canSeeSky(us.getOnPos());
-        }
         @Override
         public void start() {
             LivingEntity target = mob.getTarget();
@@ -836,10 +833,8 @@ public class Hohlfresser extends Calamity implements TrueCalamity, RangedAttackM
                 if (direction.lengthSqr() > 1.0E-7D) {
                     direction.normalize();
                 }
-                if (jump(mob,target)){
-                    direction.add(new Vec3(0,0.3,0));
-                }
-                mob.setDeltaMovement(direction.scale(speed));
+                direction.scale(speed);
+                mob.setDeltaMovement(direction.x,0.3,direction.z);
             }
             chargeTimer = 0;
         }
