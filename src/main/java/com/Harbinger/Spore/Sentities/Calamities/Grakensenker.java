@@ -128,22 +128,20 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
 
     }
     enum GrakenLegsModifiers{
-        BACK_LEFT_TENTACLE(new Vec3(-3,3.5,0.75),new Vec3(-6, -1, 6),new Vec3(1, -3, 4)),
-        BACK_RIGHT_TENTACLE(new Vec3(-3,3.5,-0.75),new Vec3(-6, -1, -6),new Vec3(1, -3, -4)),
-        MIDDLE_LEFT_TENTACLE(new Vec3(-1,2,0.75),new Vec3(0, -1, 6),new Vec3(0, 1, 7)),
-        MIDDLE_RIGHT_TENTACLE(new Vec3(-1,2,-0.75),new Vec3(0, -1, -6),new Vec3(0, 1, -7)),
-        FRONT_LEFT_TENTACLE(new Vec3(-2,3,0.75),new Vec3(9, -1, 6),new Vec3(8, 1, 4)),
-        FRONT_RIGHT_TENTACLE(new Vec3(-2,3,-0.75),new Vec3(9, -1, -6),new Vec3(8, 1, -4)),
-        LEFT_ARM(new Vec3(0,3,1),new Vec3(8, 2.5, 6),new Vec3(16, 4.5, 8)),
-        RIGHT_ARM(new Vec3(0,3,-1),new Vec3(8, 2.5, -6),new Vec3(16, 4.5, -8));
+        BACK_LEFT_TENTACLE(new Vec3(-3,3.5,0.75),new Vec3(-6, -1, 6)),
+        BACK_RIGHT_TENTACLE(new Vec3(-3,3.5,-0.75),new Vec3(-6, -1, -6)),
+        MIDDLE_LEFT_TENTACLE(new Vec3(-1,2,0.75),new Vec3(0, -1, 6)),
+        MIDDLE_RIGHT_TENTACLE(new Vec3(-1,2,-0.75),new Vec3(0, -1, -6)),
+        FRONT_LEFT_TENTACLE(new Vec3(-2,3,0.75),new Vec3(9, -1, 6)),
+        FRONT_RIGHT_TENTACLE(new Vec3(-2,3,-0.75),new Vec3(9, -1, -6)),
+        LEFT_ARM(new Vec3(0,3,1),new Vec3(8, 2.5, 6)),
+        RIGHT_ARM(new Vec3(0,3,-1),new Vec3(8, 2.5, -6));
         private final Vec3 bodySet;
         private final Vec3 offset;
-        private final Vec3 underwaterOffset;
 
-        GrakenLegsModifiers(Vec3 bodySet, Vec3 offset, Vec3 underwaterOffset) {
+        GrakenLegsModifiers(Vec3 bodySet, Vec3 offset) {
             this.bodySet = bodySet;
             this.offset = offset;
-            this.underwaterOffset = underwaterOffset;
         }
     }
     public IkKrakenLeg getBackRightTentacle(){
@@ -634,6 +632,12 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
         }
         if (SEARCH_AREA.equals(dataAccessor)){
             if (getSearchArea() != BlockPos.ZERO){
+                setVortexTimeout(1200);
+                setVortexVector(BlockPos.ZERO);
+            }
+        }
+        if (WATER_TICKS.equals(dataAccessor)){
+            if (hasVortex() && !isInDeepWater()){
                 setVortexTimeout(1200);
                 setVortexVector(BlockPos.ZERO);
             }

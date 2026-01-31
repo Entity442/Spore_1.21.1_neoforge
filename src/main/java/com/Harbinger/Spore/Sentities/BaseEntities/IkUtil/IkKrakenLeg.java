@@ -163,8 +163,9 @@ public class IkKrakenLeg {
         }
 
         int last = entities.length - 1;
+        int val = inWater ? 0 : 1;
 
-        for (int i = 0; i < entities.length; i++) {
+        for (int i = 0; i < entities.length-val; i++) {
             float t = (float) i / last;
             float followStrength = Mth.lerp(t, 0.5f, 0.05f);
             float drag = inWater

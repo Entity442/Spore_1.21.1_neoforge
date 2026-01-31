@@ -104,6 +104,7 @@ public class Hohlfresser extends Calamity implements TrueCalamity, RangedAttackM
             }
         }
         if (ADAPTED.equals(key)){
+            refreshDimensions();
             AttributeInstance health = this.getAttribute(Attributes.MAX_HEALTH);
             AttributeInstance armor = this.getAttribute(Attributes.ARMOR);
             AttributeInstance damage = this.getAttribute(Attributes.ATTACK_DAMAGE);
@@ -386,15 +387,15 @@ public class Hohlfresser extends Calamity implements TrueCalamity, RangedAttackM
         float size = 1;
         LivingEntity partParent = this;
         parts = new HohlMultipart[getSegments()];
-
         for (int i = 0; i < getSegments(); i++) {
+            int var = segments == null || segments.length < getSegments() ? random.nextInt(3) : segments[i];
             size = size - 0.1f;
             HohlMultipart part = new HohlMultipart(Sentities.HOHLFRESSER_SEG.get(), this.level());
             part.setPos(this.getX(), this.getY(), this.getZ());
             part.setParent(partParent);
             part.setSize(size);
             part.setColor(this.getMutationColor());
-            part.setVariant(segments[i]);
+            part.setVariant(var);
             part.setIsTail(i == getSegments() - 1);
 
             if (partParent == this) {
@@ -415,13 +416,14 @@ public class Hohlfresser extends Calamity implements TrueCalamity, RangedAttackM
         float size = lastParent instanceof HohlMultipart hm ? hm.getSize() - 0.1f : 0.9f;
 
         for (int i = startIndex; i < parts.length; i++) {
+            int var = segments == null || segments.length < getSegments() ? random.nextInt(3) : segments[i];
             size = size - (getAdaptation() ? 0.05f : 0.1f);
             HohlMultipart part = new HohlMultipart(Sentities.HOHLFRESSER_SEG.get(), this.level());
             part.setPos(lastParent.getX(), lastParent.getY(), lastParent.getZ());
             part.setParent(lastParent);
             part.setSize(size);
             part.setColor(this.getMutationColor());
-            part.setVariant(segments[i]);
+            part.setVariant(var);
             part.setIsTail(i == parts.length - 1);
 
             if (lastParent instanceof HohlMultipart partIndex) {
@@ -486,7 +488,8 @@ public class Hohlfresser extends Calamity implements TrueCalamity, RangedAttackM
     @Override
     protected EntityDimensions getDefaultDimensions(Pose pose) {
         EntityDimensions baseDimensions = super.getDefaultDimensions(pose);
-        return baseDimensions.scale(1.75f);
+        float adapted = getAdaptation() ? 2 : 1;
+        return baseDimensions.scale(adapted);
     }
     public static final TagKey<Block> ORE_TAG = TagKey.create(Registries.BLOCK,ResourceLocation.parse("c:ores"));
     public float getOres(){return entityData.get(ORES);}
