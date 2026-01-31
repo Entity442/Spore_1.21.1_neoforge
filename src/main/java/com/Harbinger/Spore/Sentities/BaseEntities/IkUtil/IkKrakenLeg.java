@@ -131,14 +131,7 @@ public class IkKrakenLeg {
     protected void moveTipTowards(Vec3 target) {
         int tip = entities.length - 1;
         Vec3 currentPos = entities[tip];
-        float jumpVal = 3.5f;
-        boolean val = stepUpTicks > 0 && isOwnerMoving();
-        entities[tip] = currentPos.lerp(target.add(0,val ? jumpVal : -1,0), 0.15f);
-        if (val){
-            for (int i = 1; i < entities.length-1; i++) {
-                entities[tip] = currentPos.lerp(target.add(0, jumpVal,0), 0.05f);
-            }
-        }
+        entities[tip] = currentPos.lerp(target, 0.15f);
     }
     protected boolean isOwnerMoving(){
         return owner.getDeltaMovement().lengthSqr() > 0.005;
@@ -192,7 +185,16 @@ public class IkKrakenLeg {
         updateOwnerMovementDelta();
         applyEntityMovementToLegs();
         if (!owner.isInDeepWater()){
-            moveTipTowards(defaultTipPos);
+            float jumpVal = 1.5f;
+            boolean val = stepUpTicks > 0 && isOwnerMoving();
+            if (val){
+                for (int i = 1; i < entities.length; i++) {
+                    Vec3 vec3 = entities[i];
+                    entities[i] = vec3.lerp(vec3.add(0,jumpVal,0), 0.05f);
+                }
+            }else {
+                moveTipTowards(defaultTipPos);
+            }
         }
         for (int i = entities.length - 2; i >= 0; i--) {
             Vec3 nextPos = entities[i + 1];
