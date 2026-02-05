@@ -1,6 +1,5 @@
 package com.Harbinger.Spore.ExtremelySusThings;
 
-import com.Harbinger.Spore.Sentities.BaseEntities.Infected;
 import com.Harbinger.Spore.Sentities.BaseEntities.UtilityEntity;
 import com.Harbinger.Spore.Sentities.TrueCalamity;
 import com.Harbinger.Spore.core.*;
@@ -16,7 +15,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
@@ -26,9 +24,7 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.AbstractFish;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.item.Item;
@@ -215,10 +211,7 @@ public class Utilities {
             return Potions.AWKWARD;
         }
     }
-    public static Attribute tryToCreateAttribute(ResourceLocation location){
-        Optional<Attribute> optional = BuiltInRegistries.ATTRIBUTE.getOptional(location);
-        return optional.orElse(Attributes.ATTACK_KNOCKBACK.value());
-    }
+
     public static List<Holder<Block>> tryToCreateBlockFromTag(Level level, ResourceLocation location){
         List<Holder<Block>> values = new ArrayList<>();
         HolderGetter<Block> blockGetter = level.registryAccess().lookupOrThrow(Registries.BLOCK);

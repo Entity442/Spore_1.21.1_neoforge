@@ -61,8 +61,6 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
-import static com.Harbinger.Spore.ExtremelySusThings.Utilities.biomass;
-
 
 public class Howitzer extends Calamity implements TrueCalamity, RangedAttackMob {
     public static final EntityDataAccessor<Float> RIGHT_ARM = SynchedEntityData.defineId(Howitzer.class, EntityDataSerializers.FLOAT);
