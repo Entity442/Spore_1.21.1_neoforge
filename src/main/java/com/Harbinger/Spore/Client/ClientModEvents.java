@@ -275,6 +275,7 @@ public class ClientModEvents {
         event.registerEntityRenderer(Sentities.NAIAD.get(), NaiadRenderer::new);
         event.registerEntityRenderer(Sentities.KRAKEN.get(), KrakenRenderer::new);
         event.registerEntityRenderer(Sentities.STALH.get(), StalhRenderer::new);
+        event.registerEntityRenderer(Sentities.STAHL_ARM.get(), StahlArmRenderer::new);
     }
     public static void renderBlockEntities(EntityRenderersEvent.RegisterRenderers event){
         event.registerBlockEntityRenderer(SblockEntities.OVERGROWN_SPAWNER.get(), new OvergrownSpawnerRenderer());

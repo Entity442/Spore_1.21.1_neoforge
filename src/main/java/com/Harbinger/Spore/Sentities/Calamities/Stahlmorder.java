@@ -7,9 +7,13 @@ import com.Harbinger.Spore.Sentities.AI.CalamitiesAI.SummonScentInCombat;
 import com.Harbinger.Spore.Sentities.AI.FloatDiveGoal;
 import com.Harbinger.Spore.Sentities.BaseEntities.Calamity;
 import com.Harbinger.Spore.Sentities.BaseEntities.CalamityMultipart;
+import com.Harbinger.Spore.Sentities.FallenMultipart.HowitzerArm;
+import com.Harbinger.Spore.Sentities.FallenMultipart.StalhArm;
 import com.Harbinger.Spore.Sentities.TrueCalamity;
 import com.Harbinger.Spore.core.SAttributes;
 import com.Harbinger.Spore.core.SConfig;
+import com.Harbinger.Spore.core.Sentities;
+import com.Harbinger.Spore.core.Ssounds;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -34,6 +38,8 @@ import java.util.List;
 
 public class Stahlmorder extends Calamity implements TrueCalamity {
     public static final EntityDataAccessor<Float> SWORD_ARM = SynchedEntityData.defineId(Stahlmorder.class, EntityDataSerializers.FLOAT);
+    public static final EntityDataAccessor<Integer> MELEE_STATE = SynchedEntityData.defineId(Stahlmorder.class, EntityDataSerializers.INT);
+    public static final EntityDataAccessor<Integer> JUMP_OFFSET = SynchedEntityData.defineId(Stahlmorder.class, EntityDataSerializers.INT);
     private final CalamityMultipart[] subEntities;
     public final CalamityMultipart swordArm;
     public final CalamityMultipart mouth;
@@ -54,6 +60,8 @@ public class Stahlmorder extends Calamity implements TrueCalamity {
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
         builder.define(SWORD_ARM, this.getMaxArmHp());
+        builder.define(MELEE_STATE, 0);
+        builder.define(JUMP_OFFSET, 0);
     }
 
     private Float getMaxArmHp() {
@@ -95,11 +103,38 @@ public class Stahlmorder extends Calamity implements TrueCalamity {
         }
         super.aiStep();
     }
+
     @Override
-    public boolean hurt(CalamityMultipart calamityMultipart, DamageSource source, float value) {
-        return false;
+    public void tick() {
+        super.tick();
+        if (this.tickCount % 20 == 0 && this.getHealth() == this.getMaxHealth()){
+            if (this.getSwordArmHp() < this.getMaxArmHp()){
+                this.setSwordtArmHp(getSwordArmHp()+1);
+            }
+        }
     }
 
+    @Override
+    public boolean hurt(CalamityMultipart calamityMultipart, DamageSource source, float value) {
+        if (calamityMultipart == this.mouth){
+            this.hurt(source,value * 1.25f);
+        } else if (calamityMultipart == this.swordArm && getSwordArmHp() > 0){
+            this.hurt(source,value * 1.5f);
+            float lostHealth = getSwordArmHp()-this.getDamageAfterArmorAbsorb(source,value);
+            this.setSwordtArmHp(lostHealth > 0 ? lostHealth : getSwordArmHp() != 0 ? summonDetashedPart() : 0f);
+        }else {
+            this.hurt(source,value );
+        }
+        return true;
+    }
+    public float summonDetashedPart(){
+        Vec3 vec3 = (new Vec3(0D,4.5D,-5D)).yRot(-this.getYRot() * ((float)Math.PI / 180F) - ((float)Math.PI / 2F));
+        StalhArm arm = new StalhArm(Sentities.STAHL_ARM.get(),this.level());
+        arm.moveTo(this.getX() + vec3.x, this.getY() + vec3.y,this.getZ()+ vec3.z);
+        level().addFreshEntity(arm);
+        this.playSound(Ssounds.LIMB_SLASH.value());
+        return 0;
+    }
     @Override
     public int chemicalRange() {
         return 16;
@@ -177,6 +212,18 @@ public class Stahlmorder extends Calamity implements TrueCalamity {
                 .add(SAttributes.CORROSIVES, 0.0D)
                 .add(SAttributes.BALLISTIC, 0.0D)
                 .add(SAttributes.GRINDING, 0.0D);
+    }
 
+    public enum MELEE_STATES{
+        SLASH(0),
+        SLAP(1),
+        KICK(2);
+        private final int value;
+        MELEE_STATES(int value) {
+            this.value = value;
+        }
+        public int getValue(){
+            return value;
+        }
     }
 }

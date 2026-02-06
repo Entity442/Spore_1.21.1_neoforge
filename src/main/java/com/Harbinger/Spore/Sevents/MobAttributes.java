@@ -10,6 +10,7 @@ import com.Harbinger.Spore.Sentities.Experiments.Saugling;
 import com.Harbinger.Spore.Sentities.FallenMultipart.HowitzerArm;
 import com.Harbinger.Spore.Sentities.FallenMultipart.Licker;
 import com.Harbinger.Spore.Sentities.FallenMultipart.SiegerTail;
+import com.Harbinger.Spore.Sentities.FallenMultipart.StalhArm;
 import com.Harbinger.Spore.Sentities.Hyper.*;
 import com.Harbinger.Spore.Sentities.Organoids.*;
 import com.Harbinger.Spore.Sentities.Utility.*;
@@ -95,5 +96,6 @@ public class MobAttributes {
         event.put(Sentities.BAIRN.get(), Bairn.createAttributes().build());
         event.put(Sentities.KRAKEN.get(), Grakensenker.createAttributes().build());
         event.put(Sentities.STALH.get(), Stahlmorder.createAttributes().build());
+        event.put(Sentities.STAHL_ARM.get(), StalhArm.createAttributes().build());
     }
 }

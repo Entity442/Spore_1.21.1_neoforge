@@ -1914,6 +1914,7 @@ public class StahlmorderModel<T extends Stahlmorder> extends HierarchicalModel<T
 		animateTentacleY(Seg4Tendril2,tendril1Val);
 		animateTentacleX(Upperjaw,mawValue);
 		animateTentacleX(Lowerjaw,mawValue);
+		Evilshoulder.visible = entity.getSwordArmHp() > 0;
 		animateTentacleZ(Evilshoulder,shoulderIdleVal);
 		animateTentacleZ(Leftarmmain,shoulderIdleVal1);
 		animateTentacleZ(Leftarm,-shoulderIdleVal2);
