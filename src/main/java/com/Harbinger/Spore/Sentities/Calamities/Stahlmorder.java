@@ -7,7 +7,6 @@ import com.Harbinger.Spore.Sentities.AI.CalamitiesAI.SummonScentInCombat;
 import com.Harbinger.Spore.Sentities.AI.FloatDiveGoal;
 import com.Harbinger.Spore.Sentities.BaseEntities.Calamity;
 import com.Harbinger.Spore.Sentities.BaseEntities.CalamityMultipart;
-import com.Harbinger.Spore.Sentities.FallenMultipart.HowitzerArm;
 import com.Harbinger.Spore.Sentities.FallenMultipart.StalhArm;
 import com.Harbinger.Spore.Sentities.TrueCalamity;
 import com.Harbinger.Spore.core.SAttributes;
@@ -20,10 +19,7 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.LeapAtTargetGoal;
@@ -34,6 +30,8 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.entity.PartEntity;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
 public class Stahlmorder extends Calamity implements TrueCalamity {
@@ -43,6 +41,8 @@ public class Stahlmorder extends Calamity implements TrueCalamity {
     private final CalamityMultipart[] subEntities;
     public final CalamityMultipart swordArm;
     public final CalamityMultipart mouth;
+    public AnimationState animationState = new AnimationState();
+    private int animationOffset = 0;
     public Stahlmorder(EntityType<? extends PathfinderMob> type, Level level) {
         super(type, level);
         this.swordArm = new CalamityMultipart(this, "swordArm", 3.5F, 3.5F);
@@ -111,6 +111,27 @@ public class Stahlmorder extends Calamity implements TrueCalamity {
             if (this.getSwordArmHp() < this.getMaxArmHp()){
                 this.setSwordtArmHp(getSwordArmHp()+1);
             }
+        }
+        if (level().isClientSide){
+            handleAnimations();
+        }
+    }
+    private void handleAnimations(){
+        if (animationOffset < 0){
+            return;
+        }
+        if (animationOffset == 20){
+            this.animationState.start(this.tickCount);
+        }
+        if (animationOffset <= 0){
+            this.animationState.stop();
+        }
+        --animationOffset;
+    }
+    public void triggerAnimation(MELEE_STATES states){
+        entityData.set(MELEE_STATE,states.getValue());
+        if (level().isClientSide){
+            animationOffset = 21;
         }
     }
 
@@ -213,7 +234,9 @@ public class Stahlmorder extends Calamity implements TrueCalamity {
                 .add(SAttributes.BALLISTIC, 0.0D)
                 .add(SAttributes.GRINDING, 0.0D);
     }
-
+    public MELEE_STATES getMeleeState() {
+        return MELEE_STATES.byId(this.entityData.get(MELEE_STATE) & 255);
+    }
     public enum MELEE_STATES{
         SLASH(0),
         SLAP(1),
@@ -224,6 +247,11 @@ public class Stahlmorder extends Calamity implements TrueCalamity {
         }
         public int getValue(){
             return value;
+        }
+        private static final MELEE_STATES[] BY_ID = Arrays.stream(values()).sorted(Comparator.
+                comparingInt(MELEE_STATES::getValue)).toArray(MELEE_STATES[]::new);
+        public static MELEE_STATES byId(int id) {
+            return BY_ID[id % BY_ID.length];
         }
     }
 }
