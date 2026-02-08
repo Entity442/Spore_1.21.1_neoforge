@@ -277,6 +277,14 @@ public class SConfig {
         public final ModConfigSpec.ConfigValue<List<? extends String>> sieger_debuffs;
         public final ModConfigSpec.ConfigValue<List<? extends String>> sieger_explosive_effects;
 
+        public final ModConfigSpec.ConfigValue<Double> sta_hp;
+        public final ModConfigSpec.ConfigValue<Double> sta_damage;
+        public final ModConfigSpec.ConfigValue<Double> sta_slap_damage;
+        public final ModConfigSpec.ConfigValue<Double> sta_kick_damage;
+        public final ModConfigSpec.ConfigValue<Double> sta_armor;
+        public final ModConfigSpec.ConfigValue<Double> sta_dpsr;
+        public final ModConfigSpec.ConfigValue<List<? extends String>> sta_buffs;
+        public final ModConfigSpec.ConfigValue<List<? extends String>> sta_debuffs;
 
         public final ModConfigSpec.ConfigValue<Double> hohl_hp;
         public final ModConfigSpec.ConfigValue<Double> hohl_damage;
@@ -902,6 +910,21 @@ public class SConfig {
 
             this.sieger_explosive_effects = builder.comment("Default values: minecraft:wither ,spore:mycelium ,minecraft:weakness").defineList("Sieger explosion ranged effects",
                     Lists.newArrayList("minecraft:wither", "spore:mycelium_ef", "minecraft:weakness") , o -> o instanceof String);
+            builder.pop();
+
+            builder.push("Stahlmorder");
+            this.sta_hp = builder.comment("Default 200").defineInRange("Sets Stahlmorder Max health", 200, 1, Double.MAX_VALUE);
+            this.sta_damage = builder.comment("Default 35").defineInRange("Sets Stahlmorder Sword Damage", 35, 1, Double.MAX_VALUE);
+            this.sta_slap_damage = builder.comment("Default 20").defineInRange("Sets Stahlmorder Slap Damage", 20, 1, Double.MAX_VALUE);
+            this.sta_kick_damage = builder.comment("Default 10").defineInRange("Sets Stahlmorder Kick Damage", 10, 1, Double.MAX_VALUE);
+            this.sta_armor = builder.comment("Default 10").defineInRange("Sets Stahlmorder Armor", 10, 1, Double.MAX_VALUE);
+            this.sta_dpsr = builder.comment("Default 50").defineInRange("Sets Stahlmorder Damage Cap , set to 0 to disable", 50, 0, Double.MAX_VALUE);
+
+            this.sta_buffs = builder.comment("Default values: minecraft:speed|600|0 ,minecraft:strength|600|0 ,minecraft:jump_boost|600|1").defineList("Sieger buffs",
+                    Lists.newArrayList("minecraft:speed|600|0" , "minecraft:strength|600|0","minecraft:jump_boost|600|1") , o -> o instanceof String);
+
+            this.sta_debuffs = builder.comment("Default values: minecraft:weakness|600|1 ,spore:mycelium|600|1 ,minecraft:slowness|600|1").defineList("Sieger debuffs",
+                    Lists.newArrayList("minecraft:weakness|600|1" , "spore:mycelium_ef|600|1","minecraft:slowness|600|1") , o -> o instanceof String);
             builder.pop();
 
             builder.push("Hohlfresser");
@@ -1571,12 +1594,14 @@ public class SConfig {
         public final ModConfigSpec.ConfigValue<List<? extends String>> sieger_loot;
         public final ModConfigSpec.ConfigValue<List<? extends String>> gazen_loot;
         public final ModConfigSpec.ConfigValue<List<? extends String>> graken_loot;
+        public final ModConfigSpec.ConfigValue<List<? extends String>> sta_loot;
         public final ModConfigSpec.ConfigValue<List<? extends String>> hindie_loot;
         public final ModConfigSpec.ConfigValue<List<? extends String>> howit_loot;
         public final ModConfigSpec.ConfigValue<List<? extends String>> hohl_loot;
         public final ModConfigSpec.ConfigValue<List<? extends String>> howit_foot_loot;
         public final ModConfigSpec.ConfigValue<List<? extends String>> sieger_tail_loot;
         public final ModConfigSpec.ConfigValue<List<? extends String>> gazen_tongue_loot;
+        public final ModConfigSpec.ConfigValue<List<? extends String>> sta_blade_loot;
         public final ModConfigSpec.ConfigValue<List<? extends String>> vigil_loot;
         public final ModConfigSpec.ConfigValue<List<? extends String>> umarmer_loot;
         public final ModConfigSpec.ConfigValue<List<? extends String>> proto_loot;
@@ -1751,6 +1776,8 @@ public class SConfig {
             this.hohl_loot = builder.defineList("Hohlfresser",
                     Lists.newArrayList("spore:mutated_fiber|100|20|75","spore:armor_fragment|100|15|38","spore:mutated_heart|70|3|7","spore:tumor|100|6|23","spore:cerebrum|70|2|7","spore:spine_fragment|56|4|9") , o -> o instanceof String);
 
+            this.sta_loot = builder.defineList("Stahlmorder",
+                    Lists.newArrayList("spore:mutated_fiber|100|10|45","spore:armor_fragment|100|10|25","spore:mutated_heart|70|1|5","spore:tumor|100|6|23","spore:cerebrum|70|2|7","spore:spine_fragment|56|4|14","spore:claw|30|3|12","spore:claw_fragment|56|15|45") , o -> o instanceof String);
 
             this.gazen_loot = builder.defineList("Gazenbrecher",
                     Lists.newArrayList("spore:mutated_fiber|100|33|75","spore:armor_fragment|100|15|38","spore:mutated_heart|70|3|7","spore:cerebrum|70|4|9","spore:spine_fragment|56|7|15") , o -> o instanceof String);
@@ -1769,6 +1796,9 @@ public class SConfig {
 
             this.howit_foot_loot = builder.defineList("Howitzer Leg loot",
                     Lists.newArrayList("spore:mutated_fiber|100|10|25","spore:armor_fragment|100|6|17","spore:tumor|100|7|22","spore:tendons|70|6|12") , o -> o instanceof String);
+
+            this.sta_blade_loot = builder.defineList("Stahlmorder Blade loot",
+                    Lists.newArrayList("spore:mutated_fiber|100|5|15","spore:armor_fragment|100|3|14","spore:tumor|100|1|4","spore:tendons|70|6|12","spore:claw|100|3|12","spore:claw_fragment|100|15|45") , o -> o instanceof String);
 
 
             this.proto_loot = builder.defineList("Proto Hivemind",

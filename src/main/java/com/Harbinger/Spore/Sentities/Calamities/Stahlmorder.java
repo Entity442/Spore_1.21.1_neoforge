@@ -5,24 +5,24 @@ import com.Harbinger.Spore.Sentities.AI.CalamitiesAI.CalamityInfectedCommand;
 import com.Harbinger.Spore.Sentities.AI.CalamitiesAI.SporeBurstSupport;
 import com.Harbinger.Spore.Sentities.AI.CalamitiesAI.SummonScentInCombat;
 import com.Harbinger.Spore.Sentities.AI.FloatDiveGoal;
+import com.Harbinger.Spore.Sentities.AI.LeapGoal;
 import com.Harbinger.Spore.Sentities.BaseEntities.Calamity;
 import com.Harbinger.Spore.Sentities.BaseEntities.CalamityMultipart;
 import com.Harbinger.Spore.Sentities.FallenMultipart.StalhArm;
 import com.Harbinger.Spore.Sentities.TrueCalamity;
-import com.Harbinger.Spore.core.SAttributes;
-import com.Harbinger.Spore.core.SConfig;
-import com.Harbinger.Spore.core.Sentities;
-import com.Harbinger.Spore.core.Ssounds;
+import com.Harbinger.Spore.core.*;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.goal.LeapAtTargetGoal;
 import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 import net.minecraft.world.level.Level;
@@ -38,6 +38,7 @@ public class Stahlmorder extends Calamity implements TrueCalamity {
     public static final EntityDataAccessor<Float> SWORD_ARM = SynchedEntityData.defineId(Stahlmorder.class, EntityDataSerializers.FLOAT);
     public static final EntityDataAccessor<Integer> MELEE_STATE = SynchedEntityData.defineId(Stahlmorder.class, EntityDataSerializers.INT);
     public static final EntityDataAccessor<Integer> JUMP_OFFSET = SynchedEntityData.defineId(Stahlmorder.class, EntityDataSerializers.INT);
+
     private final CalamityMultipart[] subEntities;
     public final CalamityMultipart swordArm;
     public final CalamityMultipart mouth;
@@ -67,6 +68,8 @@ public class Stahlmorder extends Calamity implements TrueCalamity {
     private Float getMaxArmHp() {
         return (float) (SConfig.SERVER.howit_hp.get()/4.0f);
     }
+    public int getJumpOffset(){return entityData.get(JUMP_OFFSET);}
+    public void setJumpOffset(int val){entityData.set(JUMP_OFFSET,val);}
 
     @Override
     public void addAdditionalSaveData(CompoundTag tag) {
@@ -112,29 +115,96 @@ public class Stahlmorder extends Calamity implements TrueCalamity {
                 this.setSwordtArmHp(getSwordArmHp()+1);
             }
         }
-        if (level().isClientSide){
-            handleAnimations();
+        if (this.animationOffset > 0) {
+            if (level().isClientSide && animationOffset == 1){
+                animationState.stop();
+            }
+            --this.animationOffset;
+        }
+        if (getJumpOffset() > 0){
+            setJumpOffset(getJumpOffset()-1);
         }
     }
-    private void handleAnimations(){
-        if (animationOffset < 0){
-            return;
-        }
-        if (animationOffset == 20){
-            this.animationState.start(this.tickCount);
-        }
-        if (animationOffset <= 0){
-            this.animationState.stop();
-        }
-        --animationOffset;
+    public void triggerAnimation(int states){
+        entityData.set(MELEE_STATE,states);
     }
-    public void triggerAnimation(MELEE_STATES states){
-        entityData.set(MELEE_STATE,states.getValue());
-        if (level().isClientSide){
-            animationOffset = 21;
+    public void handleEntityEvent(byte value) {
+        if (value == 4) {
+            this.animationOffset = 20;
+            animationState.start(this.tickCount);
+        } else {
+            super.handleEntityEvent(value);
         }
+    }
+    private int decideAnimation(LivingEntity target) {
+        if (this.getSwordArmHp() > 0 &&
+                (this.getRandom().nextFloat() < 0.5F ||
+                        (target.getArmorValue() >= 10 && this.getRandom().nextFloat() < 0.75F))) {
+            return MELEE_STATES.SLASH.getValue();
+        }
+
+        return this.getRandom().nextBoolean()
+                ? MELEE_STATES.SLAP.getValue()
+                : MELEE_STATES.KICK.getValue();
     }
 
+    @Override
+    protected int calculateFallDamage(float p_149389_, float p_149390_) {
+        return 0;
+    }
+
+    @Override
+    public List<? extends String> getDropList() {
+        return SConfig.DATAGEN.sta_loot.get();
+    }
+
+    @Override
+    public void onSyncedDataUpdated(EntityDataAccessor<?> key) {
+        if (MELEE_STATE.equals(key)){
+            AttributeInstance instance = this.getAttribute(Attributes.ATTACK_DAMAGE);
+            if (instance != null){
+                if (getMeleeState() == MELEE_STATES.SLASH){
+                    instance.setBaseValue(SConfig.SERVER.sta_damage.get() * SConfig.SERVER.global_damage.get());
+                } else if (getMeleeState() == MELEE_STATES.SLAP) {
+                    instance.setBaseValue(SConfig.SERVER.sta_slap_damage.get() * SConfig.SERVER.global_damage.get());
+                }else {
+                    instance.setBaseValue(SConfig.SERVER.sta_kick_damage.get() * SConfig.SERVER.global_damage.get());
+                }
+            }
+        }
+        super.onSyncedDataUpdated(key);
+    }
+
+    @Override
+    public boolean doHurtTarget(Entity entity) {
+        this.animationOffset = 20;
+        this.level().broadcastEntityEvent(this, (byte)4);
+        if (entity instanceof LivingEntity living){
+            triggerAnimation(decideAnimation(living));
+            applyAttackEffect(living,entityData.get(MELEE_STATE));
+        }
+        return super.doHurtTarget(entity);
+    }
+    private void applyAttackEffect(LivingEntity target, int animation) {
+        switch (animation) {
+            case 0 -> // SLASH
+                    target.addEffect(new MobEffectInstance(Seffects.CORROSION, 600, 1));
+
+            case 1 -> // SLAP
+                    target.knockback(
+                            4.0F,
+                            Mth.sin(this.getYRot() * ((float) Math.PI / 180F)),
+                            -Mth.cos(this.getYRot() * ((float) Math.PI / 180F))
+                    );
+
+            case 2 -> { // KICK
+                target.hurtMarked = true;
+                target.setDeltaMovement(
+                        target.getDeltaMovement().add(0.0D, 0.8D, 0.0D)
+                );
+            }
+        }
+    }
     @Override
     public boolean hurt(CalamityMultipart calamityMultipart, DamageSource source, float value) {
         if (calamityMultipart == this.mouth){
@@ -163,12 +233,12 @@ public class Stahlmorder extends Calamity implements TrueCalamity {
 
     @Override
     public List<? extends String> buffs() {
-        return List.of();
+        return SConfig.SERVER.sta_buffs.get();
     }
 
     @Override
     public List<? extends String> debuffs() {
-        return List.of();
+        return SConfig.SERVER.sta_debuffs.get();
     }
 
     public CalamityMultipart[] getSubEntities() {
@@ -196,15 +266,30 @@ public class Stahlmorder extends Calamity implements TrueCalamity {
     }
     @Override
     public double getDamageCap() {
-        return SConfig.SERVER.howit_dpsr.get();
+        return SConfig.SERVER.sta_dpsr.get();
     }
     @Override
     public void registerGoals() {
-        this.goalSelector.addGoal(4, new LeapAtTargetGoal(this,0.4F));
-        this.goalSelector.addGoal(4, new AOEMeleeAttackGoal(this, 1.5, false,2.5 ,6, livingEntity -> {return TARGET_SELECTOR.test(livingEntity);}){
+        this.goalSelector.addGoal(3, new LeapGoal(this,1.6F){
+            @Override
+            public boolean canUse() {
+                if (getJumpOffset() > 0){
+                    return false;
+                }
+                return super.canUse();
+            }
+
+            @Override
+            public void start() {
+                super.start();
+                setJumpOffset(200);
+            }
+        });
+        this.goalSelector.addGoal(4, new AOEMeleeAttackGoal(this, 1.5, false,3,2,living -> {return TARGET_SELECTOR.test(living);}){
+            @Override
             protected double getAttackReachSqr(LivingEntity entity) {
                 float f = Stahlmorder.this.getBbWidth();
-                return (double)(f * 2.0F * f * 2.0F + entity.getBbWidth());
+                return (double)(f * 3.0F * f * 3.0F + entity.getBbWidth());
             }
         });
         this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 1.2));
@@ -218,10 +303,10 @@ public class Stahlmorder extends Calamity implements TrueCalamity {
 
     public static AttributeSupplier.Builder createAttributes() {
         return Mob.createMobAttributes()
-                .add(Attributes.MAX_HEALTH, SConfig.SERVER.sieger_hp.get() * SConfig.SERVER.global_health.get())
+                .add(Attributes.MAX_HEALTH, SConfig.SERVER.sta_hp.get() * SConfig.SERVER.global_health.get())
                 .add(Attributes.MOVEMENT_SPEED, 0.25)
-                .add(Attributes.ATTACK_DAMAGE, SConfig.SERVER.sieger_damage.get() * SConfig.SERVER.global_damage.get())
-                .add(Attributes.ARMOR, SConfig.SERVER.sieger_armor.get() * SConfig.SERVER.global_armor.get())
+                .add(Attributes.ATTACK_DAMAGE, SConfig.SERVER.sta_damage.get() * SConfig.SERVER.global_damage.get())
+                .add(Attributes.ARMOR, SConfig.SERVER.sta_armor.get() * SConfig.SERVER.global_armor.get())
                 .add(Attributes.FOLLOW_RANGE, 64)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 1)
                 .add(Attributes.STEP_HEIGHT, 1.5)

@@ -1,6 +1,8 @@
 package com.Harbinger.Spore.Client.Models;// Made with Blockbench 5.0.7
 // Exported for Minecraft version 1.17 or later with Mojang mappings
 // Paste this class into your mod and generate all required imports
+import com.Harbinger.Spore.Client.Animations.StahlmorderModelAnimation;
+import com.Harbinger.Spore.Client.Animations.UmarmerExtraAnimations;
 import com.Harbinger.Spore.Sentities.Calamities.Stahlmorder;
 import com.Harbinger.Spore.Spore;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -1887,31 +1889,69 @@ public class StahlmorderModel<T extends Stahlmorder> extends HierarchicalModel<T
 
 	@Override
 	public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-		this.root().getAllParts().forEach(ModelPart::resetPose);
-		float tendril1Val = Mth.cos(ageInTicks/7)/6;
-		float tendril2Val = Mth.sin(ageInTicks/5)/6;
-		float tendril3Val = -Mth.cos(ageInTicks/5)/6;
-		float tendril4Val = Mth.sin(ageInTicks/5)/5;
+        float tendril1Val = Mth.cos(ageInTicks/7)/6;
+        float tendril2Val = Mth.sin(ageInTicks/5)/6;
+        float tendril3Val = -Mth.cos(ageInTicks/5)/6;
+        float tendril4Val = Mth.sin(ageInTicks/5)/5;
         float tendril5Val = Mth.cos(ageInTicks/7)/4;
         float tendril6Val = Mth.sin(ageInTicks/6)/5;
-		float tendril7Val = Mth.cos(ageInTicks/6)/2;
-		float mawValue = Mth.sin(ageInTicks/6)/8;
-		float shoulderIdleVal = Mth.cos(ageInTicks/8)/9;
+        float tendril7Val = Mth.cos(ageInTicks/6)/2;
+        float mawValue = Mth.sin(ageInTicks/6)/8;
+        float shoulderIdleVal = Mth.cos(ageInTicks/8)/9;
         float shoulderIdleVal1 = Mth.sin(ageInTicks/8)/7;
         float shoulderIdleVal2 = Mth.cos(ageInTicks/7)/8;
+        this.root().getAllParts().forEach(ModelPart::resetPose);
+		boolean attacking = entity.animationState.isStarted();
 		animateTentacleX(Leftleg, Mth.cos(limbSwing * 0.5F) * 0.4F * limbSwingAmount);
 		animateTentacleX(Rightleg,Mth.cos(limbSwing * 0.5F) * 0.4F * -limbSwingAmount);
-		animateTentacleX(LeftForLeg,this.Leftleg.xRot < 0 ? -this.Leftleg.xRot : 0);
-		animateTentacleX(RightForLeg,this.Rightleg.xRot < 0 ? -this.Rightleg.xRot : 0);
+		animateTentacleX(LeftForLeg,this.Leftleg.xRot < 0 ? -this.Leftleg.xRot * 1.25f : 0);
+		animateTentacleX(RightForLeg,this.Rightleg.xRot < 0 ? -this.Rightleg.xRot * 1.25f : 0);
+		if (entity.getMeleeState() == Stahlmorder.MELEE_STATES.SLASH){
+			this.animate(entity.animationState, StahlmorderModelAnimation.slash,ageInTicks,1.5F);
+		}else if (entity.getMeleeState() == Stahlmorder.MELEE_STATES.SLAP){
+			this.animate(entity.animationState, StahlmorderModelAnimation.slap,ageInTicks,1.25F);
+		}else {
+			this.animate(entity.animationState, StahlmorderModelAnimation.kick,ageInTicks,2F);
+		}
+        animateTumor(AssTumor,Mth.cos(ageInTicks/8)/7);
+        animateTumor(leftLegTumor,Mth.sin(ageInTicks/6)/6);
+        animateTumor(rightLegTumor,-Mth.sin(ageInTicks/7)/5);
+        animateTumor(bloom,Mth.sin(ageInTicks/5)/7);
+        animateTentacleY(Tendril2,tendril1Val);
+        animateTentacleY(Seg2Tendril2,tendril1Val);
+        animateTentacleY(Seg3Tendril2,tendril1Val);
+        animateTentacleY(Seg4Tendril2,tendril1Val);
+        animateSpecialTumor(Mth.sin(ageInTicks/7)/8);
+        animateTentacleY(R3Seg1,tendril2Val);
+        animateTentacleY(R3Seg2,tendril2Val);
+        animateTentacleY(R3Seg3,tendril2Val);
+        animateTentacleZ(R3Seg13,tendril3Val);
+        animateTentacleZ(R3Seg14,tendril3Val);
+        animateTentacleZ(R3Seg15,tendril3Val);
+        animateTentacleX(Root5,tendril4Val);
+        animateTentacleX(R3Seg16,tendril4Val);
+        animateTentacleX(R3Seg17,tendril4Val);
+        animateTentacleY(Root2,tendril5Val);
+        animateTentacleY(R3Seg10,tendril5Val);
+        animateTentacleY(R3Seg11,tendril5Val);
+        animateTentacleZ(R3Seg7,tendril6Val);
+        animateTentacleZ(R3Seg8,tendril6Val);
+        animateTentacleZ(R3Seg9,tendril6Val);
+        animateTentacleZ(Infectedarm219,tendril7Val);
+        animateTentacleZ(Infectedarm31,tendril4Val);
+        animateTentacleZ(Infectedarm45,tendril5Val);
+        animateTentacleX(Infectedarm25,tendril6Val);
+        animateTentacleX(Infectedarm23,tendril6Val);
+        animateTentacleX(Infectedarm27,tendril4Val);
+        animateTentacleZ(Infectedarm87,tendril4Val);
+        animateTentacleZ(Infectedarm201,tendril3Val);
+        animateTentacleY(Infectedarm213,tendril3Val);
+        animateTentacleX(Infectedarm197,tendril3Val);
+        animateTentacleZ(Infectedarm205,tendril3Val);
+		if (attacking){
+			return;
+		}
 		animateTentacleY(Upperbody,headPitch /  ( 90F / (float) Math.PI));
-		animateTumor(AssTumor,Mth.cos(ageInTicks/8)/7);
-		animateTumor(leftLegTumor,Mth.sin(ageInTicks/6)/6);
-		animateTumor(rightLegTumor,-Mth.sin(ageInTicks/7)/5);
-		animateTumor(bloom,Mth.sin(ageInTicks/5)/7);
-		animateTentacleY(Tendril2,tendril1Val);
-		animateTentacleY(Seg2Tendril2,tendril1Val);
-		animateTentacleY(Seg3Tendril2,tendril1Val);
-		animateTentacleY(Seg4Tendril2,tendril1Val);
 		animateTentacleX(Upperjaw,mawValue);
 		animateTentacleX(Lowerjaw,mawValue);
 		Evilshoulder.visible = entity.getSwordArmHp() > 0;
@@ -1920,22 +1960,6 @@ public class StahlmorderModel<T extends Stahlmorder> extends HierarchicalModel<T
 		animateTentacleZ(Leftarm,-shoulderIdleVal2);
 		animateTentacleZ(Lowersegleftarm,-shoulderIdleVal1);
 		animateTentacleZ(Evilhand,-shoulderIdleVal/2);
-		animateSpecialTumor(Mth.sin(ageInTicks/7)/8);
-		animateTentacleY(R3Seg1,tendril2Val);
-		animateTentacleY(R3Seg2,tendril2Val);
-		animateTentacleY(R3Seg3,tendril2Val);
-		animateTentacleZ(R3Seg13,tendril3Val);
-		animateTentacleZ(R3Seg14,tendril3Val);
-		animateTentacleZ(R3Seg15,tendril3Val);
-		animateTentacleX(Root5,tendril4Val);
-		animateTentacleX(R3Seg16,tendril4Val);
-		animateTentacleX(R3Seg17,tendril4Val);
-        animateTentacleY(Root2,tendril5Val);
-        animateTentacleY(R3Seg10,tendril5Val);
-        animateTentacleY(R3Seg11,tendril5Val);
-        animateTentacleZ(R3Seg7,tendril6Val);
-        animateTentacleZ(R3Seg8,tendril6Val);
-        animateTentacleZ(R3Seg9,tendril6Val);
         animateTentacleZ(UpperRightarm,shoulderIdleVal1);
         animateTentacleZ(LowersegRightarm,shoulderIdleVal);
         animateTentacleY(hand,tendril5Val);
@@ -1946,18 +1970,6 @@ public class StahlmorderModel<T extends Stahlmorder> extends HierarchicalModel<T
 		animateTentacleZ(LowerRightarmLowerSegmentButFreakyToo,shoulderIdleVal);
 		animateTentacleZ(LowerRightfinger2,tendril7Val);
 		animateTentacleZ(LowerRightfinger,tendril7Val);
-		animateTentacleZ(Infectedarm219,tendril7Val);
-		animateTentacleZ(Infectedarm31,tendril4Val);
-		animateTentacleZ(Infectedarm45,tendril5Val);
-		animateTentacleX(Infectedarm25,tendril6Val);
-		animateTentacleX(Infectedarm23,tendril6Val);
-		animateTentacleX(Infectedarm27,tendril4Val);
-		animateTentacleZ(Infectedarm87,tendril4Val);
-		animateTentacleZ(Infectedarm201,tendril3Val);
-		animateTentacleY(Infectedarm213,tendril3Val);
-		animateTentacleX(Infectedarm197,tendril3Val);
-		animateTentacleZ(Infectedarm205,tendril3Val);
-
 	}
 	@Override
 	public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int alpha) {
