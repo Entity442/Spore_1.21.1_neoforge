@@ -16,6 +16,8 @@ import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -152,6 +154,7 @@ public class Stahlmorder extends Calamity implements TrueCalamity {
 
     @Override
     protected int calculateFallDamage(float p_149389_, float p_149390_) {
+        this.playSound(Ssounds.LANDING.value());
         return 0;
     }
 
@@ -159,7 +162,9 @@ public class Stahlmorder extends Calamity implements TrueCalamity {
     public List<? extends String> getDropList() {
         return SConfig.DATAGEN.sta_loot.get();
     }
-
+    protected SoundEvent getStepSound() {
+        return SoundEvents.RAVAGER_STEP;
+    }
     @Override
     public void onSyncedDataUpdated(EntityDataAccessor<?> key) {
         if (MELEE_STATE.equals(key)){
@@ -296,7 +301,7 @@ public class Stahlmorder extends Calamity implements TrueCalamity {
 
             @Override
             protected void resetAttackCooldown() {
-                this.ticksUntilNextAttack = this.adjustedTickDelay(30);
+                this.ticksUntilNextAttack = this.adjustedTickDelay(40);
             }
         });
         this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 1.2));
