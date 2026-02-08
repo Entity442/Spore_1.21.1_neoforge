@@ -70,7 +70,7 @@ public class Stahlmorder extends Calamity implements TrueCalamity {
     }
 
     private Float getMaxArmHp() {
-        return (float) (SConfig.SERVER.howit_hp.get()/4.0f);
+        return (float) (SConfig.SERVER.sta_hp.get()/4.0f);
     }
     public int getJumpOffset(){return entityData.get(JUMP_OFFSET);}
     public void setJumpOffset(int val){entityData.set(JUMP_OFFSET,val);}
