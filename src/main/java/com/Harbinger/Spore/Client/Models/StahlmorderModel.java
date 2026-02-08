@@ -2,7 +2,6 @@ package com.Harbinger.Spore.Client.Models;// Made with Blockbench 5.0.7
 // Exported for Minecraft version 1.17 or later with Mojang mappings
 // Paste this class into your mod and generate all required imports
 import com.Harbinger.Spore.Client.Animations.StahlmorderModelAnimation;
-import com.Harbinger.Spore.Client.Animations.UmarmerExtraAnimations;
 import com.Harbinger.Spore.Sentities.Calamities.Stahlmorder;
 import com.Harbinger.Spore.Spore;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -1911,7 +1910,7 @@ public class StahlmorderModel<T extends Stahlmorder> extends HierarchicalModel<T
 		}else if (entity.getMeleeState() == Stahlmorder.MELEE_STATES.SLAP){
 			this.animate(entity.animationState, StahlmorderModelAnimation.slap,ageInTicks,1.25F);
 		}else {
-			this.animate(entity.animationState, StahlmorderModelAnimation.kick,ageInTicks,2F);
+			this.animate(entity.animationState, StahlmorderModelAnimation.kick,ageInTicks,1.5F);
 		}
         animateTumor(AssTumor,Mth.cos(ageInTicks/8)/7);
         animateTumor(leftLegTumor,Mth.sin(ageInTicks/6)/6);

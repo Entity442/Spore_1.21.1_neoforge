@@ -23,6 +23,7 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 import net.minecraft.world.level.Level;
@@ -32,6 +33,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.EnumSet;
 import java.util.List;
 
 public class Stahlmorder extends Calamity implements TrueCalamity {
@@ -270,7 +272,7 @@ public class Stahlmorder extends Calamity implements TrueCalamity {
     }
     @Override
     public void registerGoals() {
-        this.goalSelector.addGoal(3, new LeapGoal(this,1.6F){
+        this.goalSelector.addGoal(3, new StaLeapGoal(this,1.6F){
             @Override
             public boolean canUse() {
                 if (getJumpOffset() > 0){
@@ -289,7 +291,12 @@ public class Stahlmorder extends Calamity implements TrueCalamity {
             @Override
             protected double getAttackReachSqr(LivingEntity entity) {
                 float f = Stahlmorder.this.getBbWidth();
-                return (double)(f * 3.0F * f * 3.0F + entity.getBbWidth());
+                return (double)(f * 2.0F * f * 2.0F + entity.getBbWidth());
+            }
+
+            @Override
+            protected void resetAttackCooldown() {
+                this.ticksUntilNextAttack = this.adjustedTickDelay(30);
             }
         });
         this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 1.2));
@@ -338,5 +345,62 @@ public class Stahlmorder extends Calamity implements TrueCalamity {
         public static MELEE_STATES byId(int id) {
             return BY_ID[id % BY_ID.length];
         }
+    }
+
+    public class StaLeapGoal extends Goal {
+        private final Stahlmorder mob;
+        private LivingEntity target;
+        private final float yd;
+
+        public StaLeapGoal(Stahlmorder p_25492_, float p_25493_) {
+            this.mob = p_25492_;
+            this.yd = p_25493_;
+            this.setFlags(EnumSet.of(Flag.JUMP, Flag.MOVE));
+        }
+
+        public boolean canUse() {
+            if (getJumpOffset() > 0){
+                return false;
+            }
+            this.target = this.mob.getTarget();
+            if (this.target == null)
+            {
+                return false;
+            } else if (this.mob.isInWater())
+            {
+                return false;
+            } else
+            {
+                double d0 = this.mob.distanceToSqr(this.target);
+                if (d0 > 32.0D) {
+                    if (!this.mob.onGround()) {
+                        return false;
+                    } else {
+                        return this.mob.getRandom().nextInt(reducedTickDelay(5)) == 0;
+                    }
+                } else {
+                    return false;
+                }
+            }
+
+        }
+
+        public boolean canContinueToUse() {
+            return this.mob.onGround();
+        }
+
+        public void start() {
+            if (target == null){
+                return;
+            }
+            Vec3 vec31 = new Vec3(this.target.getX() - this.mob.getX(), 0.0D, this.target.getZ() - this.mob.getZ());
+            if (vec31.lengthSqr() > 1.0E-7D) {
+                vec31 = vec31.normalize().scale(3.5D);
+            }
+            this.mob.getLookControl().setLookAt(target, 10.0F, (float) this.mob.getMaxHeadXRot());
+            this.mob.setDeltaMovement(this.mob.getDeltaMovement().add(vec31.x + yd, this.yd, vec31.z + yd));
+            setJumpOffset(200);
+        }
+
     }
 }
