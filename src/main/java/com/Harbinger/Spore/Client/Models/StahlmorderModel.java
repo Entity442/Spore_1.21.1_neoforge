@@ -18,7 +18,7 @@ public class StahlmorderModel<T extends Stahlmorder> extends HierarchicalModel<T
 	// This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
 	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "stahlmordermodel"), "main");
 	private final ModelPart panzer;
-	private final ModelPart Leftleg;
+	public final ModelPart Leftleg;
 	private final ModelPart leftLegTumor;
 	private final ModelPart Infectedbody99;
 	private final ModelPart Infectedbody53;
@@ -32,7 +32,7 @@ public class StahlmorderModel<T extends Stahlmorder> extends HierarchicalModel<T
 	private final ModelPart Infectedarm15;
 	private final ModelPart Infectedarm16;
 	private final ModelPart Infectedbody52;
-	private final ModelPart Rightleg;
+	public final ModelPart Rightleg;
 	private final ModelPart Infectedbody50;
 	private final ModelPart Infectedarm5;
 	private final ModelPart Infectedarm6;
@@ -67,7 +67,7 @@ public class StahlmorderModel<T extends Stahlmorder> extends HierarchicalModel<T
 	private final ModelPart Seg3Tendril2;
 	private final ModelPart Seg4Tendril2;
 	private final ModelPart Upperbody;
-	private final ModelPart Mouth;
+	public final ModelPart Mouth;
 	private final ModelPart Upperjaw;
 	private final ModelPart Infectedbody14;
 	private final ModelPart Infectedbody15;
@@ -109,7 +109,7 @@ public class StahlmorderModel<T extends Stahlmorder> extends HierarchicalModel<T
 	private final ModelPart Infectedbody40;
 	private final ModelPart Infectedbody41;
 	private final ModelPart Infectedbody98;
-	private final ModelPart Evilshoulder;
+	public final ModelPart Evilshoulder;
 	private final ModelPart Leftarmmain;
 	private final ModelPart bloom2;
 	private final ModelPart Leftarm;
@@ -175,7 +175,7 @@ public class StahlmorderModel<T extends Stahlmorder> extends HierarchicalModel<T
 	private final ModelPart Spitterarmleft2;
 	private final ModelPart Spitterarmright2;
 	private final ModelPart Infectedbody109;
-	private final ModelPart UpperRightarm;
+	public final ModelPart UpperRightarm;
 	private final ModelPart bloom5;
 	private final ModelPart Infectedarm49;
 	private final ModelPart Infectedarm50;
@@ -240,7 +240,7 @@ public class StahlmorderModel<T extends Stahlmorder> extends HierarchicalModel<T
 	private final ModelPart Infectedarm56;
 	private final ModelPart Infectedarm57;
 	private final ModelPart Infectedarm58;
-	private final ModelPart LowerRightarm;
+	public final ModelPart LowerRightarm;
 	private final ModelPart LowerRightarmLowerSegmentButFreakyToo;
 	private final ModelPart Infectedarm197;
 	private final ModelPart Infectedarm198;

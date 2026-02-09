@@ -1067,7 +1067,7 @@ public class SConfig {
             this.reconstructor_assimilation = builder.comment("Default 5").defineInRange("How much biomass does it get from consuming infected", 5, 1, Integer.MAX_VALUE);
             this.reconstructor_biomass = builder.comment("Default 100").defineInRange("Sets the required biomass before it summons a calamity", 100, 1, Integer.MAX_VALUE);
             this.reconstructor_terrain = builder.defineList("Mobs that are summoned for ground support",
-                    Lists.newArrayList("spore:sieger","spore:howitzer" ) , o -> o instanceof String);
+                    Lists.newArrayList("spore:sieger","spore:howitzer","spore:stahl" ) , o -> o instanceof String);
             this.reconstructor_air = builder.defineList("Mobs that are summoned for air support",
                     Lists.newArrayList("spore:hindenburg","spore:howitzer" ) , o -> o instanceof String);
             this.reconstructor_water = builder.defineList("Mobs that are summoned for water support",

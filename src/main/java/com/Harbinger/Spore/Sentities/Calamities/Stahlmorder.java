@@ -9,6 +9,7 @@ import com.Harbinger.Spore.Sentities.AI.LeapGoal;
 import com.Harbinger.Spore.Sentities.BaseEntities.Calamity;
 import com.Harbinger.Spore.Sentities.BaseEntities.CalamityMultipart;
 import com.Harbinger.Spore.Sentities.FallenMultipart.StalhArm;
+import com.Harbinger.Spore.Sentities.HitboxesForParts;
 import com.Harbinger.Spore.Sentities.TrueCalamity;
 import com.Harbinger.Spore.core.*;
 import net.minecraft.nbt.CompoundTag;
@@ -33,10 +34,7 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.entity.PartEntity;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.EnumSet;
-import java.util.List;
+import java.util.*;
 
 public class Stahlmorder extends Calamity implements TrueCalamity {
     public static final EntityDataAccessor<Float> SWORD_ARM = SynchedEntityData.defineId(Stahlmorder.class, EntityDataSerializers.FLOAT);
@@ -290,21 +288,7 @@ public class Stahlmorder extends Calamity implements TrueCalamity {
     }
     @Override
     public void registerGoals() {
-        this.goalSelector.addGoal(3, new StaLeapGoal(this,1.6F){
-            @Override
-            public boolean canUse() {
-                if (getJumpOffset() > 0){
-                    return false;
-                }
-                return super.canUse();
-            }
-
-            @Override
-            public void start() {
-                super.start();
-                setJumpOffset(200);
-            }
-        });
+        this.goalSelector.addGoal(3, new StaLeapGoal(this,1.6F));
         this.goalSelector.addGoal(4, new AOEMeleeAttackGoal(this, 1.5, false,3,2,living -> {return TARGET_SELECTOR.test(living);}){
             @Override
             protected double getAttackReachSqr(LivingEntity entity) {
@@ -316,6 +300,7 @@ public class Stahlmorder extends Calamity implements TrueCalamity {
             protected void resetAttackCooldown() {
                 this.ticksUntilNextAttack = this.adjustedTickDelay(40);
             }
+
         });
         this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 1.2));
         this.goalSelector.addGoal(6, new FloatDiveGoal(this));
@@ -420,5 +405,24 @@ public class Stahlmorder extends Calamity implements TrueCalamity {
             setJumpOffset(200);
         }
 
+    }
+
+    private final List<HitboxesForParts> innatePartList = List.of(
+            HitboxesForParts.STAHL_RIGHT_LEG,
+            HitboxesForParts.STAHL_LEFT_LEG,HitboxesForParts.STAHL_ARM_ARM,
+            HitboxesForParts.STAHL_ARM_ARM2,HitboxesForParts.STAHL_MOUTH);
+    @Override
+    public List<HitboxesForParts> parts() {
+        List<HitboxesForParts> values = new ArrayList<>();
+        if (getSwordArmHp() > 0){
+            values.add(HitboxesForParts.STAHL_BLADE_ARM);
+        }
+        for (HitboxesForParts hitboxes : innatePartList){
+            HitboxesForParts part = calculateChance(hitboxes,0.85f);
+            if (part != null){
+                values.add(part);
+            }
+        }
+        return values;
     }
 }
