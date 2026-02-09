@@ -160,6 +160,10 @@ public class Stahlmorder extends Calamity implements TrueCalamity {
     protected SoundEvent getAmbientSound() {
         return Ssounds.STAHL_AMBIENT.value();
     }
+    public int getAmbientSoundInterval() {
+        return 100;
+    }
+
     @Override
     public List<? extends String> getDropList() {
         return SConfig.DATAGEN.sta_loot.get();
