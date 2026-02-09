@@ -1,5 +1,6 @@
 package com.Harbinger.Spore.Sentities.BaseEntities;
 
+import com.Harbinger.Spore.core.Sblocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EntityType;
@@ -26,9 +27,9 @@ public class FallenMultipartEntity extends UtilityEntity implements Enemy {
                 if (!level().isClientSide() && blockState.isSolidRender(level(),blockpos) && above.isAir()){
                     if (Math.random() < 0.1){
                         if (Math.random() < 0.5) {
-                            //level().setBlock(blockpos.above(), Sblocks.GROWTHS_BIG.get().defaultBlockState(), 3);
+                            level().setBlock(blockpos.above(), Sblocks.GROWTHS_BIG.get().defaultBlockState(), 3);
                         } else {
-                            //level().setBlock(blockpos.above(), Sblocks.GROWTHS_SMALL.get().defaultBlockState(), 3);
+                            level().setBlock(blockpos.above(), Sblocks.GROWTHS_SMALL.get().defaultBlockState(), 3);
                         }
                     }
                 }
