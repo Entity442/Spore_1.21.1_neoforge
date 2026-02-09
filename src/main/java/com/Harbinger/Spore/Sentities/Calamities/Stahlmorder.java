@@ -151,8 +151,10 @@ public class Stahlmorder extends Calamity implements TrueCalamity {
     }
 
     @Override
-    protected int calculateFallDamage(float p_149389_, float p_149390_) {
-        this.playSound(Ssounds.LANDING.value());
+    protected int calculateFallDamage(float fallDistance, float p_149390_) {
+        if (fallDistance > 4){
+            this.playSound(Ssounds.LANDING.value());
+        }
         return 0;
     }
     protected SoundEvent getAmbientSound() {
