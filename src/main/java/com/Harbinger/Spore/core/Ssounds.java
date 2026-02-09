@@ -306,6 +306,14 @@ public class Ssounds {
 
     public static final Holder<SoundEvent> BAIRN = soundRegistry("bairn");
 
+    public static final Holder<SoundEvent> STAHL_AMBIENT = soundRegistry("stahl_ambient");
+
+    public static final Holder<SoundEvent> STAHL_KICK = soundRegistry("stahl_kick");
+
+    public static final Holder<SoundEvent> STAHL_SLAP = soundRegistry("stahl_slap");
+
+    public static final Holder<SoundEvent> STAHL_SLASH = soundRegistry("stahl_slash");
+
     private Ssounds() {
     }
 

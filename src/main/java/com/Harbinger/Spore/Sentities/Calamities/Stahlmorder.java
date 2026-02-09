@@ -157,7 +157,9 @@ public class Stahlmorder extends Calamity implements TrueCalamity {
         this.playSound(Ssounds.LANDING.value());
         return 0;
     }
-
+    protected SoundEvent getAmbientSound() {
+        return Ssounds.STAHL_AMBIENT.value();
+    }
     @Override
     public List<? extends String> getDropList() {
         return SConfig.DATAGEN.sta_loot.get();
@@ -194,17 +196,24 @@ public class Stahlmorder extends Calamity implements TrueCalamity {
     }
     private void applyAttackEffect(LivingEntity target, int animation) {
         switch (animation) {
-            case 0 -> // SLASH
-                    target.addEffect(new MobEffectInstance(Seffects.CORROSION, 600, 1));
+            case 0 -> {
+                     this.playSound(Ssounds.STAHL_SLASH.value());
+                     target.addEffect(new MobEffectInstance(Seffects.CORROSION, 600, 1));
+            }
 
-            case 1 -> // SLAP
-                    target.knockback(
-                            4.0F,
-                            Mth.sin(this.getYRot() * ((float) Math.PI / 180F)),
-                            -Mth.cos(this.getYRot() * ((float) Math.PI / 180F))
-                    );
 
-            case 2 -> { // KICK
+
+            case 1 -> {
+                this.playSound(Ssounds.STAHL_SLAP.value());
+                target.knockback(
+                        4.0F,
+                        Mth.sin(this.getYRot() * ((float) Math.PI / 180F)),
+                        -Mth.cos(this.getYRot() * ((float) Math.PI / 180F))
+                );
+            }
+
+            case 2 -> {
+                this.playSound(Ssounds.STAHL_KICK.value());
                 target.hurtMarked = true;
                 target.setDeltaMovement(
                         target.getDeltaMovement().add(0.0D, 0.8D, 0.0D)
