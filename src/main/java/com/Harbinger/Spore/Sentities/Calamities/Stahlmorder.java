@@ -231,8 +231,6 @@ public class Stahlmorder extends Calamity implements TrueCalamity {
             this.hurt(source,value * 1.5f);
             float lostHealth = getSwordArmHp()-this.getDamageAfterArmorAbsorb(source,value);
             this.setSwordtArmHp(lostHealth > 0 ? lostHealth : getSwordArmHp() != 0 ? summonDetashedPart() : 0f);
-        }else {
-            this.hurt(source,value );
         }
         return true;
     }
