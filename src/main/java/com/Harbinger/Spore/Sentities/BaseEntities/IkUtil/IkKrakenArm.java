@@ -2,6 +2,7 @@ package com.Harbinger.Spore.Sentities.BaseEntities.IkUtil;
 
 import com.Harbinger.Spore.ExtremelySusThings.Utilities;
 import com.Harbinger.Spore.Sentities.Calamities.Grakensenker;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.level.Level;
@@ -78,6 +79,37 @@ public class IkKrakenArm extends IkKrakenLeg {
         }
     }
 
+    @Override
+    protected void applyEntityMovementToLegs() {
+        boolean inWater = owner.isInDeepWater();
+        if (ownerMovementDelta.lengthSqr() < 0.00001){
+            if (inWater){
+                Vec3 defaultTipPos = getLegBasePos();
+                int tip = entities.length - 1;
+                Vec3 currentPos = entities[tip];
+                entities[tip] = currentPos.lerp(defaultTipPos, 0.1f);
+            }
+            return;
+        }
+
+        int last = entities.length - 1;
+
+        for (int i = 0; i < entities.length; i++) {
+            float t = (float) i / last;
+            float followStrength = Mth.lerp(t, 0.5f, 0.05f);
+            float drag = Mth.lerp(t, 0.90f, 0.65f);
+
+            segmentVelocities[i] = segmentVelocities[i]
+                    .add(ownerMovementDelta.scale(followStrength));
+
+            segmentVelocities[i] = segmentVelocities[i].scale(drag);
+
+            entities[i] = entities[i].add(segmentVelocities[i]);
+        }
+
+        if (sitPosition != null) sitPosition = sitPosition.add(ownerMovementDelta);
+        if (lastSitPosition != null) lastSitPosition = lastSitPosition.add(ownerMovementDelta);
+    }
 
     public Optional<LivingEntity> findAndSetTarget() {
         Level level = owner.level();

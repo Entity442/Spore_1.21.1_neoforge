@@ -115,7 +115,8 @@ public class IkKrakenLeg {
 
     public Vec3 getLegBasePos() {
         Vec3 pivot = owner.position();
-        return pivot.add(applyYaw(defaultLimbOffset));
+        Vec3 extend = isOwnerMoving() ? new Vec3(1,0,0) : Vec3.ZERO;
+        return pivot.add(applyYaw(defaultLimbOffset.add(extend)));
     }
 
     public Vec3 getBodyOffset() {
