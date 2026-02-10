@@ -314,6 +314,8 @@ public class Ssounds {
 
     public static final Holder<SoundEvent> STAHL_SLASH = soundRegistry("stahl_slash");
 
+    public static final Holder<SoundEvent> PHAYRES_SCREECH = soundRegistry("phayres_screech");
+
     private Ssounds() {
     }
 
