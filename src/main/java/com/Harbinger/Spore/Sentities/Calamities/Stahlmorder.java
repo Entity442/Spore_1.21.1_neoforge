@@ -10,6 +10,7 @@ import com.Harbinger.Spore.Sentities.BaseEntities.Calamity;
 import com.Harbinger.Spore.Sentities.BaseEntities.CalamityMultipart;
 import com.Harbinger.Spore.Sentities.FallenMultipart.StalhArm;
 import com.Harbinger.Spore.Sentities.HitboxesForParts;
+import com.Harbinger.Spore.Sentities.MovementControls.InfectedWallMovementControl;
 import com.Harbinger.Spore.Sentities.TrueCalamity;
 import com.Harbinger.Spore.core.*;
 import net.minecraft.nbt.CompoundTag;
@@ -52,6 +53,7 @@ public class Stahlmorder extends Calamity implements TrueCalamity {
         this.mouth = new CalamityMultipart(this, "mouth", 2F, 2F);
         this.subEntities = new CalamityMultipart[]{this.swordArm,this.mouth};
         this.setId(ENTITY_COUNTER.getAndAdd(this.subEntities.length + 1) + 1);
+        this.moveControl = new InfectedWallMovementControl(this);
     }
     @Override
     public void setId(int p_20235_) {
@@ -305,8 +307,24 @@ public class Stahlmorder extends Calamity implements TrueCalamity {
         this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 1.2));
         this.goalSelector.addGoal(6, new FloatDiveGoal(this));
         this.goalSelector.addGoal(6,new CalamityInfectedCommand(this));
-        this.goalSelector.addGoal(7,new SummonScentInCombat(this));
-        this.goalSelector.addGoal(8,new SporeBurstSupport(this));
+        this.goalSelector.addGoal(7,new SummonScentInCombat(this){
+            @Override
+            public boolean canContinueToUse() {
+                if (getJumpOffset()>0){
+                    return false;
+                }
+                return super.canContinueToUse();
+            }
+        });
+        this.goalSelector.addGoal(8,new SporeBurstSupport(this){
+            @Override
+            public boolean canUse() {
+                if (getJumpOffset()>0){
+                    return false;
+                }
+                return super.canUse();
+            }
+        });
         this.goalSelector.addGoal(9,new RandomStrollGoal(this , 1));
         super.registerGoals();
     }

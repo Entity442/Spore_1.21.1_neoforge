@@ -157,7 +157,7 @@ public class IkKrakenLeg {
     protected void applyBodySpin() {
         if (Math.abs(yawDelta) < 0.001f) return;
         boolean inWater = owner.isInDeepWater();
-        if (!inWater){
+        if (inWater){
             return;
         }
         Vec3 pivot = owner.position();
