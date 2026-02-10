@@ -755,6 +755,8 @@
   "advancement.spore.vanguard.description" : "Get raided by a Vanguard.",
   "advancement.spore.kraken.title" : "Hello, Beastie",
   "advancement.spore.kraken.description" : "Becoming Jack Sparrow/Meeting the Grakensenker.",
+  "advancement.spore.stahl.title" : "Beauty of Annihilation",
+  "advancement.spore.stahl.description" : "Encounter a Stahlmorder.",
 
   "spore.proto.message.0": "You're gonna need a bigger sword :P",
   "spore.proto.message.1": "Rage quit already you're done",
