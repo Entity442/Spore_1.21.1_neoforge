@@ -371,6 +371,10 @@ public class Sentities {
             () -> EntityType.Builder.of(Proto::new, ORGANOID).sized(1f, 3.5f)
                     .build(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "proto").toString()));
 
+    public static final Supplier<EntityType<HiveTumor>> HIVETUMOR = SPORE_ENTITIES.register("hivetumor",
+            () -> EntityType.Builder.of(HiveTumor::new, ORGANOID).sized(1.2f, 3f)
+                    .build(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "hivetumor").toString()));
+
     public static final Supplier<EntityType<InfectionTendril>> TENDRIL = SPORE_ENTITIES.register("tendril",
             () -> EntityType.Builder.of(InfectionTendril::new, MobCategory.MISC).sized(0.8f, 0.1f)
                     .build(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "tendril").toString()));

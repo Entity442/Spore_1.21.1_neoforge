@@ -536,7 +536,7 @@ public class Proto extends Organoid implements CasingGenerator, FoliageSpread, C
     private void cleanupChunkLoading() {
         ChunkPos chunk = this.chunkPosition();
         String requestId = "hivemind_" + this.getUUID() + "_" + chunk;
-        //ChunkLoaderHelper.removeRequest(requestId);
+        ChunkLoaderHelper.removeRequest(requestId);
     }
 
     private void spreadBlocksAroundDeath() {

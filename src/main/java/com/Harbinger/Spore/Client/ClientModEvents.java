@@ -191,6 +191,7 @@ public class ClientModEvents {
         event.registerLayerDefinition(BairnModel.LAYER_LOCATION, BairnModel::createBodyLayer);
         event.registerLayerDefinition(GrakensenkerModel.LAYER_LOCATION, GrakensenkerModel::createBodyLayer);
         event.registerLayerDefinition(StahlmorderModel.LAYER_LOCATION, StahlmorderModel::createBodyLayer);
+        event.registerLayerDefinition(HivetumorModel.LAYER_LOCATION, HivetumorModel::createBodyLayer);
     }
     @SubscribeEvent
     public static void registerRenderers(final EntityRenderersEvent.RegisterRenderers event) {
@@ -276,6 +277,7 @@ public class ClientModEvents {
         event.registerEntityRenderer(Sentities.KRAKEN.get(), KrakenRenderer::new);
         event.registerEntityRenderer(Sentities.STALH.get(), StalhRenderer::new);
         event.registerEntityRenderer(Sentities.STAHL_ARM.get(), StahlArmRenderer::new);
+        event.registerEntityRenderer(Sentities.HIVETUMOR.get(), HiveTumorRenderer::new);
     }
     public static void renderBlockEntities(EntityRenderersEvent.RegisterRenderers event){
         event.registerBlockEntityRenderer(SblockEntities.OVERGROWN_SPAWNER.get(), new OvergrownSpawnerRenderer());
