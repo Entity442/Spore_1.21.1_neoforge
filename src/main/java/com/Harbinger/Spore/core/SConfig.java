@@ -393,6 +393,14 @@ public class SConfig {
         public final ModConfigSpec.ConfigValue<List<? extends String>> proto_sapient_target;
         public final ModConfigSpec.ConfigValue<List<? extends String>> proto_summonable_troops;
 
+        public final ModConfigSpec.ConfigValue<Double> htumor_hp;
+        public final ModConfigSpec.ConfigValue<Double> htumor_armor;
+        public final ModConfigSpec.ConfigValue<Double> htumor_damage;
+        public final ModConfigSpec.ConfigValue<Boolean> htumor_madness;
+        public final ModConfigSpec.ConfigValue<Integer> htumor_range;
+        public final ModConfigSpec.ConfigValue<List<? extends String>> htumor_sapient_target;
+        public final ModConfigSpec.ConfigValue<List<? extends String>> htumor_summonable_troops;
+
         public final ModConfigSpec.ConfigValue<Double> how_hp;
         public final ModConfigSpec.ConfigValue<Double> how_damage;
         public final ModConfigSpec.ConfigValue<Double> how_armor;
@@ -1040,6 +1048,20 @@ public class SConfig {
                             "recruits:recruit","recruits:bowman","recruits:recruit_shieldman", "recruits:nomad","recruits:horseman","roamers:roamer") , o -> o instanceof String);
             this.proto_summonable_troops = builder.defineList("Mobs that the proto can summon to defend itself",
                     Lists.newArrayList("spore:mound","spore:vigil","spore:umarmed","spore:usurper","spore:braurei","spore:verva","spore:delusioner") , o -> o instanceof String);
+
+            builder.pop();
+
+            builder.push("Hivetumor");
+            this.htumor_hp = builder.comment("Hivetumor 50").defineInRange("Sets Hivetumor Max health", 50, 1, Double.MAX_VALUE);
+            this.htumor_armor = builder.comment("Default 10").defineInRange("Sets Hivetumor Armor", 10, 1, Double.MAX_VALUE);
+            this.htumor_damage = builder.comment("Default 10").defineInRange("Sets Hivetumor Melee damage", 10, 1, Double.MAX_VALUE);
+            this.htumor_range = builder.comment("Default 128").defineInRange("Sets the linking range", 128, 1, Integer.MAX_VALUE);
+            this.htumor_madness = builder.comment("Default true").define("Should the Hivetumor spread madness?",true);
+            this.htumor_sapient_target = builder.defineList("Sentient Mobs targeted by the Hivetumor",
+                    Lists.newArrayList("minecraft:villager","minecraft:pillager","guardvillagers:guard","minecraft:evoker","minecraft:vindicator",
+                            "recruits:recruit","recruits:bowman","recruits:recruit_shieldman", "recruits:nomad","recruits:horseman","roamers:roamer") , o -> o instanceof String);
+            this.htumor_summonable_troops = builder.defineList("Mobs that the Hivetumor can summon to defend itself",
+                    Lists.newArrayList("spore:mound","spore:umarmed","spore:usurper","spore:braurei") , o -> o instanceof String);
 
             builder.pop();
 

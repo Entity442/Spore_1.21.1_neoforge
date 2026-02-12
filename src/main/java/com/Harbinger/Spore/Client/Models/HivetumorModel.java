@@ -6,6 +6,7 @@ import com.Harbinger.Spore.Sentities.Organoids.HiveTumor;
 import com.Harbinger.Spore.Spore;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
@@ -13,6 +14,8 @@ import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.phys.Vec3;
 
 public class HivetumorModel<T extends HiveTumor> extends EntityModel<T> implements TentacledModel{
 	// This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
@@ -305,13 +308,13 @@ public class HivetumorModel<T extends HiveTumor> extends EntityModel<T> implemen
 
 		PartDefinition BiomassClumps = MainBodyBase.addOrReplaceChild("BiomassClumps", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
 
-		PartDefinition BiomassClump1 = BiomassClumps.addOrReplaceChild("BiomassClump1", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
+		PartDefinition BiomassClump1 = BiomassClumps.addOrReplaceChild("BiomassClump1", CubeListBuilder.create(), PartPose.offset(9.0F, -34.0F, -10.0F));
 
-		PartDefinition BiomassTumor3_r1 = BiomassClump1.addOrReplaceChild("BiomassTumor3_r1", CubeListBuilder.create().texOffs(38, 58).addBox(-3.0F, -2.0F, -2.0F, 5.0F, 4.0F, 5.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(9.8F, -38.0F, -11.4F, -2.1209F, -0.3751F, 2.235F));
+		PartDefinition BiomassTumor3_r1 = BiomassClump1.addOrReplaceChild("BiomassTumor3_r1", CubeListBuilder.create().texOffs(38, 58).addBox(-3.0F, -2.0F, -2.0F, 5.0F, 4.0F, 5.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.8F, -4.0F, -1.4F, -2.1209F, -0.3751F, 2.235F));
 
-		PartDefinition BiomassTumor2_r1 = BiomassClump1.addOrReplaceChild("BiomassTumor2_r1", CubeListBuilder.create().texOffs(40, 59).addBox(-2.0F, -3.0F, -2.0F, 4.0F, 5.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(10.8F, -35.0F, -11.1F, 0.084F, 0.0741F, -0.465F));
+		PartDefinition BiomassTumor2_r1 = BiomassClump1.addOrReplaceChild("BiomassTumor2_r1", CubeListBuilder.create().texOffs(40, 59).addBox(-2.0F, -3.0F, -2.0F, 4.0F, 5.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(1.8F, -1.0F, -1.1F, 0.084F, 0.0741F, -0.465F));
 
-		PartDefinition BiomassTumor1_r1 = BiomassClump1.addOrReplaceChild("BiomassTumor1_r1", CubeListBuilder.create().texOffs(38, 58).addBox(-3.0F, -3.0F, -2.0F, 5.0F, 5.0F, 5.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(10.6F, -31.0F, -12.4F, 0.2132F, -0.0469F, 0.2132F));
+		PartDefinition BiomassTumor1_r1 = BiomassClump1.addOrReplaceChild("BiomassTumor1_r1", CubeListBuilder.create().texOffs(38, 58).addBox(-3.0F, -3.0F, -2.0F, 5.0F, 5.0F, 5.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(1.6F, 3.0F, -2.4F, 0.2132F, -0.0469F, 0.2132F));
 
 		PartDefinition BiomassClump2 = BiomassClumps.addOrReplaceChild("BiomassClump2", CubeListBuilder.create(), PartPose.offset(4.162F, -15.2294F, -16.6697F));
 
@@ -337,33 +340,33 @@ public class HivetumorModel<T extends HiveTumor> extends EntityModel<T> implemen
 
 		PartDefinition BiomassTumor11_r1 = BiomassClump4.addOrReplaceChild("BiomassTumor11_r1", CubeListBuilder.create().texOffs(40, 59).addBox(-2.0F, -3.0F, -2.0F, 4.0F, 5.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-1.6143F, 0.062F, -0.9256F, -0.22F, -0.1856F, 2.1313F));
 
-		PartDefinition BiomassClump5 = BiomassClumps.addOrReplaceChild("BiomassClump5", CubeListBuilder.create(), PartPose.offset(3.7143F, -41.262F, 7.1256F));
+		PartDefinition BiomassClump5 = BiomassClumps.addOrReplaceChild("BiomassClump5", CubeListBuilder.create(), PartPose.offset(6.7143F, -38.262F, 6.1256F));
 
-		PartDefinition BiomassTumor15_r1 = BiomassClump5.addOrReplaceChild("BiomassTumor15_r1", CubeListBuilder.create().texOffs(41, 59).addBox(-1.0F, -2.0F, -2.0F, 3.0F, 4.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(2.0857F, -0.238F, -1.2256F, 1.7116F, 0.7991F, 1.9719F));
+		PartDefinition BiomassTumor15_r1 = BiomassClump5.addOrReplaceChild("BiomassTumor15_r1", CubeListBuilder.create().texOffs(41, 59).addBox(-1.0F, -2.0F, -2.0F, 3.0F, 4.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-0.9143F, -3.238F, -0.2256F, 1.7116F, 0.7991F, 1.9719F));
 
-		PartDefinition BiomassTumor14_r1 = BiomassClump5.addOrReplaceChild("BiomassTumor14_r1", CubeListBuilder.create().texOffs(41, 59).addBox(-1.0F, -3.0F, -2.0F, 3.0F, 5.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0857F, 2.862F, -0.7256F, 0.8422F, 0.8727F, 0.9513F));
+		PartDefinition BiomassTumor14_r1 = BiomassClump5.addOrReplaceChild("BiomassTumor14_r1", CubeListBuilder.create().texOffs(41, 59).addBox(-1.0F, -3.0F, -2.0F, 3.0F, 5.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-2.9143F, -0.138F, 0.2744F, 0.8422F, 0.8727F, 0.9513F));
 
-		PartDefinition BiomassTumor13_r1 = BiomassClump5.addOrReplaceChild("BiomassTumor13_r1", CubeListBuilder.create().texOffs(40, 59).addBox(-2.0F, -3.0F, -2.0F, 4.0F, 5.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(1.9857F, 5.062F, -2.5256F, 0.3273F, 0.5491F, -0.0829F));
+		PartDefinition BiomassTumor13_r1 = BiomassClump5.addOrReplaceChild("BiomassTumor13_r1", CubeListBuilder.create().texOffs(40, 59).addBox(-2.0F, -3.0F, -2.0F, 4.0F, 5.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-1.0143F, 2.062F, -1.5256F, 0.3273F, 0.5491F, -0.0829F));
 
-		PartDefinition BiomassClump6 = BiomassClumps.addOrReplaceChild("BiomassClump6", CubeListBuilder.create(), PartPose.offset(10.7143F, -30.362F, 2.3256F));
+		PartDefinition BiomassClump6 = BiomassClumps.addOrReplaceChild("BiomassClump6", CubeListBuilder.create(), PartPose.offset(10.7143F, -27.362F, 0.3256F));
 
-		PartDefinition BiomassTumor18_r1 = BiomassClump6.addOrReplaceChild("BiomassTumor18_r1", CubeListBuilder.create().texOffs(41, 59).addBox(-1.0F, -2.0F, -2.0F, 3.0F, 4.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.1857F, 0.462F, -2.2256F, 1.6699F, 0.1489F, 1.8854F));
+		PartDefinition BiomassTumor18_r1 = BiomassClump6.addOrReplaceChild("BiomassTumor18_r1", CubeListBuilder.create().texOffs(41, 59).addBox(-1.0F, -2.0F, -2.0F, 3.0F, 4.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.1857F, -2.538F, -0.2256F, 1.6699F, 0.1489F, 1.8854F));
 
-		PartDefinition BiomassTumor17_r1 = BiomassClump6.addOrReplaceChild("BiomassTumor17_r1", CubeListBuilder.create().texOffs(41, 59).addBox(-1.0F, -3.0F, -2.0F, 3.0F, 5.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0857F, 3.862F, 0.2744F, 0.8422F, 0.8727F, 0.9513F));
+		PartDefinition BiomassTumor17_r1 = BiomassClump6.addOrReplaceChild("BiomassTumor17_r1", CubeListBuilder.create().texOffs(41, 59).addBox(-1.0F, -3.0F, -2.0F, 3.0F, 5.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0857F, 0.862F, 2.2744F, 0.8422F, 0.8727F, 0.9513F));
 
-		PartDefinition BiomassTumor16_r1 = BiomassClump6.addOrReplaceChild("BiomassTumor16_r1", CubeListBuilder.create().texOffs(32, 49).addBox(-2.0F, -3.0F, -2.0F, 4.0F, 5.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.9857F, 5.062F, -2.5256F, 0.3273F, 0.5491F, -0.0829F));
+		PartDefinition BiomassTumor16_r1 = BiomassClump6.addOrReplaceChild("BiomassTumor16_r1", CubeListBuilder.create().texOffs(32, 49).addBox(-2.0F, -3.0F, -2.0F, 4.0F, 5.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.9857F, 2.062F, -0.5256F, 0.3273F, 0.5491F, -0.0829F));
 
-		PartDefinition BiomassClump7 = BiomassClumps.addOrReplaceChild("BiomassClump7", CubeListBuilder.create(), PartPose.offset(0.0143F, -33.462F, 14.1256F));
+		PartDefinition BiomassClump7 = BiomassClumps.addOrReplaceChild("BiomassClump7", CubeListBuilder.create(), PartPose.offset(1.0143F, -33.462F, 12.1256F));
 
-		PartDefinition BiomassTumor20_r1 = BiomassClump7.addOrReplaceChild("BiomassTumor20_r1", CubeListBuilder.create().texOffs(42, 60).addBox(-1.0F, -1.0F, -2.0F, 3.0F, 3.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(1.0857F, -0.438F, -2.1256F, 0.6813F, -0.2838F, -1.4063F));
+		PartDefinition BiomassTumor20_r1 = BiomassClump7.addOrReplaceChild("BiomassTumor20_r1", CubeListBuilder.create().texOffs(42, 60).addBox(-1.0F, -1.0F, -2.0F, 3.0F, 3.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0857F, -0.438F, -0.1256F, 0.6813F, -0.2838F, -1.4063F));
 
-		PartDefinition BiomassTumor19_r1 = BiomassClump7.addOrReplaceChild("BiomassTumor19_r1", CubeListBuilder.create().texOffs(40, 59).addBox(-2.0F, -2.0F, -2.0F, 4.0F, 4.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(1.2857F, 1.562F, -1.9256F, -0.1647F, -0.236F, 1.8685F));
+		PartDefinition BiomassTumor19_r1 = BiomassClump7.addOrReplaceChild("BiomassTumor19_r1", CubeListBuilder.create().texOffs(40, 59).addBox(-2.0F, -2.0F, -2.0F, 4.0F, 4.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.2857F, 1.562F, 0.0744F, -0.1647F, -0.236F, 1.8685F));
 
-		PartDefinition BiomassClump8 = BiomassClumps.addOrReplaceChild("BiomassClump8", CubeListBuilder.create(), PartPose.offset(-18.9857F, -26.462F, 1.1256F));
+		PartDefinition BiomassClump8 = BiomassClumps.addOrReplaceChild("BiomassClump8", CubeListBuilder.create(), PartPose.offset(-13.9857F, -26.462F, 1.1256F));
 
-		PartDefinition BiomassTumor22_r1 = BiomassClump8.addOrReplaceChild("BiomassTumor22_r1", CubeListBuilder.create().texOffs(38, 58).addBox(-3.0F, -3.0F, -2.0F, 5.0F, 5.0F, 5.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(6.8857F, -1.238F, 0.9744F, 0.4596F, -0.5697F, -1.183F));
+		PartDefinition BiomassTumor22_r1 = BiomassClump8.addOrReplaceChild("BiomassTumor22_r1", CubeListBuilder.create().texOffs(38, 58).addBox(-3.0F, -3.0F, -2.0F, 5.0F, 5.0F, 5.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(1.8857F, -1.238F, 0.9744F, 0.4596F, -0.5697F, -1.183F));
 
-		PartDefinition BiomassTumor21_r1 = BiomassClump8.addOrReplaceChild("BiomassTumor21_r1", CubeListBuilder.create().texOffs(36, 57).addBox(-4.0F, -4.0F, -2.0F, 6.0F, 6.0F, 6.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(3.9857F, 2.462F, -2.2256F, -0.3384F, -0.631F, 1.948F));
+		PartDefinition BiomassTumor21_r1 = BiomassClump8.addOrReplaceChild("BiomassTumor21_r1", CubeListBuilder.create().texOffs(36, 57).addBox(-4.0F, -4.0F, -2.0F, 6.0F, 6.0F, 6.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-1.0143F, 2.462F, -2.2256F, -0.3384F, -0.631F, 1.948F));
 
 		PartDefinition Brains = MainBodyBase.addOrReplaceChild("Brains", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
 
@@ -542,7 +545,7 @@ public class HivetumorModel<T extends HiveTumor> extends EntityModel<T> implemen
 
 		PartDefinition StickBase_r1 = TumorStick.addOrReplaceChild("StickBase_r1", CubeListBuilder.create().texOffs(74, 195).addBox(-2.0F, -20.0F, -1.0F, 3.0F, 20.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.3155F, 0.3318F, 0.7863F));
 
-		PartDefinition StickEnd = TumorStick.addOrReplaceChild("StickEnd", CubeListBuilder.create(), PartPose.offsetAndRotation(22.7032F, -1.5104F, -3.6791F, 0.0F, -0.9599F, 0.0F));
+		PartDefinition StickEnd = TumorStick.addOrReplaceChild("StickEnd", CubeListBuilder.create(), PartPose.offsetAndRotation(22.7032F, -1.5104F, -3.6791F, 0.0F, -1.0036F, 0.0F));
 
 		PartDefinition StickEnd_r1 = StickEnd.addOrReplaceChild("StickEnd_r1", CubeListBuilder.create().texOffs(218, 259).addBox(-2.0F, -16.0F, -1.0F, 3.0F, 16.0F, 3.0F, new CubeDeformation(-0.25F)), PartPose.offsetAndRotation(-8.7032F, -14.2896F, 8.3791F, 0.4952F, -0.2277F, 2.4206F));
 
@@ -585,7 +588,7 @@ public class HivetumorModel<T extends HiveTumor> extends EntityModel<T> implemen
 
 		PartDefinition LowerCenterHead_r1 = LowerJaw.addOrReplaceChild("LowerCenterHead_r1", CubeListBuilder.create().texOffs(33, 222).addBox(-5.5F, -3.0F, -4.5F, 8.0F, 6.0F, 8.0F, new CubeDeformation(-0.2F)), PartPose.offsetAndRotation(0.0F, 0.0F, 0.6F, -0.1833F, 0.0F, 0.0087F));
 
-		PartDefinition BrokenCoolingSystem = HivetumorBody.addOrReplaceChild("BrokenCoolingSystem", CubeListBuilder.create(), PartPose.offsetAndRotation(-9.8441F, -9.0068F, 2.7558F, -0.0448F, 0.1954F, -0.5177F));
+		PartDefinition BrokenCoolingSystem = HivetumorBody.addOrReplaceChild("BrokenCoolingSystem", CubeListBuilder.create(), PartPose.offsetAndRotation(-9.8441F, -9.0068F, 2.7558F, -0.0448F, 0.2826F, -0.5177F));
 
 		PartDefinition LowerRidge_r1 = BrokenCoolingSystem.addOrReplaceChild("LowerRidge_r1", CubeListBuilder.create().texOffs(136, 225).addBox(-1.5F, -6.5F, -2.0F, 3.0F, 13.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-1.1129F, 17.3074F, -0.1671F, 0.0F, 0.0F, -0.48F));
 
@@ -611,53 +614,53 @@ public class HivetumorModel<T extends HiveTumor> extends EntityModel<T> implemen
 
 		PartDefinition Roots = HivetumorBody.addOrReplaceChild("Roots", CubeListBuilder.create(), PartPose.offset(14.1391F, 16.122F, 0.5F));
 
-		PartDefinition Root1 = Roots.addOrReplaceChild("Root1", CubeListBuilder.create(), PartPose.offset(5.479F, -50.5387F, -20.3395F));
+		PartDefinition Root1 = Roots.addOrReplaceChild("Root1", CubeListBuilder.create(), PartPose.offset(1.479F, -34.5387F, -11.3395F));
 
-		PartDefinition Root1Base_r1 = Root1.addOrReplaceChild("Root1Base_r1", CubeListBuilder.create().texOffs(273, 41).addBox(-1.0F, -7.0F, -1.0F, 2.0F, 9.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-3.7953F, 14.433F, 7.5287F, 0.2793F, -0.3665F, 0.0F));
+		PartDefinition Root1Base_r1 = Root1.addOrReplaceChild("Root1Base_r1", CubeListBuilder.create().texOffs(273, 41).addBox(-1.0F, -7.0F, -1.0F, 2.0F, 9.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.2047F, -1.567F, -1.4713F, 0.2793F, -0.3665F, 0.0F));
 
-		PartDefinition Root1Mid = Root1.addOrReplaceChild("Root1Mid", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
+		PartDefinition Root1Mid = Root1.addOrReplaceChild("Root1Mid", CubeListBuilder.create(), PartPose.offset(1.0F, -8.0F, -3.0F));
 
-		PartDefinition Root1MidPart_r1 = Root1Mid.addOrReplaceChild("Root1MidPart_r1", CubeListBuilder.create().texOffs(272, 128).addBox(-1.0F, -8.0F, -1.0F, 2.0F, 10.0F, 2.0F, new CubeDeformation(-0.2F)), PartPose.offsetAndRotation(-2.4816F, 6.8697F, 4.8142F, 0.7854F, -0.576F, 0.0F));
+		PartDefinition Root1MidPart_r1 = Root1Mid.addOrReplaceChild("Root1MidPart_r1", CubeListBuilder.create().texOffs(272, 128).addBox(-1.0F, -8.0F, -1.0F, 2.0F, 10.0F, 2.0F, new CubeDeformation(-0.2F)), PartPose.offsetAndRotation(0.5185F, -1.1303F, -1.1858F, 0.7854F, -0.576F, 0.0F));
 
-		PartDefinition Root1End = Root1Mid.addOrReplaceChild("Root1End", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
+		PartDefinition Root1End = Root1Mid.addOrReplaceChild("Root1End", CubeListBuilder.create(), PartPose.offset(3.5F, -7.0F, -5.75F));
 
-		PartDefinition Root1EndPart_r1 = Root1End.addOrReplaceChild("Root1EndPart_r1", CubeListBuilder.create().texOffs(37, 197).addBox(0.0F, -8.0F, 0.0F, 1.0F, 10.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, -0.384F, -0.6807F, 0.0F));
+		PartDefinition Root1EndPart_r1 = Root1End.addOrReplaceChild("Root1EndPart_r1", CubeListBuilder.create().texOffs(37, 197).addBox(0.0F, -8.0F, 0.0F, 1.0F, 10.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-0.5F, -1.0F, -0.25F, -0.384F, -0.6807F, 0.0F));
 
-		PartDefinition Root2 = Roots.addOrReplaceChild("Root2", CubeListBuilder.create(), PartPose.offset(24.479F, -15.5387F, -2.4395F));
+		PartDefinition Root2 = Roots.addOrReplaceChild("Root2", CubeListBuilder.create(), PartPose.offset(11.479F, -11.5387F, 5.0605F));
 
-		PartDefinition Root2Base_r1 = Root2.addOrReplaceChild("Root2Base_r1", CubeListBuilder.create().texOffs(272, 245).addBox(-1.0F, -7.0F, -1.0F, 2.0F, 9.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-13.0953F, 2.7331F, 6.7287F, 0.6458F, -0.0698F, 0.6807F));
+		PartDefinition Root2Base_r1 = Root2.addOrReplaceChild("Root2Base_r1", CubeListBuilder.create().texOffs(272, 245).addBox(-1.0F, -7.0F, -1.0F, 2.0F, 9.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-0.0953F, -1.2669F, -0.7713F, 0.6458F, -0.0698F, 0.6807F));
 
-		PartDefinition Root2Mid = Root2.addOrReplaceChild("Root2Mid", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
+		PartDefinition Root2Mid = Root2.addOrReplaceChild("Root2Mid", CubeListBuilder.create(), PartPose.offset(3.25F, -5.0F, -4.25F));
 
-		PartDefinition Root2MidPart_r1 = Root2Mid.addOrReplaceChild("Root2MidPart_r1", CubeListBuilder.create().texOffs(272, 115).addBox(-1.0F, -8.0F, -1.0F, 2.0F, 10.0F, 2.0F, new CubeDeformation(-0.2F)), PartPose.offsetAndRotation(-8.3816F, -0.9303F, 2.7142F, 0.2232F, -0.3654F, 1.5163F));
+		PartDefinition Root2MidPart_r1 = Root2Mid.addOrReplaceChild("Root2MidPart_r1", CubeListBuilder.create().texOffs(272, 115).addBox(-1.0F, -8.0F, -1.0F, 2.0F, 10.0F, 2.0F, new CubeDeformation(-0.2F)), PartPose.offsetAndRotation(1.3685F, 0.0697F, -0.5358F, 0.2232F, -0.3654F, 1.5163F));
 
-		PartDefinition Root2End = Root2Mid.addOrReplaceChild("Root2End", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
+		PartDefinition Root2End = Root2Mid.addOrReplaceChild("Root2End", CubeListBuilder.create(), PartPose.offset(9.0F, 0.25F, -2.5F));
 
-		PartDefinition Root2EndPart_r1 = Root2End.addOrReplaceChild("Root2EndPart_r1", CubeListBuilder.create().texOffs(37, 209).addBox(0.0F, -8.0F, 0.0F, 1.0F, 10.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.3853F, -0.0809F, 2.3758F));
+		PartDefinition Root2EndPart_r1 = Root2End.addOrReplaceChild("Root2EndPart_r1", CubeListBuilder.create().texOffs(37, 209).addBox(0.0F, -8.0F, 0.0F, 1.0F, 10.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.75F, 0.75F, -0.75F, 0.3853F, -0.0809F, 2.3758F));
 
-		PartDefinition Root3 = Roots.addOrReplaceChild("Root3", CubeListBuilder.create(), PartPose.offset(-0.321F, -36.6387F, 23.1605F));
+		PartDefinition Root3 = Roots.addOrReplaceChild("Root3", CubeListBuilder.create(), PartPose.offset(-5.321F, -25.6387F, 13.1605F));
 
-		PartDefinition Root3Base_r1 = Root3.addOrReplaceChild("Root3Base_r1", CubeListBuilder.create().texOffs(71, 273).addBox(-1.0F, -7.0F, -1.0F, 2.0F, 9.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-5.1953F, 11.233F, -10.3713F, -0.7918F, 0.1501F, 0.1466F));
+		PartDefinition Root3Base_r1 = Root3.addOrReplaceChild("Root3Base_r1", CubeListBuilder.create().texOffs(71, 273).addBox(-1.0F, -7.0F, -1.0F, 2.0F, 9.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-0.1953F, 0.233F, -0.3713F, -0.7918F, 0.1501F, 0.1466F));
 
-		PartDefinition Root3Mid = Root3.addOrReplaceChild("Root3Mid", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
+		PartDefinition Root3Mid = Root3.addOrReplaceChild("Root3Mid", CubeListBuilder.create(), PartPose.offset(1.0F, -4.0F, 4.0F));
 
-		PartDefinition Root3MidPart_r1 = Root3Mid.addOrReplaceChild("Root3MidPart_r1", CubeListBuilder.create().texOffs(215, 186).addBox(-1.0F, -8.0F, -1.0F, 2.0F, 10.0F, 2.0F, new CubeDeformation(-0.2F)), PartPose.offsetAndRotation(-3.0816F, 5.9697F, -4.7858F, -0.7761F, 0.1353F, 0.4682F));
+		PartDefinition Root3MidPart_r1 = Root3Mid.addOrReplaceChild("Root3MidPart_r1", CubeListBuilder.create().texOffs(215, 186).addBox(-1.0F, -8.0F, -1.0F, 2.0F, 10.0F, 2.0F, new CubeDeformation(-0.2F)), PartPose.offsetAndRotation(0.9185F, -1.0303F, 1.2142F, -0.7761F, 0.1353F, 0.4682F));
 
-		PartDefinition Root3End = Root3Mid.addOrReplaceChild("Root3End", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
+		PartDefinition Root3End = Root3Mid.addOrReplaceChild("Root3End", CubeListBuilder.create(), PartPose.offset(4.0F, -5.0F, 6.0F));
 
-		PartDefinition Root3EndPart_r1 = Root3End.addOrReplaceChild("Root3EndPart_r1", CubeListBuilder.create().texOffs(90, 172).addBox(0.0F, -8.0F, 0.0F, 1.0F, 10.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, -0.5238F, -0.5624F, 0.4901F));
+		PartDefinition Root3EndPart_r1 = Root3End.addOrReplaceChild("Root3EndPart_r1", CubeListBuilder.create().texOffs(90, 172).addBox(0.0F, -8.0F, 0.0F, 1.0F, 10.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -2.0F, 0.0F, -0.5238F, -0.5624F, 0.4901F));
 
-		PartDefinition Root4 = Roots.addOrReplaceChild("Root4", CubeListBuilder.create(), PartPose.offset(-28.221F, -40.7387F, 1.9605F));
+		PartDefinition Root4 = Roots.addOrReplaceChild("Root4", CubeListBuilder.create(), PartPose.offset(-17.971F, -38.7387F, 1.9605F));
 
-		PartDefinition Root4Base_r1 = Root4.addOrReplaceChild("Root4Base_r1", CubeListBuilder.create().texOffs(273, 29).addBox(-1.0F, -7.0F, -1.0F, 2.0F, 9.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(15.2047F, 6.733F, 0.4287F, 0.0F, 0.0F, -0.7854F));
+		PartDefinition Root4Base_r1 = Root4.addOrReplaceChild("Root4Base_r1", CubeListBuilder.create().texOffs(273, 29).addBox(-1.0F, -7.0F, -1.0F, 2.0F, 9.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(4.9547F, 4.733F, 0.4287F, 0.0F, 0.0F, -0.7854F));
 
-		PartDefinition Root4Mid = Root4.addOrReplaceChild("Root4Mid", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
+		PartDefinition Root4Mid = Root4.addOrReplaceChild("Root4Mid", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.25F));
 
-		PartDefinition Root4MidPart_r1 = Root4Mid.addOrReplaceChild("Root4MidPart_r1", CubeListBuilder.create().texOffs(34, 272).addBox(-1.0F, -8.0F, -1.0F, 2.0F, 10.0F, 2.0F, new CubeDeformation(-0.2F)), PartPose.offsetAndRotation(9.1185F, 1.9697F, 0.3142F, 0.0F, 0.0F, -1.4312F));
+		PartDefinition Root4MidPart_r1 = Root4Mid.addOrReplaceChild("Root4MidPart_r1", CubeListBuilder.create().texOffs(34, 272).addBox(-1.0F, -8.0F, -1.0F, 2.0F, 10.0F, 2.0F, new CubeDeformation(-0.2F)), PartPose.offsetAndRotation(-1.1315F, -0.0303F, 0.0642F, 0.0F, 0.0F, -1.4312F));
 
-		PartDefinition Root4End = Root4Mid.addOrReplaceChild("Root4End", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
+		PartDefinition Root4End = Root4Mid.addOrReplaceChild("Root4End", CubeListBuilder.create(), PartPose.offset(-8.75F, -1.0F, 0.25F));
 
-		PartDefinition Root4EndPart_r1 = Root4End.addOrReplaceChild("Root4EndPart_r1", CubeListBuilder.create().texOffs(86, 116).addBox(0.0F, -8.0F, 0.0F, 1.0F, 10.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, -0.733F));
+		PartDefinition Root4EndPart_r1 = Root4End.addOrReplaceChild("Root4EndPart_r1", CubeListBuilder.create().texOffs(86, 116).addBox(0.0F, -8.0F, 0.0F, 1.0F, 10.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-1.5F, -1.0F, -0.5F, 0.0F, 0.0F, -0.733F));
 
 		PartDefinition TumorBase = Hivetumor.addOrReplaceChild("TumorBase", CubeListBuilder.create(), PartPose.offset(-21.595F, -7.8134F, -14.8097F));
 
@@ -685,7 +688,7 @@ public class HivetumorModel<T extends HiveTumor> extends EntityModel<T> implemen
 
 		PartDefinition Tumor13_r1 = TumorGroup3.addOrReplaceChild("Tumor13_r1", CubeListBuilder.create().texOffs(151, 227).addBox(-3.5F, -3.5F, -3.5F, 7.0F, 7.0F, 7.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-8.9288F, 5.3793F, 1.9478F, -0.1987F, 0.4755F, -0.1473F));
 
-		PartDefinition Tumor12_r1 = TumorGroup3.addOrReplaceChild("Tumor12_r1", CubeListBuilder.create().texOffs(213, 96).addBox(-4.0F, -4.0F, -4.0F, 8.0F, 8.0F, 8.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-7.3212F, 6.427F, -4.995F, 0.0F, -0.5236F, -0.3491F));
+		PartDefinition Tumor12_r1 = TumorGroup3.addOrReplaceChild("Tumor12_r1", CubeListBuilder.create().texOffs(213, 96).addBox(-4.0F, -4.0F, -4.0F, 8.0F, 8.0F, 8.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-7.3212F, 6.427F, -4.9951F, 0.0F, -0.5236F, -0.3491F));
 
 		PartDefinition Tumor11_r1 = TumorGroup3.addOrReplaceChild("Tumor11_r1", CubeListBuilder.create().texOffs(163, 153).addBox(-5.5F, -5.5F, -5.5F, 11.0F, 11.0F, 11.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-1.7919F, 5.2986F, 3.0433F, -0.1801F, 0.3913F, -0.0164F));
 
@@ -788,7 +791,7 @@ public class HivetumorModel<T extends HiveTumor> extends EntityModel<T> implemen
 		PartDefinition Arm_r1 = T3Body1.addOrReplaceChild("Arm_r1", CubeListBuilder.create().texOffs(0, 301).addBox(-4.0953F, -1.6721F, -5.8679F, 4.0F, 8.0F, 4.0F, new CubeDeformation(0.0F))
 				.texOffs(0, 318).addBox(-4.5953F, -2.4221F, -1.8679F, 5.0F, 6.0F, 8.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(3.0953F, -8.0779F, -2.6321F, 0.0F, 0.0F, 0.3054F));
 
-		PartDefinition T3Body2 = T3Body1.addOrReplaceChild("T3Body2", CubeListBuilder.create().texOffs(21, 295).addBox(-2.0F, -6.0F, -4.0F, 4.0F, 6.0F, 7.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.9145F, -9.7651F, 0.0F, -0.1739F, 0.0151F, 0.6532F));
+		PartDefinition T3Body2 = T3Body1.addOrReplaceChild("T3Body2", CubeListBuilder.create().texOffs(21, 295).addBox(-2.0F, -6.0F, -4.0F, 4.0F, 6.0F, 7.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.9145F, -9.7651F, 0.0F, -0.1739F, -0.1594F, 0.6532F));
 
 		PartDefinition Arm_r2 = T3Body2.addOrReplaceChild("Arm_r2", CubeListBuilder.create().texOffs(0, 301).addBox(-1.6527F, -2.0304F, 0.0F, 4.0F, 8.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(1.0835F, -7.7973F, 3.5F, 0.0F, 0.0F, 0.1745F));
 
@@ -806,11 +809,11 @@ public class HivetumorModel<T extends HiveTumor> extends EntityModel<T> implemen
 
 		PartDefinition T3Body4Ribs = T3Body4.addOrReplaceChild("T3Body4Ribs", CubeListBuilder.create(), PartPose.offset(-0.479F, -0.8934F, -0.7121F));
 
-		PartDefinition T3Rib2 = T3Body4Ribs.addOrReplaceChild("T3Rib2", CubeListBuilder.create(), PartPose.offsetAndRotation(4.0F, 1.5F, 1.5F, -0.0305F, 0.1934F, 0.2385F));
+		PartDefinition T3Rib2 = T3Body4Ribs.addOrReplaceChild("T3Rib2", CubeListBuilder.create(), PartPose.offsetAndRotation(4.0F, 1.5F, 1.5F, -0.0742F, 0.1934F, 0.2385F));
 
 		PartDefinition Rib2Seg1_r1 = T3Rib2.addOrReplaceChild("Rib2Seg1_r1", CubeListBuilder.create().texOffs(0, 336).addBox(-1.0F, -1.5F, -1.0F, 2.0F, 9.0F, 2.0F, new CubeDeformation(-0.2F)), PartPose.offsetAndRotation(-0.5F, 1.0F, -1.5F, -0.5236F, 0.0F, 0.0F));
 
-		PartDefinition T3Rib3 = T3Body4Ribs.addOrReplaceChild("T3Rib3", CubeListBuilder.create(), PartPose.offsetAndRotation(-1.6906F, 3.2309F, -1.1039F, -0.2515F, 0.3533F, 0.0094F));
+		PartDefinition T3Rib3 = T3Body4Ribs.addOrReplaceChild("T3Rib3", CubeListBuilder.create(), PartPose.offsetAndRotation(-1.6906F, 3.2309F, -1.1039F, -0.3824F, 0.3533F, 0.0094F));
 
 		PartDefinition Rib3Seg1_r1 = T3Rib3.addOrReplaceChild("Rib3Seg1_r1", CubeListBuilder.create().texOffs(0, 340).addBox(-1.0F, -1.5F, -1.0F, 2.0F, 6.0F, 2.0F, new CubeDeformation(-0.2F)), PartPose.offsetAndRotation(0.2043F, -0.165F, -0.0699F, -0.5236F, 0.0F, 0.0F));
 
@@ -820,7 +823,7 @@ public class HivetumorModel<T extends HiveTumor> extends EntityModel<T> implemen
 
 		PartDefinition T3Rib3Seg3 = T3Rib3Seg2.addOrReplaceChild("T3Rib3Seg3", CubeListBuilder.create(), PartPose.offset(0.02F, 1.9986F, -6.092F));
 
-		PartDefinition T3Rib4 = T3Body4Ribs.addOrReplaceChild("T3Rib4", CubeListBuilder.create(), PartPose.offsetAndRotation(-0.898F, 2.5756F, 3.4406F, 0.4317F, -0.2241F, 0.0958F));
+		PartDefinition T3Rib4 = T3Body4Ribs.addOrReplaceChild("T3Rib4", CubeListBuilder.create(), PartPose.offsetAndRotation(-0.898F, 2.5756F, 3.4406F, 0.3881F, -0.2241F, 0.0958F));
 
 		PartDefinition Rib4Seg1_r1 = T3Rib4.addOrReplaceChild("Rib4Seg1_r1", CubeListBuilder.create().texOffs(0, 336).mirror().addBox(-1.0F, -1.5F, -1.0F, 2.0F, 7.0F, 2.0F, new CubeDeformation(-0.2F)).mirror(false), PartPose.offsetAndRotation(0.3155F, -0.4289F, -0.5503F, 0.5236F, 0.0F, 0.0F));
 
@@ -890,8 +893,67 @@ public class HivetumorModel<T extends HiveTumor> extends EntityModel<T> implemen
 		animateTentacleX(T3Rib5,tendril4Val);
 		animateTentacleX(T3Body4Head,tendril7Val);
 		animateTentacleY(BrokenCoolingSystem,tendril5Val);
-	}
+		animateTentacleZ(TumorStick,tendril3Val);
+		animateTentacleX(UpperJaw,mawValue);
+		animateTentacleX(LowerJaw,-mawValue);
+		AnimateEye(entity,Pupil);
+		animateTentacleX(Root1,tendril4Val);
+		animateTentacleX(Root1Mid,tendril4Val);
+		animateTentacleX(Root1End,tendril4Val);
+		animateTentacleY(Root2,tendril1Val);
+		animateTentacleY(Root2Mid,tendril1Val);
+		animateTentacleY(Root2End,tendril1Val);
+		animateTentacleZ(Root3,tendril3Val);
+		animateTentacleZ(Root3Mid,tendril3Val);
+		animateTentacleZ(Root3End,tendril3Val);
+		animateTentacleY(Root4,tendril3Val);
+		animateTentacleY(Root4Mid,tendril3Val);
+		animateTentacleY(Root4End,tendril3Val);
+		animateTentacleY(SearchingBody,tendril5Val);
+		animateTentacleX(Tongue,-mawValue);
+		animateTentacleX(Tongue2,-mawValue);
+		animateTentacleX(Tongue3,-mawValue);
+		animateTentacleY(ClawingMainBody,tendril6Val);
 
+		animateTumor(Brain1,tendril1Val);
+		animateTumor(Brain2,tendril4Val);
+		animateTumor(Brain3,tendril6Val);
+		animateTumor(Brain4,tendril1Val);
+		animateTumor(Brain5,tendril4Val);
+		animateTumor(Brain6,tendril6Val);
+		animateTumor(Brain7,tendril1Val);
+		animateTumor(Brain8,tendril4Val);
+		animateTumor(Brain9,tendril6Val);
+		animateTumor(Brain10,tendril1Val);
+
+		animateTumor(BiomassClump1,tendril1Val);
+		animateTumor(BiomassClump2,tendril2Val);
+		animateTumor(BiomassClump3,tendril3Val);
+		animateTumor(BiomassClump4,tendril4Val);
+		animateTumor(BiomassClump5,tendril5Val);
+		animateTumor(BiomassClump6,tendril6Val);
+		animateTumor(BiomassClump7,tendril7Val);
+		animateTumor(BiomassClump8,tendril1Val);
+	}
+	private void AnimateEye(Entity proto, ModelPart part){
+		Entity entity = Minecraft.getInstance().getCameraEntity();
+		if (entity != null) {
+			Vec3 vec3 = entity.getEyePosition(0.0F);
+			Vec3 vec31 = proto.getEyePosition(0.0F);
+			double d0 = vec3.y - vec31.y;
+			if (d0 > 0.0D) {
+				part.y = part.getInitialPose().y + 0.0F;
+			} else {
+				part.y = part.getInitialPose().y + 1.0F;
+			}
+
+			Vec3 vec32 = proto.getViewVector(0.0F);
+			vec32 = new Vec3(vec32.x, 0.0D, vec32.z);
+			Vec3 vec33 = (new Vec3(vec31.x - vec3.x, 0.0D, vec31.z - vec3.z)).normalize().yRot(((float)Math.PI / 2F));
+			double d1 = vec32.dot(vec33);
+			part.x = part.getInitialPose().x + Mth.sqrt((float)Math.abs(d1)) * 1.5F * (float)Math.signum(d1);
+		}
+	}
 	@Override
 	public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int alpha) {
 		Hivetumor.render(poseStack, vertexConsumer, packedLight, packedOverlay, alpha);

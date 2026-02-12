@@ -2,10 +2,13 @@ package com.Harbinger.Spore.Sentities.Organoids;
 
 import com.Harbinger.Spore.ExtremelySusThings.Utilities;
 import com.Harbinger.Spore.Sentities.AI.AOEMeleeAttackGoal;
+import com.Harbinger.Spore.Sentities.BaseEntities.Infected;
 import com.Harbinger.Spore.Sentities.BaseEntities.Organoid;
+import com.Harbinger.Spore.Sentities.FoliageSpread;
 import com.Harbinger.Spore.Sentities.VariantKeeper;
 import com.Harbinger.Spore.core.SConfig;
 import com.Harbinger.Spore.core.Seffects;
+import com.Harbinger.Spore.core.Sentities;
 import com.Harbinger.Spore.core.Ssounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -30,7 +33,7 @@ import net.neoforged.neoforge.event.EventHooks;
 
 import java.util.List;
 
-public class HiveTumor extends Organoid {
+public class HiveTumor extends Organoid implements FoliageSpread {
     private static final EntityDataAccessor<Integer> BIOMASS = SynchedEntityData.defineId(HiveTumor.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> GROWTH = SynchedEntityData.defineId(HiveTumor.class, EntityDataSerializers.INT);
     public HiveTumor(EntityType<? extends PathfinderMob> type, Level level) {
@@ -50,7 +53,6 @@ public class HiveTumor extends Organoid {
         }
     }
 
-
     @Override
     public void tick() {
         super.tick();
@@ -61,19 +63,35 @@ public class HiveTumor extends Organoid {
             griefBlocks();
             addBiomass(1);
             LivingEntity living = getTarget();
-            if (living != null && checkForOrganoids(living)){
+            if (living != null && checkForOrganoids(living) && entityData.get(BIOMASS) > 5){
                 summonMob(living.getOnPos());
             }
         }
         if (this.tickCount % 3000 == 0 && SConfig.SERVER.proto_madness.get()){
             this.giveMadness();
         }
+        if (!level().isClientSide){
+            if (this.tickCount % 6000 == 0 && SConfig.SERVER.mound_foliage.get()){
+                SpreadInfection(level(),SConfig.SERVER.mound_range_age4.get() * 2,getOnPos());
+            }
+            if (entityData.get(GROWTH) >= 21600 && level() instanceof ServerLevel serverLevel){
+                Proto proto = new Proto(Sentities.PROTO.get(), level());
+                proto.moveTo(this.getOnPos().getX(),this.getOnPos().getY(),this.getOnPos().getZ());
+                proto.finalizeSpawn(serverLevel,serverLevel.getCurrentDifficultyAt(this.getOnPos()),MobSpawnType.CONVERSION,null);
+                level().addFreshEntity(proto);
+                entityData.set(GROWTH,0);
+                discard();
+            }
+        }
+        if (this.tickCount % 1200 == 0){
+            scanForHosts();
+        }
     }
     protected void giveMadness(){
         AABB aabb = this.getBoundingBox().inflate(64);
         List<Entity> entities = this.level().getEntities(this, aabb);
         for (Entity entity : entities){
-            if (entity instanceof LivingEntity living && (SConfig.SERVER.proto_sapient_target.get().contains(living.getEncodeId()) || living instanceof Player)){
+            if (entity instanceof LivingEntity living && (SConfig.SERVER.htumor_sapient_target.get().contains(living.getEncodeId()) || living instanceof Player)){
                 living.addEffect(new MobEffectInstance(Seffects.MADNESS,3000,0,false,false));
             }
         }
@@ -105,9 +123,9 @@ public class HiveTumor extends Organoid {
         if (pos.equals(BlockPos.ZERO)) {
             return;
         }
-        int i = this.getRandom().nextInt(SConfig.SERVER.proto_summonable_troops.get().size());
+        int i = this.getRandom().nextInt(SConfig.SERVER.htumor_summonable_troops.get().size());
         BlockPos blockPos = pos;
-        EntityType<?> type = Utilities.tryToCreateEntity(ResourceLocation.parse(SConfig.SERVER.proto_summonable_troops.get().get(i)));
+        EntityType<?> type = Utilities.tryToCreateEntity(ResourceLocation.parse(SConfig.SERVER.htumor_summonable_troops.get().get(i)));
         Entity summoned = type.create(level());
         if (summoned instanceof Organoid organoid) {
             blockPos = organoid.isCloseCombatant() ? pos : BlockPos.containing(Utilities.generatePositionAway(new Vec3(pos.getX(),pos.getY(),pos.getZ()),random.nextInt(8,16)));
@@ -131,7 +149,7 @@ public class HiveTumor extends Organoid {
             keeper.setVariant(random.nextInt(keeper.amountOfMutations()));
         }
         if (checkTheGround(pos,summoned.level()) && summoned.position().distanceToSqr(0,0,0) > 10){
-            eatBiomass(2);
+            eatBiomass(5);
             level().addFreshEntity(summoned);
         }
     }
@@ -175,10 +193,10 @@ public class HiveTumor extends Organoid {
 
     public static AttributeSupplier.Builder createAttributes() {
         return Mob.createMobAttributes()
-                .add(Attributes.MAX_HEALTH, SConfig.SERVER.proto_hp.get() * SConfig.SERVER.global_health.get())
-                .add(Attributes.ARMOR, SConfig.SERVER.proto_armor.get() * SConfig.SERVER.global_armor.get())
-                .add(Attributes.ATTACK_DAMAGE, SConfig.SERVER.proto_damage.get() * SConfig.SERVER.global_damage.get())
-                .add(Attributes.FOLLOW_RANGE, 128)
+                .add(Attributes.MAX_HEALTH, SConfig.SERVER.htumor_hp.get() * SConfig.SERVER.global_health.get())
+                .add(Attributes.ARMOR, SConfig.SERVER.htumor_armor.get() * SConfig.SERVER.global_armor.get())
+                .add(Attributes.ATTACK_DAMAGE, SConfig.SERVER.htumor_damage.get() * SConfig.SERVER.global_damage.get())
+                .add(Attributes.FOLLOW_RANGE, 64)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 2);
     }
 
@@ -189,4 +207,41 @@ public class HiveTumor extends Organoid {
         this.goalSelector.addGoal(4,new RandomLookAroundGoal(this));
         super.registerGoals();
     }
+
+    @Override
+    public boolean hasLineOfSight(Entity entity) {
+        if (entity instanceof LivingEntity livingEntity){
+            if (livingEntity.hasEffect(Seffects.MARKER)){
+                return true;
+            }else if ((livingEntity instanceof Player || SConfig.SERVER.proto_sapient_target.get().contains(livingEntity.getEncodeId())) && !livingEntity.hasEffect(Seffects.SYMBIOSIS)){
+                return true;
+            }else if (livingEntity.getMaxHealth() > 30){
+                return true;
+            }
+            return super.hasLineOfSight(entity);
+        }
+        return super.hasLineOfSight(entity);
+    }
+    protected int calculateFallDamage(float p_149389_, float p_149390_) {
+        return super.calculateFallDamage(p_149389_, p_149390_) - 60;
+    }
+    public AABB seachbox(){
+        return this.getBoundingBox().inflate(SConfig.SERVER.htumor_range.get());
+    }
+    private void scanForHosts(){
+        List<Entity> entities = this.level().getEntities(this, seachbox() , EntitySelector.NO_CREATIVE_OR_SPECTATOR);
+        for (Entity en : entities) {
+            if (en instanceof Infected infected){
+                if (!infected.getLinked()){
+                    infected.setLinked(true);
+                }
+            }
+            if (en instanceof Mound mound){
+                if (!mound.getLinked()){
+                    mound.setLinked(true);
+                }
+            }
+        }
+    }
+
 }
