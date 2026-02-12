@@ -63,7 +63,7 @@ public class HiveTumor extends Organoid implements FoliageSpread {
             griefBlocks();
             addBiomass(1);
             LivingEntity living = getTarget();
-            if (living != null && checkForOrganoids(living) && entityData.get(BIOMASS) > 5){
+            if (living != null && checkForOrganoids(living) && entityData.get(BIOMASS) >= 10){
                 summonMob(living.getOnPos());
             }
         }
@@ -149,7 +149,7 @@ public class HiveTumor extends Organoid implements FoliageSpread {
             keeper.setVariant(random.nextInt(keeper.amountOfMutations()));
         }
         if (checkTheGround(pos,summoned.level()) && summoned.position().distanceToSqr(0,0,0) > 10){
-            eatBiomass(5);
+            eatBiomass(10);
             level().addFreshEntity(summoned);
         }
     }

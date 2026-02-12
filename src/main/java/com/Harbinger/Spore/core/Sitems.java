@@ -323,7 +323,7 @@ public class Sitems {
             () -> new SporeSpawnEgg(Sentities.PROTO,244208,SpawnEggType.ORGANOID));
 
     public  static final DeferredItem<Item> HIVE_SPAWNEGG = ITEMS.register("hive_spawnegg",
-            () -> new SporeSpawnEgg(Sentities.PROTO,321344,SpawnEggType.ORGANOID));
+            () -> new SporeSpawnEgg(Sentities.HIVETUMOR,321344,SpawnEggType.ORGANOID));
 
     public  static final DeferredItem<Item> WENDIGO_SPAWNEGG = ITEMS.register("wendigo_spawnegg",
             () -> new SporeSpawnEgg(Sentities.WENDIGO,-354345818,SpawnEggType.HYPER));
