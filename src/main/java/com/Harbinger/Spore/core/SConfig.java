@@ -623,7 +623,7 @@ public class SConfig {
             this.max_organoid_cap = builder.define("Maximum number of organoids",40);
             this.max_scent_cap = builder.define("Maximum number of scents",30);
             this.despawn_blacklist = builder.defineList("Mobs that will not be despawned by the system",
-                    Lists.newArrayList("spore:proto","spore:reconstructor","spore:vanguard","spore:gastgaber","spore:specter","spore:inf_construct","spore:scamper") , o -> o instanceof String);
+                    Lists.newArrayList("spore:proto","spore:reconstructor","spore:vanguard","spore:gastgaber","spore:specter","spore:inf_construct","spore:scamper","spore:hivetumor") , o -> o instanceof String);
             builder.pop();
             builder.push("Compatibilities");
             this.faw_target = builder.comment("Default true").define("Should there be a compatibility with FAW?",true);

@@ -61,11 +61,13 @@ public class HiveTumor extends Organoid implements FoliageSpread {
         }
         if (this.tickCount % 40 == 0){
             griefBlocks();
-            addBiomass(1);
             LivingEntity living = getTarget();
             if (living != null && checkForOrganoids(living) && entityData.get(BIOMASS) >= 10){
                 summonMob(living.getOnPos());
             }
+        }
+        if (this.tickCount % 200 == 0){
+            addBiomass(1);
         }
         if (this.tickCount % 3000 == 0 && SConfig.SERVER.proto_madness.get()){
             this.giveMadness();

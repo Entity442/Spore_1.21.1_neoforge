@@ -1,5 +1,6 @@
 package com.Harbinger.Spore.Sentities.BaseEntities;
 
+import com.Harbinger.Spore.Sentities.Organoids.HiveTumor;
 import com.Harbinger.Spore.Sentities.Organoids.Mound;
 import com.Harbinger.Spore.Sentities.Organoids.Proto;
 import com.Harbinger.Spore.Sentities.Projectile.AcidBall;
@@ -196,7 +197,7 @@ public class Organoid extends UtilityEntity implements Enemy {
     }
     public void regulateSpawns(){
         AABB aabb = this.getBoundingBox().inflate(6);
-        List<Entity> entityList = level().getEntities(this,aabb, entity -> {return entity instanceof Organoid && !(entity instanceof Proto || entity instanceof Mound);});
+        List<Entity> entityList = level().getEntities(this,aabb, entity -> {return entity instanceof Organoid && !(entity instanceof Proto || entity instanceof Mound || entity instanceof HiveTumor);});
         if (entityList.size() > 4){
             tickBurrowing();
         }
