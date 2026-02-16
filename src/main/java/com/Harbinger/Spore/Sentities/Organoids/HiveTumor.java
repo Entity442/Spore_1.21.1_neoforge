@@ -90,6 +90,7 @@ public class HiveTumor extends Organoid implements FoliageSpread {
                     for (Proto proto : protos){
                         if (proto.distanceTo(this) <= SConfig.SERVER.proto_range.get()){
                             proto.addBiomass(1000);
+                            this.discard();
                             break;
                         }
                     }
