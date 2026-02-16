@@ -941,8 +941,8 @@ public class HivetumorModel<T extends HiveTumor> extends EntityModel<T> implemen
 	private void AnimateEye(T proto, ModelPart part){
 		Entity entity = Minecraft.getInstance().getCameraEntity();
 		if (proto.isScared()){
-			part.xScale = 0.4f;
-			part.yScale = 0.4f;
+			part.xScale = 0.75f;
+			part.yScale = 0.75f;
 			part.zScale = 1.2f;
 		}else {
 			part.resetPose();
