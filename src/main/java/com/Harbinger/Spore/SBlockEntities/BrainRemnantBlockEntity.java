@@ -1,8 +1,10 @@
 package com.Harbinger.Spore.SBlockEntities;
 
 
+import com.Harbinger.Spore.Sentities.Organoids.HiveTumor;
 import com.Harbinger.Spore.Sentities.Utility.ArenaEntity;
 import com.Harbinger.Spore.core.SblockEntities;
+import com.Harbinger.Spore.core.Sblocks;
 import com.Harbinger.Spore.core.Sentities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
@@ -16,12 +18,14 @@ public class BrainRemnantBlockEntity extends BlockEntity implements AnimatedEnti
     public int ticks;
     public int ticksOnFire = 0;
     private boolean onFire = false;
+    private boolean active = false;
     public BrainRemnantBlockEntity(BlockPos pos, BlockState state) {
         super(SblockEntities.BRAIN_REMNANTS.get(), pos, state);
     }
-    public BrainRemnantBlockEntity(BlockPos pos, BlockState state,boolean value) {
+    public BrainRemnantBlockEntity(BlockPos pos, BlockState state,boolean value,boolean active) {
         super(SblockEntities.BRAIN_REMNANTS.get(), pos, state);
         setOnFire(value);
+        setActive(active);
     }
 
     @Override
@@ -33,12 +37,14 @@ public class BrainRemnantBlockEntity extends BlockEntity implements AnimatedEnti
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
         this.setOnFire(tag.getBoolean("fire"));
+        this.setActive(tag.getBoolean("active"));
     }
 
     @Override
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.saveAdditional(tag, registries);
         tag.putBoolean("fire",this.isOnFire());
+        tag.putBoolean("active",this.isActive());
     }
 
     public boolean isOnFire() {
@@ -47,16 +53,83 @@ public class BrainRemnantBlockEntity extends BlockEntity implements AnimatedEnti
     public void setOnFire(boolean time) {
         this.onFire = time;
     }
+    public boolean isActive() {
+        return active;
+    }
+    public void setActive(boolean time) {
+        this.active = time;
+    }
 
     public static <E extends BrainRemnantBlockEntity> void serverTick(Level level, BlockPos pos, BlockState state, E e) {
         tickOnFire(level,pos,state,e);
+        if (!level.isClientSide){
+            if (e.ticks <= 12000){
+                e.ticks++;
+            }else{
+                e.ticks = 0;
+                if (Math.random() < 0.05 && checkForBrains(level,pos) && e.isActive()){
+                    summonTumor(level,pos);
+                }
+            }
+        }
+    }
+    public static boolean checkForBrains(Level level, BlockPos pos) {
+        int count = 0;
+        int range = 4;
+
+        for (int x = -range; x <= range; x++) {
+            for (int y = -range; y <= range; y++) {
+                for (int z = -range; z <= range; z++) {
+
+                    BlockPos checkPos = pos.offset(x, y, z);
+                    BlockState state = level.getBlockState(checkPos);
+
+                    if (state.is(Sblocks.BRAIN_REMNANTS.get())) {
+                        count++;
+                        if (count > 2) {
+                            return true; // early exit
+                        }
+                    }
+                }
+            }
+        }
+
+        return false;
     }
 
+    public static void summonTumor(Level level, BlockPos pos) {
+        HiveTumor hiveTumor = new HiveTumor(Sentities.HIVETUMOR.get(), level);
+        hiveTumor.moveTo(pos.getX(), pos.getY(), pos.getZ());
+        hiveTumor.tickEmerging();
+
+        if (level.addFreshEntity(hiveTumor)) {
+            deleteNearbyBrains(level, pos, 4);
+        }
+    }
+    public static void deleteNearbyBrains(Level level, BlockPos pos, int range) {
+        for (int x = -range; x <= range; x++) {
+            for (int y = -range; y <= range; y++) {
+                for (int z = -range; z <= range; z++) {
+
+                    BlockPos checkPos = pos.offset(x, y, z);
+                    BlockState state = level.getBlockState(checkPos);
+
+                    if (state.is(Sblocks.BRAIN_REMNANTS.get())) {
+                        level.destroyBlock(checkPos, false);
+                    }
+                }
+            }
+        }
+    }
+
+
     public static <E extends BrainRemnantBlockEntity> void clientTick(Level level, BlockPos pos, BlockState state, E e) {
-        if (e.ticks <= 720){
-            e.ticks++;
-        }else{
-            e.ticks = 0;
+        if (level.isClientSide){
+            if (e.ticks <= 12000){
+                e.ticks++;
+            }else{
+                e.ticks = 0;
+            }
         }
     }
     public static void tickOnFire(Level level, BlockPos pos, BlockState state, BrainRemnantBlockEntity entity){
