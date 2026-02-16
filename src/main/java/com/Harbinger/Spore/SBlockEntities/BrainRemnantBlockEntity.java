@@ -100,7 +100,7 @@ public class BrainRemnantBlockEntity extends BlockEntity implements AnimatedEnti
 
     public static void summonTumor(Level level, BlockPos pos) {
         HiveTumor hiveTumor = new HiveTumor(Sentities.HIVETUMOR.get(), level);
-        hiveTumor.moveTo(pos.getX(), pos.getY(), pos.getZ());
+        hiveTumor.moveTo(pos.getX(), pos.getY()+1, pos.getZ());
         hiveTumor.tickEmerging();
 
         if (level.addFreshEntity(hiveTumor)) {
