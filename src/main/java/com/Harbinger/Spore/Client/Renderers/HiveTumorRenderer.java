@@ -22,6 +22,10 @@ public class HiveTumorRenderer extends OrganoidMobRenderer<HiveTumor, EntityMode
         this.addLayer(new HiveTumorMembraneLayer(this));
     }
 
+    @Override
+    protected boolean isShaking(HiveTumor type) {
+        return super.isShaking(type) || type.isScared();
+    }
 
     @Override
     public ResourceLocation getTextureLocation(HiveTumor proto) {

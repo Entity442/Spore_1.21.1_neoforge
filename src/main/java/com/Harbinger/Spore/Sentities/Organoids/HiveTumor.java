@@ -1,16 +1,17 @@
 package com.Harbinger.Spore.Sentities.Organoids;
 
+import com.Harbinger.Spore.ExtremelySusThings.SporeSavedData;
 import com.Harbinger.Spore.ExtremelySusThings.Utilities;
+import com.Harbinger.Spore.Sblocks.CDUBlock;
 import com.Harbinger.Spore.Sentities.AI.AOEMeleeAttackGoal;
 import com.Harbinger.Spore.Sentities.BaseEntities.Infected;
 import com.Harbinger.Spore.Sentities.BaseEntities.Organoid;
 import com.Harbinger.Spore.Sentities.FoliageSpread;
+import com.Harbinger.Spore.Sentities.Signal;
 import com.Harbinger.Spore.Sentities.VariantKeeper;
-import com.Harbinger.Spore.core.SConfig;
-import com.Harbinger.Spore.core.Seffects;
-import com.Harbinger.Spore.core.Sentities;
-import com.Harbinger.Spore.core.Ssounds;
+import com.Harbinger.Spore.core.*;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -23,6 +24,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -36,6 +38,7 @@ import java.util.List;
 public class HiveTumor extends Organoid implements FoliageSpread {
     private static final EntityDataAccessor<Integer> BIOMASS = SynchedEntityData.defineId(HiveTumor.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> GROWTH = SynchedEntityData.defineId(HiveTumor.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Integer> SCARED = SynchedEntityData.defineId(HiveTumor.class, EntityDataSerializers.INT);
     public HiveTumor(EntityType<? extends PathfinderMob> type, Level level) {
         super(type, level);
         setPersistenceRequired();
@@ -54,6 +57,11 @@ public class HiveTumor extends Organoid implements FoliageSpread {
     }
 
     @Override
+    public List<? extends String> getDropList() {
+        return SConfig.DATAGEN.tumor_loot.get();
+    }
+
+    @Override
     public void tick() {
         super.tick();
         if (this.tickCount % 20 == 0){
@@ -66,28 +74,52 @@ public class HiveTumor extends Organoid implements FoliageSpread {
                 summonMob(living.getOnPos());
             }
         }
-        if (this.tickCount % 200 == 0){
+        if (this.tickCount % 200 == 0 || (this.tickCount % 20 == 0 && isScared())){
             addBiomass(1);
         }
-        if (this.tickCount % 3000 == 0 && SConfig.SERVER.proto_madness.get()){
+        if (this.tickCount % 3000 == 0 && SConfig.SERVER.htumor_madness.get()){
             this.giveMadness();
         }
         if (!level().isClientSide){
             if (this.tickCount % 6000 == 0 && SConfig.SERVER.mound_foliage.get()){
                 SpreadInfection(level(),SConfig.SERVER.mound_range_age4.get() * 2,getOnPos());
             }
-            if (entityData.get(GROWTH) >= 21600 && level() instanceof ServerLevel serverLevel){
-                Proto proto = new Proto(Sentities.PROTO.get(), level());
-                proto.moveTo(this.getOnPos().getX(),this.getOnPos().getY(),this.getOnPos().getZ());
-                proto.finalizeSpawn(serverLevel,serverLevel.getCurrentDifficultyAt(this.getOnPos()),MobSpawnType.CONVERSION,null);
-                level().addFreshEntity(proto);
-                entityData.set(GROWTH,0);
-                discard();
+            if (entityData.get(GROWTH) >= SConfig.SERVER.htumor_timer.get() && level() instanceof ServerLevel serverLevel){
+                List<Proto> protos = SporeSavedData.getHiveminds(serverLevel);
+                if (!protos.isEmpty()) {
+                    for (Proto proto : protos){
+                        if (proto.distanceTo(this) <= SConfig.SERVER.proto_range.get()){
+                            proto.addBiomass(1000);
+                            break;
+                        }
+                    }
+                    SummonProto(serverLevel);
+                }
             }
         }
         if (this.tickCount % 1200 == 0){
             scanForHosts();
         }
+        if (isScared()){
+            this.entityData.set(SCARED,entityData.get(SCARED)-1);
+        }
+        if (isScared()){
+            for (int i = 0; i < 360; i++) {
+                if (i % 20 == 0) {
+                    level().addParticle(ParticleTypes.SMOKE,
+                            this.getX() , this.getY()  + 1.2, this.getZ() ,
+                            Math.cos(i) * 0.15d, random.nextDouble()-random.nextDouble(), Math.sin(i) * 0.15d);
+                }
+            }
+        }
+    }
+    public void SummonProto(ServerLevel serverLevel){
+        Proto proto = new Proto(Sentities.PROTO.get(), level());
+        proto.moveTo(this.getOnPos().getX(),this.getOnPos().getY(),this.getOnPos().getZ());
+        proto.finalizeSpawn(serverLevel,serverLevel.getCurrentDifficultyAt(this.getOnPos()),MobSpawnType.CONVERSION,null);
+        level().addFreshEntity(proto);
+        entityData.set(GROWTH,0);
+        discard();
     }
     protected void giveMadness(){
         AABB aabb = this.getBoundingBox().inflate(64);
@@ -155,12 +187,19 @@ public class HiveTumor extends Organoid implements FoliageSpread {
             level().addFreshEntity(summoned);
         }
     }
-
+    @Override
+    public void SpreadFoliageAndConvert(Level level, BlockState blockstate, BlockPos blockpos) {
+        FoliageSpread.super.SpreadFoliageAndConvert(level, blockstate, blockpos);
+        if (blockstate.getBlock().equals(Sblocks.CDU.get())){
+            CDUBlock.replaceCDU(blockpos,level);
+        }
+    }
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
         builder.define(BIOMASS,0);
         builder.define(GROWTH,0);
+        builder.define(SCARED,0);
     }
 
     @Override
@@ -168,13 +207,17 @@ public class HiveTumor extends Organoid implements FoliageSpread {
         super.readAdditionalSaveData(compound);
         compound.putInt("biomass",entityData.get(BIOMASS));
         compound.putInt("growth",entityData.get(GROWTH));
+        compound.putInt("scarred",entityData.get(SCARED));
     }
+    public boolean isScared(){return entityData.get(SCARED) > 0;}
 
+    public void setScaredTicks(int i){entityData.set(SCARED,i);}
     @Override
     public void addAdditionalSaveData(CompoundTag compound) {
         super.addAdditionalSaveData(compound);
         entityData.set(BIOMASS, compound.getInt("biomass"));
         entityData.set(GROWTH, compound.getInt("growth"));
+        entityData.set(SCARED, compound.getInt("scarred"));
     }
     protected SoundEvent getAmbientSound() {
         return Ssounds.PROTO_AMBIENT.value();
@@ -205,10 +248,74 @@ public class HiveTumor extends Organoid implements FoliageSpread {
     @Override
     protected void registerGoals() {
         this.addTargettingGoals();
+        this.goalSelector.addGoal(3, new HiveTumorPanicGoal(this));
         this.goalSelector.addGoal(4,new AOEMeleeAttackGoal(this,0,false,2.5,8, livingEntity -> {return TARGET_SELECTOR.test(livingEntity);}));
         this.goalSelector.addGoal(4,new RandomLookAroundGoal(this));
         super.registerGoals();
     }
+    private static class HiveTumorPanicGoal extends Goal {
+        private final HiveTumor hiveTumor;
+
+        private HiveTumorPanicGoal(HiveTumor hiveTumor) {
+            this.hiveTumor = hiveTumor;
+        }
+
+        @Override
+        public boolean canUse() {
+            if (hiveTumor.isScared()) return true;
+
+            LivingEntity living = hiveTumor.getTarget();
+
+            if (hiveTumor.getHealth() <= hiveTumor.getMaxHealth() / 2) {
+                return true;
+            }
+
+            if (living != null) {
+                return living.getMaxHealth() >= 100 || living.getArmorValue() >= 20;
+            }
+
+            return false;
+        }
+
+        @Override
+        public void start() {
+            hiveTumor.setScaredTicks(6000);
+        }
+
+        @Override
+        public void tick() {
+            super.tick();
+            if (hiveTumor.tickCount % 40 == 0){
+                Targeting();
+            }
+        }
+
+        @Override
+        public boolean canContinueToUse() {
+            return hiveTumor.isScared();
+        }
+
+        private void Targeting() {
+            LivingEntity target = hiveTumor.getTarget();
+            if (target == null || !target.isAlive()) return;
+
+            AABB boundingBox = hiveTumor.getBoundingBox().inflate(128);
+            List<Entity> entities = hiveTumor.level().getEntities(
+                    hiveTumor,
+                    boundingBox,
+                    EntitySelector.NO_CREATIVE_OR_SPECTATOR
+            );
+
+            for (Entity entity : entities) {
+                if (entity instanceof Infected infected) {
+                    if (infected.getTarget() == null && !target.isInvulnerable()) {
+                        infected.setTarget(target);
+                    }
+                }
+            }
+        }
+    }
+
 
     @Override
     public boolean hasLineOfSight(Entity entity) {

@@ -54,7 +54,7 @@ public class Organoid extends UtilityEntity implements Enemy {
                 this.tickBurrowing();
             }
         }
-        if (tickCount % 200 == 0 && !(this instanceof Proto || this instanceof Mound)){
+        if (tickCount % 200 == 0 && !(this instanceof Proto || this instanceof Mound  || this instanceof HiveTumor)){
             regulateSpawns();
         }
     }

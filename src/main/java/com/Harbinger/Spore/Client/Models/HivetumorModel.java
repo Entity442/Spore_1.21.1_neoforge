@@ -860,6 +860,9 @@ public class HivetumorModel<T extends HiveTumor> extends EntityModel<T> implemen
 
 	@Override
 	public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+		if (entity.isScared()){
+			ageInTicks = ageInTicks * 1.2f;
+		}
 		float tendril1Val = Mth.cos(ageInTicks/7)/6;
 		float tendril2Val = Mth.sin(ageInTicks/5)/6;
 		float tendril3Val = -Mth.cos(ageInTicks/5)/6;
@@ -935,8 +938,15 @@ public class HivetumorModel<T extends HiveTumor> extends EntityModel<T> implemen
 		animateTumor(BiomassClump7,tendril7Val);
 		animateTumor(BiomassClump8,tendril1Val);
 	}
-	private void AnimateEye(Entity proto, ModelPart part){
+	private void AnimateEye(T proto, ModelPart part){
 		Entity entity = Minecraft.getInstance().getCameraEntity();
+		if (proto.isScared()){
+			part.xScale = 0.4f;
+			part.yScale = 0.4f;
+			part.zScale = 1.2f;
+		}else {
+			part.resetPose();
+		}
 		if (entity != null) {
 			Vec3 vec3 = entity.getEyePosition(0.0F);
 			Vec3 vec31 = proto.getEyePosition(0.0F);
