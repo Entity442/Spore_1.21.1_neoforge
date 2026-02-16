@@ -108,7 +108,7 @@ public class HiveTumor extends Organoid implements FoliageSpread {
                 if (i % 20 == 0) {
                     level().addParticle(ParticleTypes.SMOKE,
                             this.getX() , this.getY()  + 1.2, this.getZ() ,
-                            Math.cos(i) * 0.15d, random.nextDouble()-random.nextDouble(), Math.sin(i) * 0.15d);
+                            Math.cos(i) * 0.15d, (random.nextDouble()-random.nextDouble()) * 0.3d, Math.sin(i) * 0.15d);
                 }
             }
         }

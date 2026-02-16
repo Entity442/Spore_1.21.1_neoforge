@@ -6,10 +6,15 @@ import com.Harbinger.Spore.Sentities.Utility.ArenaEntity;
 import com.Harbinger.Spore.core.SblockEntities;
 import com.Harbinger.Spore.core.Sblocks;
 import com.Harbinger.Spore.core.Sentities;
+import com.Harbinger.Spore.core.Ssounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -64,7 +69,7 @@ public class BrainRemnantBlockEntity extends BlockEntity implements AnimatedEnti
     public static <E extends BrainRemnantBlockEntity> void serverTick(Level level, BlockPos pos, BlockState state, E e) {
         tickOnFire(level,pos,state,e);
         if (!level.isClientSide){
-            if (e.ticksActivation <= 200){
+            if (e.ticksActivation <= 1200){
                 e.ticksActivation++;
             }else{
                 e.ticksActivation = 0;
@@ -102,6 +107,12 @@ public class BrainRemnantBlockEntity extends BlockEntity implements AnimatedEnti
         HiveTumor hiveTumor = new HiveTumor(Sentities.HIVETUMOR.get(), level);
         hiveTumor.moveTo(pos.getX(), pos.getY()+1, pos.getZ());
         hiveTumor.tickEmerging();
+        MinecraftServer server = level.getServer();
+        if (server != null){
+            for(ServerPlayer player : server.getPlayerList().getPlayers()){
+                player.displayClientMessage(Component.translatable("tumor_summon_message"), false);
+            }
+        }
 
         if (level.addFreshEntity(hiveTumor)) {
             deleteNearbyBrains(level, pos, 8);
