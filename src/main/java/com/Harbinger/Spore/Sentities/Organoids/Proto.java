@@ -566,9 +566,10 @@ public class Proto extends Organoid implements CasingGenerator, FoliageSpread, C
                     level().setBlock(pos.above(), Sblocks.ROOTED_BIOMASS.get().defaultBlockState(), 2);
                 }
                 if (Math.random() < 0.15) {
-                    BlockState state = Sblocks.BRAIN_REMNANTS.get().defaultBlockState();
-                    state.setValue(BrainRemnants.OCCUPIED,true);
-                    level().setBlock(pos,state, 2);
+                    BlockState state = Sblocks.BRAIN_REMNANTS.get()
+                            .defaultBlockState()
+                            .setValue(BrainRemnants.OCCUPIED, true);
+                    level().setBlock(pos, state, 2);
                 }
             }
         }

@@ -16,6 +16,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public class BrainRemnantBlockEntity extends BlockEntity implements AnimatedEntity{
     public int ticks;
+    public int ticksActivation;
     public int ticksOnFire = 0;
     private boolean onFire = false;
     private boolean active = false;
@@ -63,10 +64,10 @@ public class BrainRemnantBlockEntity extends BlockEntity implements AnimatedEnti
     public static <E extends BrainRemnantBlockEntity> void serverTick(Level level, BlockPos pos, BlockState state, E e) {
         tickOnFire(level,pos,state,e);
         if (!level.isClientSide){
-            if (e.ticks <= 12000){
-                e.ticks++;
+            if (e.ticksActivation <= 200){
+                e.ticksActivation++;
             }else{
-                e.ticks = 0;
+                e.ticksActivation = 0;
                 if (Math.random() < 0.05 && checkForBrains(level,pos) && e.isActive()){
                     summonTumor(level,pos);
                 }
@@ -75,7 +76,7 @@ public class BrainRemnantBlockEntity extends BlockEntity implements AnimatedEnti
     }
     public static boolean checkForBrains(Level level, BlockPos pos) {
         int count = 0;
-        int range = 4;
+        int range = 8;
 
         for (int x = -range; x <= range; x++) {
             for (int y = -range; y <= range; y++) {
@@ -103,7 +104,7 @@ public class BrainRemnantBlockEntity extends BlockEntity implements AnimatedEnti
         hiveTumor.tickEmerging();
 
         if (level.addFreshEntity(hiveTumor)) {
-            deleteNearbyBrains(level, pos, 4);
+            deleteNearbyBrains(level, pos, 8);
         }
     }
     public static void deleteNearbyBrains(Level level, BlockPos pos, int range) {
