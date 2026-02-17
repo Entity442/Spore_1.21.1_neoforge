@@ -221,7 +221,7 @@ public class HiveTumor extends Organoid implements FoliageSpread {
         entityData.set(SCARED, compound.getInt("scarred"));
     }
     protected SoundEvent getAmbientSound() {
-        return Ssounds.PROTO_AMBIENT.value();
+        return Ssounds.TUMOR_AMBIENT.value();
     }
 
     protected SoundEvent getDeathSound() {

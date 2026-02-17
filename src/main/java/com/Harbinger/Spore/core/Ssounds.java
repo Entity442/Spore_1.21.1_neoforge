@@ -316,6 +316,10 @@ public class Ssounds {
 
     public static final Holder<SoundEvent> PHAYRES_SCREECH = soundRegistry("phayres_screech");
 
+    public static final Holder<SoundEvent> TUMOR_SPAWN = soundRegistry("tumor_spawn");
+
+    public static final Holder<SoundEvent> TUMOR_AMBIENT = soundRegistry("tumor_ambient");
+
     private Ssounds() {
     }
 
