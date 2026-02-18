@@ -602,6 +602,8 @@ public class Sitems {
     public static final DeferredItem<Item> INFESTED_CLAY = block(Sblocks.INFESTED_CLAY);
     public static final DeferredItem<Item> INFESTED_COBBLESTONE = block(Sblocks.INFESTED_COBBLESTONE);
     public static final DeferredItem<Item> INFESTED_COBBLED_DEEPSLATE = block(Sblocks.INFESTED_COBBLED_DEEPSLATE);
+    public static final DeferredItem<Item> INFESTED_STONE_BRICKS = block(Sblocks.INFESTED_STONE_BRICKS);
+    public static final DeferredItem<Item> INFESTED_BRICKS = block(Sblocks.INFESTED_BRICKS);
     public static final DeferredItem<Item> INFESTED_LABORATORY_BLOCK = block(Sblocks.INFESTED_LABORATORY_BLOCK);
     public static final DeferredItem<Item> INFESTED_LABORATORY_BLOCK1 = block(Sblocks.INFESTED_LABORATORY_BLOCK1);
     public static final DeferredItem<Item> INFESTED_LABORATORY_BLOCK2 = block(Sblocks.INFESTED_LABORATORY_BLOCK2);

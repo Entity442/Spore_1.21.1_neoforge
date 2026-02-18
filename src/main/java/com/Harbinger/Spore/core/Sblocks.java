@@ -77,6 +77,8 @@ public class Sblocks {
     public static final DeferredBlock<Block> INFESTED_CLAY = BLOCKS.register("infested_clay", () -> new SelectableBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.CLAY)));
     public static final DeferredBlock<Block> INFESTED_COBBLESTONE = BLOCKS.register("infested_cobblestone", () -> new SelectableBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.COBBLESTONE)));
     public static final DeferredBlock<Block> INFESTED_COBBLED_DEEPSLATE = BLOCKS.register("infested_cobbled_deepslate", () -> new SelectableBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.COBBLED_DEEPSLATE)));
+    public static final DeferredBlock<Block> INFESTED_STONE_BRICKS = BLOCKS.register("infested_stone_bricks", () -> new SelectableBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.STONE_BRICKS)));
+    public static final DeferredBlock<Block> INFESTED_BRICKS = BLOCKS.register("infested_bricks", () -> new SelectableBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.BRICKS)));
     public static final DeferredBlock<Block> INFESTED_LABORATORY_BLOCK = BLOCKS.register("infested_laboratory_block", () -> new SelectableBlock(BlockBehaviour.Properties.of().sound(SoundType.STONE).strength(3f, 10f)));
     public static final DeferredBlock<Block> INFESTED_LABORATORY_BLOCK1 = BLOCKS.register("infested_laboratory_block1", () -> new SelectableBlock(BlockBehaviour.Properties.of().sound(SoundType.STONE).strength(3f, 10f)));
     public static final DeferredBlock<Block> INFESTED_LABORATORY_BLOCK2 = BLOCKS.register("infested_laboratory_block2", () -> new SelectableBlock(BlockBehaviour.Properties.of().sound(SoundType.STONE).strength(3f, 10f)));
