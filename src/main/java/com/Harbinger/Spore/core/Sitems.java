@@ -574,6 +574,8 @@ public class Sitems {
     public static final DeferredItem<Item> ROTTEN_SCRAPS = block(Sblocks.ROTTEN_SCRAPS);
     public static final DeferredItem<Item> ROTTEN_BRANCH = block(Sblocks.ROTTEN_BRANCH);
     public static final DeferredItem<Item> ROTTEN_BUSH = block(Sblocks.ROTTEN_BUSH);
+    public static final DeferredItem<Item> ROTTEN_GRASS = block(Sblocks.ROTTEN_GRASS);
+    public static final DeferredItem<Item> ROTTEN_FERN = block(Sblocks.ROTTEN_FERN);
     public static final DeferredItem<Item> ROTTEN_CROPS = block(Sblocks.ROTTEN_CROPS);
     public static final DeferredItem<Item> ROOTED_BIOMASS = block(Sblocks.ROOTED_BIOMASS);
     public static final DeferredItem<Item> BIOMASS_BLOCK = block(Sblocks.BIOMASS_BLOCK);

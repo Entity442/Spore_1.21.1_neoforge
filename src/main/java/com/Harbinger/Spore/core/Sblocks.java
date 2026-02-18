@@ -116,22 +116,9 @@ public class Sblocks {
     public static final DeferredBlock<Block> ROTTEN_SLAB = BLOCKS.register("rotten_slab", () -> new SlabBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS).sound(SoundType.WOOD).ignitedByLava()));
     public static final DeferredBlock<Block> ROTTEN_SCRAPS = BLOCKS.register("rotten_scraps", () -> new WoodenScraps(WoodenScraps.defaultProperties));
     public static final DeferredBlock<Block> ROTTEN_BRANCH = BLOCKS.register("rotten_branch", Branch::new);
-    public static final DeferredBlock<Block> ROTTEN_BUSH = BLOCKS.register("rotten_bush", () -> new RottenBush(){
-        @Override
-        public boolean isFlammable(BlockState state, BlockGetter world, BlockPos pos, Direction face) {
-            return true;
-        }
-
-        @Override
-        public int getFlammability(BlockState state, BlockGetter world, BlockPos pos, Direction face) {
-            return 10;
-        }
-
-        @Override
-        public int getFireSpreadSpeed(BlockState state, BlockGetter world, BlockPos pos, Direction face) {
-            return 15;
-        }
-    });
+    public static final DeferredBlock<Block> ROTTEN_BUSH = BLOCKS.register("rotten_bush", RottenBush::new);
+    public static final DeferredBlock<Block> ROTTEN_GRASS = BLOCKS.register("rotten_grass", RottenBush::new);
+    public static final DeferredBlock<Block> ROTTEN_FERN = BLOCKS.register("rotten_fern", RottenBush::new);
     public static final DeferredBlock<Block> ROTTEN_CROPS = BLOCKS.register("rotten_crops", FungalCrops::new);
     public static final DeferredBlock<Block> BIOMASS_LUMP = BLOCKS.register("biomass_lump", BiomassLump::new);
     public static final DeferredBlock<Block> HIVE_SPAWN = BLOCKS.register("hive_spawn", () -> new HiveSpawn(HiveSpawn.defaultProperties));
