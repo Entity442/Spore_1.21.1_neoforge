@@ -102,7 +102,11 @@ public class Sblocks {
     public static final DeferredBlock<Block> CRUSTED_BILE = BLOCKS.register("crusted_bile", CrustedBile::new);
 
     public static final DeferredBlock<Block> REMAINS = BLOCKS.register("remains", Remains::new);
+    public static final DeferredBlock<Block> WALL_REMAINS = BLOCKS.register("wall_remains", WallRemainsBlock::new);
     public static final DeferredBlock<Block> FROZEN_REMAINS = BLOCKS.register("frozen_remains", FrozenRemains::new);
+    public static final DeferredBlock<Block> CEREBRUM_BLOCK = BLOCKS.register("cerebrum_block", Cerebrum::new);
+    public static final DeferredBlock<Block> DROWNED_LUMP = BLOCKS.register("drowned_lump", DrownedLump::new);
+    public static final DeferredBlock<Block> BILE_LUMP = BLOCKS.register("bile_lump", BileLump::new);
 
     public static final DeferredBlock<Block> ROTTEN_LOG = BLOCKS.register("rotten_log", () -> new FlamableRotatingBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_LOG).sound(SoundType.WOOD)));
     public static final DeferredBlock<Block> ROTTEN_PLANKS = BLOCKS.register("rotten_planks", () -> new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS).sound(SoundType.WOOD).ignitedByLava()));

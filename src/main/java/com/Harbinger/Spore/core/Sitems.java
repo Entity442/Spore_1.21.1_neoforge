@@ -61,7 +61,7 @@ public class Sitems {
     public  static final DeferredItem<Item> NERVES = ITEMS.register("nerves",
             () -> new BaseItem( new Item.Properties()));
     public  static final DeferredItem<Item> CEREBRUM = ITEMS.register("cerebrum",
-            () -> new OrganItem("spore.scanner.organ.cerebrum","spore:anatomy_act_6"));
+            () -> new CerebrumItem("spore.scanner.organ.cerebrum","spore:anatomy_act_6"));
     public  static final DeferredItem<Item> SPINE = ITEMS.register("spine",
             () -> new BaseItem( new Item.Properties()));
     public  static final DeferredItem<Item> ARMOR_PLATE = ITEMS.register("armor_plate",
@@ -611,6 +611,9 @@ public class Sitems {
     public static final DeferredItem<Item> OUTPOST_WATCHER = block(Sblocks.OUTPOST_WATCHER);
 
     public static final DeferredItem<Item> REMAINS = block(Sblocks.REMAINS);
+    public static final DeferredItem<Item> WALL_REMAINS = block(Sblocks.WALL_REMAINS);
     public static final DeferredItem<Item> BIOMASS_LUMP = block(Sblocks.BIOMASS_LUMP);
+    public static final DeferredItem<Item> DROWNED_LUMP = block(Sblocks.DROWNED_LUMP);
+    public static final DeferredItem<Item> BILE_LUMP = block(Sblocks.BILE_LUMP);
     public static final DeferredItem<Item> HIVE_SPAWN = block(Sblocks.HIVE_SPAWN);
 }
