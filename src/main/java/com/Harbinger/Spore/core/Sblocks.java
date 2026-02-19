@@ -107,6 +107,9 @@ public class Sblocks {
     public static final DeferredBlock<Block> WALL_REMAINS = BLOCKS.register("wall_remains", WallRemainsBlock::new);
     public static final DeferredBlock<Block> FROZEN_REMAINS = BLOCKS.register("frozen_remains", FrozenRemains::new);
     public static final DeferredBlock<Block> CEREBRUM_BLOCK = BLOCKS.register("cerebrum_block", Cerebrum::new);
+    public static final DeferredBlock<Block> INNARDS_BLOCK = BLOCKS.register("innards_block", Cerebrum::new);
+    public static final DeferredBlock<Block> HEART_BLOCK = BLOCKS.register("heart_block", Cerebrum::new);
+    public static final DeferredBlock<Block> BRAIO_BLOCK = BLOCKS.register("braio_block", Cerebrum::new);
     public static final DeferredBlock<Block> DROWNED_LUMP = BLOCKS.register("drowned_lump", DrownedLump::new);
     public static final DeferredBlock<Block> BILE_LUMP = BLOCKS.register("bile_lump", BileLump::new);
 

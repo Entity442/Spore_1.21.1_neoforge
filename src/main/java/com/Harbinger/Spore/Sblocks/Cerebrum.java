@@ -1,12 +1,15 @@
 package com.Harbinger.Spore.Sblocks;
 
+import com.Harbinger.Spore.core.Sblocks;
 import com.Harbinger.Spore.core.Sitems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
@@ -22,7 +25,6 @@ import javax.annotation.Nullable;
 
 public class Cerebrum extends Block {
     public static final DirectionProperty FACING = DirectionProperty.create("facing", Direction.Plane.HORIZONTAL);
-
     public Cerebrum() {
         super(Properties.of().strength(0.0f).sound(SoundType.SLIME_BLOCK));
         this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
@@ -47,6 +49,18 @@ public class Cerebrum extends Block {
 
     @Override
     public ItemStack getCloneItemStack(BlockState state, HitResult target, LevelReader level, BlockPos pos, Player player) {
-        return new ItemStack(Sitems.CEREBRUM.get());
+        if(state.is(Sblocks.CEREBRUM_BLOCK.get())){
+            return new ItemStack(Sitems.CEREBRUM.get());
+        }
+        if(state.is(Sblocks.INNARDS_BLOCK.get())){
+            return new ItemStack(Sitems.INNARDS.get());
+        }
+        if(state.is(Sblocks.HEART_BLOCK.get())){
+            return new ItemStack(Sitems.MUTATED_HEART.get());
+        }
+        if(state.is(Sblocks.BRAIO_BLOCK.get())){
+            return new ItemStack(Sitems.ALVEOLIC_SACK.get());
+        }
+        return ItemStack.EMPTY;
     }
 }

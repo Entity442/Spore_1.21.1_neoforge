@@ -1,6 +1,7 @@
 package com.Harbinger.Spore.Sitems;
 
 import com.Harbinger.Spore.core.SConfig;
+import com.Harbinger.Spore.core.Sblocks;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
@@ -10,12 +11,14 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 
-public class Innards extends BaseItem {
-    public Innards(Properties properties) {
-        super(properties);
+public class Innards extends CerebrumItem {
+
+
+    public Innards() {
+        super(null, null, Sblocks.INNARDS_BLOCK.get().defaultBlockState());
     }
-
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
