@@ -22,6 +22,12 @@ public class Starvation extends MobEffect implements SporeEffectsHandler{
     }
 
     @Override
+    public boolean applyEffectTick(LivingEntity livingEntity, int amplifier) {
+        triggerEffects(livingEntity,amplifier);
+        return super.applyEffectTick(livingEntity, amplifier);
+    }
+
+    @Override
     public void triggerEffects(LivingEntity entity, int intensity) {
         if (entity instanceof Infected){
             if (this == Seffects.STARVATION.value()) {

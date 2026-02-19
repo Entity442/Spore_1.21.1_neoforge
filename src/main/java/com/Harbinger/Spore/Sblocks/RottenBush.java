@@ -52,7 +52,9 @@ public class RottenBush extends GenericFoliageBlock{
         if (state.getValue(AGE) < MAX_AGE && Math.random() < 0.3){
             serverLevel.setBlock(pos, getStateForAge(state.getValue(AGE)+1), 2);
         }else {
-            serverLevel.removeBlock(pos,false);
+            if (state.getValue(AGE) >= MAX_AGE){
+                serverLevel.removeBlock(pos,false);
+            }
         }
     }
 }
