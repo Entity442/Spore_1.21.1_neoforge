@@ -4,6 +4,7 @@ package com.Harbinger.Spore.Client.Renderers;
 import com.Harbinger.Spore.Client.Models.KrakenTentacles.*;
 import com.Harbinger.Spore.Client.Models.LeviathanModel;
 import com.Harbinger.Spore.Client.Special.CalamityRenderer;
+import com.Harbinger.Spore.Sentities.BaseEntities.IkUtil.IkLeviFin;
 import com.Harbinger.Spore.Sentities.BaseEntities.IkUtil.IkLeviLeg;
 import com.Harbinger.Spore.Sentities.Calamities.Leviathan;
 import com.Harbinger.Spore.Spore;
@@ -31,12 +32,18 @@ public class LeviathanRenderer<Type extends Leviathan> extends CalamityRenderer<
     private final Seg5<Type> tentacleSegmentModel5 = new Seg5<>();
     private final Seg6<Type> tentacleSegmentModel6 = new Seg6<>();
     private final FootSegLevi<Type> foot = new FootSegLevi<>();
+    private final FinPart1Model<Type> flip1 = new FinPart1Model<>();
+    private final FinPart2Model<Type> flip2 = new FinPart2Model<>();
+    private final FinPart3Model<Type> flip3 = new FinPart3Model<>();
+    private final FinPart4Model<Type> flip4 = new FinPart4Model<>();
     private static final ResourceLocation TEXTURE =  ResourceLocation.fromNamespaceAndPath(Spore.MODID,
             "textures/entity/leviathan.png");
     private static final ResourceLocation EYES_TEXTURE =  ResourceLocation.fromNamespaceAndPath(Spore.MODID,
             "textures/entity/eyes/leviathan.png");
     private static final ResourceLocation TENTACLES =  ResourceLocation.fromNamespaceAndPath(Spore.MODID,
             "textures/entity/kraken/kraken_t1.png");
+    private static final ResourceLocation FIN =  ResourceLocation.fromNamespaceAndPath(Spore.MODID,
+            "textures/entity/kraken/levi1.png");
 
     public LeviathanRenderer(EntityRendererProvider.Context context) {
         super(context, new LeviathanModel<>(), 4f);
@@ -49,6 +56,14 @@ public class LeviathanRenderer<Type extends Leviathan> extends CalamityRenderer<
             case 4 -> tentacleSegmentModel5;
             case 5 -> tentacleSegmentModel6;
             default -> tentacleSegmentModel1;
+        };
+    }
+    public EntityModel<Type> getFlipModel(int i){
+        return switch (i) {
+            case 1 -> flip2;
+            case 2 -> flip3;
+            case 3 -> flip4;
+            default -> flip1;
         };
     }
     @Override
@@ -68,14 +83,17 @@ public class LeviathanRenderer<Type extends Leviathan> extends CalamityRenderer<
             if (!entity.isInvisible()){
                 for (IkLeviLeg leg : entity.getLegs()){
                     renderTentacle(stack,entity,light, bufferSource, leg.getEntities(),leg.getSegmentVar(), entity,partialTicks,false,false);
-
+                }
+                if (entity.getFins().length > 1){
+                    renderTentacle(stack,entity,light, bufferSource, entity.getFins()[0].getEntities(),null, entity,partialTicks,true,true);
+                    renderTentacle(stack,entity,light, bufferSource, entity.getFins()[1].getEntities(),null, entity,partialTicks,true,false);
                 }
             }
         }
         stack.popPose();
     }
 
-    private void renderTentacle(PoseStack stack, Type type, int light, MultiBufferSource buffer, Vec3[] segments, int[] var, LivingEntity parent, float partial, boolean arm, boolean right) {
+    private void renderTentacle(PoseStack stack, Type type, int light, MultiBufferSource buffer, Vec3[] segments, int[] var, LivingEntity parent, float partial, boolean arm,boolean right) {
         if (segments == null || segments.length < 2) return;
         float hurtTime = parent.hurtTime - partial;
         float flashIntensity = 0.0F;
@@ -93,8 +111,9 @@ public class LeviathanRenderer<Type extends Leviathan> extends CalamityRenderer<
 
         int color = packColorARGB(1.0F, baseR, g, b);
         for (int i = 0; i < segments.length; i++) {
+            int e = var == null ? i : var[i];
             Vec3 currentPos = segments[i];
-            renderConnection(origin, currentPos,type,light, stack, buffer, i,var[i],partial,color,i == segments.length-1, arm,right);
+            renderConnection(origin, currentPos,type,light, stack, buffer, i,e,partial,color,i == segments.length-1, arm,right);
             origin = currentPos;
         }
     }
@@ -115,16 +134,19 @@ public class LeviathanRenderer<Type extends Leviathan> extends CalamityRenderer<
 
         float yaw = (float) Math.atan2(direction.x, direction.z);
         float pitch = (float) -Math.asin(direction.y);
-        float size = index % 2 == 0 ? 1.2f : 1;
+        float size =arm ?  index % 2 == 0 ? 1.75f : 1.5f  : index % 2 == 0 ? 1.2f : 1;
         stack.pushPose();
         {
             stack.translate(from.x, from.y, from.z);
             stack.mulPose(Axis.YP.rotation(yaw));
             stack.mulPose(Axis.XP.rotation(pitch));
+            if (arm){
+                stack.mulPose(Axis.ZP.rotation(right ? 90 : -90));
+            }
             stack.pushPose();
             {
-                VertexConsumer consumer = buffer.getBuffer(RenderType.entityCutoutNoCull(TENTACLES));
-                EntityModel<Type> typeEntityModel = last ? foot : getTentacleModel(var);
+                VertexConsumer consumer = buffer.getBuffer(RenderType.entityCutoutNoCull(arm ? FIN : TENTACLES));
+                EntityModel<Type> typeEntityModel =arm ? getFlipModel(var) : last ? foot : getTentacleModel(var);
                 stack.mulPose(Axis.XP.rotationDegrees(90));
                 stack.translate(0,-length/2,0);
                 stack.scale(size,length*1.05f,size);

@@ -2,15 +2,13 @@ package com.Harbinger.Spore.Sentities.Calamities;
 
 import com.Harbinger.Spore.Sentities.BaseEntities.Calamity;
 import com.Harbinger.Spore.Sentities.BaseEntities.CalamityMultipart;
-import com.Harbinger.Spore.Sentities.BaseEntities.HohlMultipart;
-import com.Harbinger.Spore.Sentities.BaseEntities.IkUtil.IkKrakenLeg;
+import com.Harbinger.Spore.Sentities.BaseEntities.IkUtil.IkLeviFin;
 import com.Harbinger.Spore.Sentities.BaseEntities.IkUtil.IkLeviLeg;
 import com.Harbinger.Spore.Sentities.BaseEntities.LeviathanMultipart;
 import com.Harbinger.Spore.Sentities.TrueCalamity;
 import com.Harbinger.Spore.core.SAttributes;
 import com.Harbinger.Spore.core.SConfig;
 import com.Harbinger.Spore.core.Sentities;
-import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -40,6 +38,7 @@ public class Leviathan extends Calamity implements TrueCalamity {
     private LeviathanMultipart firstSegment;
     public final CalamityMultipart head;
     private final IkLeviLeg[] legs;
+    private final IkLeviFin[] fins;
     public final float[] ringBuffer = new float[64];
     public int ringBufferIndex = -1;
 
@@ -50,6 +49,9 @@ public class Leviathan extends Calamity implements TrueCalamity {
         IkLeviLeg backRightLeg = new IkLeviLeg(this,5,LEG_POSITIONS.BACK_RIGHT_TENTACLE.bodySet,LEG_POSITIONS.BACK_RIGHT_TENTACLE.offset,4);
         IkLeviLeg backLeftLeg = new IkLeviLeg(this,5,LEG_POSITIONS.BACK_LEFT_TENTACLE.bodySet,LEG_POSITIONS.BACK_LEFT_TENTACLE.offset,4);
         legs = new IkLeviLeg[]{frontLeftLeg,frontRightLeg,backLeftLeg,backRightLeg};
+        IkLeviFin rightFin = new IkLeviFin(this,4,LEG_POSITIONS.RIGHT_ARM.bodySet, LEG_POSITIONS.RIGHT_ARM.offset,5);
+        IkLeviFin leftFin = new IkLeviFin(this,4,LEG_POSITIONS.LEFT_ARM.bodySet, LEG_POSITIONS.LEFT_ARM.offset,5);
+        fins = new IkLeviFin[]{rightFin,leftFin};
         this.head = new CalamityMultipart(this, "head", 3F, 3F);
         this.subEntities = new CalamityMultipart[]{this.head};
         this.setId(ENTITY_COUNTER.getAndAdd(this.subEntities.length + 1) + 1);
@@ -58,6 +60,7 @@ public class Leviathan extends Calamity implements TrueCalamity {
     public IkLeviLeg[] getLegs(){
         return legs;
     }
+    public IkLeviFin[] getFins(){return fins;}
     /* ---------------- DATA ---------------- */
     public void travel(Vec3 vec) {
         if (this.isEffectiveAi() && this.isInFluidType()) {
@@ -225,8 +228,8 @@ public class Leviathan extends Calamity implements TrueCalamity {
         BACK_RIGHT_TENTACLE(new Vec3(-2,1,-0.75),new Vec3(-4, -1, -6)),
         FRONT_LEFT_TENTACLE(new Vec3(0,1.5,0.75),new Vec3(4, -1, 6)),
         FRONT_RIGHT_TENTACLE(new Vec3(0,1.5,-0.75),new Vec3(4, -1, -6)),
-        LEFT_ARM(new Vec3(0,3,1),new Vec3(8, 2.5, 6)),
-        RIGHT_ARM(new Vec3(0,3,-1),new Vec3(8, 2.5, -6));
+        LEFT_ARM(new Vec3(0,0.5,0.75),new Vec3(-1, 0, 6)),
+        RIGHT_ARM(new Vec3(0,0.5,-0.75),new Vec3(-1, 0, -6));
         private final Vec3 bodySet;
         private final Vec3 offset;
 
@@ -241,6 +244,10 @@ public class Leviathan extends Calamity implements TrueCalamity {
     public void tick() {
         super.tick();
         for (IkLeviLeg leg : legs) {
+            leg.refreshLegStandingPoint();
+            leg.applyIK();
+        }
+        for (IkLeviFin leg : fins) {
             leg.refreshLegStandingPoint();
             leg.applyIK();
         }
