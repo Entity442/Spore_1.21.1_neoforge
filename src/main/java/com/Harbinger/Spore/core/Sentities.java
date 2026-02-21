@@ -1,6 +1,7 @@
 package com.Harbinger.Spore.core;
 
 import com.Harbinger.Spore.Sentities.BaseEntities.HohlMultipart;
+import com.Harbinger.Spore.Sentities.BaseEntities.LeviathanMultipart;
 import com.Harbinger.Spore.Sentities.BasicInfected.*;
 import com.Harbinger.Spore.Sentities.Calamities.*;
 import com.Harbinger.Spore.Sentities.EvolvedInfected.*;
@@ -431,4 +432,10 @@ public class Sentities {
             () -> EntityType.Builder.of(HohlMultipart::new, INFECTED).sized(3.5f, 3.5f)
                     .build(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "hohlfresser_seg").toString()));
 
+    public static final Supplier<EntityType<Leviathan>> LEVIATHAN = SPORE_ENTITIES.register("leviathan",
+            () -> EntityType.Builder.of(Leviathan::new, INFECTED).sized(3.5f, 3.5f)
+                    .build(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "leviathan").toString()));
+    public static final Supplier<EntityType<LeviathanMultipart>> LEVIATHAN_SEG = SPORE_ENTITIES.register("leviathan_seg",
+            () -> EntityType.Builder.of(LeviathanMultipart::new, INFECTED).sized(3.5f, 3.5f)
+                    .build(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "leviathan_seg").toString()));
 }

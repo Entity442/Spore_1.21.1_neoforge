@@ -1,5 +1,6 @@
 package com.Harbinger.Spore.Sevents;
 
+import com.Harbinger.Spore.Sentities.BaseEntities.LeviathanMultipart;
 import com.Harbinger.Spore.Sentities.BasicInfected.*;
 import com.Harbinger.Spore.Sentities.Calamities.*;
 import com.Harbinger.Spore.Sentities.EvolvedInfected.*;
@@ -98,5 +99,7 @@ public class MobAttributes {
         event.put(Sentities.STALH.get(), Stahlmorder.createAttributes().build());
         event.put(Sentities.STAHL_ARM.get(), StalhArm.createAttributes().build());
         event.put(Sentities.HIVETUMOR.get(), HiveTumor.createAttributes().build());
+        event.put(Sentities.LEVIATHAN.get(), Leviathan.createAttributes().build());
+        event.put(Sentities.LEVIATHAN_SEG.get(), Leviathan.createAttributes().build());
     }
 }
