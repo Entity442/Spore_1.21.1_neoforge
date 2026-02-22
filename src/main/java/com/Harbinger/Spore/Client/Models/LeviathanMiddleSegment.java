@@ -11,8 +11,9 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 
-public class LeviathanMiddleSegment<T extends LeviathanMultipart> extends EntityModel<T> {
+public class LeviathanMiddleSegment<T extends LeviathanMultipart> extends EntityModel<T> implements TentacledModel{
 	// This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
 	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "leviathanmiddlesegment"), "main");
 	private final ModelPart LeviathanAbdomen;
@@ -469,7 +470,16 @@ public class LeviathanMiddleSegment<T extends LeviathanMultipart> extends Entity
 
 	@Override
 	public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-
+		float tumorVal1 = Mth.sin(ageInTicks/6)/6;
+		float tumorVal2 = Mth.cos(ageInTicks/6)/7;
+		float tumorVal3 = Mth.sin(ageInTicks/6)/8;
+		float tumorVal5 = Mth.sin(ageInTicks/8)/6;
+		animateTumor(Tumor,tumorVal1);
+		animateTumor(Tumor2,tumorVal3);
+		animateTumor(Tumor3,tumorVal2);
+		animateTumor(Tumor4,tumorVal5);
+		animateTumor(Tumor8,tumorVal1);
+		animateTumor(Tumor12,tumorVal5);
 	}
 
 	@Override

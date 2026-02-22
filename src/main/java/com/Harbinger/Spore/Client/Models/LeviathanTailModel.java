@@ -11,6 +11,7 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 
 public class LeviathanTailModel<T extends LeviathanMultipart> extends EntityModel<T> implements TentacledModel{
 	// This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
@@ -579,6 +580,10 @@ public class LeviathanTailModel<T extends LeviathanMultipart> extends EntityMode
 	@Override
 	public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 		boolean water = entity.isInWater();
+		float tumorVal3 = Mth.sin(ageInTicks/6)/8;
+		float tumorVal4 = Mth.cos(ageInTicks/7)/6;
+		float tumorVal5 = Mth.sin(ageInTicks/8)/6;
+		float tumorVal6 = Mth.cos(ageInTicks/7)/7;
 		if (water && stir > 0){
 			stir--;
 		}
@@ -588,6 +593,10 @@ public class LeviathanTailModel<T extends LeviathanMultipart> extends EntityMode
 		float rotationValue = stir * 0.035f;
 		animateTentacleY(rightTailFlipper,rotationValue);
 		animateTentacleY(leftTailFlipper,-rotationValue);
+		animateTumor(Tumor,tumorVal4);
+		animateTumor(Tumor2,tumorVal3);
+		animateTumor(Tumor3,tumorVal6);
+		animateTumor(Tumor8,tumorVal5);
 	}
 
 	@Override

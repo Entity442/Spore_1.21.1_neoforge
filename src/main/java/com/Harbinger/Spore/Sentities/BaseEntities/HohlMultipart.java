@@ -3,6 +3,7 @@ package com.Harbinger.Spore.Sentities.BaseEntities;
 
 import com.Harbinger.Spore.ExtremelySusThings.Utilities;
 import com.Harbinger.Spore.Sentities.Calamities.Hohlfresser;
+import com.Harbinger.Spore.Sentities.Calamities.Leviathan;
 import com.Harbinger.Spore.Sentities.TrueCalamity;
 import com.Harbinger.Spore.core.SConfig;
 import com.Harbinger.Spore.core.Ssounds;
@@ -94,7 +95,7 @@ public class HohlMultipart extends LivingEntity implements TrueCalamity {
         if (tickCount > 1) {
             Entity parent = getParentSafe();
             if (!level().isClientSide) {
-                if (parent == null || parent.isRemoved()) {
+                if (parent == null || parent.isRemoved()  || (parent instanceof Leviathan leviathan && !Objects.equals(leviathan.getChildId(), this.uuid))) {
                     this.remove(RemovalReason.DISCARDED);
                 } else {
                     if (parent instanceof LivingEntity living) {

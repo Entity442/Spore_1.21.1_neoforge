@@ -11,6 +11,7 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 
 public class LeviathanModel<T extends Leviathan> extends EntityModel<T> implements TentacledModel{
 	// This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
@@ -1546,7 +1547,33 @@ public class LeviathanModel<T extends Leviathan> extends EntityModel<T> implemen
 
 	@Override
 	public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-
+		float tumorVal1 = Mth.sin(ageInTicks/6)/6;
+		float tumorVal2 = Mth.cos(ageInTicks/6)/7;
+		float tumorVal3 = Mth.sin(ageInTicks/6)/8;
+		float tumorVal4 = Mth.cos(ageInTicks/7)/6;
+		float tumorVal5 = Mth.sin(ageInTicks/8)/6;
+		float tumorVal6 = Mth.cos(ageInTicks/7)/7;
+		animateTumor(Tumor,tumorVal1);
+		animateTumor(Tumor2,tumorVal3);
+		animateTumor(Tumor3,tumorVal2);
+		animateTumor(Tumor4,tumorVal1);
+		animateTumor(Tumor5,tumorVal4);
+		animateTumor(Tumor6,tumorVal1);
+		animateTumor(Tumor7,tumorVal5);
+		animateTumor(Tumor8,tumorVal1);
+		animateTumor(Tumor9,tumorVal6);
+		animateTumor(Tumor10,tumorVal1);
+		animateTumor(Tumor11,tumorVal4);
+		animateTumor(rightSack,tumorVal5);
+		animateTumor(leftSack,tumorVal6);
+		animateTumor(leftSack2,tumorVal3);
+		animateTentacleX(RightJaw,tumorVal6);
+		animateTentacleX(LeftJaw,tumorVal6);
+		animateTentacleX(DownJaw,tumorVal4);
+		animateTentacleX(TopJaw,tumorVal4);
+		animateTentacleY(AcidCannon,tumorVal3);
+		animateTentacleY(RightSidefin,tumorVal3);
+		animateTentacleY(LeftSidefin,tumorVal4);
 	}
 
 	@Override

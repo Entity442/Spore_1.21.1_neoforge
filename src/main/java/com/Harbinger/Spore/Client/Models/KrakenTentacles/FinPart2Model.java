@@ -2,6 +2,7 @@ package com.Harbinger.Spore.Client.Models.KrakenTentacles;// Made with Blockbenc
 // Exported for Minecraft version 1.17 or later with Mojang mappings
 // Paste this class into your mod and generate all required imports
 
+import com.Harbinger.Spore.Client.Models.TentacledModel;
 import com.Harbinger.Spore.Spore;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -11,9 +12,10 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 
-public class FinPart2Model<T extends Entity> extends EntityModel<T> {
+public class FinPart2Model<T extends Entity> extends EntityModel<T> implements TentacledModel {
 	// This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
 	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation( ResourceLocation.fromNamespaceAndPath(Spore.MODID, "finpart2model"), "main");
 	private final ModelPart body;
@@ -92,7 +94,7 @@ public class FinPart2Model<T extends Entity> extends EntityModel<T> {
 
 	@Override
 	public void setupAnim(Entity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-
+		animateTumor(Tumor, Mth.sin(ageInTicks/6)/6);
 	}
 
 	@Override

@@ -23,6 +23,8 @@ public class IkLeviFin {
     protected Vec3 ownerMovementDelta = Vec3.ZERO;
     protected float lastYaw = 0;
     protected float yawDelta = 0;
+    protected float swimAngle = 0f;
+    protected float swimSpeed = 8f;
     public IkLeviFin(LivingEntity owner, int amount, Vec3 defaultBodyOffset,
                      Vec3 defaultLimbOffset,
                      float maxDistance) {
@@ -56,16 +58,31 @@ public class IkLeviFin {
         Vec3 pivot = owner.position();
         return pivot.add(applyYaw(defaultBodyOffset));
     }
+    protected Vec3 applySwimCircle(Vec3 baseTipPos) {
+        float swimRadius = owner.isInWater() ? 3.5f : 2;
+        if (!isOwnerMoving()) return baseTipPos;
 
+        swimAngle += swimSpeed;
+        swimAngle = Mth.wrapDegrees(swimAngle);
+
+        float rad = swimAngle * Mth.DEG_TO_RAD;
+
+        double x = Math.cos(rad) * swimRadius * 2;
+        double y = Math.sin(rad) * swimRadius;
+        Vec3 circularOffset = new Vec3(-x, y, 0);
+        circularOffset = applyYaw(circularOffset);
+
+        return baseTipPos.add(circularOffset);
+    }
     protected void moveSegmentTowards(int index, Vec3 target,boolean far) {
         Vec3 currentPos = entities[index];
-        Vec3 newPos = currentPos.lerp(target,owner.isInWater() ? 0.5f : 0.35f);
+        Vec3 newPos = currentPos.lerp(target, 0.5f);
         entities[index] = (far ? target : newPos);
     }
     protected void moveTipTowards(Vec3 target) {
         int tip = entities.length - 1;
         Vec3 currentPos = entities[tip];
-        entities[tip] = currentPos.lerp(target, 0.15f);
+        entities[tip] = currentPos.lerp(target, 0.35f);
     }
     protected boolean isOwnerMoving(){
         return owner.getDeltaMovement().lengthSqr() > 0.005;
@@ -87,10 +104,6 @@ public class IkLeviFin {
     }
     protected void applyBodySpin() {
         if (Math.abs(yawDelta) < 0.001f) return;
-        boolean inWater = owner.isInWater();
-        if (inWater){
-            return;
-        }
         Vec3 pivot = owner.position();
 
         for (int i = 0; i < entities.length; i++) {
@@ -144,21 +157,11 @@ public class IkLeviFin {
 
         Vec3 basePos = getBodyOffset();
         Vec3 defaultTipPos = sitPosition == null ? getLegBasePos() : sitPosition;
+        defaultTipPos = applySwimCircle(defaultTipPos);
         updateOwnerMovementDelta();
         applyEntityMovementToLegs();
         applyBodySpin();
-        if (!owner.isInWater()){
-            float jumpVal = 1.5f;
-            boolean val = stepUpTicks > 0 && isOwnerMoving();
-            if (val){
-                for (int i = 1; i < entities.length; i++) {
-                    Vec3 vec3 = entities[i];
-                    entities[i] = vec3.lerp(vec3.add(0,jumpVal,0), 0.05f);
-                }
-            }else {
-                moveTipTowards(defaultTipPos);
-            }
-        }
+        moveTipTowards(defaultTipPos);
         for (int i = entities.length - 2; i >= 0; i--) {
             Vec3 nextPos = entities[i + 1];
             Vec3 dir = entities[i].subtract(nextPos);
@@ -194,74 +197,5 @@ public class IkLeviFin {
         }
     }
 
-
-    public void refreshLegStandingPoint(){
-        if (owner.isInWater()){
-            return;
-        }
-        if (lastSitPosition != null && getLegBasePos().distanceTo(lastSitPosition) < maxDistance){
-            return;
-        }
-        sitPosition = findStableFooting();
-        if (!sitPosition.equals(lastSitPosition)){
-            stepUpTicks = 10;
-            lastSitPosition = sitPosition;
-        }
-    }
-
-    protected Vec3 findStableFooting() {
-        Level level = owner.level();
-
-        if (level.isClientSide()) {
-            return getLegBasePos();
-        }
-
-        Vec3 worldBasePos = getLegBasePos();
-        int searchRadius = 6;
-        int maxSearchDown = 12;
-        int maxSearchUp = 6;
-
-        BlockPos.MutableBlockPos checkPos = new BlockPos.MutableBlockPos();
-
-        for (int y = 0; y >= -maxSearchDown; y--) {
-            checkPos.set(worldBasePos.x, worldBasePos.y + y, worldBasePos.z);
-
-            if (isSolidGround(level, checkPos)) {
-                return new Vec3(
-                        checkPos.getX() + 0.5,
-                        checkPos.getY() - 1.0,
-                        checkPos.getZ() + 0.5
-                );
-            }
-        }
-
-        for (int x = -searchRadius; x <= searchRadius; x++) {
-            for (int z = -searchRadius; z <= searchRadius; z++) {
-                for (int y = maxSearchUp; y >= -maxSearchDown; y--) {
-                    checkPos.set(
-                            worldBasePos.x + x,
-                            worldBasePos.y + y,
-                            worldBasePos.z + z
-                    );
-
-                    if (isSolidGround(level, checkPos)) {
-                        if (level.isEmptyBlock(checkPos.above())) {
-                            return new Vec3(
-                                    checkPos.getX() + 0.5,
-                                    checkPos.getY() - 1.0,
-                                    checkPos.getZ() + 0.5
-                            );
-                        }
-                    }
-                }
-            }
-        }
-        return worldBasePos;
-    }
-
-    private boolean isSolidGround(Level level, BlockPos pos) {
-        return level.getBlockState(pos).isSolid() ||
-                !level.getBlockState(pos).getCollisionShape(level, pos).isEmpty();
-    }
 
 }

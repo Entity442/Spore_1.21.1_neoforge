@@ -125,13 +125,13 @@ public class IkLeviLeg {
 
     protected void moveSegmentTowards(int index, Vec3 target,boolean far) {
         Vec3 currentPos = entities[index];
-        Vec3 newPos = currentPos.lerp(target,owner.isInWater() ? 0.5f : 0.35f);
+        Vec3 newPos = currentPos.lerp(target,0.35f);
         entities[index] = (far ? target : newPos);
     }
     protected void moveTipTowards(Vec3 target) {
         int tip = entities.length - 1;
         Vec3 currentPos = entities[tip];
-        entities[tip] = currentPos.lerp(target, 0.15f);
+        entities[tip] = currentPos.lerp(target, 0.45f);
     }
     protected boolean isOwnerMoving(){
         return owner.getDeltaMovement().lengthSqr() > 0.005;

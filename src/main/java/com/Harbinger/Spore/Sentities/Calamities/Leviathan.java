@@ -1,11 +1,16 @@
 package com.Harbinger.Spore.Sentities.Calamities;
 
+import com.Harbinger.Spore.Sentities.AI.AOEMeleeAttackGoal;
+import com.Harbinger.Spore.Sentities.AI.CalamitiesAI.CalamityInfectedCommand;
+import com.Harbinger.Spore.Sentities.AI.CalamitiesAI.SporeBurstSupport;
+import com.Harbinger.Spore.Sentities.AI.CalamitiesAI.SummonScentInCombat;
 import com.Harbinger.Spore.Sentities.BaseEntities.Calamity;
 import com.Harbinger.Spore.Sentities.BaseEntities.CalamityMultipart;
 import com.Harbinger.Spore.Sentities.BaseEntities.IkUtil.IkLeviFin;
 import com.Harbinger.Spore.Sentities.BaseEntities.IkUtil.IkLeviLeg;
 import com.Harbinger.Spore.Sentities.BaseEntities.LeviathanMultipart;
 import com.Harbinger.Spore.Sentities.TrueCalamity;
+import com.Harbinger.Spore.Sentities.WaterInfected;
 import com.Harbinger.Spore.core.SAttributes;
 import com.Harbinger.Spore.core.SConfig;
 import com.Harbinger.Spore.core.Sentities;
@@ -21,16 +26,19 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.LeapAtTargetGoal;
+import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.entity.PartEntity;
+import net.neoforged.neoforge.fluids.FluidType;
 
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public class Leviathan extends Calamity implements TrueCalamity {
+public class Leviathan extends Calamity implements TrueCalamity, WaterInfected {
     private static final int SEGMENT_COUNT = 2;
     private static final EntityDataAccessor<Optional<UUID>> CHILD_UUID =
             SynchedEntityData.defineId(Leviathan.class, EntityDataSerializers.OPTIONAL_UUID);
@@ -126,14 +134,20 @@ public class Leviathan extends Calamity implements TrueCalamity {
     public static AttributeSupplier.Builder createAttributes() {
         return Mob.createMobAttributes()
                 .add(Attributes.MAX_HEALTH, SConfig.SERVER.sieger_hp.get() * SConfig.SERVER.global_health.get())
-                .add(Attributes.MOVEMENT_SPEED, 0.25D)
+                .add(Attributes.MOVEMENT_SPEED, 0.15D)
                 .add(Attributes.ATTACK_DAMAGE, SConfig.SERVER.sieger_damage.get() * SConfig.SERVER.global_damage.get())
                 .add(Attributes.ARMOR, SConfig.SERVER.sieger_armor.get() * SConfig.SERVER.global_armor.get())
                 .add(Attributes.FOLLOW_RANGE, 64.0D)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 1.0D)
                 .add(Attributes.STEP_HEIGHT, 1.5D)
-                .add(Attributes.ATTACK_KNOCKBACK, 2.0D)
-                .add(SAttributes.TOXICITY, 0.0D);
+                .add(Attributes.ATTACK_KNOCKBACK, 0.0D)
+                .add(SAttributes.TOXICITY, 0.0D)
+                .add(SAttributes.REJUVENATION, 0.0D)
+                .add(SAttributes.LOCALIZATION, 0.0D)
+                .add(SAttributes.LACERATION, 0.0D)
+                .add(SAttributes.CORROSIVES, 0.0D)
+                .add(SAttributes.BALLISTIC, 0.0D)
+                .add(SAttributes.GRINDING, 0.0D);
     }
     @Override
     public void aiStep() {
@@ -163,6 +177,11 @@ public class Leviathan extends Calamity implements TrueCalamity {
     @Override
     public boolean isMultipartEntity() {
         return true;
+    }
+
+    @Override
+    public boolean canDrownInFluidType(FluidType type) {
+        return false;
     }
 
     @Override
@@ -248,7 +267,6 @@ public class Leviathan extends Calamity implements TrueCalamity {
             leg.applyIK();
         }
         for (IkLeviFin leg : fins) {
-            leg.refreshLegStandingPoint();
             leg.applyIK();
         }
         // Update rotation buffer
@@ -296,7 +314,22 @@ public class Leviathan extends Calamity implements TrueCalamity {
             previous = part;
         }
     }
-
+    /*-----------------GOALS--------------------------*/
+    @Override
+    public void registerGoals() {
+        this.goalSelector.addGoal(4, new LeapAtTargetGoal(this,0.4F));
+        this.goalSelector.addGoal(4, new AOEMeleeAttackGoal(this, 1.5, false,2.5 ,6, livingEntity -> {return TARGET_SELECTOR.test(livingEntity);}){
+            protected double getAttackReachSqr(LivingEntity entity) {
+                float f = Leviathan.this.getBbWidth();
+                return (double)(f * 3.0F * f * 3.0F + entity.getBbWidth());
+            }
+        });
+        this.goalSelector.addGoal(6,new CalamityInfectedCommand(this));
+        this.goalSelector.addGoal(7,new SummonScentInCombat(this));
+        this.goalSelector.addGoal(8,new SporeBurstSupport(this));
+        this.goalSelector.addGoal(9,new RandomStrollGoal(this , 1));
+        super.registerGoals();
+    }
     /* ---------------- POSITION UPDATES ---------------- */
 
     private void updateChain() {
