@@ -145,10 +145,10 @@ public class Leviathan extends Calamity implements TrueCalamity, WaterInfected, 
 
     public static AttributeSupplier.Builder createAttributes() {
         return Mob.createMobAttributes()
-                .add(Attributes.MAX_HEALTH, SConfig.SERVER.sieger_hp.get() * SConfig.SERVER.global_health.get())
+                .add(Attributes.MAX_HEALTH, SConfig.SERVER.levi_hp.get() * SConfig.SERVER.global_health.get())
                 .add(Attributes.MOVEMENT_SPEED, 0.1D)
-                .add(Attributes.ATTACK_DAMAGE, SConfig.SERVER.sieger_damage.get() * SConfig.SERVER.global_damage.get())
-                .add(Attributes.ARMOR, SConfig.SERVER.sieger_armor.get() * SConfig.SERVER.global_armor.get())
+                .add(Attributes.ATTACK_DAMAGE, SConfig.SERVER.levi_damage.get() * SConfig.SERVER.global_damage.get())
+                .add(Attributes.ARMOR, SConfig.SERVER.levi_armor.get() * SConfig.SERVER.global_armor.get())
                 .add(Attributes.FOLLOW_RANGE, 64.0D)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 1.0D)
                 .add(Attributes.STEP_HEIGHT, 1.5D)
@@ -263,32 +263,37 @@ public class Leviathan extends Calamity implements TrueCalamity, WaterInfected, 
 
     @Override
     public int chemicalRange() {
-        return 0;
+        return 16;
     }
 
     @Override
     public List<? extends String> buffs() {
-        return List.of();
+        return SConfig.SERVER.levi_buffs.get();
     }
 
     @Override
     public List<? extends String> debuffs() {
-        return List.of();
+        return SConfig.SERVER.levi_debuffs.get();
+    }
+
+    @Override
+    public double getDamageCap() {
+        return SConfig.SERVER.levi_dpsr.get();
     }
 
     @Override
     public void performRangedAttack(LivingEntity livingEntity, float v) {
-        VomitHohlBall.shoot(this,livingEntity,(float) (SConfig.SERVER.hohl_damage.get() * 0.25),false,getKills() > 0);
+        VomitHohlBall.shoot(this,livingEntity,(float) (SConfig.SERVER.levi_damage.get() * 0.25),false,getKills() > 0);
     }
 
     /*----------------- LEG POSITIONS --------*/
     enum LEG_POSITIONS{
-        BACK_LEFT_TENTACLE(new Vec3(-2,1,0.75),new Vec3(-4, -1, 6)),
-        BACK_RIGHT_TENTACLE(new Vec3(-2,1,-0.75),new Vec3(-4, -1, -6)),
-        FRONT_LEFT_TENTACLE(new Vec3(0,1.5,0.75),new Vec3(4, -1, 6)),
-        FRONT_RIGHT_TENTACLE(new Vec3(0,1.5,-0.75),new Vec3(4, -1, -6)),
-        LEFT_ARM(new Vec3(0,0.5,0.75),new Vec3(-1, 0, 6)),
-        RIGHT_ARM(new Vec3(0,0.5,-0.75),new Vec3(-1, 0, -6));
+        BACK_LEFT_TENTACLE(new Vec3(-2,1,0.75),new Vec3(-4, 0, 6)),
+        BACK_RIGHT_TENTACLE(new Vec3(-2,1,-0.75),new Vec3(-4, 0, -6)),
+        FRONT_LEFT_TENTACLE(new Vec3(0,1.5,0.75),new Vec3(4, 0, 6)),
+        FRONT_RIGHT_TENTACLE(new Vec3(0,1.5,-0.75),new Vec3(4, 0, -6)),
+        LEFT_ARM(new Vec3(0,1,0.75),new Vec3(-1, 0.5, 6)),
+        RIGHT_ARM(new Vec3(0,1,-0.75),new Vec3(-1, 0.5, -6));
         private final Vec3 bodySet;
         private final Vec3 offset;
 

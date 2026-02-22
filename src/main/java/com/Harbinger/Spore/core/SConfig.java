@@ -277,6 +277,14 @@ public class SConfig {
         public final ModConfigSpec.ConfigValue<List<? extends String>> sieger_debuffs;
         public final ModConfigSpec.ConfigValue<List<? extends String>> sieger_explosive_effects;
 
+        public final ModConfigSpec.ConfigValue<Double> levi_hp;
+        public final ModConfigSpec.ConfigValue<Double> levi_damage;
+        public final ModConfigSpec.ConfigValue<Double> levi_armor;
+        public final ModConfigSpec.ConfigValue<Double> levi_dpsr;
+        public final ModConfigSpec.ConfigValue<List<? extends String>> levi_buffs;
+        public final ModConfigSpec.ConfigValue<List<? extends String>> levi_debuffs;
+        public final ModConfigSpec.ConfigValue<List<? extends String>> levi_explosive_effects;
+
         public final ModConfigSpec.ConfigValue<Double> sta_hp;
         public final ModConfigSpec.ConfigValue<Double> sta_damage;
         public final ModConfigSpec.ConfigValue<Double> sta_slap_damage;
@@ -921,6 +929,22 @@ public class SConfig {
                     Lists.newArrayList("minecraft:wither", "spore:mycelium_ef", "minecraft:weakness") , o -> o instanceof String);
             builder.pop();
 
+            builder.push("Leviathan");
+            this.levi_hp = builder.comment("Default 450").defineInRange("Sets Leviathan Max health", 450, 1, Double.MAX_VALUE);
+            this.levi_damage = builder.comment("Default 30").defineInRange("Sets Leviathan Damage", 30, 1, Double.MAX_VALUE);
+            this.levi_armor = builder.comment("Default 25").defineInRange("Sets Leviathan Armor", 25, 1, Double.MAX_VALUE);
+            this.levi_dpsr = builder.comment("Default 100").defineInRange("Sets Leviathan Damage Cap , set to 0 to disable", 100, 0, Double.MAX_VALUE);
+
+            this.levi_buffs = builder.comment("Default values: minecraft:speed|600|0, minecraft:conduit_power|600|0, minecraft:resistance|600|1").defineList("Leviathan buffs",
+                    Lists.newArrayList("minecraft:speed|600|0", "minecraft:conduit_power|600|0", "minecraft:resistance|600|1") , o -> o instanceof String);
+
+            this.levi_debuffs = builder.comment("Default values: minecraft:mining_fatigue|600|0, spore:mycelium|600|1, minecraft:hunger|600|1").defineList("Leviathan debuffs",
+                    Lists.newArrayList("minecraft:mining_fatigue|600|0", "spore:mycelium_ef|600|1", "minecraft:hunger|600|1") , o -> o instanceof String);
+
+            this.levi_explosive_effects = builder.comment("Default values: minecraft:wither ,spore:mycelium ,minecraft:weakness").defineList("Leviathan explosion effects",
+                    Lists.newArrayList("minecraft:wither", "spore:mycelium_ef", "minecraft:weakness") , o -> o instanceof String);
+            builder.pop();
+
             builder.push("Stahlmorder");
             this.sta_hp = builder.comment("Default 200").defineInRange("Sets Stahlmorder Max health", 200, 1, Double.MAX_VALUE);
             this.sta_damage = builder.comment("Default 35").defineInRange("Sets Stahlmorder Sword Damage", 35, 1, Double.MAX_VALUE);
@@ -929,10 +953,10 @@ public class SConfig {
             this.sta_armor = builder.comment("Default 10").defineInRange("Sets Stahlmorder Armor", 10, 1, Double.MAX_VALUE);
             this.sta_dpsr = builder.comment("Default 50").defineInRange("Sets Stahlmorder Damage Cap , set to 0 to disable", 50, 0, Double.MAX_VALUE);
 
-            this.sta_buffs = builder.comment("Default values: minecraft:speed|600|0 ,minecraft:strength|600|0 ,minecraft:jump_boost|600|1").defineList("Sieger buffs",
+            this.sta_buffs = builder.comment("Default values: minecraft:speed|600|0 ,minecraft:strength|600|0 ,minecraft:jump_boost|600|1").defineList("Stahlmorder buffs",
                     Lists.newArrayList("minecraft:speed|600|0" , "minecraft:strength|600|0","minecraft:jump_boost|600|1") , o -> o instanceof String);
 
-            this.sta_debuffs = builder.comment("Default values: minecraft:weakness|600|1 ,spore:mycelium|600|1 ,minecraft:slowness|600|1").defineList("Sieger debuffs",
+            this.sta_debuffs = builder.comment("Default values: minecraft:weakness|600|1 ,spore:mycelium|600|1 ,minecraft:slowness|600|1").defineList("Stahlmorder debuffs",
                     Lists.newArrayList("minecraft:weakness|600|1" , "spore:mycelium_ef|600|1","minecraft:slowness|600|1") , o -> o instanceof String);
             builder.pop();
 
