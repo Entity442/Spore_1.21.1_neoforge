@@ -9,11 +9,11 @@ import com.Harbinger.Spore.Sentities.BaseEntities.CalamityMultipart;
 import com.Harbinger.Spore.Sentities.BaseEntities.IkUtil.IkLeviFin;
 import com.Harbinger.Spore.Sentities.BaseEntities.IkUtil.IkLeviLeg;
 import com.Harbinger.Spore.Sentities.BaseEntities.LeviathanMultipart;
+import com.Harbinger.Spore.Sentities.Projectile.ThrownTumor;
+import com.Harbinger.Spore.Sentities.Projectile.VomitHohlBall;
 import com.Harbinger.Spore.Sentities.TrueCalamity;
 import com.Harbinger.Spore.Sentities.WaterInfected;
-import com.Harbinger.Spore.core.SAttributes;
-import com.Harbinger.Spore.core.SConfig;
-import com.Harbinger.Spore.core.Sentities;
+import com.Harbinger.Spore.core.*;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -24,10 +24,12 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.LeapAtTargetGoal;
 import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
+import net.minecraft.world.entity.monster.RangedAttackMob;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.entity.PartEntity;
@@ -38,10 +40,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public class Leviathan extends Calamity implements TrueCalamity, WaterInfected {
+public class Leviathan extends Calamity implements TrueCalamity, WaterInfected, RangedAttackMob {
     private static final int SEGMENT_COUNT = 2;
-    private static final EntityDataAccessor<Optional<UUID>> CHILD_UUID =
-            SynchedEntityData.defineId(Leviathan.class, EntityDataSerializers.OPTIONAL_UUID);
+    private static final EntityDataAccessor<Optional<UUID>> CHILD_UUID = SynchedEntityData.defineId(Leviathan.class, EntityDataSerializers.OPTIONAL_UUID);
+    private static final EntityDataAccessor<Integer> SPRAY_COOLDOWN = SynchedEntityData.defineId(Leviathan.class, EntityDataSerializers.INT);
     private final CalamityMultipart[] subEntities;
     private LeviathanMultipart firstSegment;
     public final CalamityMultipart head;
@@ -49,6 +51,8 @@ public class Leviathan extends Calamity implements TrueCalamity, WaterInfected {
     private final IkLeviFin[] fins;
     public final float[] ringBuffer = new float[64];
     public int ringBufferIndex = -1;
+    private int attackAnimationTick;
+    private int rangeAttackAnimationTick;
 
     public Leviathan(EntityType<? extends PathfinderMob> type, Level level) {
         super(type, level);
@@ -79,12 +83,16 @@ public class Leviathan extends Calamity implements TrueCalamity, WaterInfected {
             super.travel(vec);
         }
     }
+    public int getRangeAttackAnimationTick(){
+        return rangeAttackAnimationTick;
+    }
     @Override
     public void addAdditionalSaveData(CompoundTag tag) {
         super.addAdditionalSaveData(tag);
         for(int e = 0;e<legs.length;e++){
             legs[e].writeVariants(tag,e);
         }
+        tag.putInt("spray_cooldown",entityData.get(SPRAY_COOLDOWN));
     }
     @Override
     public void setId(int p_20235_) {
@@ -98,13 +106,17 @@ public class Leviathan extends Calamity implements TrueCalamity, WaterInfected {
         for(int e = 0;e<legs.length;e++){
             legs[e].readVariants(tag,e);
         }
+        entityData.set(SPRAY_COOLDOWN,tag.getInt("spray_cooldown"));
     }
 
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
         builder.define(CHILD_UUID, Optional.empty());
+        builder.define(SPRAY_COOLDOWN, 0);
     }
+    public void setSprayCooldown(int val){entityData.set(SPRAY_COOLDOWN,val);}
+    public int getSprayCooldown(){return entityData.get(SPRAY_COOLDOWN);}
 
     @Nullable
     public UUID getChildId() {
@@ -134,7 +146,7 @@ public class Leviathan extends Calamity implements TrueCalamity, WaterInfected {
     public static AttributeSupplier.Builder createAttributes() {
         return Mob.createMobAttributes()
                 .add(Attributes.MAX_HEALTH, SConfig.SERVER.sieger_hp.get() * SConfig.SERVER.global_health.get())
-                .add(Attributes.MOVEMENT_SPEED, 0.15D)
+                .add(Attributes.MOVEMENT_SPEED, 0.1D)
                 .add(Attributes.ATTACK_DAMAGE, SConfig.SERVER.sieger_damage.get() * SConfig.SERVER.global_damage.get())
                 .add(Attributes.ARMOR, SConfig.SERVER.sieger_armor.get() * SConfig.SERVER.global_armor.get())
                 .add(Attributes.FOLLOW_RANGE, 64.0D)
@@ -168,6 +180,12 @@ public class Leviathan extends Calamity implements TrueCalamity, WaterInfected {
             this.subEntities[l].zOld = avec3[l].z;
         }
         super.aiStep();
+        if (this.attackAnimationTick > 0) {
+            --this.attackAnimationTick;
+        }
+        if (this.rangeAttackAnimationTick > 0) {
+            --this.rangeAttackAnimationTick;
+        }
     }
 
     public CalamityMultipart[] getSubEntities() {
@@ -181,6 +199,23 @@ public class Leviathan extends Calamity implements TrueCalamity, WaterInfected {
 
     @Override
     public boolean canDrownInFluidType(FluidType type) {
+        return false;
+    }
+    public boolean canShoot(LivingEntity living){
+        if (living == null){
+            return false;
+        }
+        if (getSprayCooldown() <= 0){
+            if (this.isInWater()){
+                setSprayCooldown(20);
+                return false;
+            }
+            if (this.hasLineOfSight(living) && this.distanceToSqr(living) > 50.0D){
+                rangeAttackAnimationTick = 20;
+                this.level().broadcastEntityEvent(this, (byte)5);
+                return true;
+            }
+        }
         return false;
     }
 
@@ -197,7 +232,6 @@ public class Leviathan extends Calamity implements TrueCalamity, WaterInfected {
         for(int i = 0; i < calamityMultiparts.length; ++i) {
             calamityMultiparts[i].setId(i + p_218825_.getId());
         }
-
     }
 
     @Override
@@ -222,6 +256,7 @@ public class Leviathan extends Calamity implements TrueCalamity, WaterInfected {
 
     @Override
     public boolean hurt(CalamityMultipart calamityMultipart, DamageSource source, float value) {
+        value = rangeAttackAnimationTick > 0 ? value * 2 : value * 0.5f;
         hurt(source,value);
         return false;
     }
@@ -241,6 +276,11 @@ public class Leviathan extends Calamity implements TrueCalamity, WaterInfected {
         return List.of();
     }
 
+    @Override
+    public void performRangedAttack(LivingEntity livingEntity, float v) {
+        VomitHohlBall.shoot(this,livingEntity,(float) (SConfig.SERVER.hohl_damage.get() * 0.25),false,getKills() > 0);
+    }
+
     /*----------------- LEG POSITIONS --------*/
     enum LEG_POSITIONS{
         BACK_LEFT_TENTACLE(new Vec3(-2,1,0.75),new Vec3(-4, -1, 6)),
@@ -257,6 +297,26 @@ public class Leviathan extends Calamity implements TrueCalamity, WaterInfected {
             this.offset = offset;
         }
     }
+    public void handleEntityEvent(byte value) {
+        if (value == 4) {
+            this.attackAnimationTick = 10;
+        } else if (value == 5) {
+            this.rangeAttackAnimationTick = 20;
+        } else {
+            super.handleEntityEvent(value);
+        }
+    }
+    public int getAttackAnimationTick() {
+        return attackAnimationTick;
+    }
+    @Override
+    public boolean doHurtTarget(Entity entity) {
+        this.attackAnimationTick = 10;
+        this.level().broadcastEntityEvent(this, (byte)4);
+        this.playSound(Ssounds.SIEGER_BITE.value());
+        return super.doHurtTarget(entity);
+    }
+
     /* ---------------- TICK ---------------- */
 
     @Override
@@ -281,8 +341,26 @@ public class Leviathan extends Calamity implements TrueCalamity, WaterInfected {
 
             updateChain();
         }
+        if (getSprayCooldown() > 0){
+            setSprayCooldown(getSprayCooldown()-1);
+        }
+        LivingEntity target = this.getTarget();
+        if (tickCount % 5 == 0 && canShoot(target) && target != null){
+            for (int i = 0;i<random.nextInt(4) + getExtraShots();i++){
+                performRangedAttack(target,0);
+            }
+            setSprayCooldown(40);
+        }
     }
-
+    public int getExtraShots(){
+        AttributeInstance instance = this.getAttribute(SAttributes.BALLISTIC);
+        if (instance != null){
+            double level = instance.getValue();
+            if (level < 1){return 0;}
+            return (int) (3 * level);
+        }
+        return 0;
+    }
     private boolean shouldSpawnChain() {
         LeviathanMultipart part = getFirstSegment();
         return part == null || !part.isAlive();

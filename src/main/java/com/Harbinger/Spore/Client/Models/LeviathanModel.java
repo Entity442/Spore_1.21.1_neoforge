@@ -16,6 +16,7 @@ import net.minecraft.util.Mth;
 public class LeviathanModel<T extends Leviathan> extends EntityModel<T> implements TentacledModel{
 	// This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
 	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "leviathanmodel"), "main");
+	private int open = 0;
 	private final ModelPart Leviathan;
 	private final ModelPart RightJaw;
 	private final ModelPart FrontBase;
@@ -1567,10 +1568,34 @@ public class LeviathanModel<T extends Leviathan> extends EntityModel<T> implemen
 		animateTumor(rightSack,tumorVal5);
 		animateTumor(leftSack,tumorVal6);
 		animateTumor(leftSack2,tumorVal3);
-		animateTentacleX(RightJaw,tumorVal6);
-		animateTentacleX(LeftJaw,tumorVal6);
-		animateTentacleX(DownJaw,tumorVal4);
-		animateTentacleX(TopJaw,tumorVal4);
+		boolean rangedAt = entity.getRangeAttackAnimationTick() > 0;
+		if (!rangedAt && open > 0){
+			open--;
+		}
+		if (rangedAt && open < 40){
+			open++;
+		}
+		int attackAnimationTick = entity.getAttackAnimationTick();
+		if (attackAnimationTick <= 0 && open <= 0){
+			animateTentacleX(RightJaw,tumorVal6);
+			animateTentacleX(LeftJaw,tumorVal6);
+			animateTentacleX(DownJaw,tumorVal4);
+			animateTentacleX(TopJaw,tumorVal4);
+		}else {
+			if (attackAnimationTick > 0){
+				float swing = -1.0F + 0.75F * Mth.triangleWave((float)attackAnimationTick, 20.0F);
+				animateTentacleX(RightJaw,swing);
+				animateTentacleX(LeftJaw,swing);
+				animateTentacleX(DownJaw,swing);
+				animateTentacleX(TopJaw,swing);
+			}else {
+				float rotationValue = open * -0.015f;
+				animateTentacleX(RightJaw,rotationValue);
+				animateTentacleX(LeftJaw,rotationValue);
+				animateTentacleX(DownJaw,-rotationValue);
+				animateTentacleX(TopJaw,rotationValue);
+			}
+		}
 		animateTentacleY(AcidCannon,tumorVal3);
 		animateTentacleY(RightSidefin,tumorVal3);
 		animateTentacleY(LeftSidefin,tumorVal4);
