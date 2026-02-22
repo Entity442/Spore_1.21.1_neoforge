@@ -1,5 +1,6 @@
 package com.Harbinger.Spore.Client.Renderers;
 
+import com.Harbinger.Spore.Client.Layers.WaterCalamityCamo;
 import com.Harbinger.Spore.Client.Models.*;
 import com.Harbinger.Spore.Client.Models.KrakenTentacles.*;
 import com.Harbinger.Spore.Sentities.BaseEntities.HohlMultipart;
@@ -49,6 +50,7 @@ public class LeviathanSegRenderer<Type extends LeviathanMultipart> extends Livin
         super(context, new LeviathanTailModel<>(), 4f);
         middleSeg = new LeviathanMiddleSegment<>();
         this.addLayer(new HohlColors<>(this));
+        this.addLayer(new WaterCalamityCamo<>(this));
     }
     public EntityModel<Type> getTentacleModel(int i){
         return switch (i) {

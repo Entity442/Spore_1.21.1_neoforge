@@ -2,6 +2,7 @@ package com.Harbinger.Spore.Client.Models;// Made with Blockbench 5.0.7
 // Exported for Minecraft version 1.17 or later with Mojang mappings
 // Paste this class into your mod and generate all required imports
 import com.Harbinger.Spore.Sentities.BaseEntities.LeviathanMultipart;
+import com.Harbinger.Spore.Sentities.Calamities.Leviathan;
 import com.Harbinger.Spore.Spore;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -579,6 +580,7 @@ public class LeviathanTailModel<T extends LeviathanMultipart> extends EntityMode
 
 	@Override
 	public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+		LeviathanAbdomen.getAllParts().forEach(part -> {part.resetPose();});
 		boolean water = entity.isInWater();
 		float tumorVal3 = Mth.sin(ageInTicks/6)/8;
 		float tumorVal4 = Mth.cos(ageInTicks/7)/6;
@@ -597,6 +599,15 @@ public class LeviathanTailModel<T extends LeviathanMultipart> extends EntityMode
 		animateTumor(Tumor2,tumorVal3);
 		animateTumor(Tumor3,tumorVal6);
 		animateTumor(Tumor8,tumorVal5);
+		if (!(limbSwingAmount > -0.15F && limbSwingAmount < 0.15F)){
+			if (entity.isInWater()){
+				float upAndDown = Mth.cos(limbSwing * 0.25f) * 2;
+				LeviathanAbdomen.y = LeviathanAbdomen.getInitialPose().y+upAndDown;
+				float movement = Mth.cos(limbSwing * 0.25F) * 0.25F * limbSwingAmount;
+				this.animateTentacleX(tail,movement);
+				this.animateTentacleX(tailFlipper,movement);
+			}
+		}
 	}
 
 	@Override

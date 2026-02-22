@@ -1,6 +1,7 @@
 package com.Harbinger.Spore.Client.Renderers;
 
 
+import com.Harbinger.Spore.Client.Layers.WaterCalamityCamo;
 import com.Harbinger.Spore.Client.Models.KrakenTentacles.*;
 import com.Harbinger.Spore.Client.Models.LeviathanModel;
 import com.Harbinger.Spore.Client.Special.CalamityRenderer;
@@ -47,6 +48,7 @@ public class LeviathanRenderer<Type extends Leviathan> extends CalamityRenderer<
 
     public LeviathanRenderer(EntityRendererProvider.Context context) {
         super(context, new LeviathanModel<>(), 4f);
+        this.addLayer(new WaterCalamityCamo<>(this));
     }
     public EntityModel<Type> getTentacleModel(int i){
         return switch (i) {

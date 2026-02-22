@@ -69,11 +69,7 @@ public class CalamityPathNavigation extends GroundPathNavigation {
         if (this.mob instanceof WaterInfected){
             this.nodeEvaluator = new WaterCalamityNodeEvaluator();
             this.nodeEvaluator.setCanPassDoors(true);
-            return new PathFinder(this.nodeEvaluator,value) {
-                protected float distance(Node node, Node node1) {
-                    return node.distanceManhattan(node1);
-                }
-            };
+            return new PathFinder(this.nodeEvaluator,value);
         }else if (this.mob instanceof FlyingInfected){
             this.nodeEvaluator = new AirCalamityNodeEvaluator();
             this.nodeEvaluator.setCanPassDoors(true);

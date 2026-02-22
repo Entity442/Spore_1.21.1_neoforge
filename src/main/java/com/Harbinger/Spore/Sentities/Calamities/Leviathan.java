@@ -9,11 +9,11 @@ import com.Harbinger.Spore.Sentities.BaseEntities.CalamityMultipart;
 import com.Harbinger.Spore.Sentities.BaseEntities.IkUtil.IkLeviFin;
 import com.Harbinger.Spore.Sentities.BaseEntities.IkUtil.IkLeviLeg;
 import com.Harbinger.Spore.Sentities.BaseEntities.LeviathanMultipart;
-import com.Harbinger.Spore.Sentities.Projectile.ThrownTumor;
 import com.Harbinger.Spore.Sentities.Projectile.VomitHohlBall;
 import com.Harbinger.Spore.Sentities.TrueCalamity;
 import com.Harbinger.Spore.Sentities.WaterInfected;
 import com.Harbinger.Spore.core.*;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -76,9 +76,9 @@ public class Leviathan extends Calamity implements TrueCalamity, WaterInfected, 
     /* ---------------- DATA ---------------- */
     public void travel(Vec3 vec) {
         if (this.isEffectiveAi() && this.isInFluidType()) {
-            this.moveRelative(0.1F, vec);
+            this.moveRelative(0.2F, vec);
             this.move(MoverType.SELF, this.getDeltaMovement());
-            this.setDeltaMovement(this.getDeltaMovement().scale(0.7D));
+            this.setDeltaMovement(this.getDeltaMovement().scale(0.75D).add(0,0.01f,0));
         } else {
             super.travel(vec);
         }
@@ -288,12 +288,12 @@ public class Leviathan extends Calamity implements TrueCalamity, WaterInfected, 
 
     /*----------------- LEG POSITIONS --------*/
     enum LEG_POSITIONS{
-        BACK_LEFT_TENTACLE(new Vec3(-2,1,0.75),new Vec3(-4, 0, 6)),
-        BACK_RIGHT_TENTACLE(new Vec3(-2,1,-0.75),new Vec3(-4, 0, -6)),
-        FRONT_LEFT_TENTACLE(new Vec3(0,1.5,0.75),new Vec3(4, 0, 6)),
-        FRONT_RIGHT_TENTACLE(new Vec3(0,1.5,-0.75),new Vec3(4, 0, -6)),
-        LEFT_ARM(new Vec3(0,1,0.75),new Vec3(-1, 0.5, 6)),
-        RIGHT_ARM(new Vec3(0,1,-0.75),new Vec3(-1, 0.5, -6));
+        BACK_LEFT_TENTACLE(new Vec3(-2,1,0.75),new Vec3(-4, 0, 3)),
+        BACK_RIGHT_TENTACLE(new Vec3(-2,1,-0.75),new Vec3(-4, 0, -3)),
+        FRONT_LEFT_TENTACLE(new Vec3(0,1.5,0.75),new Vec3(4, 0, 3)),
+        FRONT_RIGHT_TENTACLE(new Vec3(0,1.5,-0.75),new Vec3(4, 0, -3)),
+        LEFT_ARM(new Vec3(0,1,0.75),new Vec3(-1, 0.5, 4)),
+        RIGHT_ARM(new Vec3(0,1,-0.75),new Vec3(-1, 0.5, -4));
         private final Vec3 bodySet;
         private final Vec3 offset;
 
@@ -356,6 +356,44 @@ public class Leviathan extends Calamity implements TrueCalamity, WaterInfected, 
             }
             setSprayCooldown(40);
         }
+        if (tickCount % 1200 == 0 && getSearchArea() == BlockPos.ZERO && !isOcean(level().getBiome(this.getOnPos()))){
+            BlockPos pos = findOcean(level(),this.getOnPos());
+            if (pos != null){
+                setSearchArea(pos);
+            }
+        }
+
+        if (isInLiquid()){
+            Vec3 vec3 = target == null ? this.getDeltaMovement() : target.position();
+
+            if (vec3.horizontalDistanceSqr() > 2.5E-7F) {
+                double dx = vec3.x;
+                double dy = vec3.y;
+                double dz = vec3.z;
+
+                double horizontal = Math.sqrt(dx * dx + dz * dz);
+
+                float yaw = (float)(Mth.atan2(dz, dx) * (180F / Math.PI)) - 90F;
+
+                float pitch = (float)(Mth.atan2(dy, horizontal) * (180F / Math.PI));
+
+                this.setYRot(yaw);
+                this.setXRot(pitch);
+
+                this.yBodyRot = lerpRotation(this.yRotO, this.getYRot());
+            }
+        }
+    }
+    protected static float lerpRotation(float currentRotation, float targetRotation) {
+        while(targetRotation - currentRotation < -180.0F) {
+            currentRotation -= 360.0F;
+        }
+
+        while(targetRotation - currentRotation >= 180.0F) {
+            currentRotation += 360.0F;
+        }
+
+        return Mth.lerp(0.2F, currentRotation, targetRotation);
     }
     public int getExtraShots(){
         AttributeInstance instance = this.getAttribute(SAttributes.BALLISTIC);
