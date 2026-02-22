@@ -9,6 +9,7 @@ import com.Harbinger.Spore.Sentities.BaseEntities.CalamityMultipart;
 import com.Harbinger.Spore.Sentities.BaseEntities.IkUtil.IkLeviFin;
 import com.Harbinger.Spore.Sentities.BaseEntities.IkUtil.IkLeviLeg;
 import com.Harbinger.Spore.Sentities.BaseEntities.LeviathanMultipart;
+import com.Harbinger.Spore.Sentities.Projectile.AcidBall;
 import com.Harbinger.Spore.Sentities.Projectile.VomitHohlBall;
 import com.Harbinger.Spore.Sentities.TrueCalamity;
 import com.Harbinger.Spore.Sentities.WaterInfected;
@@ -78,7 +79,7 @@ public class Leviathan extends Calamity implements TrueCalamity, WaterInfected, 
         if (this.isEffectiveAi() && this.isInFluidType()) {
             this.moveRelative(0.2F, vec);
             this.move(MoverType.SELF, this.getDeltaMovement());
-            this.setDeltaMovement(this.getDeltaMovement().scale(0.75D).add(0,0.01f,0));
+            this.setDeltaMovement(this.getDeltaMovement().scale(0.85D).add(0,onGround() ? 0.01f : 0,0));
         } else {
             super.travel(vec);
         }
@@ -283,7 +284,8 @@ public class Leviathan extends Calamity implements TrueCalamity, WaterInfected, 
 
     @Override
     public void performRangedAttack(LivingEntity livingEntity, float v) {
-        VomitHohlBall.shoot(this,livingEntity,(float) (SConfig.SERVER.levi_damage.get() * 0.25),false,getKills() > 0);
+        AcidBall.shoot(this, livingEntity,
+                (float) (SConfig.SERVER.levi_damage.get() * 0.25 * SConfig.SERVER.global_damage.get()) * 2);
     }
 
     /*----------------- LEG POSITIONS --------*/
@@ -360,27 +362,6 @@ public class Leviathan extends Calamity implements TrueCalamity, WaterInfected, 
             BlockPos pos = findOcean(level(),this.getOnPos());
             if (pos != null){
                 setSearchArea(pos);
-            }
-        }
-
-        if (isInLiquid()){
-            Vec3 vec3 = target == null ? this.getDeltaMovement() : target.position();
-
-            if (vec3.horizontalDistanceSqr() > 2.5E-7F) {
-                double dx = vec3.x;
-                double dy = vec3.y;
-                double dz = vec3.z;
-
-                double horizontal = Math.sqrt(dx * dx + dz * dz);
-
-                float yaw = (float)(Mth.atan2(dz, dx) * (180F / Math.PI)) - 90F;
-
-                float pitch = (float)(Mth.atan2(dy, horizontal) * (180F / Math.PI));
-
-                this.setYRot(yaw);
-                this.setXRot(pitch);
-
-                this.yBodyRot = lerpRotation(this.yRotO, this.getYRot());
             }
         }
     }

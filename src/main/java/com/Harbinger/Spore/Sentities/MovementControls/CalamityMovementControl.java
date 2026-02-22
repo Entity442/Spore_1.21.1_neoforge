@@ -38,7 +38,7 @@ public class CalamityMovementControl extends MoveControl {
                 this.mob.getJumpControl().jump();
             }
             if (this.wantedY > this.mob.getY()){
-                this.mob.setDeltaMovement(this.mob.getDeltaMovement().add(0,0.01,0));
+                this.mob.setDeltaMovement(this.mob.getDeltaMovement().add(0,0.05,0));
             }else{
                 this.mob.setDeltaMovement(this.mob.getDeltaMovement().add(0,-0.01,0));
             }
