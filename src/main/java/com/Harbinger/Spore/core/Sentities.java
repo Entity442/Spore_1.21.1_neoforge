@@ -288,6 +288,10 @@ public class Sentities {
             EntityType.Builder.<Vomit>of(Vomit::new, MobCategory.MISC)
                     .setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(1).sized(0.5f, 0.5f));
 
+    public static final Supplier<EntityType<DrownedFleshBomb>> DROWNED_FLESH_BOMB = register("drowned_flesh_bomb",
+            EntityType.Builder.<DrownedFleshBomb>of(DrownedFleshBomb::new, MobCategory.MISC)
+                    .setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(1).sized(0.5f, 0.5f));
+
     public static final Supplier<EntityType<ThrownSpear>> THROWN_SPEAR = register("thrown_spear",
             EntityType.Builder.<ThrownSpear>of(ThrownSpear::new, MobCategory.MISC)
                     .setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(1).sized(0.5f, 0.5f));

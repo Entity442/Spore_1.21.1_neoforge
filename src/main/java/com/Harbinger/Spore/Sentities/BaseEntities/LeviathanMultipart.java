@@ -250,7 +250,7 @@ public class LeviathanMultipart extends LivingEntity implements TrueCalamity {
     public boolean hurtHeadId(DamageSource source, float damage) {
         if (headEntityId != -1) {
             Entity e = level().getEntity(headEntityId);
-            if (e instanceof Hohlfresser) {
+            if (e instanceof LivingEntity) {
                 return e.hurt(source, damage);
             }
         }

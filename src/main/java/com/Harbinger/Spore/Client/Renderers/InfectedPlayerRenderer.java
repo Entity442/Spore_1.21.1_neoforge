@@ -115,6 +115,8 @@ public class InfectedPlayerRenderer extends BaseInfectedRenderer<InfectedPlayer 
                 "textures/entity/player/inf_player_minisketchy0919.png"));
         put(Component.literal("yile_ouo"), ResourceLocation.fromNamespaceAndPath(Spore.MODID,
                 "textures/entity/player/yile_ouo.png"));
+        put(Component.literal("TheCaramelGuy"), ResourceLocation.fromNamespaceAndPath(Spore.MODID,
+                "textures/entity/player/thecaramelguy.png"));
     }};
 
     public InfectedPlayerRenderer(EntityRendererProvider.Context context) {

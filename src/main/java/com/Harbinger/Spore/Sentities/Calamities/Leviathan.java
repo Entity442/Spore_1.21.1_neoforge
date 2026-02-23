@@ -10,7 +10,7 @@ import com.Harbinger.Spore.Sentities.BaseEntities.IkUtil.IkLeviFin;
 import com.Harbinger.Spore.Sentities.BaseEntities.IkUtil.IkLeviLeg;
 import com.Harbinger.Spore.Sentities.BaseEntities.LeviathanMultipart;
 import com.Harbinger.Spore.Sentities.Projectile.AcidBall;
-import com.Harbinger.Spore.Sentities.Projectile.VomitHohlBall;
+import com.Harbinger.Spore.Sentities.Projectile.DrownedFleshBomb;
 import com.Harbinger.Spore.Sentities.TrueCalamity;
 import com.Harbinger.Spore.Sentities.WaterInfected;
 import com.Harbinger.Spore.core.*;
@@ -194,6 +194,20 @@ public class Leviathan extends Calamity implements TrueCalamity, WaterInfected, 
     }
 
     @Override
+    public List<? extends String> getDropList() {
+        return SConfig.DATAGEN.leviathan_loot.get();
+    }
+
+    @Override
+    public boolean hurt(DamageSource source, float amount) {
+        if (source.getEntity() != null && amount >= 10 && Math.random() < 0.2){
+            explodeSegments();
+            this.playSound(Ssounds.CALAMITY_DEATH.value());
+        }
+        return super.hurt(source, amount);
+    }
+
+    @Override
     public boolean isMultipartEntity() {
         return true;
     }
@@ -365,17 +379,7 @@ public class Leviathan extends Calamity implements TrueCalamity, WaterInfected, 
             }
         }
     }
-    protected static float lerpRotation(float currentRotation, float targetRotation) {
-        while(targetRotation - currentRotation < -180.0F) {
-            currentRotation -= 360.0F;
-        }
 
-        while(targetRotation - currentRotation >= 180.0F) {
-            currentRotation += 360.0F;
-        }
-
-        return Mth.lerp(0.2F, currentRotation, targetRotation);
-    }
     public int getExtraShots(){
         AttributeInstance instance = this.getAttribute(SAttributes.BALLISTIC);
         if (instance != null){
@@ -492,7 +496,32 @@ public class Leviathan extends Calamity implements TrueCalamity, WaterInfected, 
             part = next instanceof LeviathanMultipart l ? l : null;
         }
     }
+    public void explodeSegments(){
+        explodeTumorsAround(this.position());
+        LeviathanMultipart part = getFirstSegment();
+        if (part != null){
+            explodeTumorsAround(part.position());
+            Entity entity = part.getChild();
+            if (entity instanceof LeviathanMultipart){
+                explodeTumorsAround(entity.position());
+            }
+        }
+    }
 
+    public void explodeTumorsAround(Vec3 pos){
+        for (int i = 0;i<random.nextInt(3,7);i++){
+            DrownedFleshBomb fleshBomb = new DrownedFleshBomb(level());
+            int e = SConfig.SERVER.levi_explosive_effects.get().size();
+            fleshBomb.setEffect(SConfig.SERVER.levi_explosive_effects.get().get(random.nextInt(e)));
+            fleshBomb.moveTo(pos);
+            fleshBomb.setDeltaMovement(new Vec3(
+                    (random.nextDouble() - random.nextDouble()) * 0.9,
+                    random.nextDouble() * 0.6 + 0.3,
+                    (random.nextDouble() - random.nextDouble()) * 0.9
+            ));
+            level().addFreshEntity(fleshBomb);
+        }
+    }
     @Override
     public void die(DamageSource source) {
         super.die(source);

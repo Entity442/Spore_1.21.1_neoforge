@@ -315,6 +315,7 @@ public class ClientModEvents {
         event.registerEntityRenderer(Sentities.ILLUSION.get(), IllusionRenderer::new);
         event.registerEntityRenderer(Sentities.WAVE.get(), WaveRenderer::new);
         event.registerEntityRenderer(Sentities.USURPER_VOMIT_BALL.get(), UsurperVomitRenderer::new);
+        event.registerEntityRenderer(Sentities.DROWNED_FLESH_BOMB.get(), DrownedFleshBombRenderer::new);
     }
 
 
