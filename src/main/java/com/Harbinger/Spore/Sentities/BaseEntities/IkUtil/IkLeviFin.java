@@ -59,19 +59,22 @@ public class IkLeviFin {
         return pivot.add(applyYaw(defaultBodyOffset));
     }
     protected Vec3 applySwimCircle(Vec3 baseTipPos) {
-        float swimRadius = owner.isInWater() ? 3.5f : 2;
         if (!isOwnerMoving()) return baseTipPos;
-
         swimAngle += swimSpeed;
         swimAngle = Mth.wrapDegrees(swimAngle);
 
         float rad = swimAngle * Mth.DEG_TO_RAD;
+        if (owner.isInWater()){
+            double x = Math.cos(rad) * 7;
+            double y = Math.sin(rad) * 3.5f;
+            Vec3 circularOffset = new Vec3(-x, y, 0);
+            circularOffset = applyYaw(circularOffset);
 
-        double x = Math.cos(rad) * swimRadius * 2;
-        double y = Math.sin(rad) * swimRadius;
-        Vec3 circularOffset = new Vec3(-x, y, 0);
+            return baseTipPos.add(circularOffset);
+        }
+        double x = Math.cos(rad) * 3.5;
+        Vec3 circularOffset = new Vec3(-x, 0, 0);
         circularOffset = applyYaw(circularOffset);
-
         return baseTipPos.add(circularOffset);
     }
     protected void moveSegmentTowards(int index, Vec3 target,boolean far) {

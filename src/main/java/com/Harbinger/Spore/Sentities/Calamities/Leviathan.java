@@ -308,8 +308,8 @@ public class Leviathan extends Calamity implements TrueCalamity, WaterInfected, 
         BACK_RIGHT_TENTACLE(new Vec3(-2,1,-0.75),new Vec3(-4, 0, -3)),
         FRONT_LEFT_TENTACLE(new Vec3(0,1.5,0.75),new Vec3(4, 0, 3)),
         FRONT_RIGHT_TENTACLE(new Vec3(0,1.5,-0.75),new Vec3(4, 0, -3)),
-        LEFT_ARM(new Vec3(0,1,0.75),new Vec3(-1, 0.5, 4)),
-        RIGHT_ARM(new Vec3(0,1,-0.75),new Vec3(-1, 0.5, -4));
+        LEFT_ARM(new Vec3(0,1,0.75),new Vec3(-1, 0.5, 6)),
+        RIGHT_ARM(new Vec3(0,1,-0.75),new Vec3(-1, 0.5, -6));
         private final Vec3 bodySet;
         private final Vec3 offset;
 
