@@ -28,7 +28,7 @@ public class DrownedFleshBombRenderer<T extends DrownedFleshBomb>extends EntityR
 
     public void render(T entity, float value2, float value, PoseStack stack, MultiBufferSource source, int p_116116_) {
         stack.pushPose();
-        stack.translate(0,1.5,0);
+        stack.translate(0,-1,0);
         stack.mulPose(Axis.ZN.rotationDegrees(180));
         stack.mulPose(Axis.YP.rotationDegrees(Mth.lerp(value, entity.yRotO, entity.getYRot()) - 90.0F));
         stack.mulPose(Axis.ZP.rotationDegrees(Mth.lerp(value, entity.xRotO, entity.getXRot()) + 90.0F));

@@ -138,6 +138,8 @@ public class Ssounds {
 
     public static final Holder<SoundEvent> FUNGAL_BURST = soundRegistry("fungal_burst");
 
+    public static final Holder<SoundEvent> FUNGAL_BOOM = soundRegistry("fungal_boom");
+
     public static final Holder<SoundEvent> HEART_BEAT = soundRegistry("heart_beat");
 
     public static final Holder<SoundEvent> PUFF = soundRegistry("puff");

@@ -35,6 +35,7 @@ public class DrownedFleshBomb extends AbstractArrow {
     private static final EntityDataAccessor<Float> DAMAGE = SynchedEntityData.defineId(DrownedFleshBomb.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Integer> BOMB_TIME = SynchedEntityData.defineId(DrownedFleshBomb.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<String> EFFECT = SynchedEntityData.defineId(DrownedFleshBomb.class, EntityDataSerializers.STRING);
+    private static final EntityDataAccessor<Boolean> FLOAT = SynchedEntityData.defineId(DrownedFleshBomb.class, EntityDataSerializers.BOOLEAN);
     public DrownedFleshBomb(EntityType<DrownedFleshBomb> vomitEntityType, Level level) {
         super(vomitEntityType,level);
     }
@@ -42,17 +43,20 @@ public class DrownedFleshBomb extends AbstractArrow {
     @Override
     public void tick() {
         super.tick();
+        if (isInWater() && entityData.get(FLOAT)){
+            this.setDeltaMovement(getDeltaMovement().add(0,0.1,0));
+        }
         if (getBombTime() < 80){
             setBombTime(getBombTime()+1);
         }else {
             explodeBomb();
-            level().addParticle(ParticleTypes.EXPLOSION_EMITTER,this.getX(),this.getY(),this.getZ(),0,0,0);
             discard();
         }
     }
     public void explodeBomb(){
-        if (level() instanceof ServerLevel){
-            this.playSound(Ssounds.FUNGAL_BURST.value());
+        if (level() instanceof ServerLevel serverLevel){
+            serverLevel.sendParticles(ParticleTypes.EXPLOSION_EMITTER,this.getX(),this.getY(),this.getZ(),3,0,0,0,1);
+            this.playSound(Ssounds.FUNGAL_BOOM.value());
             AABB aabb = this.getBoundingBox().inflate(3);
             List<Entity> entityList = level().getEntities(this,aabb);
             if (entityList.isEmpty()){
@@ -88,6 +92,7 @@ public class DrownedFleshBomb extends AbstractArrow {
         builder.define(DAMAGE, 2f);
         builder.define(BOMB_TIME, 0);
         builder.define(EFFECT, "spore:mycelium_ef");
+        builder.define(FLOAT, Math.random() <= 0.5);
     }
 
     @Override
@@ -96,6 +101,7 @@ public class DrownedFleshBomb extends AbstractArrow {
         this.setDamage(tag.getFloat("damage"));
         this.setBombTime(tag.getInt("bomb_time"));
         this.setEffect(tag.getString("effect"));
+        this.entityData.set(FLOAT,tag.getBoolean("float"));
     }
 
     @Override
@@ -104,6 +110,7 @@ public class DrownedFleshBomb extends AbstractArrow {
         tag.putFloat("damage",this.getDamage());
         tag.putInt("bomb_time",this.getBombTime());
         tag.putString("effect",getEffect());
+        tag.putBoolean("float",entityData.get(FLOAT));
     }
     public float getDamage(){return entityData.get(DAMAGE);}
     public void setDamage(float value){entityData.set(DAMAGE,value);}
