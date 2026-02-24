@@ -1,6 +1,7 @@
 package com.Harbinger.Spore.Sentities.Projectile;
 
 import com.Harbinger.Spore.ExtremelySusThings.Utilities;
+import com.Harbinger.Spore.core.Seffects;
 import com.Harbinger.Spore.core.Sentities;
 import com.Harbinger.Spore.core.Sitems;
 import com.Harbinger.Spore.core.Ssounds;
@@ -65,7 +66,15 @@ public class DrownedFleshBomb extends AbstractArrow {
             for (Entity entity : entityList){
                 if (entity instanceof LivingEntity living && Utilities.TARGET_SELECTOR.Test(living)){
                     Holder<MobEffect> effect = Utilities.tryToCreateEffect(ResourceLocation.parse(getEffect()));
-                    living.addEffect(new MobEffectInstance(effect,200,0));
+                    if (effect == null || !effect.isBound()) {
+                        effect = Seffects.MYCELIUM;
+                    } else {
+                        effect.value();
+                    }
+
+                    if (effect != null && effect.isBound() && effect.value() != null) {
+                        living.addEffect(new MobEffectInstance(effect, 200, 0));
+                    }
                 }
             }
         }
