@@ -1,10 +1,8 @@
 package com.Harbinger.Spore.Sentities.BaseEntities.IkUtil;
 
-import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
 
@@ -18,7 +16,6 @@ public class IkLeviFin {
     protected final Vec3[] segmentVelocities;
     protected Vec3 sitPosition =  null;
     protected Vec3 lastSitPosition = null;
-    protected int stepUpTicks = 0;
     protected Vec3 lastOwnerPosition = Vec3.ZERO;
     protected Vec3 ownerMovementDelta = Vec3.ZERO;
     protected float lastYaw = 0;
@@ -194,9 +191,6 @@ public class IkLeviFin {
 
             Vec3 solvedPos = prevPos.add(dir);
             moveSegmentTowards(i, solvedPos, entities[i-1].distanceTo(entities[i]) > 5);
-        }
-        if (stepUpTicks > 0){
-            stepUpTicks--;
         }
     }
 
