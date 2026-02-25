@@ -3,12 +3,8 @@ package com.Harbinger.Spore.core;
 
 import com.Harbinger.Spore.Sblocks.*;
 import com.Harbinger.Spore.Spore;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockSetType;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredBlock;
@@ -102,6 +98,7 @@ public class Sblocks {
     public static final DeferredBlock<Block> FROST_BURNED_BIOMASS = BLOCKS.register("freeze_burned_biomass", () -> new FrozenBiomass(BlockBehaviour.Properties.of().strength(2f,2f).sound(SoundType.SLIME_BLOCK).randomTicks()));
     public static final DeferredBlock<LiquidBlock> BILE = BLOCKS.register("bile", () -> new BileLiquidBlock());
     public static final DeferredBlock<Block> CRUSTED_BILE = BLOCKS.register("crusted_bile", CrustedBile::new);
+
 
     public static final DeferredBlock<Block> REMAINS = BLOCKS.register("remains", Remains::new);
     public static final DeferredBlock<Block> WALL_REMAINS = BLOCKS.register("wall_remains", WallRemainsBlock::new);
