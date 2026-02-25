@@ -1833,7 +1833,7 @@ public class SConfig {
                     Lists.newArrayList("spore:mutated_fiber|100|33|75","spore:armor_fragment|100|15|38","spore:mutated_heart|70|3|7","spore:cerebrum|70|4|9","spore:spine_fragment|56|7|15") , o -> o instanceof String);
 
             this.leviathan_loot = builder.defineList("Leviathan",
-                    Lists.newArrayList("spore:mutated_fiber|100|33|75","spore:armor_fragment|100|15|38","spore:mutated_heart|70|3|7","spore:cerebrum|70|4|9","spore:spine_fragment|56|7|15") , o -> o instanceof String);
+                    Lists.newArrayList("spore:mutated_fiber|100|33|75","spore:corrosive_sack|100|3|8","spore:armor_fragment|100|15|38","spore:mutated_heart|70|3|7","spore:cerebrum|70|4|9","spore:spine_fragment|56|7|15") , o -> o instanceof String);
 
             this.graken_loot = builder.defineList("Graken",
                     Lists.newArrayList("spore:mutated_fiber|100|33|75","spore:armor_fragment|100|15|38","spore:mutated_heart|70|3|7","spore:cerebrum|70|4|9","spore:spine_fragment|56|7|15") , o -> o instanceof String);
@@ -1921,7 +1921,7 @@ public class SConfig {
                             "ButtonHatBoy", "Gistique", "yile_ouo", "BigXplosion", "Atomiclbomb", "Mad_Dog", "Ripley", "gregTheTyrant", "Joker_de_Coeur",
                             "xXFuryXx", "Nova69", "Belladonna","Entity","Keymind","Whisper","Helldwin", "ExeedingSky74", "Flash62724", "Hank_o", "JWT114",
                             "DawnsSlayers", "Dr_Pilot_MOO", "NexouuZ", "Mr_Door12323", "PedroHenrry", "TVGuy", "ThatGardener", "TheCaramelGuy", "TokenOni420",
-                            "lightigivhi", "CODATOWER", "mrlambert6", "SyrCrypt", "KaratFeng","Toasteroni","UnmeiHa","AllToAshes","0dna","minisketchy0919") , o -> o instanceof String);
+                            "lightigivhi", "CODATOWER", "mrlambert6","ThatGardener", "SyrCrypt", "KaratFeng","Toasteroni","UnmeiHa","AllToAshes","0dna","minisketchy0919") , o -> o instanceof String);
             builder.comment("Items|chance of giving");
             this.player_h = builder.defineList("Head Slot",
                     Lists.newArrayList("minecraft:leather_helmet|50","minecraft:iron_helmet|20","minecraft:chainmail_helmet|20") , o -> o instanceof String);
