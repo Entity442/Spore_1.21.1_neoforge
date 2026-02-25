@@ -23,6 +23,9 @@ public class CalamityPartsHandeling {
     private static final hohlfresserTailModel<?> worm_tailModel = new hohlfresserTailModel<>();
     private static final GrakensenkerModel<?> grakensenkerModel = new GrakensenkerModel<>();
     private static final StahlmorderModel<?> stahlmorderModel = new StahlmorderModel<>();
+    private static final LeviathanModel<?> leviathanModel = new LeviathanModel<>();
+    private static final LeviathanMiddleSegment<?> leviathanSegModel = new LeviathanMiddleSegment<>();
+    private static final LeviathanTailModel<?> leviathanTailModel = new LeviathanTailModel<>();
     private static final ResourceLocation DEFAULT_SIEGER = ResourceLocation.fromNamespaceAndPath(Spore.MODID,"textures/entity/sieger.png");
     private static final ResourceLocation ADAPTED_SIEGER = ResourceLocation.fromNamespaceAndPath(Spore.MODID,"textures/entity/war_sieger.png");
     private static final ResourceLocation DEFAULT_GAZEN = ResourceLocation.fromNamespaceAndPath(Spore.MODID,"textures/entity/gazen.png");
@@ -37,6 +40,8 @@ public class CalamityPartsHandeling {
     private static final ResourceLocation HOHL_ORGAN_SEG  = ResourceLocation.fromNamespaceAndPath(Spore.MODID,"textures/entity/hohl/hohl_seg3.png");
     private static final ResourceLocation GRAKEN  = ResourceLocation.fromNamespaceAndPath(Spore.MODID,"textures/entity/graken.png");
     private static final ResourceLocation STAHL  = ResourceLocation.fromNamespaceAndPath(Spore.MODID,"textures/entity/stalh.png");
+    private static final ResourceLocation LEVIATHAN  = ResourceLocation.fromNamespaceAndPath(Spore.MODID,"textures/entity/leviathan.png");
+    private static final ResourceLocation LEVIATHAN_TAIL  = ResourceLocation.fromNamespaceAndPath(Spore.MODID,"textures/entity/leviathan_tail.png");
     public record Part(int id, List<ModelPart> parts,float x, float y,float z,float xRot, float yRot,float zRot, ResourceLocation location,ResourceLocation adapted_location){}
 
     public static final Part SIEGER_BODY = new Part(0,List.of(siegerModel.mainbody,siegerModel.mainbody2),0,0,0,0,0,0,DEFAULT_SIEGER,ADAPTED_SIEGER);
@@ -86,6 +91,12 @@ public class CalamityPartsHandeling {
     public static final Part STAHL_ARM_ARM = new Part(38,List.of(stahlmorderModel.UpperRightarm),0,-1,-2,0,0,0,STAHL,STAHL);
     public static final Part STAHL_ARM_ARM2 = new Part(39,List.of(stahlmorderModel.LowerRightarm),0,1,-2,0,0,0,STAHL,STAHL);
     public static final Part STAHL_MOUTH = new Part(40,List.of(stahlmorderModel.Mouth),-1,0,0,0,0,0,STAHL,STAHL);
+
+    public static final Part LEVIATHAN_BODY = new Part(41,List.of(leviathanModel.Base,leviathanModel.details,leviathanModel.acidSacks,leviathanModel.Tumors,leviathanModel.Tumors2),4,0,0,0,0,0,LEVIATHAN,LEVIATHAN);
+    public static final Part LEVIATHAN_SEGMENT = new Part(42,List.of(leviathanSegModel.LeviathanAbdomen),0,0,0,0,0,0,LEVIATHAN_TAIL,LEVIATHAN_TAIL);
+    public static final Part LEVI_TAIL = new Part(43,List.of(leviathanTailModel.LeviathanAbdomen),0,2,0,0,0,0,LEVIATHAN_TAIL,LEVIATHAN_TAIL);
+    public static final Part LEVI_RIGHT_JAW = new Part(44,List.of(leviathanModel.RightJaw),-1,-2,-1,0,0,90,LEVIATHAN,LEVIATHAN);
+    public static final Part LEVI_LEFT_JAW = new Part(45,List.of(leviathanModel.LeftJaw),-1,-2,1,0,0,90,LEVIATHAN,LEVIATHAN);
 
     public static Part getPart(int value){
         return getParts.stream().filter(p -> p.id == value).findFirst().orElse(SIEGER_BODY);
@@ -139,5 +150,11 @@ public class CalamityPartsHandeling {
         add(STAHL_ARM_ARM);
         add(STAHL_ARM_ARM2);
         add(STAHL_MOUTH);
+
+        add(LEVIATHAN_BODY);
+        add(LEVIATHAN_SEGMENT);
+        add(LEVI_TAIL);
+        add(LEVI_RIGHT_JAW);
+        add(LEVI_LEFT_JAW);
     }};
 }

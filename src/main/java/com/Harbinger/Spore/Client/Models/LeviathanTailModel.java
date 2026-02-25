@@ -2,7 +2,6 @@ package com.Harbinger.Spore.Client.Models;// Made with Blockbench 5.0.7
 // Exported for Minecraft version 1.17 or later with Mojang mappings
 // Paste this class into your mod and generate all required imports
 import com.Harbinger.Spore.Sentities.BaseEntities.LeviathanMultipart;
-import com.Harbinger.Spore.Sentities.Calamities.Leviathan;
 import com.Harbinger.Spore.Spore;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -18,7 +17,7 @@ public class LeviathanTailModel<T extends LeviathanMultipart> extends EntityMode
 	// This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
 	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation( ResourceLocation.fromNamespaceAndPath(Spore.MODID, "leviathantail"), "main");
 	private int stir = 0;
-	private final ModelPart LeviathanAbdomen;
+	public final ModelPart LeviathanAbdomen;
 	private final ModelPart Base;
 	private final ModelPart tail;
 	private final ModelPart fin2;

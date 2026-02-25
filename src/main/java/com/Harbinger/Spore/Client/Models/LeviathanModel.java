@@ -18,7 +18,7 @@ public class LeviathanModel<T extends Leviathan> extends EntityModel<T> implemen
 	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "leviathanmodel"), "main");
 	private int open = 0;
 	private final ModelPart Leviathan;
-	private final ModelPart RightJaw;
+	public final ModelPart RightJaw;
 	private final ModelPart FrontBase;
 	private final ModelPart FrontTopMouthCorpseDetails;
 	private final ModelPart MouthTopCenterpiece;
@@ -50,7 +50,7 @@ public class LeviathanModel<T extends Leviathan> extends EntityModel<T> implemen
 	private final ModelPart tuskbody6;
 	private final ModelPart tuskbody4;
 	private final ModelPart tuskbody17;
-	private final ModelPart LeftJaw;
+	public final ModelPart LeftJaw;
 	private final ModelPart FrontBase2;
 	private final ModelPart FrontTopMouthCorpseDetails2;
 	private final ModelPart MouthTopCenterpiece2;
@@ -105,8 +105,8 @@ public class LeviathanModel<T extends Leviathan> extends EntityModel<T> implemen
 	private final ModelPart NSMaw;
 	private final ModelPart NSMawSeg2;
 	private final ModelPart NSMawSeg3;
-	private final ModelPart Base;
-	private final ModelPart details;
+	public final ModelPart Base;
+	public final ModelPart details;
 	private final ModelPart fin;
 	private final ModelPart fin2;
 	private final ModelPart fin3;
@@ -150,8 +150,8 @@ public class LeviathanModel<T extends Leviathan> extends EntityModel<T> implemen
 	private final ModelPart CenterBody26;
 	private final ModelPart CenterBody27;
 	private final ModelPart CenterBody28;
-	private final ModelPart Tumors2;
-	private final ModelPart Tumors;
+	public final ModelPart Tumors2;
+	public final ModelPart Tumors;
 	private final ModelPart Tumor;
 	private final ModelPart Tumor2;
 	private final ModelPart Tumor3;
@@ -163,7 +163,7 @@ public class LeviathanModel<T extends Leviathan> extends EntityModel<T> implemen
 	private final ModelPart Tumor9;
 	private final ModelPart Tumor10;
 	private final ModelPart Tumor11;
-	private final ModelPart acidSacks;
+	public final ModelPart acidSacks;
 	private final ModelPart rightSack;
 	private final ModelPart leftSack;
 	private final ModelPart leftSack2;
@@ -1597,8 +1597,10 @@ public class LeviathanModel<T extends Leviathan> extends EntityModel<T> implemen
 			}
 		}
 		animateTentacleY(AcidCannon,tumorVal3);
-		animateTentacleY(RightSidefin,tumorVal3);
-		animateTentacleY(LeftSidefin,tumorVal4);
+		if (entity.isInWater()){
+			animateTentacleY(RightSidefin,tumorVal3);
+			animateTentacleY(LeftSidefin,tumorVal4);
+		}
 	}
 
 	@Override

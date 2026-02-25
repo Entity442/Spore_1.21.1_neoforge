@@ -1,6 +1,7 @@
 package com.Harbinger.Spore.Client.Renderers;
 
 import com.Harbinger.Spore.Client.CalamityPartsHandeling;
+import com.Harbinger.Spore.Client.Models.HowitzerModel;
 import com.Harbinger.Spore.Sentities.Utility.CorpseEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -19,6 +20,7 @@ import net.neoforged.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class CorpseRenderer<T extends CorpseEntity> extends EntityRenderer<T> {
     public CalamityPartsHandeling.Part  partToRender;
+    private static final HowitzerModel<?> how = new HowitzerModel<>();
     public CorpseRenderer(EntityRendererProvider.Context context) {
         super(context);
     }
@@ -56,14 +58,18 @@ public class CorpseRenderer<T extends CorpseEntity> extends EntityRenderer<T> {
 
         VertexConsumer baseConsumer = source.getBuffer(RenderType.entityCutout(getTextureLocation(entity)));
         for (ModelPart part : partToRender.parts()) {
-            part.render(stack, baseConsumer, light, OverlayTexture.NO_OVERLAY, -1);
+            if (how.renderSkip.contains(part)){
+                part.render(stack, baseConsumer, light, OverlayTexture.NO_OVERLAY, -1);
+            }
         }
 
         if (color != 0) {
             int overlayColor = (color & 0x00FFFFFF) | 0x80000000;
             VertexConsumer overlayConsumer = source.getBuffer(RenderType.entityTranslucent(getTextureLocation(entity)));
             for (ModelPart part : partToRender.parts()) {
-                part.render(stack, overlayConsumer, light, OverlayTexture.NO_OVERLAY, overlayColor);
+                if (how.renderSkip.contains(part)){
+                    part.render(stack, overlayConsumer, light, OverlayTexture.NO_OVERLAY, overlayColor);
+                }
             }
         }
     }

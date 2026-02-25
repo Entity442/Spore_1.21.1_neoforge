@@ -17,6 +17,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 public class HowitzerModel<T extends Howitzer> extends EntityModel<T> {
 	// This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
@@ -86,6 +88,7 @@ public class HowitzerModel<T extends Howitzer> extends EntityModel<T> {
 	private final ModelPart Jolly7;
 	protected final LocalDate localdate = LocalDate.now();
 	protected final int j = localdate.getMonth().getValue();
+	public final List<ModelPart> renderSkip;
 	public HowitzerModel() {
 		ModelPart root = createBodyLayer().bakeRoot();
 		this.Howi = root.getChild("Howi");
@@ -151,6 +154,15 @@ public class HowitzerModel<T extends Howitzer> extends EntityModel<T> {
 		this.Jolly5 = Howi.getChild("CannonClusters").getChild("Cluster2").getChild("C2C2").getChild("IncendiaryPresent1");
 		this.Jolly6 = Howi.getChild("CannonClusters").getChild("Cluster1").getChild("C1C1").getChild("CorrosivePresent1");
 		this.Jolly7 = Howi.getChild("CannonClusters").getChild("Cluster1").getChild("C1C2").getChild("Present2");
+		renderSkip = new ArrayList<>(){{
+			add(Jolly1);
+			add(Jolly2);
+			add(Jolly3);
+			add(Jolly4);
+			add(Jolly5);
+			add(Jolly6);
+			add(Jolly7);
+		}};
 	}
 	boolean isJollyTime(){
 		return (j == 12 && SConfig.SERVER.costumes.get()) || SConfig.SERVER.costumes_active.get();

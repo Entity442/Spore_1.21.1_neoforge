@@ -9,6 +9,7 @@ import com.Harbinger.Spore.Sentities.BaseEntities.CalamityMultipart;
 import com.Harbinger.Spore.Sentities.BaseEntities.IkUtil.IkLeviFin;
 import com.Harbinger.Spore.Sentities.BaseEntities.IkUtil.IkLeviLeg;
 import com.Harbinger.Spore.Sentities.BaseEntities.LeviathanMultipart;
+import com.Harbinger.Spore.Sentities.HitboxesForParts;
 import com.Harbinger.Spore.Sentities.Projectile.AcidBall;
 import com.Harbinger.Spore.Sentities.Projectile.DrownedFleshBomb;
 import com.Harbinger.Spore.Sentities.TrueCalamity;
@@ -37,6 +38,7 @@ import net.neoforged.neoforge.entity.PartEntity;
 import net.neoforged.neoforge.fluids.FluidType;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -532,5 +534,19 @@ public class Leviathan extends Calamity implements TrueCalamity, WaterInfected, 
             part.discard();
             part = next instanceof LeviathanMultipart l ? l : null;
         }
+    }
+
+    private final List<HitboxesForParts> innatePartList = List.of(HitboxesForParts.LEVI_BODY,
+            HitboxesForParts.LEVI_SEGMENT, HitboxesForParts.LEVI_TAIL,HitboxesForParts.LEVI_RIGHT_JAW,HitboxesForParts.LEVI_LEFT_JAW);
+    @Override
+    public List<HitboxesForParts> parts() {
+        List<HitboxesForParts> values = new ArrayList<>();
+        for (HitboxesForParts hitboxes : innatePartList){
+            HitboxesForParts part = calculateChance(hitboxes,0.85f);
+            if (part != null){
+                values.add(part);
+            }
+        }
+        return values;
     }
 }

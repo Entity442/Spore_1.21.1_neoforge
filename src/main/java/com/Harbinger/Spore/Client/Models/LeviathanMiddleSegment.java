@@ -16,7 +16,7 @@ import net.minecraft.util.Mth;
 public class LeviathanMiddleSegment<T extends LeviathanMultipart> extends EntityModel<T> implements TentacledModel{
 	// This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
 	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "leviathanmiddlesegment"), "main");
-	private final ModelPart LeviathanAbdomen;
+	public final ModelPart LeviathanAbdomen;
 	private final ModelPart Base;
 	private final ModelPart fin;
 	private final ModelPart CenterCorpseDetails;
