@@ -365,7 +365,7 @@ public class Sitems {
             () -> new SporeSpawnEgg(Sentities.STALH,546456633,SpawnEggType.CALAMITY));
 
     public  static final DeferredItem<Item> LEVIATHAN_SPAWNEGG = ITEMS.register("levi_spawnegg",
-            () -> new SporeSpawnEgg(Sentities.LEVIATHAN,41435435,SpawnEggType.CALAMITY));
+            () -> new SporeSpawnEgg(Sentities.LEVIATHAN,997654443,SpawnEggType.CALAMITY));
 
     public  static final DeferredItem<Item> SABER = ITEMS.register("saber",
             InfectedSaber::new);

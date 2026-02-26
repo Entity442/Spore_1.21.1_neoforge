@@ -30,7 +30,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.LeapAtTargetGoal;
-import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
+import net.minecraft.world.entity.ai.goal.RandomSwimmingGoal;
 import net.minecraft.world.entity.monster.RangedAttackMob;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -432,10 +432,10 @@ public class Leviathan extends Calamity implements TrueCalamity, WaterInfected, 
                 return (double)(f * 3.0F * f * 3.0F + entity.getBbWidth());
             }
         });
+        this.goalSelector.addGoal(4, new RandomSwimmingGoal(this, 1.0, 10));
         this.goalSelector.addGoal(6,new CalamityInfectedCommand(this));
         this.goalSelector.addGoal(7,new SummonScentInCombat(this));
         this.goalSelector.addGoal(8,new SporeBurstSupport(this));
-        this.goalSelector.addGoal(9,new RandomStrollGoal(this , 1));
         super.registerGoals();
     }
     /* ---------------- POSITION UPDATES ---------------- */
@@ -549,4 +549,6 @@ public class Leviathan extends Calamity implements TrueCalamity, WaterInfected, 
         }
         return values;
     }
+
+
 }

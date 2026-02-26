@@ -4,6 +4,7 @@ package com.Harbinger.Spore.Client.Renderers;
 import com.Harbinger.Spore.Client.Layers.SiegerArrowLayer;
 import com.Harbinger.Spore.Client.Layers.SiegerHatLayer;
 import com.Harbinger.Spore.Client.Models.SiegerModel;
+import com.Harbinger.Spore.Client.Models.TentacledModel;
 import com.Harbinger.Spore.Client.Special.CalamityRenderer;
 import com.Harbinger.Spore.Sentities.Calamities.Sieger;
 import com.Harbinger.Spore.Spore;
@@ -13,8 +14,8 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class SiegerRenderer<Type extends Sieger> extends CalamityRenderer<Type , SiegerModel<Type>> {
-    private static final ResourceLocation TEXTURE =  ResourceLocation.fromNamespaceAndPath(Spore.MODID,
+public class SiegerRenderer<Type extends Sieger> extends CalamityRenderer<Type , SiegerModel<Type>> implements TentacledModel {
+     private static final ResourceLocation TEXTURE =  ResourceLocation.fromNamespaceAndPath(Spore.MODID,
             "textures/entity/sieger.png");
     private static final ResourceLocation WAR =  ResourceLocation.fromNamespaceAndPath(Spore.MODID,
             "textures/entity/war_sieger.png");
