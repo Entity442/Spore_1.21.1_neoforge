@@ -773,6 +773,8 @@
   "advancement.spore.kraken.description" : "Becoming Jack Sparrow/Meeting the Grakensenker.",
   "advancement.spore.stahl.title" : "Beauty of Annihilation",
   "advancement.spore.stahl.description" : "Encounter a Stahlmorder.",
+  "advancement.spore.leviathan.title" : "Multiple Leviathan Class Lifeforms Detected...",
+  "advancement.spore.leviathan.description" : "Encounter the Leviathan.",
 
   "spore.proto.message.0": "You're gonna need a bigger sword :P",
   "spore.proto.message.1": "Rage quit already you're done",
