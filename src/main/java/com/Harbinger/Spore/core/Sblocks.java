@@ -109,6 +109,7 @@ public class Sblocks {
     public static final DeferredBlock<Block> BRAIO_BLOCK = BLOCKS.register("braio_block", Cerebrum::new);
     public static final DeferredBlock<Block> DROWNED_LUMP = BLOCKS.register("drowned_lump", DrownedLump::new);
     public static final DeferredBlock<Block> BILE_LUMP = BLOCKS.register("bile_lump", BileLump::new);
+    public static final DeferredBlock<Block> FANG_LUMP = BLOCKS.register("fang_lump", FangLump::new);
 
     public static final DeferredBlock<Block> ROTTEN_LOG = BLOCKS.register("rotten_log", () -> new FlamableRotatingBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_LOG).sound(SoundType.WOOD)));
     public static final DeferredBlock<Block> ROTTEN_PLANKS = BLOCKS.register("rotten_planks", () -> new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS).sound(SoundType.WOOD).ignitedByLava()));

@@ -24,6 +24,7 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
@@ -102,6 +103,10 @@ public class Leviathan extends Calamity implements TrueCalamity, WaterInfected, 
         super.setId(p_20235_);
         for (int i = 0; i < this.subEntities.length; i++)
             this.subEntities[i].setId(p_20235_ + i + 1);
+    }
+    @Override
+    public boolean isInvulnerableTo(DamageSource source) {
+        return source.is(DamageTypes.IN_WALL)  || source.is(DamageTypes.FALL);
     }
     @Override
     public void readAdditionalSaveData(CompoundTag tag) {

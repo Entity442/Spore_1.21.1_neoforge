@@ -365,7 +365,7 @@ public class Sitems {
             () -> new SporeSpawnEgg(Sentities.STALH,546456633,SpawnEggType.CALAMITY));
 
     public  static final DeferredItem<Item> LEVIATHAN_SPAWNEGG = ITEMS.register("levi_spawnegg",
-            () -> new SporeSpawnEgg(Sentities.LEVIATHAN,997654443,SpawnEggType.CALAMITY));
+            () -> new SporeSpawnEgg(Sentities.LEVIATHAN,24420845,SpawnEggType.CALAMITY));
 
     public  static final DeferredItem<Item> SABER = ITEMS.register("saber",
             InfectedSaber::new);
@@ -622,5 +622,6 @@ public class Sitems {
     public static final DeferredItem<Item> BIOMASS_LUMP = block(Sblocks.BIOMASS_LUMP);
     public static final DeferredItem<Item> DROWNED_LUMP = block(Sblocks.DROWNED_LUMP);
     public static final DeferredItem<Item> BILE_LUMP = block(Sblocks.BILE_LUMP);
+    public static final DeferredItem<Item> FANG_LUMP = block(Sblocks.FANG_LUMP);
     public static final DeferredItem<Item> HIVE_SPAWN = block(Sblocks.HIVE_SPAWN);
 }

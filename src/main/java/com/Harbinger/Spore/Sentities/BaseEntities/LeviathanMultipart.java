@@ -56,8 +56,8 @@ public class LeviathanMultipart extends LivingEntity implements TrueCalamity {
         return legs;
     }
     enum LEG_POSITIONS{
-        BACK_LEFT_TENTACLE(new Vec3(-1.5,0.5,0.75),new Vec3(-2.5, -1, 6)),
-        BACK_RIGHT_TENTACLE(new Vec3(-1.5,0.5,-0.75),new Vec3(-2.5, -1, -6)),
+        BACK_LEFT_TENTACLE(new Vec3(-1.5,0.5,0.25),new Vec3(-2.5, -1, 4)),
+        BACK_RIGHT_TENTACLE(new Vec3(-1.5,0.5,-0.25),new Vec3(-2.5, -1, -4)),
         FRONT_LEFT_TENTACLE(new Vec3(0.5,0.5,0.75),new Vec3(-1.5, -1, 6)),
         FRONT_RIGHT_TENTACLE(new Vec3(0.5,0.5,-0.75),new Vec3(-1.5, -1, -6));
         private final Vec3 bodySet;
