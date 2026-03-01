@@ -54,10 +54,14 @@ public class Sblocks {
     public static final DeferredBlock<Block> FUNGAL_STEM_TOP = BLOCKS.register("fungal_stem_top", FungalStemTop::new);
     public static final DeferredBlock<Block> UNDERWATER_FUNGAL_STEM_TOP = BLOCKS.register("underwater_fungal_stem_top", UnderWaterFungusTop::new);
     public static final DeferredBlock<Block> FUNGAL_ROOTS = BLOCKS.register("fungal_roots", HangingRoots::new);
+    public static final DeferredBlock<Block> HAND = BLOCKS.register("hand", Hand::new);
+    public static final DeferredBlock<Block> GLOWSHROOM = BLOCKS.register("glowshroom", HangingGlowShroom::new);
     public static final DeferredBlock<Block> GROWTH_MYCELIUM = BLOCKS.register("growth_mycelium", () -> new GenericFoliageBlock( BlockBehaviour.Properties.of().sound(SoundType.CROP).strength(0f, 0f).noCollission().noOcclusion().sound(SoundType.CROP)
             .lightLevel(s -> 2).hasPostProcess((bs, br, bp) -> true).emissiveRendering((bs, br, bp) -> true)));
     public static final DeferredBlock<Block> WALL_GROWTHS = BLOCKS.register("wall_growths", WallFolliage::new);
     public static final DeferredBlock<Block> WALL_GROWTHS_BIG = BLOCKS.register("wall_growths_big", WallFolliage::new);
+    public static final DeferredBlock<Block> WALL_GROWTHS_FLESHY = BLOCKS.register("wall_growths_fleshy", WallFolliage::new);
+    public static final DeferredBlock<Block> VOCALS = BLOCKS.register("vocals", WallVocalsBlock::new);
     public static final DeferredBlock<Block> MYCELIUM_VEINS = BLOCKS.register("mycelium_veins", MyceliumVeins::new);
     public static final DeferredBlock<Block> BIOMASS_BULB = BLOCKS.register("biomass_bulb", BiomassBulb::new);
 

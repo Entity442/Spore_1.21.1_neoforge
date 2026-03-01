@@ -565,6 +565,7 @@ public class Sitems {
     public static final DeferredItem<Item> BLOOM_G = block(Sblocks.BLOOM_G);
     public static final DeferredItem<Item> BLOOM_GG = block(Sblocks.BLOOM_GG);
     public static final DeferredItem<Item> FUNGAL_ROOTS = block(Sblocks.FUNGAL_ROOTS);
+    public static final DeferredItem<Item> HAND = block(Sblocks.HAND);
     public static final DeferredItem<Item> GROWTH_MYCELIUM = block(Sblocks.GROWTH_MYCELIUM);
     public static final DeferredItem<Item> FUNGAL_STEP_SAPLING = block(Sblocks.FUNGAL_STEM_SAPLING);
     public static final DeferredItem<Item> MYCELIUM_VEINS = block(Sblocks.MYCELIUM_VEINS);
@@ -623,5 +624,7 @@ public class Sitems {
     public static final DeferredItem<Item> DROWNED_LUMP = block(Sblocks.DROWNED_LUMP);
     public static final DeferredItem<Item> BILE_LUMP = block(Sblocks.BILE_LUMP);
     public static final DeferredItem<Item> FANG_LUMP = block(Sblocks.FANG_LUMP);
+    public static final DeferredItem<Item> VOCALS = block(Sblocks.VOCALS);
+    public static final DeferredItem<Item> GLOWSHROOM = block(Sblocks.GLOWSHROOM);
     public static final DeferredItem<Item> HIVE_SPAWN = block(Sblocks.HIVE_SPAWN);
 }

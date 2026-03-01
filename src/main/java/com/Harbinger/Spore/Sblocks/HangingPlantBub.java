@@ -32,7 +32,7 @@ public class HangingPlantBub extends HangingPlant{
 
     @Override
     public void entityInside(BlockState state, Level level, BlockPos blockpos, Entity entity) {
-        if (!level.isClientSide && !(entity instanceof Infected || entity instanceof UtilityEntity || SConfig.SERVER.blacklist.get().contains(entity.getEncodeId()) || SConfig.SERVER.mycelium.get().contains(entity.getEncodeId()))) {
+        if (!level.isClientSide && !(entity instanceof UtilityEntity || SConfig.SERVER.blacklist.get().contains(entity.getEncodeId()) || SConfig.SERVER.mycelium.get().contains(entity.getEncodeId()))) {
             BlockState block2 = Sblocks.BLOOM_G.get().defaultBlockState();
             AreaEffectCloud areaeffectcloud = new AreaEffectCloud(level, blockpos.getX()+0.4, blockpos.getY(), blockpos.getZ()+0.4);
             areaeffectcloud.setRadius(2.5F);
