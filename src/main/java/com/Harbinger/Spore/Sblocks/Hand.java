@@ -23,7 +23,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 public class Hand extends HangingRootsBlock {
     public static final BooleanProperty ENABLED = BlockStateProperties.ENABLED;
     public Hand() {
-        super(Properties.of().strength(4f, 4f).noCollission().noOcclusion().sound(SoundType.SLIME_BLOCK).randomTicks());
+        super(Properties.of().strength(4f, 2f).noCollission().noOcclusion().sound(SoundType.SLIME_BLOCK).randomTicks());
         this.registerDefaultState(this.stateDefinition.any().setValue(ENABLED, Boolean.FALSE).setValue(BlockStateProperties.WATERLOGGED, Boolean.FALSE));
     }
     protected static final VoxelShape SHAPE = Block.box(2.0D, 4.0D, 2.0D, 14.0D, 16.0D, 14.0D);

@@ -21,7 +21,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class FangLump extends GenericFoliageBlock {
     public FangLump() {
-        super(Properties.of().sound(SoundType.SLIME_BLOCK).noOcclusion().strength(3f).noCollission());
+        super(Properties.of().sound(SoundType.SLIME_BLOCK).noOcclusion().strength(4f,2f).noCollission());
     }
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {

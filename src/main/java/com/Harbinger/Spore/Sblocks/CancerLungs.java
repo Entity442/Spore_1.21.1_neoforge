@@ -16,7 +16,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class CancerLungs extends HangingRootsBlock {
     public CancerLungs() {
-        super(Properties.of().strength(4f, 4f).noCollission().noOcclusion().sound(SoundType.SLIME_BLOCK));
+        super(Properties.of().strength(4f, 2f).noCollission().noOcclusion().sound(SoundType.SLIME_BLOCK));
     }
     protected static final VoxelShape SHAPE = Block.box(2.0D, 4.0D, 2.0D, 14.0D, 16.0D, 14.0D);
     public VoxelShape getShape(BlockState p_153342_, BlockGetter p_153343_, BlockPos p_153344_, CollisionContext p_153345_) {

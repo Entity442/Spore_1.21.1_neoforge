@@ -19,7 +19,7 @@ import java.util.List;
 
 public class FallingAcidSack extends HangingRootsBlock {
     public FallingAcidSack() {
-        super(Properties.of().strength(4f, 4f).noCollission().noOcclusion().sound(SoundType.SLIME_BLOCK).randomTicks());
+        super(Properties.of().strength(4f, 2f).noCollission().noOcclusion().sound(SoundType.SLIME_BLOCK).randomTicks().lightLevel(s -> 1).hasPostProcess((bs, br, bp) -> true).emissiveRendering((bs, br, bp) -> true));
     }
     protected static final VoxelShape SHAPE = Block.box(2.0D, 4.0D, 2.0D, 14.0D, 16.0D, 14.0D);
     public VoxelShape getShape(BlockState p_153342_, BlockGetter p_153343_, BlockPos p_153344_, CollisionContext p_153345_) {
