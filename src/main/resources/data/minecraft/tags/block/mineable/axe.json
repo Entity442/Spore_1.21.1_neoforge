@@ -25,6 +25,13 @@
     "spore:mycelium_block",
     "spore:mycelium_slab",
     "spore:cabinet",
-    "spore:laboratory_bed"
+    "spore:laboratory_bed",
+    "spore:acidic_sack",
+    "spore:hand",
+    "spore:lungs",
+    "spore:vocals",
+    "spore:fang_lump",
+    "spore:bile_lump"
+
   ]
 }

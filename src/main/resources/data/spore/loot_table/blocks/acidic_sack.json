@@ -24,7 +24,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "spore:alveolic_sack",
+          "name": "spore:corrosive_sack",
           "weight": 50,
           "functions": [
             {
