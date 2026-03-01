@@ -308,6 +308,10 @@ public class Sentities {
             EntityType.Builder.<ThrownTumor>of(ThrownTumor::new, MobCategory.MISC)
                     .setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(1).sized(0.5f, 0.5f));
 
+    public static final Supplier<EntityType<FallenAcidSack>> FALLEN_ACID_BULB = register("fallen_acid_bulb",
+            EntityType.Builder.<FallenAcidSack>of(FallenAcidSack::new, MobCategory.MISC)
+                    .setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(1).sized(0.5f, 0.5f));
+
     public static final Supplier<EntityType<BileProjectile>> BILE = register("bile",
             EntityType.Builder.of((EntityType<BileProjectile> p_33002_, Level level) -> new BileProjectile(level), MobCategory.MISC)
                     .setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(1).sized(0.4f, 0.4f));

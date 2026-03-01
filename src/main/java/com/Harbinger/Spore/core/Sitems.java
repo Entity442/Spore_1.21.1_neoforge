@@ -625,6 +625,8 @@ public class Sitems {
     public static final DeferredItem<Item> BILE_LUMP = block(Sblocks.BILE_LUMP);
     public static final DeferredItem<Item> FANG_LUMP = block(Sblocks.FANG_LUMP);
     public static final DeferredItem<Item> VOCALS = block(Sblocks.VOCALS);
+    public static final DeferredItem<Item> LUNGS = block(Sblocks.LUNGS);
+    public static final DeferredItem<Item> ACIDIC_SACK = block(Sblocks.ACIDIC_SACK);
     public static final DeferredItem<Item> GLOWSHROOM = block(Sblocks.GLOWSHROOM);
     public static final DeferredItem<Item> HIVE_SPAWN = block(Sblocks.HIVE_SPAWN);
 }

@@ -54,7 +54,9 @@ public class Sblocks {
     public static final DeferredBlock<Block> FUNGAL_STEM_TOP = BLOCKS.register("fungal_stem_top", FungalStemTop::new);
     public static final DeferredBlock<Block> UNDERWATER_FUNGAL_STEM_TOP = BLOCKS.register("underwater_fungal_stem_top", UnderWaterFungusTop::new);
     public static final DeferredBlock<Block> FUNGAL_ROOTS = BLOCKS.register("fungal_roots", HangingRoots::new);
+    public static final DeferredBlock<Block> ACIDIC_SACK = BLOCKS.register("acidic_sack", FallingAcidSack::new);
     public static final DeferredBlock<Block> HAND = BLOCKS.register("hand", Hand::new);
+    public static final DeferredBlock<Block> LUNGS = BLOCKS.register("lungs", CancerLungs::new);
     public static final DeferredBlock<Block> GLOWSHROOM = BLOCKS.register("glowshroom", HangingGlowShroom::new);
     public static final DeferredBlock<Block> GROWTH_MYCELIUM = BLOCKS.register("growth_mycelium", () -> new GenericFoliageBlock( BlockBehaviour.Properties.of().sound(SoundType.CROP).strength(0f, 0f).noCollission().noOcclusion().sound(SoundType.CROP)
             .lightLevel(s -> 2).hasPostProcess((bs, br, bp) -> true).emissiveRendering((bs, br, bp) -> true)));

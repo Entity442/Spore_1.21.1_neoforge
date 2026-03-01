@@ -24,7 +24,7 @@ public class Hand extends HangingRootsBlock {
     public static final BooleanProperty ENABLED = BlockStateProperties.ENABLED;
     public Hand() {
         super(Properties.of().strength(4f, 4f).noCollission().noOcclusion().sound(SoundType.SLIME_BLOCK).randomTicks());
-        this.registerDefaultState(this.stateDefinition.any().setValue(ENABLED, Boolean.FALSE));
+        this.registerDefaultState(this.stateDefinition.any().setValue(ENABLED, Boolean.FALSE).setValue(BlockStateProperties.WATERLOGGED, Boolean.FALSE));
     }
     protected static final VoxelShape SHAPE = Block.box(2.0D, 4.0D, 2.0D, 14.0D, 16.0D, 14.0D);
     public VoxelShape getShape(BlockState p_153342_, BlockGetter p_153343_, BlockPos p_153344_, CollisionContext p_153345_) {
@@ -39,14 +39,14 @@ public class Hand extends HangingRootsBlock {
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
-        builder.add(ENABLED);
+        builder.add(ENABLED).add(BlockStateProperties.WATERLOGGED);
     }
 
     @Override
     protected void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
         super.entityInside(state, level, pos, entity);
-        if (!state.getValue(ENABLED) && state.getBlock().getStateDefinition().getProperty("waterlogged") instanceof BooleanProperty property){
-            level.setBlock(pos, Sblocks.HAND.get().defaultBlockState().setValue(ENABLED,true).setValue(ENABLED,true).setValue(property,false),3);
+        if (!state.getValue(ENABLED)){
+            level.setBlock(pos, Sblocks.HAND.get().defaultBlockState().setValue(ENABLED,true).setValue(ENABLED,true).setValue(BlockStateProperties.WATERLOGGED,false),3);
         }else {
             if (entity instanceof LivingEntity living && Utilities.TARGET_SELECTOR.Test(living)) {
                 entity.makeStuckInBlock(state, new Vec3((double)0.4F, 0D, (double)0.4F));
@@ -57,8 +57,8 @@ public class Hand extends HangingRootsBlock {
     @Override
     public void randomTick(BlockState state, ServerLevel serverLevel, BlockPos pos, RandomSource randomSource) {
         super.randomTick(state, serverLevel, pos, randomSource);
-        if (Math.random() < 0.5f && state.getBlock().getStateDefinition().getProperty("waterlogged") instanceof BooleanProperty property){
-            serverLevel.setBlock(pos, Sblocks.HAND.get().defaultBlockState().setValue(ENABLED,false).setValue(property,false),3);
+        if (Math.random() < 0.5f){
+            serverLevel.setBlock(pos, Sblocks.HAND.get().defaultBlockState().setValue(ENABLED,false).setValue(BlockStateProperties.WATERLOGGED,false),3);
         }
     }
 }
