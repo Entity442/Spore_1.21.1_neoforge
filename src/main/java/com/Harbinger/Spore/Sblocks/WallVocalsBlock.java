@@ -24,7 +24,7 @@ public class WallVocalsBlock extends LadderBlock {
     protected static final VoxelShape  MOD_NORTH_AABB = Block.box(0.0, 0.0, 10.0, 16.0, 16.0, 16.0);
     private final static List<SoundEvent> LIST = new ArrayList<>(){{add(Ssounds.INF_GROWL.value());add(Ssounds.INF_VILLAGER_AMBIENT.value());add(Ssounds.INF_PILLAGER_AMBIENT.value());add(Ssounds.WITCH_AMBIENT.value());add(Ssounds.HUSK_AMBIENT.value());}};
     public WallVocalsBlock() {
-        super(Properties.of().sound(SoundType.SLIME_BLOCK).noOcclusion().strength(3f).noCollission().randomTicks());
+        super(Properties.of().sound(SoundType.SLIME_BLOCK).noOcclusion().strength(4f,2f).noCollission().randomTicks());
     }
     protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         return switch (state.getValue(FACING)) {
