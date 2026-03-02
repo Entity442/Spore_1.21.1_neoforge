@@ -191,6 +191,7 @@ public class ClientModEvents {
         event.registerLayerDefinition(GrakensenkerModel.LAYER_LOCATION, GrakensenkerModel::createBodyLayer);
         event.registerLayerDefinition(StahlmorderModel.LAYER_LOCATION, StahlmorderModel::createBodyLayer);
         event.registerLayerDefinition(HivetumorModel.LAYER_LOCATION, HivetumorModel::createBodyLayer);
+        event.registerLayerDefinition(GroberfubModel.LAYER_LOCATION, GroberfubModel::createBodyLayer);
     }
     @SubscribeEvent
     public static void registerRenderers(final EntityRenderersEvent.RegisterRenderers event) {
@@ -279,6 +280,7 @@ public class ClientModEvents {
         event.registerEntityRenderer(Sentities.HIVETUMOR.get(), HiveTumorRenderer::new);
         event.registerEntityRenderer(Sentities.LEVIATHAN.get(), LeviathanRenderer::new);
         event.registerEntityRenderer(Sentities.LEVIATHAN_SEG.get(), LeviathanSegRenderer::new);
+        event.registerEntityRenderer(Sentities.GROBER.get(), GroberRenderer::new);
 
     }
     public static void renderBlockEntities(EntityRenderersEvent.RegisterRenderers event){

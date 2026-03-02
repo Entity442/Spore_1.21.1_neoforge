@@ -101,5 +101,6 @@ public class MobAttributes {
         event.put(Sentities.HIVETUMOR.get(), HiveTumor.createAttributes().build());
         event.put(Sentities.LEVIATHAN.get(), Leviathan.createAttributes().build());
         event.put(Sentities.LEVIATHAN_SEG.get(), Leviathan.createAttributes().build());
+        event.put(Sentities.GROBER.get(), Grober.createAttributes().build());
     }
 }

@@ -200,6 +200,10 @@ public class Sentities {
             () -> EntityType.Builder.of(Inquisitor::new, INFECTED).sized(1f, 2.8f)
                     .build(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "inquisitor").toString()));
 
+    public static final Supplier<EntityType<Grober>> GROBER = SPORE_ENTITIES.register("grober",
+            () -> EntityType.Builder.of(Grober::new, INFECTED).sized(1f, 2.5f)
+                    .build(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "grober").toString()));
+
     public static final Supplier<EntityType<Hevoker>> HEVOKER = SPORE_ENTITIES.register("hevoker",
             () -> EntityType.Builder.of(Hevoker::new, INFECTED).sized(1f, 3f)
                     .build(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "hevoker").toString()));
