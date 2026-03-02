@@ -703,6 +703,11 @@ public class GroberfubModel<T extends Grober> extends HierarchicalModel<T> {
 			LowerRightLeg.xRot = RightArm.xRot > 0 ? -RightArm.xRot : 0;
 			LowerLeftLeg.xRot = LeftLeg.xRot > 0 ? -LeftLeg.xRot : 0;
 		}
+		this.MainLowerJaw.xRot = Mth.sin(ageInTicks/7)/8;
+		this.SmallLowerJaw.xRot = Mth.cos(ageInTicks/6)/9;
+		this.Spine.yRot = Mth.cos(ageInTicks/6)/9;
+		this.Head.yRot = netHeadYaw / (180F / (float) Math.PI);
+		this.Head.xRot = headPitch / (90F / (float) Math.PI);
 	}
 
 
