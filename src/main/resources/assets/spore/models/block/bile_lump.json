@@ -1,8 +1,8 @@
 {
 	"format_version": "1.9.0",
 	"credit": "Made with Blockbench",
-	"texture_size": [64, 64],
 	"render_type": "cutout",
+	"texture_size": [64, 64],
 	"textures": {
 		"0": "spore:block/bile_lump",
 		"particle": "spore:block/bile_lump"
@@ -191,9 +191,9 @@
 			}
 		},
 		{
-			"from": [13.2, 1, 8.9],
-			"to": [13.2, 4, 10.9],
-			"rotation": {"angle": -22.5, "axis": "y", "origin": [13.2, 4, 10.9]},
+			"from": [13.2, 0.75, 8.9],
+			"to": [13.2, 3.75, 10.9],
+			"rotation": {"angle": -22.5, "axis": "y", "origin": [13.2, 3.75, 10.9]},
 			"faces": {
 				"north": {"uv": [0, 0, 0, 0.75], "texture": "#0"},
 				"east": {"uv": [3.25, 8.75, 3.75, 9.5], "texture": "#0"},
@@ -204,9 +204,9 @@
 			}
 		},
 		{
-			"from": [11.2, 4, 8.9],
-			"to": [13.2, 6, 10.9],
-			"rotation": {"angle": -22.5, "axis": "y", "origin": [13.2, 4, 10.9]},
+			"from": [11.2, 3.75, 8.9],
+			"to": [13.2, 5.75, 10.9],
+			"rotation": {"angle": -22.5, "axis": "y", "origin": [13.2, 3.75, 10.9]},
 			"faces": {
 				"north": {"uv": [3.75, 8.75, 4.25, 9.25], "texture": "#0"},
 				"east": {"uv": [4.25, 8.75, 4.75, 9.25], "texture": "#0"},
