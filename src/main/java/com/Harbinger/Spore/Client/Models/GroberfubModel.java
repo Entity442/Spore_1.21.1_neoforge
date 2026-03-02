@@ -5,7 +5,7 @@ import com.Harbinger.Spore.Sentities.Hyper.Grober;
 import com.Harbinger.Spore.Spore;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -13,7 +13,7 @@ import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
-public class GroberfubModel<T extends Grober> extends EntityModel<T> {
+public class GroberfubModel<T extends Grober> extends HierarchicalModel<T> {
 	// This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
 	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "groberfub"), "main");
 	private final ModelPart Groberfub;
@@ -663,14 +663,56 @@ public class GroberfubModel<T extends Grober> extends EntityModel<T> {
 
 		return LayerDefinition.create(meshdefinition, 256, 256);
 	}
+	public void moveY(ModelPart part,float val){
+		if (val < -0.2){
+			return;
+		}
+		part.y = part.getInitialPose().y+val;
+	}
+	public void moveZ(ModelPart part,float val){
+		part.z = part.getInitialPose().z+val;
+	}
+	public void moveX(ModelPart part,float val){
+		part.z = part.getInitialPose().z+val;
+	}
 
 	@Override
 	public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-
+		root().getAllParts().forEach(ModelPart::resetPose);
+		int rangedAttackAnimationTick = entity.getAttackAnimationTick();
+		if (rangedAttackAnimationTick > 0) {
+			float swing = -2.0F + 1.5F * Mth.triangleWave((float)rangedAttackAnimationTick, 20.0F);
+			RightArm.xRot = swing;
+			LeftArm.xRot = swing;
+		}
+		if (!(limbSwingAmount > -0.15F && limbSwingAmount < 0.15F) && rangedAttackAnimationTick <= 0){
+			float val = Mth.cos(limbSwing * 0.25f) * limbSwingAmount;
+			this.Body.yRot = val;
+			moveY(RightArm,val* 4f);
+			moveY(LeftArm,-val* 4f);
+			moveX(RightArm,val * 3f);
+			moveX(LeftArm,-val * 3f);
+			moveZ(RightArm,val * 10f);
+			moveZ(LeftArm,-val * 10f);
+			RightArm.xRot = val * 0.75f;
+			LeftArm.xRot = -val * 0.75f;
+			moveZ(RightLeg,-val * 6f);
+			moveZ(LeftLeg,val * 6f);
+			RightArm.xRot = val * 0.25f;
+			LeftLeg.xRot = -val * 0.25f;
+			LowerRightLeg.xRot = RightArm.xRot > 0 ? -RightArm.xRot : 0;
+			LowerLeftLeg.xRot = LeftLeg.xRot > 0 ? -LeftLeg.xRot : 0;
+		}
 	}
+
 
 	@Override
 	public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int alpha) {
 		Groberfub.render(poseStack, vertexConsumer, packedLight, packedOverlay,alpha);
+	}
+
+	@Override
+	public ModelPart root() {
+		return Groberfub;
 	}
 }

@@ -83,7 +83,7 @@ public class Grober extends Hyper implements ArmorPersentageBypass {
         this.goalSelector.addGoal(2, new LeapGoal(this,0.8F){
             @Override
             public void start() {
-                triggerAnimation(Math.random() < 0.3 ? MELEE_STATES.KICK.value : MELEE_STATES.SMASH.value);
+                triggerAnimation(MELEE_STATES.SMASH.value);
                 super.start();
                 mob.level().broadcastEntityEvent(mob, (byte)4);
             }
@@ -92,7 +92,7 @@ public class Grober extends Hyper implements ArmorPersentageBypass {
         {
             @Override
             protected void checkAndPerformAttack(LivingEntity entity, double p_25558_) {
-                triggerAnimation(MELEE_STATES.SMASH.value);
+                triggerAnimation(Math.random() < 0.3 ? MELEE_STATES.KICK.value : MELEE_STATES.SMASH.value);
                 super.checkAndPerformAttack(entity, p_25558_);
             }
         });
@@ -106,7 +106,7 @@ public class Grober extends Hyper implements ArmorPersentageBypass {
                 .add(Attributes.MAX_HEALTH, SConfig.SERVER.inquisitor_hp.get() * SConfig.SERVER.global_health.get())
                 .add(Attributes.ATTACK_DAMAGE, SConfig.SERVER.inquisitor_damage.get() * SConfig.SERVER.global_damage.get())
                 .add(Attributes.ARMOR, SConfig.SERVER.inquisitor_armor.get() * SConfig.SERVER.global_armor.get())
-                .add(Attributes.MOVEMENT_SPEED, 0.3)
+                .add(Attributes.MOVEMENT_SPEED, 0.2)
                 .add(Attributes.FOLLOW_RANGE, 32)
                 .add(Attributes.ATTACK_KNOCKBACK, 1)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 1);
@@ -148,7 +148,7 @@ public class Grober extends Hyper implements ArmorPersentageBypass {
                             boolean airBelow = level.getBlockState(blockpos.below()).isAir();
                             if (level instanceof ServerLevel serverLevel){
                                 double breakSpeed = state.getDestroySpeed(level,pos);
-                                if (airBelow && state.getDestroySpeed(level,pos) >= 0 && breakSpeed <= getBreaking() && Math.random() < 0.3){
+                                if (airBelow && state.getDestroySpeed(level,pos) >= 0 && breakSpeed <= getBreaking() && Math.random() < 0.1){
                                     FallingBlockEntity.fall(serverLevel,blockpos,state);
                                     serverLevel.removeBlock(blockpos,false);
                                 }
@@ -160,7 +160,6 @@ public class Grober extends Hyper implements ArmorPersentageBypass {
         return Grober.MELEE_STATES.byId(this.entityData.get(ATTACK_TYPE) & 255);
     }
     public void triggerAnimation(int states){
-        this.level().broadcastEntityEvent(this, (byte)4);
         entityData.set(ATTACK_TYPE,states);
     }
 
