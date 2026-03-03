@@ -39,7 +39,7 @@ public class Grober extends Hyper implements ArmorPersentageBypass {
     public AnimationState kickAnimation = new AnimationState();
     @Override
     public List<? extends String> getDropList() {
-        return SConfig.DATAGEN.inquisitor_loot.get();
+        return SConfig.DATAGEN.grober_loot.get();
     }
     @Override
     protected void defineSynchedData(SynchedEntityData.@NotNull Builder builder) {
@@ -101,9 +101,9 @@ public class Grober extends Hyper implements ArmorPersentageBypass {
     }
     public static AttributeSupplier.Builder createAttributes() {
         return Mob.createMobAttributes()
-                .add(Attributes.MAX_HEALTH, SConfig.SERVER.inquisitor_hp.get() * SConfig.SERVER.global_health.get())
-                .add(Attributes.ATTACK_DAMAGE, SConfig.SERVER.inquisitor_damage.get() * SConfig.SERVER.global_damage.get())
-                .add(Attributes.ARMOR, SConfig.SERVER.inquisitor_armor.get() * SConfig.SERVER.global_armor.get())
+                .add(Attributes.MAX_HEALTH, SConfig.SERVER.grober_hp.get() * SConfig.SERVER.global_health.get())
+                .add(Attributes.ATTACK_DAMAGE, SConfig.SERVER.grober_damage.get() * SConfig.SERVER.global_damage.get())
+                .add(Attributes.ARMOR, SConfig.SERVER.grober_armor.get() * SConfig.SERVER.global_armor.get())
                 .add(Attributes.MOVEMENT_SPEED, 0.2)
                 .add(Attributes.FOLLOW_RANGE, 32)
                 .add(Attributes.ATTACK_KNOCKBACK, 1)
