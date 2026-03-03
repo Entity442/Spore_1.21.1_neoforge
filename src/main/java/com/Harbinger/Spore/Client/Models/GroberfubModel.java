@@ -1,10 +1,16 @@
 package com.Harbinger.Spore.Client.Models;// Made with Blockbench 5.0.7
 // Exported for Minecraft version 1.17 or later with Mojang mappings
 // Paste this class into your mod and generate all required imports
+
+
 import com.Harbinger.Spore.Sentities.Hyper.Grober;
 import com.Harbinger.Spore.Spore;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.client.animation.AnimationChannel;
+import net.minecraft.client.animation.AnimationDefinition;
+import net.minecraft.client.animation.Keyframe;
+import net.minecraft.client.animation.KeyframeAnimations;
 import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
@@ -166,9 +172,9 @@ public class GroberfubModel<T extends Grober> extends HierarchicalModel<T> {
 
 		PartDefinition Groberfub = partdefinition.addOrReplaceChild("Groberfub", CubeListBuilder.create(), PartPose.offset(0.0F, 22.6F, -0.4F));
 
-		PartDefinition Torso = Groberfub.addOrReplaceChild("Torso", CubeListBuilder.create(), PartPose.offset(0.0F, -22.7F, -3.2F));
+		PartDefinition Torso = Groberfub.addOrReplaceChild("Torso", CubeListBuilder.create(), PartPose.offset(0.0F, -21.7F, -3.2F));
 
-		PartDefinition Body = Torso.addOrReplaceChild("Body", CubeListBuilder.create(), PartPose.offset(0.0F, 4.9784F, 2.4674F));
+		PartDefinition Body = Torso.addOrReplaceChild("Body", CubeListBuilder.create(), PartPose.offset(0.0F, 3.9784F, 2.4674F));
 
 		PartDefinition UpperBody = Body.addOrReplaceChild("UpperBody", CubeListBuilder.create(), PartPose.offset(0.0F, -3.9784F, -1.9674F));
 
@@ -283,7 +289,7 @@ public class GroberfubModel<T extends Grober> extends HierarchicalModel<T> {
 
 		PartDefinition Petal_r11 = LowerBodyFoliage.addOrReplaceChild("Petal_r11", CubeListBuilder.create().texOffs(-8, 146).addBox(-4.0F, 0.0F, -4.0F, 8.0F, 0.0F, 8.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(4.4F, -20.0F, 4.2F, -3.0271F, 1.4997F, -2.8912F));
 
-		PartDefinition Head = Torso.addOrReplaceChild("Head", CubeListBuilder.create(), PartPose.offset(0.0F, -7.6F, -2.6F));
+		PartDefinition Head = Torso.addOrReplaceChild("Head", CubeListBuilder.create(), PartPose.offset(0.0F, -8.6F, -2.6F));
 
 		PartDefinition MainHead = Head.addOrReplaceChild("MainHead", CubeListBuilder.create(), PartPose.offset(-0.1091F, 5.3052F, 1.5742F));
 
@@ -471,7 +477,7 @@ public class GroberfubModel<T extends Grober> extends HierarchicalModel<T> {
 
 		PartDefinition Spine_r7 = SpineEnd.addOrReplaceChild("Spine_r7", CubeListBuilder.create().texOffs(98, 139).addBox(-1.0517F, -0.3773F, -1.0384F, 2.0F, 5.0F, 2.0F, new CubeDeformation(-0.6F)), PartPose.offsetAndRotation(-0.0116F, -0.268F, 0.1579F, -0.4083F, -0.075F, 0.02F));
 
-		PartDefinition Legs = Torso.addOrReplaceChild("Legs", CubeListBuilder.create(), PartPose.offset(0.0F, 22.4F, 6.4F));
+		PartDefinition Legs = Torso.addOrReplaceChild("Legs", CubeListBuilder.create(), PartPose.offset(0.0F, 21.4F, 6.4F));
 
 		PartDefinition RightLeg = Legs.addOrReplaceChild("RightLeg", CubeListBuilder.create(), PartPose.offset(-3.0F, -11.0F, 0.0F));
 
@@ -663,7 +669,8 @@ public class GroberfubModel<T extends Grober> extends HierarchicalModel<T> {
 
 		return LayerDefinition.create(meshdefinition, 256, 256);
 	}
-	public void moveY(ModelPart part,float val){
+
+	public void moveY(ModelPart part, float val){
 		if (val < -0.2){
 			return;
 		}
@@ -681,33 +688,38 @@ public class GroberfubModel<T extends Grober> extends HierarchicalModel<T> {
 		root().getAllParts().forEach(ModelPart::resetPose);
 		int rangedAttackAnimationTick = entity.getAttackAnimationTick();
 		if (rangedAttackAnimationTick > 0) {
-			float swing = -2.0F + 1.5F * Mth.triangleWave((float)rangedAttackAnimationTick, 20.0F);
-			RightArm.xRot = swing;
-			LeftArm.xRot = swing;
-		}
-		if (!(limbSwingAmount > -0.15F && limbSwingAmount < 0.15F) && rangedAttackAnimationTick <= 0){
-			float val = Mth.cos(limbSwing * 0.25f) * limbSwingAmount;
-			this.Body.yRot = val;
-			moveY(RightArm,val* 4f);
-			moveY(LeftArm,-val* 4f);
-			moveX(RightArm,val * 3f);
-			moveX(LeftArm,-val * 3f);
-			moveZ(RightArm,val * 10f);
-			moveZ(LeftArm,-val * 10f);
-			RightArm.xRot = val * 0.75f;
-			LeftArm.xRot = -val * 0.75f;
-			moveZ(RightLeg,-val * 6f);
-			moveZ(LeftLeg,val * 6f);
-			RightArm.xRot = val * 0.25f;
-			LeftLeg.xRot = -val * 0.25f;
-			LowerRightLeg.xRot = RightArm.xRot > 0 ? -RightArm.xRot : 0;
-			LowerLeftLeg.xRot = LeftLeg.xRot > 0 ? -LeftLeg.xRot : 0;
+			if (entity.getMeleeState() == Grober.MELEE_STATES.KICK){
+				animate(entity.kickAnimation,kick,ageInTicks);
+			}else{
+				float swing = -2.0F + 1.5F * Mth.triangleWave((float)rangedAttackAnimationTick, 20.0F);
+				RightArm.xRot = swing;
+				LeftArm.xRot = swing;
+			}
+		}else {
+			if (!(limbSwingAmount > -0.15F && limbSwingAmount < 0.15F)){
+				float val = Mth.cos(limbSwing * 0.25f) * limbSwingAmount;
+				this.Body.yRot = val;
+				moveY(RightArm,val* 4f);
+				moveY(LeftArm,-val* 4f);
+				moveX(RightArm,val * 3f);
+				moveX(LeftArm,-val * 3f);
+				moveZ(RightArm,val * 10f);
+				moveZ(LeftArm,-val * 10f);
+				RightArm.xRot = val * 0.75f;
+				LeftArm.xRot = -val * 0.75f;
+				moveZ(RightLeg,-val * 6f);
+				moveZ(LeftLeg,val * 6f);
+				RightArm.xRot = val * 0.25f;
+				LeftLeg.xRot = -val * 0.25f;
+				LowerRightLeg.xRot = RightArm.xRot > 0 ? -RightArm.xRot : 0;
+				LowerLeftLeg.xRot = LeftLeg.xRot > 0 ? -LeftLeg.xRot : 0;
+			}
+			this.Head.yRot = netHeadYaw / (180F / (float) Math.PI);
+			this.Head.xRot = headPitch / (90F / (float) Math.PI);
 		}
 		this.MainLowerJaw.xRot = Mth.sin(ageInTicks/7)/8;
 		this.SmallLowerJaw.xRot = Mth.cos(ageInTicks/6)/9;
 		this.Spine.yRot = Mth.cos(ageInTicks/6)/9;
-		this.Head.yRot = netHeadYaw / (180F / (float) Math.PI);
-		this.Head.xRot = headPitch / (90F / (float) Math.PI);
 	}
 
 
@@ -720,4 +732,57 @@ public class GroberfubModel<T extends Grober> extends HierarchicalModel<T> {
 	public ModelPart root() {
 		return Groberfub;
 	}
+
+	public static final AnimationDefinition kick = AnimationDefinition.Builder.withLength(0.5F)
+			.addAnimation("Torso", new AnimationChannel(AnimationChannel.Targets.ROTATION,
+					new Keyframe(0.0F, KeyframeAnimations.degreeVec(0.0F, 0.0F, 0.0F), AnimationChannel.Interpolations.LINEAR),
+					new Keyframe(0.25F, KeyframeAnimations.degreeVec(-60.0F, 0.0F, 0.0F), AnimationChannel.Interpolations.LINEAR),
+					new Keyframe(0.5F, KeyframeAnimations.degreeVec(0.0F, 0.0F, 0.0F), AnimationChannel.Interpolations.LINEAR)
+			))
+			.addAnimation("Head", new AnimationChannel(AnimationChannel.Targets.ROTATION,
+					new Keyframe(0.0F, KeyframeAnimations.degreeVec(0.0F, 0.0F, 0.0F), AnimationChannel.Interpolations.LINEAR),
+					new Keyframe(0.25F, KeyframeAnimations.degreeVec(25.0F, 0.0F, 0.0F), AnimationChannel.Interpolations.LINEAR),
+					new Keyframe(0.5F, KeyframeAnimations.degreeVec(0.0F, 0.0F, 0.0F), AnimationChannel.Interpolations.LINEAR)
+			))
+			.addAnimation("RightArm", new AnimationChannel(AnimationChannel.Targets.ROTATION,
+					new Keyframe(0.0F, KeyframeAnimations.degreeVec(0.0F, 0.0F, 0.0F), AnimationChannel.Interpolations.LINEAR),
+					new Keyframe(0.25F, KeyframeAnimations.degreeVec(12.5F, 0.0F, 0.0F), AnimationChannel.Interpolations.LINEAR),
+					new Keyframe(0.5F, KeyframeAnimations.degreeVec(0.0F, 0.0F, 0.0F), AnimationChannel.Interpolations.LINEAR)
+			))
+			.addAnimation("LeftArm", new AnimationChannel(AnimationChannel.Targets.ROTATION,
+					new Keyframe(0.0F, KeyframeAnimations.degreeVec(0.0F, 0.0F, 0.0F), AnimationChannel.Interpolations.LINEAR),
+					new Keyframe(0.25F, KeyframeAnimations.degreeVec(12.5F, 0.0F, 0.0F), AnimationChannel.Interpolations.LINEAR),
+					new Keyframe(0.5F, KeyframeAnimations.degreeVec(0.0F, 0.0F, 0.0F), AnimationChannel.Interpolations.LINEAR)
+			))
+			.addAnimation("RightLeg", new AnimationChannel(AnimationChannel.Targets.ROTATION,
+					new Keyframe(0.0F, KeyframeAnimations.degreeVec(0.0F, 0.0F, 0.0F), AnimationChannel.Interpolations.LINEAR),
+					new Keyframe(0.25F, KeyframeAnimations.degreeVec(35.0F, 0.0F, 0.0F), AnimationChannel.Interpolations.LINEAR),
+					new Keyframe(0.5F, KeyframeAnimations.degreeVec(0.0F, 0.0F, 0.0F), AnimationChannel.Interpolations.LINEAR)
+			))
+			.addAnimation("LeftLeg", new AnimationChannel(AnimationChannel.Targets.ROTATION,
+					new Keyframe(0.0F, KeyframeAnimations.degreeVec(0.0F, 0.0F, 0.0F), AnimationChannel.Interpolations.LINEAR),
+					new Keyframe(0.25F, KeyframeAnimations.degreeVec(25.0F, 0.0F, 0.0F), AnimationChannel.Interpolations.LINEAR),
+					new Keyframe(0.5F, KeyframeAnimations.degreeVec(0.0F, 0.0F, 0.0F), AnimationChannel.Interpolations.LINEAR)
+			))
+			.addAnimation("LowerRightLeg", new AnimationChannel(AnimationChannel.Targets.ROTATION,
+					new Keyframe(0.0F, KeyframeAnimations.degreeVec(0.0F, 0.0F, 0.0F), AnimationChannel.Interpolations.LINEAR),
+					new Keyframe(0.25F, KeyframeAnimations.degreeVec(-105.0F, 0.0F, 0.0F), AnimationChannel.Interpolations.LINEAR),
+					new Keyframe(0.5F, KeyframeAnimations.degreeVec(0.0F, 0.0F, 0.0F), AnimationChannel.Interpolations.LINEAR)
+			))
+			.addAnimation("LowerLeftLeg", new AnimationChannel(AnimationChannel.Targets.ROTATION,
+					new Keyframe(0.0F, KeyframeAnimations.degreeVec(0.0F, 0.0F, 0.0F), AnimationChannel.Interpolations.LINEAR),
+					new Keyframe(0.25F, KeyframeAnimations.degreeVec(-107.5F, 0.0F, 0.0F), AnimationChannel.Interpolations.LINEAR),
+					new Keyframe(0.5F, KeyframeAnimations.degreeVec(0.0F, 0.0F, 0.0F), AnimationChannel.Interpolations.LINEAR)
+			))
+			.addAnimation("LeftFoot", new AnimationChannel(AnimationChannel.Targets.ROTATION,
+					new Keyframe(0.0F, KeyframeAnimations.degreeVec(0.0F, 0.0F, 0.0F), AnimationChannel.Interpolations.LINEAR),
+					new Keyframe(0.25F, KeyframeAnimations.degreeVec(127.5F, 0.0F, 0.0F), AnimationChannel.Interpolations.LINEAR),
+					new Keyframe(0.5F, KeyframeAnimations.degreeVec(0.0F, 0.0F, 0.0F), AnimationChannel.Interpolations.LINEAR)
+			))
+			.addAnimation("RightFoot", new AnimationChannel(AnimationChannel.Targets.ROTATION,
+					new Keyframe(0.0F, KeyframeAnimations.degreeVec(0.0F, 0.0F, 0.0F), AnimationChannel.Interpolations.LINEAR),
+					new Keyframe(0.25F, KeyframeAnimations.degreeVec(117.5F, 0.0F, 0.0F), AnimationChannel.Interpolations.LINEAR),
+					new Keyframe(0.5F, KeyframeAnimations.degreeVec(0.0F, 0.0F, 0.0F), AnimationChannel.Interpolations.LINEAR)
+			))
+			.build();
 }

@@ -60,8 +60,13 @@ public class Grober extends Hyper implements ArmorPersentageBypass {
 
     @Override
     public boolean doHurtTarget(Entity entity) {
+        triggerAnimation(Math.random() < 0.5 ? MELEE_STATES.KICK.getValue() : MELEE_STATES.SMASH.getValue());
         if (getMeleeState() == MELEE_STATES.SMASH){
             damageStomp(level(),entity.getOnPos(),3);
+        }
+        if (getMeleeState() == MELEE_STATES.KICK && entity instanceof LivingEntity living){
+            living.hurtMarked = true;
+            living.knockback((3f),  Mth.sin(this.getYRot() * ((float) Math.PI / 180F)), (double) (-Mth.cos(this.getYRot() * ((float) Math.PI / 180F))));
         }
         this.attackAnimationTick = 10;
         this.level().broadcastEntityEvent(this, (byte)4);
@@ -88,14 +93,7 @@ public class Grober extends Hyper implements ArmorPersentageBypass {
                 mob.level().broadcastEntityEvent(mob, (byte)4);
             }
         });
-        this.goalSelector.addGoal(3, new AOEMeleeAttackGoal(this ,1.2,true, 1.2 ,3, livingEntity -> {return TARGET_SELECTOR.test(livingEntity);})
-        {
-            @Override
-            protected void checkAndPerformAttack(LivingEntity entity, double p_25558_) {
-                triggerAnimation(Math.random() < 0.3 ? MELEE_STATES.KICK.value : MELEE_STATES.SMASH.value);
-                super.checkAndPerformAttack(entity, p_25558_);
-            }
-        });
+        this.goalSelector.addGoal(3, new AOEMeleeAttackGoal(this ,1.2,true, 1.2 ,3, livingEntity -> {return TARGET_SELECTOR.test(livingEntity);}));
         this.goalSelector.addGoal(3, new LeapAtTargetGoal(this, 0.4F));
         this.goalSelector.addGoal(6, new RandomStrollGoal(this, 0.8));
         this.goalSelector.addGoal(7, new RandomLookAroundGoal(this));
