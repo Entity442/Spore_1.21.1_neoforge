@@ -697,7 +697,7 @@ public class GroberfubModel<T extends Grober> extends HierarchicalModel<T> {
 			}
 		}else {
 			if (!(limbSwingAmount > -0.15F && limbSwingAmount < 0.15F)){
-				float val = Mth.cos(limbSwing * 0.25f) * limbSwingAmount;
+				float val = Mth.cos(limbSwing * 0.5f) * limbSwingAmount;
 				this.Body.yRot = val;
 				moveY(RightArm,val* 4f);
 				moveY(LeftArm,-val* 4f);
@@ -717,6 +717,9 @@ public class GroberfubModel<T extends Grober> extends HierarchicalModel<T> {
 			this.Head.yRot = netHeadYaw / (180F / (float) Math.PI);
 			this.Head.xRot = headPitch / (90F / (float) Math.PI);
 		}
+		float v = Mth.sin(ageInTicks/6)/6;
+		this.LeftHinge.yRot = v;
+		this.RightHinge.yRot = -v;
 		this.MainLowerJaw.xRot = Mth.sin(ageInTicks/7)/8;
 		this.SmallLowerJaw.xRot = Mth.cos(ageInTicks/6)/9;
 		this.Spine.yRot = Mth.cos(ageInTicks/6)/9;

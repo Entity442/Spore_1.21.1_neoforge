@@ -5,6 +5,7 @@ import com.Harbinger.Spore.Sentities.AI.AOEMeleeAttackGoal;
 import com.Harbinger.Spore.Sentities.AI.LeapGoal;
 import com.Harbinger.Spore.Sentities.ArmorPersentageBypass;
 import com.Harbinger.Spore.Sentities.BaseEntities.Hyper;
+import com.Harbinger.Spore.Sentities.MovementControls.InfectedWallMovementControl;
 import com.Harbinger.Spore.core.SConfig;
 import com.Harbinger.Spore.core.Ssounds;
 import net.minecraft.core.BlockPos;
@@ -15,15 +16,18 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.LeapAtTargetGoal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
+import net.minecraft.world.entity.ai.navigation.WallClimberNavigation;
 import net.minecraft.world.entity.item.FallingBlockEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -34,6 +38,8 @@ public class Grober extends Hyper implements ArmorPersentageBypass {
     public static final EntityDataAccessor<Integer> ATTACK_TYPE = SynchedEntityData.defineId(Grober.class, EntityDataSerializers.INT);
     public Grober(EntityType<? extends PathfinderMob> type, Level level) {
         super(type, level);
+        this.moveControl = new InfectedWallMovementControl(this);
+        this.navigation = new WallClimberNavigation(this,level);
     }
     private int attackAnimationTick;
     public AnimationState kickAnimation = new AnimationState();
@@ -60,7 +66,6 @@ public class Grober extends Hyper implements ArmorPersentageBypass {
 
     @Override
     public boolean doHurtTarget(Entity entity) {
-        triggerAnimation(Math.random() < 0.5 ? MELEE_STATES.KICK.getValue() : MELEE_STATES.SMASH.getValue());
         if (getMeleeState() == MELEE_STATES.SMASH){
             damageStomp(level(),entity.getOnPos(),3);
         }
@@ -93,7 +98,23 @@ public class Grober extends Hyper implements ArmorPersentageBypass {
                 mob.level().broadcastEntityEvent(mob, (byte)4);
             }
         });
-        this.goalSelector.addGoal(3, new AOEMeleeAttackGoal(this ,1.2,true, 1.2 ,3, livingEntity -> {return TARGET_SELECTOR.test(livingEntity);}));
+        this.goalSelector.addGoal(3, new AOEMeleeAttackGoal(this ,1.2,true, 1.2 ,3, livingEntity -> {return TARGET_SELECTOR.test(livingEntity);}){
+            protected void checkAndPerformAttack(LivingEntity entity, double val) {
+                double d0 = this.getAttackReachSqr(entity);
+                if (val <= d0 && this.ticksUntilNextAttack <= 0 && mob.hasLineOfSight(entity)) {
+                    triggerAnimation(Math.random() < 0.5 ? MELEE_STATES.KICK.getValue() : MELEE_STATES.SMASH.getValue());
+                    this.resetAttackCooldown();
+                    this.mob.swing(InteractionHand.MAIN_HAND);
+                    this.mob.doHurtTarget(entity);
+                    AABB hitbox = entity.getBoundingBox().inflate(box);
+                    List<LivingEntity> targets = entity.level().getEntitiesOfClass(LivingEntity.class , hitbox,victims);
+                    for (LivingEntity en : targets) {
+                        mob.doHurtTarget(en);
+                    }
+                }
+
+            }
+        });
         this.goalSelector.addGoal(3, new LeapAtTargetGoal(this, 0.4F));
         this.goalSelector.addGoal(6, new RandomStrollGoal(this, 0.8));
         this.goalSelector.addGoal(7, new RandomLookAroundGoal(this));
