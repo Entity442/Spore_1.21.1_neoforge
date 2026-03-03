@@ -137,6 +137,7 @@ public class Grober extends Hyper implements ArmorPersentageBypass {
     }
 
     protected void damageStomp(Level level, BlockPos pos, double range){
+        if (level instanceof ServerLevel serverLevel){
         for(int i = 0; i <= 2*range; ++i) {
             for(int j = 0; j <= 2*range; ++j) {
                 for(int k = 0; k <= 2*range; ++k) {
@@ -146,14 +147,12 @@ public class Grober extends Hyper implements ArmorPersentageBypass {
                             BlockPos blockpos = pos.offset( i-(int)range,j-(int)range,k-(int)range);
                             BlockState state = level.getBlockState(blockpos);
                             boolean airBelow = level.getBlockState(blockpos.below()).isAir();
-                            if (level instanceof ServerLevel serverLevel){
-                                double breakSpeed = state.getDestroySpeed(level,pos);
-                                if (airBelow && state.getDestroySpeed(level,pos) >= 0 && breakSpeed <= getBreaking() && Math.random() < 0.1){
-                                    FallingBlockEntity.fall(serverLevel,blockpos,state);
-                                    serverLevel.removeBlock(blockpos,false);
-                                }
+                            double breakSpeed = state.getDestroySpeed(level,pos);
+                            if (airBelow && state.getDestroySpeed(level,pos) >= 0 && breakSpeed <= getBreaking() && Math.random() < 0.1){
+                                FallingBlockEntity.fall(serverLevel,blockpos,state);
+                                serverLevel.removeBlock(blockpos,false);
                             }
-                        }}}}}
+                        }}}}}}
         this.playSound(Ssounds.LANDING.value());
     }
     public Grober.MELEE_STATES getMeleeState() {
