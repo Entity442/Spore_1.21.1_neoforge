@@ -472,6 +472,7 @@ public class ChemistModel<T extends Chemist> extends EntityModel<T> implements T
 		this.animateTentacleZ(Tendril1,-v3);
 		this.animateTentacleX(Tendril1,v3 * 1.25f);
 	}
+
 	@Override
 	public void prepareMobModel(T entity, float value1, float value2, float value3) {
 		super.prepareMobModel(entity, value1, value2, value3);
