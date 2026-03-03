@@ -688,14 +688,18 @@ public class GroberfubModel<T extends Grober> extends HierarchicalModel<T> {
 		root().getAllParts().forEach(ModelPart::resetPose);
 		int rangedAttackAnimationTick = entity.getAttackAnimationTick();
 		if (rangedAttackAnimationTick > 0) {
-			if (entity.getMeleeState() == Grober.MELEE_STATES.KICK){
-				animate(entity.kickAnimation,kick,ageInTicks);
-			}else{
-				float swing = -2.0F + 1.5F * Mth.triangleWave((float)rangedAttackAnimationTick, 20.0F);
+			float swing = -2.0F + 1.5F * Mth.triangleWave((float)rangedAttackAnimationTick, 20.0F);
+			if (entity.getMeleeState() == Grober.MELEE_STATES.SMASH){
 				RightArm.xRot = swing;
 				LeftArm.xRot = swing;
+			}else if (entity.getMeleeState() == Grober.MELEE_STATES.RIGHT_SLAP){
+				RightArm.xRot = -1.5f;
+				RightArm.yRot = swing * 0.85f;
+			}else if (entity.getMeleeState() == Grober.MELEE_STATES.LEFT_SLAP){
+				LeftArm.xRot = -1.5f;
+				LeftArm.yRot = -swing * 0.85f;
 			}
-		}else {
+		} else {
 			if (!(limbSwingAmount > -0.15F && limbSwingAmount < 0.15F)){
 				float val = Mth.cos(limbSwing * 0.5f) * limbSwingAmount;
 				this.Body.yRot = val;
@@ -716,6 +720,9 @@ public class GroberfubModel<T extends Grober> extends HierarchicalModel<T> {
 			}
 			this.Head.yRot = netHeadYaw / (180F / (float) Math.PI);
 			this.Head.xRot = headPitch / (90F / (float) Math.PI);
+		}
+		if (entity.kickAnimation.isStarted()) {
+			animate(entity.kickAnimation,kick,ageInTicks,1.25f);
 		}
 		float v = Mth.sin(ageInTicks/6)/6;
 		this.LeftHinge.yRot = v;

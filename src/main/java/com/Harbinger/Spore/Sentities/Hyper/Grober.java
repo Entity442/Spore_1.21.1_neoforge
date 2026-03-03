@@ -8,6 +8,7 @@ import com.Harbinger.Spore.Sentities.BaseEntities.Hyper;
 import com.Harbinger.Spore.Sentities.MovementControls.InfectedWallMovementControl;
 import com.Harbinger.Spore.core.SConfig;
 import com.Harbinger.Spore.core.Ssounds;
+import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -17,6 +18,8 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -66,22 +69,25 @@ public class Grober extends Hyper implements ArmorPersentageBypass {
 
     @Override
     public boolean doHurtTarget(Entity entity) {
-        if (getMeleeState() == MELEE_STATES.SMASH){
-            damageStomp(level(),entity.getOnPos(),3);
-        }
-        if (getMeleeState() == MELEE_STATES.KICK && entity instanceof LivingEntity living){
-            living.hurtMarked = true;
-            living.knockback((3f),  Mth.sin(this.getYRot() * ((float) Math.PI / 180F)), (double) (-Mth.cos(this.getYRot() * ((float) Math.PI / 180F))));
-        }
+        if (entity instanceof LivingEntity living){
+            if (getMeleeState() == MELEE_STATES.SMASH){
+                damageStomp(level(),entity.getOnPos(),3);
+            }
+            if (getMeleeState() == MELEE_STATES.KICK){
+                living.hurtMarked = true;
+                living.knockback((3f),  Mth.sin(this.getYRot() * ((float) Math.PI / 180F)), (double) (-Mth.cos(this.getYRot() * ((float) Math.PI / 180F))));
+            }
+            if (getMeleeState() == MELEE_STATES.RIGHT_SLAP || getMeleeState() == MELEE_STATES.LEFT_SLAP){
+                living.addEffect(new MobEffectInstance(MobEffects.CONFUSION,200));
+                living.addEffect(new MobEffectInstance(MobEffects.WEAKNESS,100));
+            }
+         }
         this.attackAnimationTick = 10;
         this.level().broadcastEntityEvent(this, (byte)4);
         return super.doHurtTarget(entity);
     }
     public void handleEntityEvent(byte value) {
         if (value == 4) {
-            if (getMeleeState() == MELEE_STATES.KICK){
-                kickAnimation.start(this.tickCount);
-            }
             this.attackAnimationTick = 10;
         }else {
             super.handleEntityEvent(value);
@@ -102,7 +108,7 @@ public class Grober extends Hyper implements ArmorPersentageBypass {
             protected void checkAndPerformAttack(LivingEntity entity, double val) {
                 double d0 = this.getAttackReachSqr(entity);
                 if (val <= d0 && this.ticksUntilNextAttack <= 0 && mob.hasLineOfSight(entity)) {
-                    triggerAnimation(Math.random() < 0.5 ? MELEE_STATES.KICK.getValue() : MELEE_STATES.SMASH.getValue());
+                    triggerAnimation(Util.getRandom(MELEE_STATES.values(), mob.getRandom()).getValue());
                     this.resetAttackCooldown();
                     this.mob.swing(InteractionHand.MAIN_HAND);
                     this.mob.doHurtTarget(entity);
@@ -115,7 +121,12 @@ public class Grober extends Hyper implements ArmorPersentageBypass {
 
             }
         });
-        this.goalSelector.addGoal(3, new LeapAtTargetGoal(this, 0.4F));
+        this.goalSelector.addGoal(3, new LeapAtTargetGoal(this, 0.4F){
+            @Override
+            public boolean canUse() {
+                return super.canUse() && tickCount % 20 == 0;
+            }
+        });
         this.goalSelector.addGoal(6, new RandomStrollGoal(this, 0.8));
         this.goalSelector.addGoal(7, new RandomLookAroundGoal(this));
 
@@ -135,10 +146,20 @@ public class Grober extends Hyper implements ArmorPersentageBypass {
     @Override
     public void tick() {
         super.tick();
-        if (attackAnimationTick >= 0){
-            if (attackAnimationTick == 0){
+
+        if (level().isClientSide) {
+            if (attackAnimationTick > 0
+                    && getMeleeState() == MELEE_STATES.KICK
+                    && !kickAnimation.isStarted()) {
+
+                kickAnimation.start(this.tickCount);
+            }
+            if (attackAnimationTick <= 0 && kickAnimation.isStarted()){
                 kickAnimation.stop();
             }
+        }
+
+        if (attackAnimationTick > 0){
             attackAnimationTick--;
         }
     }
@@ -167,7 +188,7 @@ public class Grober extends Hyper implements ArmorPersentageBypass {
                             BlockState state = level.getBlockState(blockpos);
                             boolean airBelow = level.getBlockState(blockpos.below()).isAir();
                             double breakSpeed = state.getDestroySpeed(level,pos);
-                            if (airBelow && state.getDestroySpeed(level,pos) >= 0 && breakSpeed <= getBreaking() && Math.random() < 0.1){
+                            if (airBelow && state.getDestroySpeed(level,pos) >= 0 && breakSpeed <= getBreaking() && Math.random() < 0.3){
                                 FallingBlockEntity.fall(serverLevel,blockpos,state);
                                 serverLevel.removeBlock(blockpos,false);
                             }
@@ -188,7 +209,9 @@ public class Grober extends Hyper implements ArmorPersentageBypass {
 
     public enum MELEE_STATES{
         SMASH(0),
-        KICK(1);
+        KICK(1),
+        RIGHT_SLAP(2),
+        LEFT_SLAP(3);
         private final int value;
         MELEE_STATES(int value) {
             this.value = value;
