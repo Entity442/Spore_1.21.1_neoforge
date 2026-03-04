@@ -168,10 +168,11 @@ public class IkKrakenArm extends IkKrakenLeg {
         float x = (float) entities[entities.length-1].x();
         float y = (float) entities[entities.length-1].y();
         float z = (float) entities[entities.length-1].z();
+        Vector3f vector3f = new Vector3f(x,y,z);
         if (rightArm){
-            owner.setRightArm(new Vector3f(x,y,z));
+            owner.setRightArm(vector3f);
         }else {
-            owner.setLeftArm(new Vector3f(x,y,z));
+            owner.setLeftArm(vector3f);
         }
     }
 }
