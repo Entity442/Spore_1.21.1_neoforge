@@ -45,6 +45,7 @@ import java.util.List;
 public class Grober extends Hyper implements ArmorPersentageBypass {
     public static final EntityDataAccessor<Integer> ATTACK_TYPE = SynchedEntityData.defineId(Grober.class, EntityDataSerializers.INT);
     public static final EntityDataAccessor<Integer> RAVAGE_COOLDOWN = SynchedEntityData.defineId(Grober.class, EntityDataSerializers.INT);
+    public static final EntityDataAccessor<Integer> RAVAGE_TIME = SynchedEntityData.defineId(Grober.class, EntityDataSerializers.INT);
     public Grober(EntityType<? extends PathfinderMob> type, Level level) {
         super(type, level);
         this.moveControl = new InfectedWallMovementControl(this);
@@ -61,6 +62,16 @@ public class Grober extends Hyper implements ArmorPersentageBypass {
         super.defineSynchedData(builder);
         builder.define(ATTACK_TYPE, 0);
         builder.define(RAVAGE_COOLDOWN, 0);
+        builder.define(RAVAGE_TIME, 0);
+    }
+    public void setRavageTime(int val){
+        entityData.set(RAVAGE_TIME,val);
+    }
+    public void addRavageTime(){
+        entityData.set(RAVAGE_TIME,entityData.get(RAVAGE_TIME)+1);
+    }
+    public int getRavageTime(){
+        return entityData.get(RAVAGE_TIME);
     }
 
     @Override
@@ -253,8 +264,6 @@ public class Grober extends Hyper implements ArmorPersentageBypass {
 
         private final Grober mob;
         private LivingEntity target;
-
-        private int chargeTicks;
         private static final int MAX_CHARGE_TIME = 20; // ~1 second
         private static final double CHARGE_SPEED = 1.6;
         private static final double RANGE = 6.0;
@@ -279,18 +288,18 @@ public class Grober extends Hyper implements ArmorPersentageBypass {
 
         @Override
         public void start() {
+            mob.setRavageTime(0);
             mob.entityData.set(Grober.RAVAGE_COOLDOWN, 200);
         }
 
         @Override
         public boolean canContinueToUse() {
-            return chargeTicks < MAX_CHARGE_TIME && target != null && target.isAlive();
+            return mob.getRavageTime() < MAX_CHARGE_TIME && target != null && target.isAlive();
         }
 
         @Override
         public void tick() {
-            chargeTicks++;
-
+            mob.addRavageTime();
             if (target == null) return;
             mob.getLookControl().setLookAt(target, 30F, 30F);
 
@@ -309,12 +318,10 @@ public class Grober extends Hyper implements ArmorPersentageBypass {
                     e -> Utilities.TARGET_SELECTOR.Test(e)
             );
 
-            float damage = (float) mob.getAttributeValue(net.minecraft.world.entity.ai.attributes.Attributes.ATTACK_DAMAGE) * 0.5F;
+            float damage = (float) mob.getAttributeValue(net.minecraft.world.entity.ai.attributes.Attributes.ATTACK_DAMAGE) * 0.25F;
 
             for (LivingEntity living : victims) {
                 living.hurt(mob.damageSources().mobAttack(mob), damage);
-                living.hurtTime = 5;
-                living.invulnerableTime = 5;
                 living.knockback(1.2F,
                         Mth.sin(mob.getYRot() * ((float)Math.PI / 180F)),
                         -Mth.cos(mob.getYRot() * ((float)Math.PI / 180F)));
@@ -323,8 +330,8 @@ public class Grober extends Hyper implements ArmorPersentageBypass {
 
         @Override
         public void stop() {
+            mob.setRavageTime(0);
             mob.setDeltaMovement(Vec3.ZERO);
-            mob.triggerAnimation(Grober.MELEE_STATES.SMASH.getValue()); // reset state
         }
     }
 }

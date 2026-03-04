@@ -687,7 +687,18 @@ public class GroberfubModel<T extends Grober> extends HierarchicalModel<T> {
 	public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 		root().getAllParts().forEach(ModelPart::resetPose);
 		int rangedAttackAnimationTick = entity.getAttackAnimationTick();
-		if (rangedAttackAnimationTick > 0) {
+		int ravageTicks = entity.getRavageTime();
+		if (ravageTicks > 0){
+			float val = Mth.cos(limbSwing * 0.5f) * limbSwingAmount;
+			RightArm.xRot = -1.5f;
+			LeftArm.xRot = -1.5f;
+			moveZ(RightLeg,-val * 6f);
+			moveZ(LeftLeg,val * 6f);
+			RightLeg.xRot = val * 0.25f;
+			LeftLeg.xRot = -val * 0.25f;
+			LowerRightLeg.xRot = RightLeg.xRot > 0 ? -RightLeg.xRot : 0;
+			LowerLeftLeg.xRot = LeftLeg.xRot > 0 ? -LeftLeg.xRot : 0;
+		}else if (rangedAttackAnimationTick > 0) {
 			float swing = -2.0F + 1.5F * Mth.triangleWave((float)rangedAttackAnimationTick, 20.0F);
 			if (entity.getMeleeState() == Grober.MELEE_STATES.SMASH){
 				RightArm.xRot = swing;
@@ -713,9 +724,9 @@ public class GroberfubModel<T extends Grober> extends HierarchicalModel<T> {
 				LeftArm.xRot = -val * 0.75f;
 				moveZ(RightLeg,-val * 6f);
 				moveZ(LeftLeg,val * 6f);
-				RightArm.xRot = val * 0.25f;
+				RightLeg.xRot = val * 0.25f;
 				LeftLeg.xRot = -val * 0.25f;
-				LowerRightLeg.xRot = RightArm.xRot > 0 ? -RightArm.xRot : 0;
+				LowerRightLeg.xRot = RightLeg.xRot > 0 ? -RightLeg.xRot : 0;
 				LowerLeftLeg.xRot = LeftLeg.xRot > 0 ? -LeftLeg.xRot : 0;
 			}
 			this.Head.yRot = netHeadYaw / (180F / (float) Math.PI);
