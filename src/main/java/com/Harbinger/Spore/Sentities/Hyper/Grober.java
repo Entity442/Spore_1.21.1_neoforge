@@ -20,6 +20,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
@@ -171,6 +172,14 @@ public class Grober extends Hyper implements ArmorPersentageBypass {
                 .add(Attributes.ATTACK_KNOCKBACK, 1)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 1);
 
+    }
+
+    @Override
+    public boolean hurt(DamageSource source, float amount) {
+        if (getRavageTime() > 0){
+            amount = amount * 0.5f;
+        }
+        return super.hurt(source, amount);
     }
 
     @Override
