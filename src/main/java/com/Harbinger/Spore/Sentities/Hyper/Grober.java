@@ -1,6 +1,7 @@
 package com.Harbinger.Spore.Sentities.Hyper;
 
 
+import com.Harbinger.Spore.ExtremelySusThings.Utilities;
 import com.Harbinger.Spore.Sentities.AI.AOEMeleeAttackGoal;
 import com.Harbinger.Spore.Sentities.AI.LeapGoal;
 import com.Harbinger.Spore.Sentities.ArmorPersentageBypass;
@@ -10,6 +11,7 @@ import com.Harbinger.Spore.core.SConfig;
 import com.Harbinger.Spore.core.Ssounds;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -23,6 +25,7 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.LeapAtTargetGoal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
@@ -31,14 +34,17 @@ import net.minecraft.world.entity.item.FallingBlockEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.EnumSet;
 import java.util.List;
 
 public class Grober extends Hyper implements ArmorPersentageBypass {
     public static final EntityDataAccessor<Integer> ATTACK_TYPE = SynchedEntityData.defineId(Grober.class, EntityDataSerializers.INT);
+    public static final EntityDataAccessor<Integer> RAVAGE_COOLDOWN = SynchedEntityData.defineId(Grober.class, EntityDataSerializers.INT);
     public Grober(EntityType<? extends PathfinderMob> type, Level level) {
         super(type, level);
         this.moveControl = new InfectedWallMovementControl(this);
@@ -54,6 +60,7 @@ public class Grober extends Hyper implements ArmorPersentageBypass {
     protected void defineSynchedData(SynchedEntityData.@NotNull Builder builder) {
         super.defineSynchedData(builder);
         builder.define(ATTACK_TYPE, 0);
+        builder.define(RAVAGE_COOLDOWN, 0);
     }
 
     @Override
@@ -68,6 +75,16 @@ public class Grober extends Hyper implements ArmorPersentageBypass {
     }
 
     @Override
+    public void addAdditionalSaveData(CompoundTag tag) {
+        super.addAdditionalSaveData(tag);
+        tag.putInt("ravage",this.entityData.get(RAVAGE_COOLDOWN));
+    }
+    @Override
+    public void readAdditionalSaveData(CompoundTag tag) {
+        super.readAdditionalSaveData(tag);
+        this.entityData.set(RAVAGE_COOLDOWN,tag.getInt("ravage"));
+    }
+    @Override
     public boolean doHurtTarget(Entity entity) {
         if (entity instanceof LivingEntity living){
             if (getMeleeState() == MELEE_STATES.SMASH){
@@ -80,6 +97,7 @@ public class Grober extends Hyper implements ArmorPersentageBypass {
             if (getMeleeState() == MELEE_STATES.RIGHT_SLAP || getMeleeState() == MELEE_STATES.LEFT_SLAP){
                 living.addEffect(new MobEffectInstance(MobEffects.CONFUSION,200));
                 living.addEffect(new MobEffectInstance(MobEffects.WEAKNESS,100));
+                this.playSound(SoundEvents.PLAYER_ATTACK_CRIT);
             }
          }
         this.attackAnimationTick = 10;
@@ -96,6 +114,7 @@ public class Grober extends Hyper implements ArmorPersentageBypass {
     @Override
     protected void addRegularGoals() {
         super.addRegularGoals();
+        this.goalSelector.addGoal(2, new Ravage(this));
         this.goalSelector.addGoal(2, new LeapGoal(this,0.8F){
             @Override
             public void start() {
@@ -162,6 +181,9 @@ public class Grober extends Hyper implements ArmorPersentageBypass {
         if (attackAnimationTick > 0){
             attackAnimationTick--;
         }
+        if (entityData.get(RAVAGE_COOLDOWN) > 0){
+            entityData.set(RAVAGE_COOLDOWN,entityData.get(RAVAGE_COOLDOWN) -1);
+        }
     }
 
     protected SoundEvent getAmbientSound() {
@@ -223,6 +245,86 @@ public class Grober extends Hyper implements ArmorPersentageBypass {
                 comparingInt(Grober.MELEE_STATES::getValue)).toArray(Grober.MELEE_STATES[]::new);
         public static Grober.MELEE_STATES byId(int id) {
             return BY_ID[id % BY_ID.length];
+        }
+    }
+
+
+    public static class Ravage extends Goal {
+
+        private final Grober mob;
+        private LivingEntity target;
+
+        private int chargeTicks;
+        private static final int MAX_CHARGE_TIME = 20; // ~1 second
+        private static final double CHARGE_SPEED = 1.6;
+        private static final double RANGE = 6.0;
+
+        public Ravage(Grober mob) {
+            this.mob = mob;
+            this.setFlags(EnumSet.of(Flag.MOVE, Flag.LOOK));
+        }
+
+        @Override
+        public boolean canUse() {
+            if (mob.entityData.get(Grober.RAVAGE_COOLDOWN) > 0)
+                return false;
+
+            target = mob.getTarget();
+            if (target == null || !target.isAlive())
+                return false;
+
+            double distance = mob.distanceTo(target);
+            return distance > 3 && distance <= RANGE;
+        }
+
+        @Override
+        public void start() {
+            mob.entityData.set(Grober.RAVAGE_COOLDOWN, 200);
+        }
+
+        @Override
+        public boolean canContinueToUse() {
+            return chargeTicks < MAX_CHARGE_TIME && target != null && target.isAlive();
+        }
+
+        @Override
+        public void tick() {
+            chargeTicks++;
+
+            if (target == null) return;
+            mob.getLookControl().setLookAt(target, 30F, 30F);
+
+            Vec3 direction = new Vec3(
+                    target.getX() - mob.getX(),
+                    0,
+                    target.getZ() - mob.getZ()
+            ).normalize();
+
+            mob.setDeltaMovement(direction.scale(CHARGE_SPEED));
+
+            AABB hitbox = mob.getBoundingBox().inflate(1.0);
+            List<LivingEntity> victims = mob.level().getEntitiesOfClass(
+                    LivingEntity.class,
+                    hitbox,
+                    e -> Utilities.TARGET_SELECTOR.Test(e)
+            );
+
+            float damage = (float) mob.getAttributeValue(net.minecraft.world.entity.ai.attributes.Attributes.ATTACK_DAMAGE) * 0.5F;
+
+            for (LivingEntity living : victims) {
+                living.hurt(mob.damageSources().mobAttack(mob), damage);
+                living.hurtTime = 5;
+                living.invulnerableTime = 5;
+                living.knockback(1.2F,
+                        Mth.sin(mob.getYRot() * ((float)Math.PI / 180F)),
+                        -Mth.cos(mob.getYRot() * ((float)Math.PI / 180F)));
+            }
+        }
+
+        @Override
+        public void stop() {
+            mob.setDeltaMovement(Vec3.ZERO);
+            mob.triggerAnimation(Grober.MELEE_STATES.SMASH.getValue()); // reset state
         }
     }
 }
