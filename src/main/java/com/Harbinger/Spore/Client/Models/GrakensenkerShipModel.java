@@ -11,10 +11,11 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 
-public class GrakensenkerShipModel<T extends Grakensenker> extends EntityModel<T> {
+public class GrakensenkerShipModel<T extends Grakensenker> extends EntityModel<T> implements TentacledModel{
 	// This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
-	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "grakensenkermodel"), "main");
+	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "grakensenkerboatmodel"), "main");
 	private final ModelPart ship;
 	private final ModelPart mast;
 	private final ModelPart crownest;
@@ -275,7 +276,9 @@ public class GrakensenkerShipModel<T extends Grakensenker> extends EntityModel<T
 
 	@Override
 	public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-
+		animateTumor(tumorBase, Mth.sin(ageInTicks/8)/10);
+		harpoon.visible = !entity.shotHook();
+		gunner.visible = !entity.isInvisible();
 	}
 
 	@Override

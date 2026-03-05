@@ -14,17 +14,22 @@ import com.Harbinger.Spore.Sentities.TrueCalamity;
 import com.Harbinger.Spore.Sentities.WaterInfected;
 import com.Harbinger.Spore.core.SAttributes;
 import com.Harbinger.Spore.core.SConfig;
+import com.Harbinger.Spore.core.Sblocks;
 import com.Harbinger.Spore.core.Ssounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
@@ -41,6 +46,7 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.entity.PartEntity;
+import net.neoforged.neoforge.event.EventHooks;
 import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -59,6 +65,8 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
     public static final EntityDataAccessor<Integer> LEFT_ARM_DELAY = SynchedEntityData.defineId(Grakensenker.class, EntityDataSerializers.INT);
     public static final EntityDataAccessor<BlockPos> VORTEX_VECTOR = SynchedEntityData.defineId(Grakensenker.class, EntityDataSerializers.BLOCK_POS);
     public static final EntityDataAccessor<Integer> VORTEX_TIMEOUT = SynchedEntityData.defineId(Grakensenker.class, EntityDataSerializers.INT);
+    public static final EntityDataAccessor<Integer> WOOD = SynchedEntityData.defineId(Grakensenker.class, EntityDataSerializers.INT);
+    public static final EntityDataAccessor<Boolean> HOOK = SynchedEntityData.defineId(Grakensenker.class, EntityDataSerializers.BOOLEAN);
     public static final float MIN_HEIGHT = 0f;
     public static final float MAX_HEIGHT = 4f;
     private final IkKrakenLeg BackRightTentacle;
@@ -269,6 +277,8 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
         builder.define(LEFT_ARM_DELAY,  0);
         builder.define(VORTEX_VECTOR,   BlockPos.ZERO);
         builder.define(VORTEX_TIMEOUT,  0);
+        builder.define(WOOD,  0);
+        builder.define(HOOK,  false);
     }
     @Override
     public void addAdditionalSaveData(CompoundTag tag) {
@@ -282,6 +292,7 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
         tag.putInt("VY",getVortexVector().getY());
         tag.putInt("VZ",getVortexVector().getZ());
         tag.putInt("timeOut",getVortexTimeOut());
+        tag.putInt("wood",entityData.get(WOOD));
     }
     @Override
     public void readAdditionalSaveData(CompoundTag tag) {
@@ -296,8 +307,15 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
         int z = tag.getInt("VZ");
         this.setVortexVector(new BlockPos(x,y,z));
         setVortexTimeout(tag.getInt("timeOut"));
+        entityData.set(WOOD,tag.getInt("wood"));
     }
 
+    public boolean shotHook(){
+        return entityData.get(HOOK);
+    }
+    public void shootHook(boolean val){
+        entityData.set(HOOK,val);
+    }
 
     @Override
     protected EntityDimensions getDefaultDimensions(Pose pose) {
@@ -707,7 +725,25 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
         }
         return null;
     }
-
+    @Override
+    protected void grief(AABB aabb) {
+        boolean flag = false;
+        for (BlockPos blockpos : BlockPos.betweenClosed(Mth.floor(aabb.minX), Mth.floor(aabb.minY), Mth.floor(aabb.minZ), Mth.floor(aabb.maxX), Mth.floor(aabb.maxY), Mth.floor(aabb.maxZ))) {
+            BlockState blockstate = this.level().getBlockState(blockpos);
+            if (blockstate.is(Utilities.biomass)){
+                flag = this.level().setBlock(blockpos, Sblocks.MEMBRANE_BLOCK.get().defaultBlockState(), 3) || flag;
+                breakCounter = 0;
+            }else{
+                if (blockstate.getDestroySpeed(level(), blockpos) < getDestroySpeed() && blockstate.getDestroySpeed(level(), blockpos) >= 0 && EventHooks.canEntityGrief(this.level(), this)) {
+                    if (blockstate.is(BlockTags.PLANKS) || blockstate.is(BlockTags.LOGS) || blockstate.is(BlockTags.WOODEN_FENCES)){
+                        this.entityData.set(WOOD,this.entityData.get(WOOD)+1);
+                    }
+                    flag = this.level().destroyBlock(blockpos, false, this) || flag;
+                    breakCounter = 0;
+                }
+            }
+        }
+    }
 
     public void handleVortexBehavior() {
         if (!hasVortex()) return;
@@ -734,6 +770,16 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
 
         this.yBodyRot = yaw;
         this.yHeadRot = yaw;
+    }
+
+    @Override
+    public boolean getAdaptation() {
+        return entityData.get(WOOD) >= 20;
+    }
+
+    @Override
+    public void ActivateAdaptation() {
+        entityData.set(WOOD,20);
     }
 
     public void applyVortexForces() {
@@ -910,7 +956,7 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
         if (!entity.isAlive()) return false;
         if (entity.isPassenger()) return false;
         double distSq = entity.position().distanceToSqr(baseCenter);
-        return distSq < 3.2 * 3.2 && entity instanceof LivingEntity;
+        return distSq < 3.2 * 3.2 && (entity instanceof LivingEntity || entity instanceof Boat);
     }
 
     private void consumeEntity(Entity entity) {
@@ -920,8 +966,12 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
 
         Vec3 basePos = getVortexFunnel().getEntities()[0];
         entity.setPos(basePos.x, basePos.y, basePos.z);
-
-        entity.startRiding(this);
+        if (entity instanceof Boat boat){
+         entityData.set(WOOD,entityData.get(WOOD)+5);
+         boat.discard();
+        }else {
+            entity.startRiding(this);
+        }
     }
 
 }
