@@ -7,6 +7,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.AbstractArrow;
@@ -110,6 +112,7 @@ public class HarpoonProjectile extends AbstractArrow {
             this.setNoGravity(true);
         }
         entityData.set(SHOT,true);
+        playSound(SoundEvents.ANVIL_HIT);
     }
 
     @Override
@@ -119,9 +122,16 @@ public class HarpoonProjectile extends AbstractArrow {
     }
 
     @Override
+    protected SoundEvent getDefaultHitGroundSoundEvent() {
+        return SoundEvents.ANVIL_HIT;
+    }
+
+    @Override
     protected boolean canHitEntity(Entity entity) {
         return entity instanceof LivingEntity living && Utilities.TARGET_SELECTOR.Test(living);
     }
+
+
 
     @Override
     public void tick() {
@@ -130,7 +140,7 @@ public class HarpoonProjectile extends AbstractArrow {
         Entity owner = getOwnerById();
         Entity victim = getVictimById();
         if (victim == null){
-            AABB aabb = this.getBoundingBox().inflate(2.5);
+            AABB aabb = this.getBoundingBox();
             List<Entity> entities = level().getEntities(this,aabb);
             for(Entity entity : entities){
                 if (entity instanceof LivingEntity living && Utilities.TARGET_SELECTOR.Test(living)){
@@ -148,15 +158,16 @@ public class HarpoonProjectile extends AbstractArrow {
             if (distance > 1) {
                 Vec3 motion = direction.normalize().scale(0.5);
                 this.setDeltaMovement(motion);
-
-                this.moveTo(
-                        getX() + motion.x,
-                        getY() + motion.y,
-                        getZ() + motion.z
-                );
                 if (victim instanceof LivingEntity living) {
                     living.hurtMarked = true;
                     living.setDeltaMovement(motion);
+                    this.moveTo(living.getX(),living.getY()+(living.getBbHeight()/2),living.getZ());
+                }else {
+                    this.moveTo(
+                            getX() + motion.x,
+                            getY() + motion.y,
+                            getZ() + motion.z
+                    );
                 }
                 setHarpoonBackInPlace();
             }
