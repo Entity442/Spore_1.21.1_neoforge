@@ -1,6 +1,7 @@
 package com.Harbinger.Spore.Client.Renderers;
 
 import com.Harbinger.Spore.Client.Layers.CustomArmorLayer;
+import com.Harbinger.Spore.Client.Models.HarbingerModel;
 import com.Harbinger.Spore.Client.Models.InfectedPlayerModel;
 import com.Harbinger.Spore.Client.Models.InfectedTechnoModel;
 import com.Harbinger.Spore.Client.Special.BaseInfectedRenderer;
@@ -37,6 +38,7 @@ public class InfectedPlayerRenderer extends BaseInfectedRenderer<InfectedPlayer 
     private final HumanoidModel<InfectedPlayer> mainModel = this.getModel();
     private final HumanoidModel<InfectedPlayer> technoSkin;
     private final HumanoidModel<InfectedPlayer> madnessModel;
+    private final HumanoidModel<InfectedPlayer> harbyModel;
     public static final Map<InfPlayerSkins, ResourceLocation> MAIN_TEXTURES =
             Util.make(Maps.newEnumMap(InfPlayerSkins.class), (p_114874_) -> {
                 p_114874_.put(InfPlayerSkins.STEVE,
@@ -121,12 +123,15 @@ public class InfectedPlayerRenderer extends BaseInfectedRenderer<InfectedPlayer 
                 "textures/entity/player/gardener.png"));
         put(Component.literal("DivnejFelix"), ResourceLocation.fromNamespaceAndPath(Spore.MODID,
                 "textures/entity/player/penguin.png"));
+        put(Component.literal("The_Harbinger69"), ResourceLocation.fromNamespaceAndPath(Spore.MODID,
+                "textures/entity/player/harby.png"));
     }};
 
     public InfectedPlayerRenderer(EntityRendererProvider.Context context) {
         super(context, new InfectedPlayerModel<>(context.bakeLayer(InfectedPlayerModel.LAYER_LOCATION)), 0.5f);
         this.madnessModel = new HumanoidModel<>(context.bakeLayer(ModelLayers.PLAYER));
         this.technoSkin = new InfectedTechnoModel<>(context.bakeLayer(InfectedTechnoModel.LAYER_LOCATION));
+        this.harbyModel = new HumanoidArmorModel<>(context.bakeLayer(HarbingerModel.LAYER_LOCATION));
         this.addLayer(new HumanoidArmorLayer<>(this, new HumanoidArmorModel
                 (context.bakeLayer(ModelLayers.PLAYER_INNER_ARMOR)),
                 new HumanoidArmorModel(context.bakeLayer(ModelLayers.PLAYER_OUTER_ARMOR)), context.getModelManager()));
@@ -162,7 +167,7 @@ public class InfectedPlayerRenderer extends BaseInfectedRenderer<InfectedPlayer 
 
     @Override
     public void render(InfectedPlayer type, float value1, float value2, PoseStack stack, MultiBufferSource bufferSource, int light) {
-        this.model = isTheViewerMad(type) ? madnessModel : Objects.equals(type.getCustomName(), Component.literal("Technoblade")) ? technoSkin : mainModel;
+        this.model = isTheViewerMad(type) ? madnessModel : Objects.equals(type.getCustomName(), Component.literal("Technoblade")) ? technoSkin : Objects.equals(type.getCustomName(), Component.literal("The_Harbinger69")) ? harbyModel : mainModel;
         super.render(type, value1, value2, stack, bufferSource, light);
     }
 }

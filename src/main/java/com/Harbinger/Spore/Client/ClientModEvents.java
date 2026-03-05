@@ -192,6 +192,7 @@ public class ClientModEvents {
         event.registerLayerDefinition(StahlmorderModel.LAYER_LOCATION, StahlmorderModel::createBodyLayer);
         event.registerLayerDefinition(HivetumorModel.LAYER_LOCATION, HivetumorModel::createBodyLayer);
         event.registerLayerDefinition(GroberfubModel.LAYER_LOCATION, GroberfubModel::createBodyLayer);
+        event.registerLayerDefinition(HarbingerModel.LAYER_LOCATION, HarbingerModel::createBodyLayer);
     }
     @SubscribeEvent
     public static void registerRenderers(final EntityRenderersEvent.RegisterRenderers event) {
