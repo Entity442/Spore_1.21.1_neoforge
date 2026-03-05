@@ -501,7 +501,7 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
         }
         if (tickCount % 40 == 0 && shotHook() && getAdaptation() && !isInDeepWater()){
             LivingEntity living = this.getTarget();
-            if (living != null && living.hasLineOfSight(living) && (this.isVehicle() && !Objects.equals(getFirstPassenger(), living))){
+            if (living != null && living.hasLineOfSight(living) && !this.isVehicle()){
                 performRangedAttack(living,0);
             }
         }
