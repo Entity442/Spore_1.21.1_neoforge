@@ -131,7 +131,7 @@ public class InfectedPlayerRenderer extends BaseInfectedRenderer<InfectedPlayer 
         super(context, new InfectedPlayerModel<>(context.bakeLayer(InfectedPlayerModel.LAYER_LOCATION)), 0.5f);
         this.madnessModel = new HumanoidModel<>(context.bakeLayer(ModelLayers.PLAYER));
         this.technoSkin = new InfectedTechnoModel<>(context.bakeLayer(InfectedTechnoModel.LAYER_LOCATION));
-        this.harbyModel = new HumanoidArmorModel<>(context.bakeLayer(HarbingerModel.LAYER_LOCATION));
+        this.harbyModel = new HarbingerModel<>(context.bakeLayer(HarbingerModel.LAYER_LOCATION));
         this.addLayer(new HumanoidArmorLayer<>(this, new HumanoidArmorModel
                 (context.bakeLayer(ModelLayers.PLAYER_INNER_ARMOR)),
                 new HumanoidArmorModel(context.bakeLayer(ModelLayers.PLAYER_OUTER_ARMOR)), context.getModelManager()));
