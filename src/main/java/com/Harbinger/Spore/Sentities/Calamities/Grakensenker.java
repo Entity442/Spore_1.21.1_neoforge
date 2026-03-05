@@ -157,7 +157,7 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
                 look.x,
                 look.y,
                 look.z,
-                4.0F,
+                3.0F,
                 0.0F
         );
         this.level().addFreshEntity(projectile);
