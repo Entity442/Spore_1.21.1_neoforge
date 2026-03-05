@@ -98,7 +98,7 @@ public class HarbingerModel<T extends InfectedPlayer> extends HumanoidModel<T> {
 			vec32 = new Vec3(vec32.x, 0.0D, vec32.z);
 			Vec3 vec33 = (new Vec3(vec31.x - vec3.x, 0.0D, vec31.z - vec3.z)).normalize().yRot(((float)Math.PI / 2F));
 			double d1 = vec32.dot(vec33);
-			part.x =part.getInitialPose().x + Mth.sqrt((float)Math.abs(d1)) * 3.0F * (float)Math.signum(d1);
+			part.x =part.getInitialPose().x + Mth.sqrt((float)Math.abs(d1)) * 2.0F * (float)Math.signum(d1);
 		}
 	}
 	@Override
