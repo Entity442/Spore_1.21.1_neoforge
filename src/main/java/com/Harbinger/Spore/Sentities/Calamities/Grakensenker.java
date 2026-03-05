@@ -10,6 +10,8 @@ import com.Harbinger.Spore.Sentities.BaseEntities.IkUtil.IkKrakenArm;
 import com.Harbinger.Spore.Sentities.BaseEntities.IkUtil.IkKrakenLeg;
 import com.Harbinger.Spore.Sentities.BaseEntities.IkUtil.IkVortexFunnel;
 import com.Harbinger.Spore.Sentities.HitboxesForParts;
+import com.Harbinger.Spore.Sentities.Projectile.HarpoonProjectile;
+import com.Harbinger.Spore.Sentities.Projectile.StingerProjectile;
 import com.Harbinger.Spore.Sentities.TrueCalamity;
 import com.Harbinger.Spore.Sentities.WaterInfected;
 import com.Harbinger.Spore.core.SAttributes;
@@ -18,18 +20,15 @@ import com.Harbinger.Spore.core.Sblocks;
 import com.Harbinger.Spore.core.Ssounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
@@ -38,6 +37,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
+import net.minecraft.world.entity.monster.RangedAttackMob;
 import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -54,7 +54,7 @@ import org.joml.Vector3f;
 
 import java.util.*;
 
-public class Grakensenker extends Calamity implements TrueCalamity, WaterInfected {
+public class Grakensenker extends Calamity implements TrueCalamity, WaterInfected, RangedAttackMob {
     public static final EntityDataAccessor<Float> HEIGHT = SynchedEntityData.defineId(Grakensenker.class, EntityDataSerializers.FLOAT);
     public static final EntityDataAccessor<Integer> WATER_TICKS = SynchedEntityData.defineId(Grakensenker.class, EntityDataSerializers.INT);
     public static final EntityDataAccessor<Vector3f> RIGHT_ARM_TIP = SynchedEntityData.defineId(Grakensenker.class, EntityDataSerializers.VECTOR3);
@@ -135,6 +135,35 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
         }
 
     }
+
+    @Override
+    public void performRangedAttack(LivingEntity target, float v) {
+
+        float yawRad = this.getYRot() * Mth.DEG_TO_RAD;
+        float spinRad = this.getWaterTicks() * 0.05f;
+
+        Vec3 offset = new Vec3(5.5,4+getExtendedHeight(),1);
+        Vec3 pos = this.position().add(offset.yRot(-yawRad - Mth.HALF_PI + spinRad));
+        HarpoonProjectile projectile = new HarpoonProjectile(
+                this.level(),
+                this,
+                (float)(SConfig.SERVER.graken_damage.get() * 0.5f)
+        );
+        projectile.moveTo(pos.x,pos.y,pos.z);
+
+        Vec3 look = this.getViewVector(1.0F);
+
+        projectile.shoot(
+                look.x,
+                look.y,
+                look.z,
+                4.0F,
+                0.0F
+        );
+        this.level().addFreshEntity(projectile);
+        shootHook(false);
+    }
+
     enum GrakenLegsModifiers{
         BACK_LEFT_TENTACLE(new Vec3(-3,3.5,0.75),new Vec3(-6, -1, 6)),
         BACK_RIGHT_TENTACLE(new Vec3(-3,3.5,-0.75),new Vec3(-6, -1, -6)),
@@ -278,7 +307,7 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
         builder.define(VORTEX_VECTOR,   BlockPos.ZERO);
         builder.define(VORTEX_TIMEOUT,  0);
         builder.define(WOOD,  0);
-        builder.define(HOOK,  false);
+        builder.define(HOOK,  true);
     }
     @Override
     public void addAdditionalSaveData(CompoundTag tag) {
@@ -463,6 +492,19 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
                 this.yBodyRot = lerpRotation(this.yRotO, this.getYRot());
             }
         }
+        if (tickCount % 600 == 0 && !shotHook()){
+            AABB aabb = this.getBoundingBox().inflate(8);
+            List<HarpoonProjectile> harpoons  = level().getEntitiesOfClass(HarpoonProjectile.class,aabb,projectile -> {return projectile.getOwnerId() == this.getId();});
+            if (harpoons.isEmpty()){
+                this.shootHook(true);
+            }
+        }
+        if (tickCount % 40 == 0 && shotHook() && getAdaptation() && !isInDeepWater()){
+            LivingEntity living = this.getTarget();
+            if (living != null && living.hasLineOfSight(living)){
+                performRangedAttack(living,0);
+            }
+        }
     }
     protected static float lerpRotation(float currentRotation, float targetRotation) {
         while(targetRotation - currentRotation < -180.0F) {
@@ -477,6 +519,9 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
     }
     @Override
     public boolean hurt(DamageSource source, float amount) {
+        if (getAdaptation()){
+            amount = amount * 0.8f;
+        }
         setVortexTimeout(1200);
         setVortexVector(BlockPos.ZERO);
         return super.hurt(source, amount);

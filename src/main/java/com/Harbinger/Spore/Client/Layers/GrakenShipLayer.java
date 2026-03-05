@@ -23,6 +23,9 @@ public class GrakenShipLayer<T extends Grakensenker> extends RenderLayer<T, Grak
         if (!t.getAdaptation()) {
             return;
         }
-        coloredCutoutModelCopyLayerRender(this.getParentModel(), this.model, SHIP, poseStack, multiBufferSource, i, t, v, v1, v2, v3, v4, v5, -1);
+        this.getParentModel().copyPropertiesTo(model);
+        model.prepareMobModel(t, v, v1, v5);
+        model.setupAnim(t, v, v1, v2, v3, v4);
+        renderColoredCutoutModel(model, SHIP, poseStack, multiBufferSource, i, t, -1);
     }
 }

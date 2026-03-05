@@ -277,7 +277,7 @@ public class GrakensenkerShipModel<T extends Grakensenker> extends EntityModel<T
 	@Override
 	public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 		animateTumor(tumorBase, Mth.sin(ageInTicks/8)/10);
-		harpoon.visible = !entity.shotHook();
+		harpoon.visible = entity.shotHook();
 		gunner.visible = !entity.isInvisible();
 	}
 

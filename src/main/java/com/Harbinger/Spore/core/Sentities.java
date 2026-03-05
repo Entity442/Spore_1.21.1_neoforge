@@ -328,6 +328,10 @@ public class Sentities {
             EntityType.Builder.of((EntityType<StingerProjectile> p_33002_, Level level) -> new StingerProjectile(level), MobCategory.MISC)
                     .setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(1).sized(0.4f, 0.4f));
 
+    public static final Supplier<EntityType<HarpoonProjectile>> HARPOON = register("harpoon",
+            EntityType.Builder.of((EntityType<HarpoonProjectile> p_33002_, Level level) -> new HarpoonProjectile(level), MobCategory.MISC)
+                    .setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(1).sized(0.4f, 0.4f));
+
     public static final Supplier<EntityType<ThrownItemProjectile>> THROWN_TOOL = register("thrown_tool",
             EntityType.Builder.of((EntityType<ThrownItemProjectile> p_33002_, Level level) -> new ThrownItemProjectile(level), MobCategory.MISC)
                     .setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(1).sized(0.4f, 0.4f));
