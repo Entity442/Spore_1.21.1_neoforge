@@ -52,6 +52,7 @@ public class HarpoonModel<T extends HarpoonProjectile> extends EntityModel<T> {
 
 	@Override
 	public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int alpha) {
+		harpoon.y = harpoon.getInitialPose().y-4f;
 		harpoon.render(poseStack, vertexConsumer, packedLight, packedOverlay, alpha);
 	}
 }

@@ -494,7 +494,7 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
         }
         if (tickCount % 600 == 0 && !shotHook()){
             AABB aabb = this.getBoundingBox().inflate(8);
-            List<HarpoonProjectile> harpoons  = level().getEntitiesOfClass(HarpoonProjectile.class,aabb,projectile -> {return projectile.getOwnerId() == this.getId();});
+            List<HarpoonProjectile> harpoons  = level().getEntitiesOfClass(HarpoonProjectile.class,aabb);
             if (harpoons.isEmpty()){
                 this.shootHook(true);
             }

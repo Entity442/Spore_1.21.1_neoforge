@@ -13,9 +13,12 @@ import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
+
+import java.util.List;
 
 public class HarpoonProjectile extends AbstractArrow {
     private static final EntityDataAccessor<Float> DAMAGE = SynchedEntityData.defineId(HarpoonProjectile.class, EntityDataSerializers.FLOAT);
@@ -126,6 +129,16 @@ public class HarpoonProjectile extends AbstractArrow {
 
         Entity owner = getOwnerById();
         Entity victim = getVictimById();
+        if (victim == null){
+            AABB aabb = this.getBoundingBox().inflate(2.5);
+            List<Entity> entities = level().getEntities(this,aabb);
+            for(Entity entity : entities){
+                if (entity instanceof LivingEntity living && Utilities.TARGET_SELECTOR.Test(living)){
+                    entityData.set(VICTIM_ID,living.getId());
+                    break;
+                }
+            }
+        }
 
         if (owner == null) return;
         if (entityData.get(SHOT)){
@@ -133,7 +146,7 @@ public class HarpoonProjectile extends AbstractArrow {
             Vec3 direction = ownerPos.subtract(this.position());
             double distance = direction.length();
             if (distance > 1) {
-                Vec3 motion = direction.normalize().scale(0.2);
+                Vec3 motion = direction.normalize().scale(0.5);
                 this.setDeltaMovement(motion);
 
                 this.moveTo(

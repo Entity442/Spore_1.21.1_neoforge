@@ -39,7 +39,6 @@ public class HarpoonRenderer extends EntityRenderer<HarpoonProjectile> {
 
     public void render(HarpoonProjectile spear, float p_116112_, float partial, PoseStack stack, MultiBufferSource bufferSource, int light) {
         stack.pushPose();
-        stack.translate(-1,0,0);
         stack.mulPose(Axis.YP.rotationDegrees(Mth.lerp(partial, spear.yRotO, spear.getYRot()) - 90.0F));
         stack.mulPose(Axis.ZP.rotationDegrees(Mth.lerp(partial, spear.xRotO, spear.getXRot()) + 90.0F));
         VertexConsumer vertexconsumer = bufferSource.getBuffer(RenderType.entityTranslucent(getTextureLocation(spear)));
