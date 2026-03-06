@@ -1,6 +1,9 @@
 package com.Harbinger.Spore.Client.Models;// Made with Blockbench 5.0.7
 // Exported for Minecraft version 1.17 or later with Mojang mappings
 // Paste this class into your mod and generate all required imports
+
+
+import com.Harbinger.Spore.Client.Models.TentacledModel;
 import com.Harbinger.Spore.Sentities.Calamities.Grakensenker;
 import com.Harbinger.Spore.Spore;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -13,7 +16,7 @@ import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
-public class GrakensenkerShipModel<T extends Grakensenker> extends EntityModel<T> implements TentacledModel{
+public class GrakensenkerShipModel<T extends Grakensenker> extends EntityModel<T>  implements TentacledModel {
 	// This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
 	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "grakensenkerboatmodel"), "main");
 	private final ModelPart ship;
@@ -26,6 +29,9 @@ public class GrakensenkerShipModel<T extends Grakensenker> extends EntityModel<T
 	private final ModelPart gunner;
 	private final ModelPart tumorBase;
 	private final ModelPart gunnerhead;
+	private final ModelPart smalltumor3;
+	private final ModelPart smalltumor2;
+	private final ModelPart smalltumor;
 	private final ModelPart anchorPort;
 	private final ModelPart anchorChain;
 	private final ModelPart anchorChain2;
@@ -46,6 +52,9 @@ public class GrakensenkerShipModel<T extends Grakensenker> extends EntityModel<T
 		this.gunner = this.gunbase.getChild("gunner");
 		this.tumorBase = this.gunner.getChild("tumorBase");
 		this.gunnerhead = this.gunner.getChild("gunnerhead");
+		this.smalltumor3 = this.gunnerhead.getChild("smalltumor3");
+		this.smalltumor2 = this.gunnerhead.getChild("smalltumor2");
+		this.smalltumor = this.gunnerhead.getChild("smalltumor");
 		this.anchorPort = this.ship.getChild("anchorPort");
 		this.anchorChain = this.anchorPort.getChild("anchorChain");
 		this.anchorChain2 = this.anchorChain.getChild("anchorChain2");
@@ -60,9 +69,9 @@ public class GrakensenkerShipModel<T extends Grakensenker> extends EntityModel<T
 		PartDefinition partdefinition = meshdefinition.getRoot();
 
 		PartDefinition ship = partdefinition.addOrReplaceChild("ship", CubeListBuilder.create().texOffs(880, 100).addBox(-35.2013F, -1.8783F, 1.947F, 3.0F, 13.0F, 23.0F, new CubeDeformation(0.0F))
-				.texOffs(978, 10).addBox(-35.2013F, 6.1216F, -5.053F, 3.0F, 5.0F, 7.0F, new CubeDeformation(0.0F))
-				.texOffs(984, 0).addBox(-35.2013F, 1.1217F, -2.053F, 3.0F, 5.0F, 4.0F, new CubeDeformation(0.0F))
-				.texOffs(1008, 0).addBox(-35.2013F, -1.8783F, 24.947F, 3.0F, 6.0F, 7.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -14.0F, -5.0F, 0.5236F, 0.0F, 0.0F));
+		.texOffs(978, 10).addBox(-35.2013F, 6.1216F, -5.053F, 3.0F, 5.0F, 7.0F, new CubeDeformation(0.0F))
+		.texOffs(984, 0).addBox(-35.2013F, 1.1217F, -2.053F, 3.0F, 5.0F, 4.0F, new CubeDeformation(0.0F))
+		.texOffs(1008, 0).addBox(-35.2013F, -1.8783F, 24.947F, 3.0F, 6.0F, 7.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -14.0F, -5.0F, 0.5236F, 0.0F, 0.0F));
 
 		PartDefinition plank7Weed_r1 = ship.addOrReplaceChild("plank7Weed_r1", CubeListBuilder.create().texOffs(934, 222).addBox(0.0F, -1.5F, -11.5F, 0.0F, 13.0F, 23.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-35.2013F, 10.6216F, 13.447F, -0.1304F, -0.0114F, -0.0865F));
 
@@ -77,7 +86,7 @@ public class GrakensenkerShipModel<T extends Grakensenker> extends EntityModel<T
 		PartDefinition plank6_r2 = ship.addOrReplaceChild("plank6_r2", CubeListBuilder.create().texOffs(1002, 63).addBox(-0.5F, -11.5F, -4.5F, 4.0F, 23.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-25.6653F, -7.3744F, -11.1613F, -0.1855F, -0.3435F, 0.5867F));
 
 		PartDefinition plan5RailingLeg_r1 = ship.addOrReplaceChild("plan5RailingLeg_r1", CubeListBuilder.create().texOffs(1011, 16).addBox(-1.5F, -11.0F, -1.5F, 3.0F, 3.0F, 3.0F, new CubeDeformation(0.0F))
-				.texOffs(938, 0).addBox(-1.5F, -8.0F, -1.5F, 3.0F, 8.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-22.5828F, -12.4821F, -7.2541F, 0.0F, 0.0F, -0.6109F));
+		.texOffs(938, 0).addBox(-1.5F, -8.0F, -1.5F, 3.0F, 8.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-22.5828F, -12.4821F, -7.2541F, 0.0F, 0.0F, -0.6109F));
 
 		PartDefinition plan5RailingLeg_r2 = ship.addOrReplaceChild("plan5RailingLeg_r2", CubeListBuilder.create().texOffs(938, 0).addBox(-4.5F, -2.5F, -2.5F, 3.0F, 13.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-36.7478F, -6.9502F, -10.2541F, 0.0F, 0.0F, -1.1345F));
 
@@ -90,16 +99,16 @@ public class GrakensenkerShipModel<T extends Grakensenker> extends EntityModel<T
 		PartDefinition plank4_r2 = ship.addOrReplaceChild("plank4_r2", CubeListBuilder.create().texOffs(1018, 63).addBox(1.4688F, -18.5F, 3.5431F, 1.0F, 37.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(24.6209F, -17.9947F, 42.6198F, -0.0392F, -0.2593F, -0.8065F));
 
 		PartDefinition barni_r1 = ship.addOrReplaceChild("barni_r1", CubeListBuilder.create().texOffs(917, 50).addBox(-0.5F, 0.5F, 7.5F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.0F))
-				.texOffs(917, 50).addBox(-0.5F, -0.5F, -0.5F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(25.9412F, -18.4155F, 31.1415F, -0.3433F, 0.0459F, -0.8183F));
+		.texOffs(917, 50).addBox(-0.5F, -0.5F, -0.5F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(25.9412F, -18.4155F, 31.1415F, -0.3433F, 0.0459F, -0.8183F));
 
 		PartDefinition barni_r2 = ship.addOrReplaceChild("barni_r2", CubeListBuilder.create().texOffs(917, 49).addBox(1.2891F, -4.5F, -5.8785F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.0F))
-				.texOffs(916, 48).addBox(1.2891F, -1.5F, -6.8785F, 1.0F, 2.0F, 2.0F, new CubeDeformation(0.0F))
-				.texOffs(904, 32).addBox(-1.7109F, -18.5F, -15.8785F, 3.0F, 37.0F, 20.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(24.6209F, -17.9947F, 42.6198F, -0.0379F, 0.0459F, -0.8183F));
+		.texOffs(916, 48).addBox(1.2891F, -1.5F, -6.8785F, 1.0F, 2.0F, 2.0F, new CubeDeformation(0.0F))
+		.texOffs(904, 32).addBox(-1.7109F, -18.5F, -15.8785F, 3.0F, 37.0F, 20.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(24.6209F, -17.9947F, 42.6198F, -0.0379F, 0.0459F, -0.8183F));
 
 		PartDefinition barni_r3 = ship.addOrReplaceChild("barni_r3", CubeListBuilder.create().texOffs(916, 48).mirror().addBox(-0.5F, -1.0F, -1.0F, 1.0F, 2.0F, 2.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offsetAndRotation(25.2535F, -19.0556F, 40.1995F, 1.0529F, 0.0459F, -0.8183F));
 
 		PartDefinition barni_r4 = ship.addOrReplaceChild("barni_r4", CubeListBuilder.create().texOffs(916, 48).mirror().addBox(-1.0F, -7.0F, -1.0F, 1.0F, 2.0F, 2.0F, new CubeDeformation(0.0F)).mirror(false)
-				.texOffs(916, 48).addBox(-0.5F, -1.0F, -1.0F, 1.0F, 2.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(27.0886F, -17.3039F, 33.5803F, 0.2239F, 0.0459F, -0.8183F));
+		.texOffs(916, 48).addBox(-0.5F, -1.0F, -1.0F, 1.0F, 2.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(27.0886F, -17.3039F, 33.5803F, 0.2239F, 0.0459F, -0.8183F));
 
 		PartDefinition plank3RailingBeam_r1 = ship.addOrReplaceChild("plank3RailingBeam_r1", CubeListBuilder.create().texOffs(920, 140).addBox(35.5F, -7.5F, -6.0F, 23.0F, 3.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(35.3655F, -13.4254F, -9.0F, 0.0F, -1.5708F, 0.5236F));
 
@@ -108,12 +117,12 @@ public class GrakensenkerShipModel<T extends Grakensenker> extends EntityModel<T
 		PartDefinition plank3RailingLeg_r2 = ship.addOrReplaceChild("plank3RailingLeg_r2", CubeListBuilder.create().texOffs(938, 0).addBox(-4.5F, -23.5F, 33.5F, 3.0F, 13.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(38.2522F, -5.9502F, -8.2541F, -0.345F, -0.0376F, 0.6577F));
 
 		PartDefinition fragment_r1 = ship.addOrReplaceChild("fragment_r1", CubeListBuilder.create().texOffs(951, 52).addBox(-1.25F, 3.75F, -12.0F, 2.0F, 5.0F, 20.0F, new CubeDeformation(0.0F))
-				.texOffs(930, 0).addBox(-1.25F, -16.25F, -12.0F, 3.0F, 20.0F, 20.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(39.0067F, 5.8424F, 16.1234F, -0.2185F, 0.2746F, -0.5104F));
+		.texOffs(930, 0).addBox(-1.25F, -16.25F, -12.0F, 3.0F, 20.0F, 20.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(39.0067F, 5.8424F, 16.1234F, -0.2185F, 0.2746F, -0.5104F));
 
 		PartDefinition plank2_r1 = ship.addOrReplaceChild("plank2_r1", CubeListBuilder.create().texOffs(930, 0).addBox(-1.5F, -9.0F, -10.0F, 3.0F, 18.0F, 20.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(13.4105F, -24.3481F, 18.241F, 0.0738F, 0.3878F, -0.8855F));
 
 		PartDefinition fragment_r2 = ship.addOrReplaceChild("fragment_r2", CubeListBuilder.create().texOffs(876, 67).addBox(0.5F, 18.0F, -20.0F, 3.0F, 3.0F, 22.0F, new CubeDeformation(0.0F))
-				.texOffs(976, 0).addBox(-0.5F, -23.0F, -20.0F, 4.0F, 41.0F, 22.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(19.3619F, -11.8592F, 7.0F, -0.1745F, 0.0873F, -0.829F));
+		.texOffs(976, 0).addBox(-0.5F, -23.0F, -20.0F, 4.0F, 41.0F, 22.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(19.3619F, -11.8592F, 7.0F, -0.1745F, 0.0873F, -0.829F));
 
 		PartDefinition plank1RailingBeam_r1 = ship.addOrReplaceChild("plank1RailingBeam_r1", CubeListBuilder.create().texOffs(920, 140).addBox(-10.5F, 2.5F, -2.0F, 21.0F, 3.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(30.3655F, -17.4254F, -9.0F, 0.0F, 0.0F, 0.0873F));
 
@@ -126,14 +135,14 @@ public class GrakensenkerShipModel<T extends Grakensenker> extends EntityModel<T
 		PartDefinition plank1RailingLeg_r3 = ship.addOrReplaceChild("plank1RailingLeg_r3", CubeListBuilder.create().texOffs(938, 0).addBox(25.5F, 47.0F, -24.5F, 3.0F, 15.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(4.3042F, -93.5128F, 15.5F, 0.0F, 0.0F, 0.3927F));
 
 		PartDefinition mast = ship.addOrReplaceChild("mast", CubeListBuilder.create().texOffs(980, 136).addBox(-6.0F, -54.0F, -6.0F, 12.0F, 62.0F, 12.0F, new CubeDeformation(0.0F))
-				.texOffs(998, 210).addBox(-6.0F, -84.0F, -6.0F, 5.0F, 30.0F, 10.0F, new CubeDeformation(0.0F))
-				.texOffs(1012, 13).addBox(-6.0F, -88.0F, -1.0F, 3.0F, 4.0F, 5.0F, new CubeDeformation(0.0F))
-				.texOffs(980, 236).addBox(-6.0F, -90.0F, -6.0F, 4.0F, 6.0F, 5.0F, new CubeDeformation(0.0F))
-				.texOffs(1012, 107).addBox(-6.0F, -96.0F, -6.0F, 4.0F, 6.0F, 4.0F, new CubeDeformation(0.0F))
-				.texOffs(974, 210).addBox(-1.0F, -74.0F, -6.0F, 6.0F, 20.0F, 6.0F, new CubeDeformation(0.0F))
-				.texOffs(956, 0).addBox(-1.0F, -59.0F, 0.0F, 6.0F, 5.0F, 5.0F, new CubeDeformation(0.0F))
-				.texOffs(956, 13).addBox(-1.0F, -78.0F, -6.0F, 6.0F, 4.0F, 3.0F, new CubeDeformation(0.0F))
-				.texOffs(916, 49).mirror().addBox(2.0886F, -35.3039F, -6.4197F, 2.0F, 2.0F, 1.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offsetAndRotation(5.0F, -25.0F, 27.0F, 0.0631F, 0.3435F, 0.1855F));
+		.texOffs(998, 210).addBox(-6.0F, -84.0F, -6.0F, 5.0F, 30.0F, 10.0F, new CubeDeformation(0.0F))
+		.texOffs(1012, 13).addBox(-6.0F, -88.0F, -1.0F, 3.0F, 4.0F, 5.0F, new CubeDeformation(0.0F))
+		.texOffs(980, 236).addBox(-6.0F, -90.0F, -6.0F, 4.0F, 6.0F, 5.0F, new CubeDeformation(0.0F))
+		.texOffs(1012, 107).addBox(-6.0F, -96.0F, -6.0F, 4.0F, 6.0F, 4.0F, new CubeDeformation(0.0F))
+		.texOffs(974, 210).addBox(-1.0F, -74.0F, -6.0F, 6.0F, 20.0F, 6.0F, new CubeDeformation(0.0F))
+		.texOffs(956, 0).addBox(-1.0F, -59.0F, 0.0F, 6.0F, 5.0F, 5.0F, new CubeDeformation(0.0F))
+		.texOffs(956, 13).addBox(-1.0F, -78.0F, -6.0F, 6.0F, 4.0F, 3.0F, new CubeDeformation(0.0F))
+		.texOffs(916, 49).mirror().addBox(2.0886F, -35.3039F, -6.4197F, 2.0F, 2.0F, 1.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offsetAndRotation(5.0F, -25.0F, 27.0F, 0.0631F, 0.3435F, 0.1855F));
 
 		PartDefinition barni_r5 = mast.addOrReplaceChild("barni_r5", CubeListBuilder.create().texOffs(916, 49).addBox(-1.0F, -1.0F, -0.5F, 2.0F, 2.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(2.9685F, -27.0247F, -5.9197F, 0.0F, 0.0F, 2.7053F));
 
@@ -142,10 +151,10 @@ public class GrakensenkerShipModel<T extends Grakensenker> extends EntityModel<T
 		PartDefinition barni_r7 = mast.addOrReplaceChild("barni_r7", CubeListBuilder.create().texOffs(916, 49).mirror().addBox(-7.0F, -1.0F, -0.5F, 2.0F, 2.0F, 1.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offsetAndRotation(3.0886F, -34.3039F, -5.9197F, 0.0F, 0.0F, 0.5672F));
 
 		PartDefinition barni_r8 = mast.addOrReplaceChild("barni_r8", CubeListBuilder.create().texOffs(917, 49).mirror().addBox(-1.5F, 5.5F, -0.5F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.0F)).mirror(false)
-				.texOffs(917, 49).mirror().addBox(-0.5F, -0.5F, -0.5F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offsetAndRotation(0.5886F, -35.8039F, -5.9197F, 0.0F, 0.0F, -0.1309F));
+		.texOffs(917, 49).mirror().addBox(-0.5F, -0.5F, -0.5F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offsetAndRotation(0.5886F, -35.8039F, -5.9197F, 0.0F, 0.0F, -0.1309F));
 
 		PartDefinition crownest = mast.addOrReplaceChild("crownest", CubeListBuilder.create().texOffs(868, 149).addBox(-14.0F, -2.0F, -14.0F, 28.0F, 2.0F, 28.0F, new CubeDeformation(0.0F))
-				.texOffs(938, 0).addBox(10.0F, -16.0F, -13.0F, 3.0F, 14.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-0.1958F, -52.5128F, 0.0F, 0.0F, 0.0F, 0.2618F));
+		.texOffs(938, 0).addBox(10.0F, -16.0F, -13.0F, 3.0F, 14.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-0.1958F, -52.5128F, 0.0F, 0.0F, 0.0F, 0.2618F));
 
 		PartDefinition rimleftleg_r1 = crownest.addOrReplaceChild("rimleftleg_r1", CubeListBuilder.create().texOffs(938, 0).addBox(-1.5F, -1.0F, -1.5F, 3.0F, 13.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(16.7769F, -12.1874F, 4.5206F, -0.0962F, 0.4252F, 0.4F));
 
@@ -154,7 +163,7 @@ public class GrakensenkerShipModel<T extends Grakensenker> extends EntityModel<T
 		PartDefinition rimbackleg2_r1 = crownest.addOrReplaceChild("rimbackleg2_r1", CubeListBuilder.create().texOffs(938, 0).addBox(-1.5F, -1.0F, -1.5F, 3.0F, 16.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(4.3957F, -16.7916F, 14.5167F, 0.0025F, -0.0297F, -0.1257F));
 
 		PartDefinition rimbackleg1_r1 = crownest.addOrReplaceChild("rimbackleg1_r1", CubeListBuilder.create().texOffs(938, 0).addBox(-13.0F, 0.0F, 0.0F, 3.0F, 14.0F, 3.0F, new CubeDeformation(0.0F))
-				.texOffs(914, 139).addBox(-14.0F, -4.0F, -1.0F, 28.0F, 4.0F, 5.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -16.0F, 12.6323F, -0.3478F, -0.0298F, -0.082F));
+		.texOffs(914, 139).addBox(-14.0F, -4.0F, -1.0F, 28.0F, 4.0F, 5.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -16.0F, 12.6323F, -0.3478F, -0.0298F, -0.082F));
 
 		PartDefinition rimFrontleg2_r1 = crownest.addOrReplaceChild("rimFrontleg2_r1", CubeListBuilder.create().texOffs(938, 0).addBox(-4.5F, 3.0F, -1.5F, 3.0F, 15.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-0.5F, -16.0F, -11.5F, 0.0F, 0.0F, 0.3927F));
 
@@ -173,28 +182,28 @@ public class GrakensenkerShipModel<T extends Grakensenker> extends EntityModel<T
 		PartDefinition platflat_r1 = whaling.addOrReplaceChild("platflat_r1", CubeListBuilder.create().texOffs(896, 179).addBox(-7.0F, -2.0F, -9.0F, 14.0F, 3.0F, 28.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 1.0F, 0.0F, 0.0F, 0.0F, -0.0873F));
 
 		PartDefinition gunbase = whaling.addOrReplaceChild("gunbase", CubeListBuilder.create().texOffs(858, 20).addBox(-5.0F, -10.0F, -3.0F, 2.0F, 12.0F, 6.0F, new CubeDeformation(0.0F))
-				.texOffs(858, 20).addBox(3.0F, -12.0F, -3.0F, 2.0F, 12.0F, 6.0F, new CubeDeformation(0.0F))
-				.texOffs(946, 345).addBox(-6.0F, -1.0F, -6.0F, 12.0F, 2.0F, 12.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, -1.0F, 0.0F));
+		.texOffs(858, 20).addBox(3.0F, -12.0F, -3.0F, 2.0F, 12.0F, 6.0F, new CubeDeformation(0.0F))
+		.texOffs(946, 345).addBox(-6.0F, -1.0F, -6.0F, 12.0F, 2.0F, 12.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, -1.0F, 0.0F));
 
 		PartDefinition barni_r9 = gunbase.addOrReplaceChild("barni_r9", CubeListBuilder.create().texOffs(916, 48).mirror().addBox(-0.5F, -1.0F, -2.0F, 1.0F, 2.0F, 2.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offsetAndRotation(-5.1614F, -6.3039F, -0.4197F, 0.2618F, 0.0F, 0.0F));
 
 		PartDefinition barrel = gunbase.addOrReplaceChild("barrel", CubeListBuilder.create().texOffs(988, 320).addBox(-4.0F, -4.0F, -7.0F, 8.0F, 8.0F, 12.0F, new CubeDeformation(0.0F))
-				.texOffs(978, 322).addBox(-3.5F, -3.0F, 5.0F, 7.0F, 6.0F, 4.0F, new CubeDeformation(0.0F))
-				.texOffs(996, 344).addBox(-2.0F, -3.0F, -19.0F, 4.0F, 4.0F, 12.0F, new CubeDeformation(0.0F))
-				.texOffs(960, 267).addBox(0.0F, -3.0F, -19.0F, 2.0F, 7.0F, 12.0F, new CubeDeformation(0.1F))
-				.texOffs(952, 332).addBox(-1.0F, 1.5F, -17.0F, 2.0F, 2.0F, 10.0F, new CubeDeformation(0.0F))
-				.texOffs(964, 323).addBox(-2.0F, -3.0F, -24.0F, 1.0F, 4.0F, 5.0F, new CubeDeformation(0.0F))
-				.texOffs(962, 323).addBox(1.0F, -3.0F, -24.0F, 1.0F, 4.0F, 5.0F, new CubeDeformation(0.0F))
-				.texOffs(962, 323).addBox(-1.0F, -3.0F, -24.0F, 2.0F, 1.0F, 5.0F, new CubeDeformation(0.0F))
-				.texOffs(962, 323).addBox(-1.0F, 0.0F, -24.0F, 2.0F, 1.0F, 5.0F, new CubeDeformation(0.0F))
-				.texOffs(980, 316).addBox(0.0F, -7.0F, -16.0F, 0.0F, 4.0F, 24.0F, new CubeDeformation(0.0F))
-				.texOffs(952, 320).addBox(-0.5F, -8.0F, -16.0F, 1.0F, 1.0F, 24.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -10.0F, 0.0F, 0.0F, 0.0F, -0.1745F));
+		.texOffs(978, 322).addBox(-3.5F, -3.0F, 5.0F, 7.0F, 6.0F, 4.0F, new CubeDeformation(0.0F))
+		.texOffs(996, 344).addBox(-2.0F, -3.0F, -19.0F, 4.0F, 4.0F, 12.0F, new CubeDeformation(0.0F))
+		.texOffs(960, 267).addBox(0.0F, -3.0F, -19.0F, 2.0F, 7.0F, 12.0F, new CubeDeformation(0.1F))
+		.texOffs(952, 332).addBox(-1.0F, 1.5F, -17.0F, 2.0F, 2.0F, 10.0F, new CubeDeformation(0.0F))
+		.texOffs(964, 323).addBox(-2.0F, -3.0F, -24.0F, 1.0F, 4.0F, 5.0F, new CubeDeformation(0.0F))
+		.texOffs(962, 323).addBox(1.0F, -3.0F, -24.0F, 1.0F, 4.0F, 5.0F, new CubeDeformation(0.0F))
+		.texOffs(962, 323).addBox(-1.0F, -3.0F, -24.0F, 2.0F, 1.0F, 5.0F, new CubeDeformation(0.0F))
+		.texOffs(962, 323).addBox(-1.0F, 0.0F, -24.0F, 2.0F, 1.0F, 5.0F, new CubeDeformation(0.0F))
+		.texOffs(980, 316).addBox(0.0F, -7.0F, -16.0F, 0.0F, 4.0F, 24.0F, new CubeDeformation(0.0F))
+		.texOffs(952, 320).addBox(-0.5F, -8.0F, -16.0F, 1.0F, 1.0F, 24.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -10.0F, 0.0F, 0.0F, 0.0F, -0.1745F));
 
 		PartDefinition harpoon = barrel.addOrReplaceChild("harpoon", CubeListBuilder.create().texOffs(975, 345).addBox(-0.5F, -1.5F, -26.0F, 1.0F, 1.0F, 19.0F, new CubeDeformation(0.0F))
-				.texOffs(1009, 378).addBox(-1.0F, -2.0F, -33.0F, 2.0F, 2.0F, 7.0F, new CubeDeformation(0.0F))
-				.texOffs(1010, 364).addBox(0.0F, -5.0F, -33.0F, 0.0F, 4.0F, 9.0F, new CubeDeformation(0.0F))
-				.texOffs(1011, 364).addBox(-4.0F, -1.0F, -33.0F, 4.0F, 0.0F, 9.0F, new CubeDeformation(0.0F))
-				.texOffs(1011, 364).mirror().addBox(0.0F, -1.0F, -33.0F, 4.0F, 0.0F, 9.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offset(0.0F, 0.0F, 0.0F));
+		.texOffs(1009, 378).addBox(-1.0F, -2.0F, -33.0F, 2.0F, 2.0F, 7.0F, new CubeDeformation(0.0F))
+		.texOffs(1010, 364).addBox(0.0F, -5.0F, -33.0F, 0.0F, 4.0F, 9.0F, new CubeDeformation(0.0F))
+		.texOffs(1011, 364).addBox(-4.0F, -1.0F, -33.0F, 4.0F, 0.0F, 9.0F, new CubeDeformation(0.0F))
+		.texOffs(1011, 364).mirror().addBox(0.0F, -1.0F, -33.0F, 4.0F, 0.0F, 9.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offset(0.0F, 0.0F, 0.0F));
 
 		PartDefinition Plane_r1 = harpoon.addOrReplaceChild("Plane_r1", CubeListBuilder.create().texOffs(1012, 377).addBox(-2.0F, 0.0F, -7.5F, 4.0F, 0.0F, 8.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -1.0F, -33.0F, 0.0F, 0.0F, -0.7854F));
 
@@ -222,18 +231,24 @@ public class GrakensenkerShipModel<T extends Grakensenker> extends EntityModel<T
 
 		PartDefinition gunnerhead = gunner.addOrReplaceChild("gunnerhead", CubeListBuilder.create(), PartPose.offset(1.2331F, -16.1174F, 15.6601F));
 
-		PartDefinition tumor_r1 = gunnerhead.addOrReplaceChild("tumor_r1", CubeListBuilder.create().texOffs(991, 260).addBox(-2.5F, -2.5F, -2.5F, 5.0F, 5.0F, 5.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(2.0169F, -6.8996F, -0.7951F, -0.5762F, 1.0135F, -1.3305F));
-
-		PartDefinition tumor_r2 = gunnerhead.addOrReplaceChild("tumor_r2", CubeListBuilder.create().texOffs(991, 260).addBox(-1.25F, 3.0F, -3.0F, 6.0F, 6.0F, 6.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-2.3673F, -8.9864F, -0.3727F, -0.5516F, 0.5882F, -0.7691F));
-
-		PartDefinition tumor_r3 = gunnerhead.addOrReplaceChild("tumor_r3", CubeListBuilder.create().texOffs(991, 260).addBox(-3.0F, -2.0F, -3.0F, 4.0F, 4.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-2.3673F, -6.9864F, -1.3727F, -0.5516F, 0.5882F, -0.7691F));
-
 		PartDefinition Head_r1 = gunnerhead.addOrReplaceChild("Head_r1", CubeListBuilder.create().texOffs(520, 431).addBox(-6.0F, -6.5F, -8.0F, 8.0F, 7.0F, 8.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(2.6453F, -1.5359F, 1.3505F, -0.1474F, 0.1274F, -0.4185F));
 
+		PartDefinition smalltumor3 = gunnerhead.addOrReplaceChild("smalltumor3", CubeListBuilder.create(), PartPose.offset(-3.3673F, -5.9864F, -1.3727F));
+
+		PartDefinition tumor_r1 = smalltumor3.addOrReplaceChild("tumor_r1", CubeListBuilder.create().texOffs(991, 260).addBox(-3.0F, -2.0F, -3.0F, 4.0F, 4.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(1.0F, -1.0F, 0.0F, -0.5516F, 0.5882F, -0.7691F));
+
+		PartDefinition smalltumor2 = gunnerhead.addOrReplaceChild("smalltumor2", CubeListBuilder.create(), PartPose.offset(0.6327F, -5.9864F, -5.3727F));
+
+		PartDefinition tumor_r2 = smalltumor2.addOrReplaceChild("tumor_r2", CubeListBuilder.create().texOffs(991, 260).addBox(-1.25F, 3.0F, -3.0F, 6.0F, 6.0F, 6.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-3.0F, -3.0F, 5.0F, -0.5516F, 0.5882F, -0.7691F));
+
+		PartDefinition smalltumor = gunnerhead.addOrReplaceChild("smalltumor", CubeListBuilder.create(), PartPose.offset(1.6327F, -6.9864F, -0.3727F));
+
+		PartDefinition tumor_r3 = smalltumor.addOrReplaceChild("tumor_r3", CubeListBuilder.create().texOffs(991, 260).addBox(-2.5F, -2.5F, -2.5F, 5.0F, 5.0F, 5.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.3842F, 0.0868F, -0.4223F, -0.5762F, 1.0135F, -1.3305F));
+
 		PartDefinition anchorPort = ship.addOrReplaceChild("anchorPort", CubeListBuilder.create().texOffs(946, 345).addBox(-6.0F, 2.3333F, -6.0F, 12.0F, 2.0F, 12.0F, new CubeDeformation(0.0F))
-				.texOffs(858, 20).addBox(-5.0F, -8.6667F, -3.0F, 2.0F, 12.0F, 6.0F, new CubeDeformation(0.0F))
-				.texOffs(879, 7).addBox(-3.0F, -7.6667F, -2.0F, 6.0F, 4.0F, 4.0F, new CubeDeformation(0.0F))
-				.texOffs(858, 20).addBox(3.0F, -8.6667F, -3.0F, 2.0F, 12.0F, 6.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(30.8867F, -9.9061F, 0.0F, 0.0F, -1.5708F, 0.7854F));
+		.texOffs(858, 20).addBox(-5.0F, -8.6667F, -3.0F, 2.0F, 12.0F, 6.0F, new CubeDeformation(0.0F))
+		.texOffs(879, 7).addBox(-3.0F, -7.6667F, -2.0F, 6.0F, 4.0F, 4.0F, new CubeDeformation(0.0F))
+		.texOffs(858, 20).addBox(3.0F, -8.6667F, -3.0F, 2.0F, 12.0F, 6.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(30.8867F, -9.9061F, 0.0F, 0.0F, -1.5708F, 0.7854F));
 
 		PartDefinition anchorChain = anchorPort.addOrReplaceChild("anchorChain", CubeListBuilder.create(), PartPose.offsetAndRotation(0.5F, -6.0F, -2.0F, 0.4363F, 0.0F, 0.0F));
 
@@ -254,12 +269,12 @@ public class GrakensenkerShipModel<T extends Grakensenker> extends EntityModel<T
 		PartDefinition chainplane_r6 = anchorChain3.addOrReplaceChild("chainplane_r6", CubeListBuilder.create().texOffs(1018, 415).addBox(-1.5F, 0.0F, -4.0F, 3.0F, 0.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.6109F));
 
 		PartDefinition Anchor = anchorChain3.addOrReplaceChild("Anchor", CubeListBuilder.create().texOffs(1016, 391).addBox(-1.5F, 6.0F, -1.5F, 3.0F, 14.0F, 3.0F, new CubeDeformation(0.0F))
-				.texOffs(990, 389).addBox(-4.5F, 8.0F, -1.0F, 9.0F, 2.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0357F, 0.098F, -3.355F, -1.4834F, 0.0435F, 0.0038F));
+		.texOffs(990, 389).addBox(-4.5F, 8.0F, -1.0F, 9.0F, 2.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0357F, 0.098F, -3.355F, -1.4834F, 0.0435F, 0.0038F));
 
 		PartDefinition AnchorEye = Anchor.addOrReplaceChild("AnchorEye", CubeListBuilder.create().texOffs(1012, 387).mirror().addBox(-3.0F, 1.0F, -1.0F, 6.0F, 2.0F, 2.0F, new CubeDeformation(0.0F)).mirror(false)
-				.texOffs(1020, 387).addBox(-3.0F, -1.0F, -1.0F, 2.0F, 2.0F, 2.0F, new CubeDeformation(0.0F))
-				.texOffs(1012, 387).addBox(1.0F, -1.0F, -1.0F, 2.0F, 2.0F, 2.0F, new CubeDeformation(0.0F))
-				.texOffs(1012, 387).addBox(-3.0F, -3.0F, -1.0F, 6.0F, 2.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 3.0F, 0.0F));
+		.texOffs(1020, 387).addBox(-3.0F, -1.0F, -1.0F, 2.0F, 2.0F, 2.0F, new CubeDeformation(0.0F))
+		.texOffs(1012, 387).addBox(1.0F, -1.0F, -1.0F, 2.0F, 2.0F, 2.0F, new CubeDeformation(0.0F))
+		.texOffs(1012, 387).addBox(-3.0F, -3.0F, -1.0F, 6.0F, 2.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 3.0F, 0.0F));
 
 		PartDefinition AnchorBlade = Anchor.addOrReplaceChild("AnchorBlade", CubeListBuilder.create().texOffs(996, 398).addBox(-2.5F, 17.0F, -2.5F, 5.0F, 5.0F, 5.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 3.0F, 0.0F));
 
@@ -277,6 +292,9 @@ public class GrakensenkerShipModel<T extends Grakensenker> extends EntityModel<T
 	@Override
 	public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 		animateTumor(tumorBase, Mth.sin(ageInTicks/8)/10);
+		animateTumor(smalltumor, Mth.cos(ageInTicks/8)/7);
+		animateTumor(smalltumor2, Mth.sin(ageInTicks/6)/8);
+		animateTumor(smalltumor3, Mth.sin(ageInTicks/7)/7);
 		harpoon.visible = entity.shotHook();
 		gunner.visible = !entity.isInvisible();
 	}

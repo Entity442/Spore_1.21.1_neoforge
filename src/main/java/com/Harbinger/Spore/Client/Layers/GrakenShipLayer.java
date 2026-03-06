@@ -5,13 +5,17 @@ import com.Harbinger.Spore.Client.Models.GrakensenkerShipModel;
 import com.Harbinger.Spore.Sentities.Calamities.Grakensenker;
 import com.Harbinger.Spore.Spore;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.resources.ResourceLocation;
 
 public class GrakenShipLayer<T extends Grakensenker> extends RenderLayer<T, GrakensenkerModel<T>> {
     private static final ResourceLocation SHIP = ResourceLocation.fromNamespaceAndPath(Spore.MODID,"textures/entity/graken_ship.png");
+    private static final ResourceLocation SHIP_EYE = ResourceLocation.fromNamespaceAndPath(Spore.MODID,"textures/entity/eyes/graken_ship.png");
     private final GrakensenkerShipModel<T> model = new GrakensenkerShipModel<>();
     public GrakenShipLayer(RenderLayerParent<T, GrakensenkerModel<T>> layerParent) {
         super(layerParent);
@@ -27,5 +31,7 @@ public class GrakenShipLayer<T extends Grakensenker> extends RenderLayer<T, Grak
         model.prepareMobModel(t, v, v1, v5);
         model.setupAnim(t, v, v1, v2, v3, v4);
         renderColoredCutoutModel(model, SHIP, poseStack, multiBufferSource, i, t, -1);
+        VertexConsumer vertexconsumer = multiBufferSource.getBuffer(RenderType.eyes(SHIP_EYE));
+        model.renderToBuffer(poseStack, vertexconsumer, i, LivingEntityRenderer.getOverlayCoords(t, 0.0F), 1);
     }
 }
