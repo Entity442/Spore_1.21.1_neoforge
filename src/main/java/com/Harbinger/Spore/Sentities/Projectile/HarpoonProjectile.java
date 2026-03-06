@@ -3,6 +3,7 @@ package com.Harbinger.Spore.Sentities.Projectile;
 import com.Harbinger.Spore.ExtremelySusThings.Utilities;
 import com.Harbinger.Spore.Sentities.Calamities.Grakensenker;
 import com.Harbinger.Spore.core.Sentities;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -15,6 +16,8 @@ import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
@@ -113,6 +116,12 @@ public class HarpoonProjectile extends AbstractArrow {
         }
         entityData.set(SHOT,true);
         playSound(SoundEvents.ANVIL_HIT);
+    }
+
+    @Override
+    protected void playStepSound(BlockPos pos, BlockState state) {
+        SoundType soundtype = state.getSoundType(this.level(), pos, this);
+        this.playSound(SoundEvents.CHAIN_STEP, soundtype.getVolume() * 0.15F, soundtype.getPitch());
     }
 
     @Override
