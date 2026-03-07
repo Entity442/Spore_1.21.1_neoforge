@@ -155,6 +155,10 @@ public class Sentities {
             () -> EntityType.Builder.of(Lacerator::new, INFECTED).sized(0.6f, 1.9f)
                     .build(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "lacerator").toString()));
 
+    public static final Supplier<EntityType<Conductor>> CONDUCTOR = SPORE_ENTITIES.register("conductor",
+            () -> EntityType.Builder.of(Conductor::new, INFECTED).sized(0.6f, 1.9f)
+                    .build(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "conductor").toString()));
+
     public static final Supplier<EntityType<Biobloob>> BIOBLOOB = SPORE_ENTITIES.register("biobloob",
             () -> EntityType.Builder.of(Biobloob::new, INFECTED).sized(2.6f, 1.9f)
                     .build(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "biobloob").toString()));
