@@ -162,6 +162,7 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
         );
         this.level().addFreshEntity(projectile);
         shootHook(false);
+        this.playSound(SoundEvents.DISPENSER_LAUNCH);
     }
 
     enum GrakenLegsModifiers{
