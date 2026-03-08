@@ -3,6 +3,7 @@ package com.Harbinger.Spore.Client;
 import com.Harbinger.Spore.Client.AnimationTrackers.*;
 import com.Harbinger.Spore.Client.ArmorParts.ComplexHandModelItem;
 import com.Harbinger.Spore.Client.Layers.CustomArmorLayer;
+import com.Harbinger.Spore.Client.Layers.CustomHorseArmorLayer;
 import com.Harbinger.Spore.Client.Models.*;
 import com.Harbinger.Spore.Client.Models.NukeParts.BombFunnelModel;
 import com.Harbinger.Spore.Client.Models.NukeParts.FireDiskModel;
@@ -19,8 +20,11 @@ import com.Harbinger.Spore.Sitems.CustomModelArmorData;
 import com.Harbinger.Spore.Spore;
 import com.Harbinger.Spore.core.*;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.geom.ModelLayers;
+import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.entity.ArmorStandRenderer;
+import net.minecraft.client.renderer.entity.HorseRenderer;
 import net.minecraft.client.renderer.entity.HumanoidMobRenderer;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
@@ -336,6 +340,10 @@ public class ClientModEvents {
             renderer.addLayer(new CustomArmorLayer<>(renderer));
         }
         tryToAddArmorToType(event);
+        if (event.getRenderer(EntityType.HORSE) instanceof HorseRenderer renderer){
+            ModelPart root = event.getEntityModels().bakeLayer(ModelLayers.HORSE);
+            renderer.addLayer(new CustomHorseArmorLayer<>(renderer,root));
+        }
     }
     private static void tryToAddArmorToType(EntityRenderersEvent.AddLayers event){
         for (EntityType<?> type : BuiltInRegistries.ENTITY_TYPE.stream().toList()){
