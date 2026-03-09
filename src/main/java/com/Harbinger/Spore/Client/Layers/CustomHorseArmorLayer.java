@@ -1,6 +1,9 @@
 package com.Harbinger.Spore.Client.Layers;
 
+import com.Harbinger.Spore.Client.ArmorParts.FleshHorseArmorBit;
 import com.Harbinger.Spore.Client.ArmorParts.HorseArmorBit;
+import com.Harbinger.Spore.Client.ArmorParts.LivingHorseArmorBit;
+import com.Harbinger.Spore.Client.ArmorParts.PlatedHorseArmorBit;
 import com.Harbinger.Spore.core.Sitems;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.model.HorseModel;
@@ -76,10 +79,14 @@ public class CustomHorseArmorLayer<E extends AbstractHorse,M extends HorseModel<
     }
 
 
-    public static final HorseArmorBit FLESH_ARMOR_BIT = new HorseArmorBit(Sitems.FLESH_HORSE_ARMOR.get());
+    public static final HorseArmorBit FLESH_ARMOR_BIT = new FleshHorseArmorBit(Sitems.FLESH_HORSE_ARMOR.get());
+    public static final HorseArmorBit PLATED_ARMOR_BIT = new PlatedHorseArmorBit(Sitems.PLATED_HORSE_ARMOR.get());
+    public static final HorseArmorBit LIVING_ARMOR_BIT = new LivingHorseArmorBit(Sitems.LIVING_HORSE_ARMOR.get());
 
     public static final List<HorseArmorBit> HORSE_ARMOR_LIST = new ArrayList<>(){{
         add(FLESH_ARMOR_BIT);
+        add(PLATED_ARMOR_BIT);
+        add(LIVING_ARMOR_BIT);
     }};
 
 }

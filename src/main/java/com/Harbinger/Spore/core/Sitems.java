@@ -459,7 +459,11 @@ public class Sitems {
             UpgradedInfectedExoskeleton.InfectedUpBoots::new);
 
     public  static final DeferredItem<Item> FLESH_HORSE_ARMOR = ITEMS.register("flesh_horse_armor",
-            SporeHorseArmor::new);
+            SporeHorseFleshArmor::new);
+    public  static final DeferredItem<Item> PLATED_HORSE_ARMOR = ITEMS.register("plated_horse_armor",
+            SporeHorsePlatedArmor::new);
+    public  static final DeferredItem<Item> LIVING_HORSE_ARMOR = ITEMS.register("living_horse_armor",
+            SporeHorseLivingArmor::new);
 
     public  static final DeferredItem<Item> CORRUPTED_RECORD = ITEMS.register("corrupted_record",
             () -> new BaseItem2(new Item.Properties().stacksTo(1).jukeboxPlayable(Ssounds.CORRUPTED_RECORD_SONG_KEY)));

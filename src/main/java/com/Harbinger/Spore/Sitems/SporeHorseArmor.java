@@ -6,18 +6,13 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.AnimalArmorItem;
 import net.minecraft.world.item.ArmorMaterials;
 
-public class SporeHorseArmor extends AnimalArmorItem implements CustomModelArmorData, SporeArmorData {
-    private static final ResourceLocation LOCATION = ResourceLocation.parse("spore:textures/armor/flesh_horse_set.png");
+public abstract class SporeHorseArmor extends AnimalArmorItem implements SporeArmorData {
     public SporeHorseArmor() {
         super(ArmorMaterials.LEATHER, BodyType.EQUESTRIAN, false, new Properties().stacksTo(1).durability(200));
         Sitems.TINTABLE_ITEMS.add(this);
         Sitems.BIOLOGICAL_ITEMS.add(this);
     }
 
-    @Override
-    public ResourceLocation getTextureLocation() {
-        return LOCATION;
-    }
 
     @Override
     public ResourceLocation getTexture() {
