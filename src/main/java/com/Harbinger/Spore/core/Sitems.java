@@ -458,6 +458,9 @@ public class Sitems {
     public  static final DeferredItem<Item> INF_UP_BOOTS = ITEMS.register("inf_up_boots",
             UpgradedInfectedExoskeleton.InfectedUpBoots::new);
 
+    public  static final DeferredItem<Item> FLESH_HORSE_ARMOR = ITEMS.register("flesh_horse_armor",
+            SporeHorseArmor::new);
+
     public  static final DeferredItem<Item> CORRUPTED_RECORD = ITEMS.register("corrupted_record",
             () -> new BaseItem2(new Item.Properties().stacksTo(1).jukeboxPlayable(Ssounds.CORRUPTED_RECORD_SONG_KEY)));
     public  static final DeferredItem<Item> FORGOTTEN_RECORD = ITEMS.register("forgotten_record",

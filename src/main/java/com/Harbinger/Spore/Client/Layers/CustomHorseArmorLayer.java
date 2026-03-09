@@ -1,18 +1,17 @@
 package com.Harbinger.Spore.Client.Layers;
 
+import com.Harbinger.Spore.Client.ArmorParts.HorseArmorBit;
+import com.Harbinger.Spore.core.Sitems;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Axis;
-import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HorseModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.horse.AbstractHorse;
-import net.minecraft.world.item.Item;
 
-import java.util.function.Supplier;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CustomHorseArmorLayer<E extends AbstractHorse,M extends HorseModel<E>> extends RenderLayer<E, M> {
     private final HorseHandlerModel<E> origin;
@@ -21,12 +20,22 @@ public class CustomHorseArmorLayer<E extends AbstractHorse,M extends HorseModel<
         origin = new HorseHandlerModel<>(root);
     }
     @Override
-    public void render(PoseStack poseStack, MultiBufferSource buffer, int light, E entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float v5) {
+    public void render(PoseStack poseStack, MultiBufferSource buffer, int light, E entity, float limbSwing, float limbSwingAmount, float partialTick, float ageInTicks, float netHeadYaw, float headPitch) {
         getParentModel().copyPropertiesTo(origin);
-        handleArmorPartsRendering(entity,poseStack,light,buffer,limbSwing,limbSwingAmount,ageInTicks,netHeadYaw,headPitch);
+        origin.prepareMobModel(entity, limbSwing, limbSwingAmount, partialTick);
+        origin.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+        handleArmorPartsRendering(entity, poseStack, light, buffer,
+                limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
     }
     protected void handleArmorPartsRendering(E entity,PoseStack poseStack,int light ,MultiBufferSource buffer,float limbSwing,float limbSwingAmount,float ageInTicks,float netHeadYaw,float headPitch){
-
+        List<HorseArmorBit> parts = HORSE_ARMOR_LIST;
+        if (parts.isEmpty()){
+            return;
+        }
+        for (HorseArmorBit bit : parts){
+            bit.tickMovement(entity,poseStack, (HorseHandlerModel<AbstractHorse>) origin,light,buffer);
+            bit.getModel().setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks+entity.tickCount, netHeadYaw, headPitch);
+        }
     }
 
 
@@ -66,43 +75,11 @@ public class CustomHorseArmorLayer<E extends AbstractHorse,M extends HorseModel<
         }
     }
 
-    public abstract class HorseArmorBit{
-        public final Item item;
-        public final Supplier<EntityModel<LivingEntity>> model;
-        public final float x;
-        public final float y;
-        public final float z;
-        public final float expand;
-        public final float Xspin;
-        public final float Yspin;
-        public final float Zspin;
 
-        protected HorseArmorBit(Item item, Supplier<EntityModel<LivingEntity>> model, float x, float y, float z, float expand, float xspin, float yspin, float zspin) {
-            this.item = item;
-            this.model = model;
-            this.x = x;
-            this.y = y;
-            this.z = z;
-            this.expand = expand;
-            Xspin = xspin;
-            Yspin = yspin;
-            Zspin = zspin;
-        }
+    public static final HorseArmorBit FLESH_ARMOR_BIT = new HorseArmorBit(Sitems.FLESH_HORSE_ARMOR.get());
 
-        public void tickMovement(AbstractHorse livingEntity, PoseStack poseStack, HorseHandlerModel<AbstractHorse> model, int light, MultiBufferSource buffer){
+    public static final List<HorseArmorBit> HORSE_ARMOR_LIST = new ArrayList<>(){{
+        add(FLESH_ARMOR_BIT);
+    }};
 
-        }
-
-        protected void applyTransformEx(PoseStack poseStack, ModelPart origin, float x, float y, float z, float scale, float xSpin, float ySpin, float ZSpin, Runnable render) {
-            poseStack.pushPose();
-            origin.translateAndRotate(poseStack);
-            poseStack.translate(x, y, z);
-            poseStack.scale(scale, scale, scale);
-            poseStack.mulPose(Axis.XP.rotationDegrees(xSpin));
-            poseStack.mulPose(Axis.YP.rotationDegrees(ySpin));
-            poseStack.mulPose(Axis.ZP.rotationDegrees(ZSpin));
-            render.run();
-            poseStack.popPose();
-        }
-    }
 }
