@@ -1,5 +1,6 @@
 package com.Harbinger.Spore.Sitems;
 
+import com.Harbinger.Spore.core.SConfig;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.ItemStack;
@@ -8,6 +9,11 @@ import net.minecraft.world.phys.Vec3;
 
 public class SporeHorsePlatedArmor extends SporeHorseArmor implements CustomModelArmorData{
     private static final ResourceLocation LOCATION = ResourceLocation.parse("spore:textures/armor/plated_horse_set.png");
+
+    public SporeHorsePlatedArmor() {
+        super(SConfig.SERVER.plate_h_protection.get());
+    }
+
     @Override
     public ResourceLocation getTextureLocation() {
         return LOCATION;
