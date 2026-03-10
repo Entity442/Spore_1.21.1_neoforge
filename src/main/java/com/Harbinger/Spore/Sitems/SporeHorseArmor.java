@@ -8,7 +8,7 @@ import net.minecraft.world.item.ArmorMaterials;
 
 public abstract class SporeHorseArmor extends AnimalArmorItem implements SporeArmorData {
     public SporeHorseArmor() {
-        super(ArmorMaterials.LEATHER, BodyType.EQUESTRIAN, false, new Properties().stacksTo(1).durability(200));
+        super(ArmorMaterials.LEATHER, BodyType.EQUESTRIAN, false, new Properties().stacksTo(1));
         Sitems.TINTABLE_ITEMS.add(this);
         Sitems.BIOLOGICAL_ITEMS.add(this);
     }
