@@ -12,6 +12,7 @@ import com.Harbinger.Spore.core.Ssounds;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -38,10 +39,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.EnumSet;
-import java.util.List;
+import java.util.*;
 
 public class Grober extends Hyper implements ArmorPersentageBypass {
     public static final EntityDataAccessor<Integer> ATTACK_TYPE = SynchedEntityData.defineId(Grober.class, EntityDataSerializers.INT);
@@ -173,7 +171,9 @@ public class Grober extends Hyper implements ArmorPersentageBypass {
                 .add(Attributes.KNOCKBACK_RESISTANCE, 1);
 
     }
-
+    public boolean isOmniMan(){
+        return Objects.equals(this.getCustomName(), Component.literal("Omni-Man"));
+    }
     @Override
     public boolean hurt(DamageSource source, float amount) {
         if (getRavageTime() > 0){
@@ -207,7 +207,7 @@ public class Grober extends Hyper implements ArmorPersentageBypass {
     }
 
     protected SoundEvent getAmbientSound() {
-        return Ssounds.INQUISITOR_AMBIENT.value();
+        return isOmniMan() ? Ssounds.OMNI_AMBIENT.value() : Ssounds.GROBER_AMBIENT.value();
     }
 
     protected SoundEvent getDeathSound() {

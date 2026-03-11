@@ -322,6 +322,9 @@ public class Ssounds {
 
     public static final Holder<SoundEvent> TUMOR_AMBIENT = soundRegistry("tumor_ambient");
 
+    public static final Holder<SoundEvent> GROBER_AMBIENT = soundRegistry("grober_ambient");
+
+    public static final Holder<SoundEvent> OMNI_AMBIENT = soundRegistry("omni_ambient");
     private Ssounds() {
     }
 
