@@ -21,6 +21,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.Container;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
@@ -300,7 +301,7 @@ public class Specter extends UtilityEntity implements Enemy, ArmorPersentageBypa
         if (entity instanceof LivingEntity livingEntity && livingEntity.hasEffect(Seffects.MARKER)){
             return true;
         }
-        if (entity instanceof InventoryCarrier carrier && carrier.getInventory().hasAnyMatching(item -> (item.getFoodProperties(this) != null))){
+        if (entity instanceof InventoryCarrier carrier && carrier.getInventory() != null && carrier.getInventory().hasAnyMatching(item -> (item.getFoodProperties(this) != null))){
             return true;
         }
         return super.hasLineOfSight(entity);
@@ -325,13 +326,16 @@ public class Specter extends UtilityEntity implements Enemy, ArmorPersentageBypa
     }
 
     @Override
-    public boolean hurt(DamageSource source, float p_21017_) {
+    public boolean hurt(DamageSource source, float amount) {
+        if (source.is(DamageTypes.ON_FIRE) || source.is(DamageTypes.IN_FIRE)){
+            amount = amount/2;
+        }
         if (source.getEntity() != null && random.nextFloat() < 0.1f){
             ScentEntity scent = new ScentEntity(Sentities.SCENT.get(),level());
             scent.moveTo(this.getX(),this.getY(),this.getZ());
             level().addFreshEntity(scent);
         }
-        return super.hurt(source, p_21017_);
+        return super.hurt(source, amount);
     }
 
     @Override
