@@ -14,7 +14,7 @@ import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.ResourceLocation;
 
-public class ConductorModel<T extends Conductor> extends EntityModel<T> implements TentacledModel{
+public class ConductorModel<T extends Conductor> extends EntityModel<T>  implements TentacledModel {
 	// This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
 	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "conductormodel"), "main");
 	private final ModelPart Conductor;
@@ -22,16 +22,7 @@ public class ConductorModel<T extends Conductor> extends EntityModel<T> implemen
 	private final ModelPart Body;
 	private final ModelPart Chest;
 	private final ModelPart Stomach;
-	private final ModelPart Engine;
-	private final ModelPart Thermostat;
-	private final ModelPart Wires;
-	private final ModelPart Gears;
-	private final ModelPart Gear1;
-	private final ModelPart Gear2;
-	private final ModelPart Gear3;
-	private final ModelPart enginevents;
-	private final ModelPart event1;
-	private final ModelPart event2;
+	private final ModelPart CarBattery;
 	private final ModelPart Arms;
 	private final ModelPart RightArm;
 	private final ModelPart UpperRightArm;
@@ -76,16 +67,7 @@ public class ConductorModel<T extends Conductor> extends EntityModel<T> implemen
 		this.Body = this.Torso.getChild("Body");
 		this.Chest = this.Body.getChild("Chest");
 		this.Stomach = this.Body.getChild("Stomach");
-		this.Engine = this.Body.getChild("Engine");
-		this.Thermostat = this.Engine.getChild("Thermostat");
-		this.Wires = this.Engine.getChild("Wires");
-		this.Gears = this.Engine.getChild("Gears");
-		this.Gear1 = this.Gears.getChild("Gear1");
-		this.Gear2 = this.Gears.getChild("Gear2");
-		this.Gear3 = this.Gears.getChild("Gear3");
-		this.enginevents = this.Engine.getChild("enginevents");
-		this.event1 = this.enginevents.getChild("event1");
-		this.event2 = this.enginevents.getChild("event2");
+		this.CarBattery = this.Body.getChild("CarBattery");
 		this.Arms = this.Torso.getChild("Arms");
 		this.RightArm = this.Arms.getChild("RightArm");
 		this.UpperRightArm = this.RightArm.getChild("UpperRightArm");
@@ -135,7 +117,8 @@ public class ConductorModel<T extends Conductor> extends EntityModel<T> implemen
 
 		PartDefinition Body = Torso.addOrReplaceChild("Body", CubeListBuilder.create(), PartPose.offset(0.3442F, 12.7574F, 1.6218F));
 
-		PartDefinition Chest = Body.addOrReplaceChild("Chest", CubeListBuilder.create(), PartPose.offset(0.0333F, 8.0333F, -0.2333F));
+		PartDefinition Chest = Body.addOrReplaceChild("Chest", CubeListBuilder.create().texOffs(122, 14).addBox(-5.0F, -21.1F, -4.3F, 3.0F, 4.0F, 0.0F, new CubeDeformation(0.0F))
+		.texOffs(122, 19).addBox(1.0F, -23.0F, -4.9F, 3.0F, 4.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0333F, 8.0333F, -0.2333F));
 
 		PartDefinition Petal_r1 = Chest.addOrReplaceChild("Petal_r1", CubeListBuilder.create().texOffs(-7, 91).addBox(-3.5F, 0.0F, -3.5F, 7.0F, 0.0F, 7.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-0.4F, -28.0F, -0.5F, -0.0866F, 0.3128F, 0.0125F));
 
@@ -155,81 +138,15 @@ public class ConductorModel<T extends Conductor> extends EntityModel<T> implemen
 		PartDefinition StomachSuit_r1 = Stomach.addOrReplaceChild("StomachSuit_r1", CubeListBuilder.create().texOffs(28, 27).addBox(-4.0F, -2.5F, -3.0F, 8.0F, 6.0F, 6.0F, new CubeDeformation(0.1F))
 		.texOffs(0, 27).addBox(-4.0F, -3.5F, -3.0F, 8.0F, 7.0F, 6.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-0.5F, -18.9F, -0.2F, 0.1047F, 0.0F, 0.0F));
 
-		PartDefinition Engine = Body.addOrReplaceChild("Engine", CubeListBuilder.create().texOffs(0, 46).addBox(-4.5F, -2.0F, 1.0F, 8.0F, 5.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-0.0667F, -16.0667F, 0.4667F, 0.3491F, 0.0F, 0.0F));
+		PartDefinition CarBattery = Body.addOrReplaceChild("CarBattery", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
 
-		PartDefinition Petal_r6 = Engine.addOrReplaceChild("Petal_r6", CubeListBuilder.create().texOffs(-7, 99).addBox(-3.5F, 0.0F, -3.5F, 7.0F, 0.0F, 7.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-3.2F, 2.6F, 3.2F, -0.5103F, 0.477F, -0.1332F));
+		PartDefinition Petal_r6 = CarBattery.addOrReplaceChild("Petal_r6", CubeListBuilder.create().texOffs(-7, 99).addBox(-3.5F, 0.0F, -3.5F, 7.0F, 0.0F, 7.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-2.5667F, -14.4667F, 4.9667F, -0.5694F, 0.8928F, -0.6823F));
 
-		PartDefinition Bottom_r1 = Engine.addOrReplaceChild("Bottom_r1", CubeListBuilder.create().texOffs(72, 22).addBox(-3.49F, -1.5F, -1.5F, 7.0F, 4.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 3.2769F, 1.8968F, -0.6757F, 0.0585F, 0.0606F));
-
-		PartDefinition Thermostat = Engine.addOrReplaceChild("Thermostat", CubeListBuilder.create().texOffs(24, 83).addBox(-1.4724F, -1.4448F, -0.6631F, 3.0F, 3.0F, 1.0F, new CubeDeformation(-0.4F))
-		.texOffs(28, 87).addBox(-0.9724F, -0.9448F, 0.0869F, 2.0F, 2.0F, 0.0F, new CubeDeformation(0.0F))
-		.texOffs(86, 56).addBox(0.5276F, -1.4448F, -0.4631F, 1.0F, 3.0F, 1.0F, new CubeDeformation(-0.4F))
-		.texOffs(0, 87).addBox(-1.4724F, -1.4448F, -0.4631F, 1.0F, 3.0F, 1.0F, new CubeDeformation(-0.4F))
-		.texOffs(76, 9).addBox(-1.4734F, -1.4438F, -0.4621F, 3.0F, 1.0F, 1.0F, new CubeDeformation(-0.4F))
-		.texOffs(84, 9).addBox(-1.4734F, 0.5562F, -0.4621F, 3.0F, 1.0F, 1.0F, new CubeDeformation(-0.4F)), PartPose.offsetAndRotation(2.0724F, -0.7631F, 4.1948F, 0.0F, 0.0F, -3.1416F));
-
-		PartDefinition Needle_r1 = Thermostat.addOrReplaceChild("Needle_r1", CubeListBuilder.create().texOffs(16, 87).addBox(-0.5F, -0.5F, -0.6F, 1.0F, 2.0F, 1.0F, new CubeDeformation(-0.4F)), PartPose.offsetAndRotation(0.0276F, -0.7949F, 0.0269F, 0.0F, 0.0F, 0.3927F));
-
-		PartDefinition Wires = Engine.addOrReplaceChild("Wires", CubeListBuilder.create(), PartPose.offset(1.5F, -2.3604F, 0.7713F));
-
-		PartDefinition Wires_r1 = Wires.addOrReplaceChild("Wires_r1", CubeListBuilder.create().texOffs(20, 87).addBox(-0.5F, -0.5F, -0.5F, 1.0F, 2.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.9599F, 0.0F, 0.0F));
-
-		PartDefinition Wires_r2 = Wires.addOrReplaceChild("Wires_r2", CubeListBuilder.create().texOffs(8, 87).addBox(-0.5F, -2.0F, -0.5F, 1.0F, 3.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-4.0F, 0.6104F, 1.2287F, 0.9599F, 0.0F, 0.0F));
-
-		PartDefinition Wires_r3 = Wires.addOrReplaceChild("Wires_r3", CubeListBuilder.create().texOffs(4, 87).addBox(-0.5F, -2.0F, -0.5F, 1.0F, 3.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-2.0F, 0.3604F, 1.7287F, 0.9599F, 0.0F, 0.0F));
-
-		PartDefinition Gears = Engine.addOrReplaceChild("Gears", CubeListBuilder.create(), PartPose.offset(-6.0F, -0.75F, 2.0F));
-
-		PartDefinition Gear1 = Gears.addOrReplaceChild("Gear1", CubeListBuilder.create().texOffs(86, 0).addBox(-0.4991F, -1.0F, -1.0F, 1.0F, 2.0F, 2.0F, new CubeDeformation(-0.25F))
-		.texOffs(32, 87).addBox(-0.5001F, -1.5F, -0.5F, 1.0F, 1.0F, 1.0F, new CubeDeformation(-0.25F))
-		.texOffs(36, 87).addBox(-0.5001F, 0.5F, -0.5F, 1.0F, 1.0F, 1.0F, new CubeDeformation(-0.25F)), PartPose.offsetAndRotation(3.7501F, -1.0F, 1.75F, -0.3491F, 0.0F, 0.0F));
-
-		PartDefinition Tooth_r1 = Gear1.addOrReplaceChild("Tooth_r1", CubeListBuilder.create().texOffs(72, 87).addBox(-0.5F, 0.5F, -0.5F, 1.0F, 1.0F, 1.0F, new CubeDeformation(-0.25F))
-		.texOffs(76, 87).addBox(-0.5F, -1.5F, -0.5F, 1.0F, 1.0F, 1.0F, new CubeDeformation(-0.25F)), PartPose.offsetAndRotation(-0.0001F, 0.0F, 0.0F, 2.3562F, 0.0F, 0.0F));
-
-		PartDefinition Tooth_r2 = Gear1.addOrReplaceChild("Tooth_r2", CubeListBuilder.create().texOffs(64, 87).addBox(-0.5F, 0.5F, -0.5F, 1.0F, 1.0F, 1.0F, new CubeDeformation(-0.25F))
-		.texOffs(68, 87).addBox(-0.5F, -1.5F, -0.5F, 1.0F, 1.0F, 1.0F, new CubeDeformation(-0.25F)), PartPose.offsetAndRotation(-0.0001F, 0.0F, 0.0F, -2.3562F, 0.0F, 0.0F));
-
-		PartDefinition Tooth_r3 = Gear1.addOrReplaceChild("Tooth_r3", CubeListBuilder.create().texOffs(40, 87).addBox(-0.5F, 0.5F, -0.5F, 1.0F, 1.0F, 1.0F, new CubeDeformation(-0.25F))
-		.texOffs(44, 87).addBox(-0.5F, -1.5F, -0.5F, 1.0F, 1.0F, 1.0F, new CubeDeformation(-0.25F)), PartPose.offsetAndRotation(-0.0001F, 0.0F, 0.0F, -1.5708F, 0.0F, 0.0F));
-
-		PartDefinition Gear2 = Gears.addOrReplaceChild("Gear2", CubeListBuilder.create().texOffs(86, 35).addBox(-0.4991F, -1.0F, -1.0F, 1.0F, 2.0F, 2.0F, new CubeDeformation(-0.25F))
-		.texOffs(80, 87).addBox(-0.5001F, -1.5F, -0.5F, 1.0F, 1.0F, 1.0F, new CubeDeformation(-0.25F))
-		.texOffs(84, 87).addBox(-0.5001F, 0.5F, -0.5F, 1.0F, 1.0F, 1.0F, new CubeDeformation(-0.25F)), PartPose.offsetAndRotation(4.7501F, 0.75F, 2.25F, 0.3054F, 0.0F, 0.0F));
-
-		PartDefinition Tooth_r4 = Gear2.addOrReplaceChild("Tooth_r4", CubeListBuilder.create().texOffs(88, 19).addBox(-0.5F, 0.5F, -0.5F, 1.0F, 1.0F, 1.0F, new CubeDeformation(-0.25F))
-		.texOffs(88, 17).addBox(-0.5F, -1.5F, -0.5F, 1.0F, 1.0F, 1.0F, new CubeDeformation(-0.25F)), PartPose.offsetAndRotation(-0.0001F, 0.0F, 0.0F, 2.3562F, 0.0F, 0.0F));
-
-		PartDefinition Tooth_r5 = Gear2.addOrReplaceChild("Tooth_r5", CubeListBuilder.create().texOffs(88, 15).addBox(-0.5F, 0.5F, -0.5F, 1.0F, 1.0F, 1.0F, new CubeDeformation(-0.25F))
-		.texOffs(88, 13).addBox(-0.5F, -1.5F, -0.5F, 1.0F, 1.0F, 1.0F, new CubeDeformation(-0.25F)), PartPose.offsetAndRotation(-0.0001F, 0.0F, 0.0F, -2.3562F, 0.0F, 0.0F));
-
-		PartDefinition Tooth_r6 = Gear2.addOrReplaceChild("Tooth_r6", CubeListBuilder.create().texOffs(88, 11).addBox(-0.5F, 0.5F, -0.5F, 1.0F, 1.0F, 1.0F, new CubeDeformation(-0.25F))
-		.texOffs(88, 6).addBox(-0.5F, -1.5F, -0.5F, 1.0F, 1.0F, 1.0F, new CubeDeformation(-0.25F)), PartPose.offsetAndRotation(-0.0001F, 0.0F, 0.0F, -1.5708F, 0.0F, 0.0F));
-
-		PartDefinition Gear3 = Gears.addOrReplaceChild("Gear3", CubeListBuilder.create().texOffs(86, 39).addBox(-0.4991F, -1.0F, -1.0F, 1.0F, 2.0F, 2.0F, new CubeDeformation(-0.25F))
-		.texOffs(88, 63).addBox(-0.5001F, -1.5F, -0.5F, 1.0F, 1.0F, 1.0F, new CubeDeformation(-0.25F))
-		.texOffs(88, 65).addBox(-0.5001F, 0.5F, -0.5F, 1.0F, 1.0F, 1.0F, new CubeDeformation(-0.25F)), PartPose.offsetAndRotation(3.2501F, 2.0F, 1.75F, -0.3491F, 0.0F, 0.0F));
-
-		PartDefinition Tooth_r7 = Gear3.addOrReplaceChild("Tooth_r7", CubeListBuilder.create().texOffs(88, 77).addBox(-0.5F, 0.5F, -0.5F, 1.0F, 1.0F, 1.0F, new CubeDeformation(-0.25F))
-		.texOffs(88, 75).addBox(-0.5F, -1.5F, -0.5F, 1.0F, 1.0F, 1.0F, new CubeDeformation(-0.25F)), PartPose.offsetAndRotation(-0.0001F, 0.0F, 0.0F, 2.3562F, 0.0F, 0.0F));
-
-		PartDefinition Tooth_r8 = Gear3.addOrReplaceChild("Tooth_r8", CubeListBuilder.create().texOffs(88, 73).addBox(-0.5F, 0.5F, -0.5F, 1.0F, 1.0F, 1.0F, new CubeDeformation(-0.25F))
-		.texOffs(88, 71).addBox(-0.5F, -1.5F, -0.5F, 1.0F, 1.0F, 1.0F, new CubeDeformation(-0.25F)), PartPose.offsetAndRotation(-0.0001F, 0.0F, 0.0F, -2.3562F, 0.0F, 0.0F));
-
-		PartDefinition Tooth_r9 = Gear3.addOrReplaceChild("Tooth_r9", CubeListBuilder.create().texOffs(88, 69).addBox(-0.5F, 0.5F, -0.5F, 1.0F, 1.0F, 1.0F, new CubeDeformation(-0.25F))
-		.texOffs(88, 67).addBox(-0.5F, -1.5F, -0.5F, 1.0F, 1.0F, 1.0F, new CubeDeformation(-0.25F)), PartPose.offsetAndRotation(-0.0001F, 0.0F, 0.0F, -1.5708F, 0.0F, 0.0F));
-
-		PartDefinition enginevents = Engine.addOrReplaceChild("enginevents", CubeListBuilder.create(), PartPose.offset(0.1F, 2.4F, 3.5F));
-
-		PartDefinition event1 = enginevents.addOrReplaceChild("event1", CubeListBuilder.create().texOffs(32, 82).addBox(0.0296F, -5.7259F, -0.99F, 2.0F, 3.0F, 2.0F, new CubeDeformation(-0.25F))
-		.texOffs(10, 77).addBox(1.0296F, -7.2259F, -0.99F, 1.0F, 2.0F, 2.0F, new CubeDeformation(-0.25F)), PartPose.offsetAndRotation(2.4194F, 0.5062F, -0.98F, 0.1068F, 0.3786F, 0.2823F));
-
-		PartDefinition V1Seg1_r1 = event1.addOrReplaceChild("V1Seg1_r1", CubeListBuilder.create().texOffs(82, 29).addBox(-1.1071F, -3.0252F, -1.0F, 2.0F, 4.0F, 2.0F, new CubeDeformation(-0.25F)), PartPose.offsetAndRotation(0.1909F, -0.5482F, -0.02F, 0.0F, 0.0F, 0.3491F));
-
-		PartDefinition event2 = enginevents.addOrReplaceChild("event2", CubeListBuilder.create().texOffs(80, 82).addBox(0.5806F, -4.5997F, -1.3147F, 2.0F, 3.0F, 2.0F, new CubeDeformation(-0.35F))
-		.texOffs(86, 43).addBox(1.5816F, -5.8997F, -1.3147F, 1.0F, 2.0F, 2.0F, new CubeDeformation(-0.35F)), PartPose.offsetAndRotation(2.1982F, -0.87F, -0.0731F, -0.0289F, -0.2163F, 0.134F));
-
-		PartDefinition V2Seg2_r1 = event2.addOrReplaceChild("V2Seg2_r1", CubeListBuilder.create().texOffs(72, 82).addBox(-1.1071F, -3.0252F, -1.0F, 2.0F, 3.0F, 2.0F, new CubeDeformation(-0.35F)), PartPose.offsetAndRotation(0.1919F, -0.122F, -0.3447F, 0.0F, 0.0F, 0.6545F));
+		PartDefinition Wire_r1 = CarBattery.addOrReplaceChild("Wire_r1", CubeListBuilder.create().texOffs(89, 108).addBox(-3.5F, -3.5F, -2.0F, 1.0F, 2.0F, 3.0F, new CubeDeformation(-0.3F))
+		.texOffs(97, 111).addBox(-3.5F, -3.5F, 0.0F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.0F))
+		.texOffs(97, 111).addBox(2.5F, -3.5F, 0.0F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.0F))
+		.texOffs(82, 90).addBox(-5.5F, -0.5F, -9.0F, 11.0F, 1.0F, 12.0F, new CubeDeformation(-0.2F))
+		.texOffs(101, 104).addBox(-4.5F, -2.5F, -2.0F, 9.0F, 5.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-0.5F, -15.5F, 3.5F, 0.2986F, -0.0651F, 0.2084F));
 
 		PartDefinition Arms = Torso.addOrReplaceChild("Arms", CubeListBuilder.create(), PartPose.offset(-0.1225F, -5.4093F, -0.7115F));
 
@@ -298,10 +215,10 @@ public class ConductorModel<T extends Conductor> extends EntityModel<T> implemen
 		PartDefinition LowerLeftLeg = LeftLeg.addOrReplaceChild("LowerLeftLeg", CubeListBuilder.create().texOffs(38, 49).addBox(-2.0F, -0.25F, -2.0F, 4.0F, 8.0F, 4.0F, new CubeDeformation(0.2F))
 		.texOffs(32, 61).addBox(-2.0F, 0.75F, -2.0F, 4.0F, 7.0F, 4.0F, new CubeDeformation(0.3F)), PartPose.offset(0.0F, 6.75F, 0.0F));
 
-		PartDefinition Head = partdefinition.addOrReplaceChild("Head", CubeListBuilder.create().texOffs(32, 0).addBox(-4.0F, -6.1F, -7.8F, 8.0F, 5.0F, 6.0F, new CubeDeformation(0.0F))
-		.texOffs(32, 22).addBox(-4.0F, -1.1F, -2.8F, 8.0F, 1.0F, 3.0F, new CubeDeformation(0.0F))
-		.texOffs(32, 11).addBox(-3.0F, -7.1F, -6.8F, 6.0F, 5.0F, 6.0F, new CubeDeformation(0.5F))
-		.texOffs(0, 122).addBox(-4.0F, -3.1F, -2.8F, 8.0F, 3.0F, 3.0F, new CubeDeformation(0.2F)), PartPose.offset(0.0F, -3.0F, -1.5F));
+		PartDefinition Head = partdefinition.addOrReplaceChild("Head", CubeListBuilder.create().texOffs(32, 0).addBox(-4.0F, -6.1F, -5.8F, 8.0F, 5.0F, 6.0F, new CubeDeformation(0.0F))
+		.texOffs(32, 22).addBox(-4.0F, -1.1F, -0.8F, 8.0F, 1.0F, 3.0F, new CubeDeformation(0.0F))
+		.texOffs(32, 11).addBox(-3.0F, -7.1F, -4.8F, 6.0F, 5.0F, 6.0F, new CubeDeformation(0.5F))
+		.texOffs(0, 122).addBox(-4.0F, -3.1F, -0.8F, 8.0F, 3.0F, 3.0F, new CubeDeformation(0.2F)), PartPose.offset(0.0F, -3.5F, -2.5F));
 
 		PartDefinition HeadDetailsTop = Head.addOrReplaceChild("HeadDetailsTop", CubeListBuilder.create().texOffs(80, 71).addBox(-4.0F, -35.6F, -2.3F, 3.0F, 2.0F, 1.0F, new CubeDeformation(0.0F))
 		.texOffs(10, 81).addBox(1.8F, -35.4F, -2.5F, 2.0F, 1.0F, 1.0F, new CubeDeformation(0.0F))
@@ -314,7 +231,7 @@ public class ConductorModel<T extends Conductor> extends EntityModel<T> implemen
 		.texOffs(48, 61).addBox(0.0F, -34.6F, -9.3F, 2.0F, 1.0F, 1.0F, new CubeDeformation(0.0F))
 		.texOffs(50, 46).addBox(2.0F, -35.6F, -9.3F, 1.0F, 2.0F, 1.0F, new CubeDeformation(0.0F))
 		.texOffs(64, 81).addBox(-3.6F, -35.6F, -8.9F, 0.0F, 2.0F, 4.0F, new CubeDeformation(0.0F))
-		.texOffs(76, 7).addBox(-3.6F, -35.6F, -8.9F, 6.0F, 2.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 27.5F, 1.5F));
+		.texOffs(76, 7).addBox(-3.6F, -35.6F, -8.9F, 6.0F, 2.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 27.5F, 3.5F));
 
 		PartDefinition HeadDetailsBack = Head.addOrReplaceChild("HeadDetailsBack", CubeListBuilder.create().texOffs(76, 0).addBox(-4.0F, -33.6F, -3.3F, 3.0F, 5.0F, 2.0F, new CubeDeformation(0.0F))
 		.texOffs(56, 35).addBox(-1.0F, -29.6F, -3.3F, 5.0F, 1.0F, 2.0F, new CubeDeformation(0.0F))
@@ -323,9 +240,9 @@ public class ConductorModel<T extends Conductor> extends EntityModel<T> implemen
 		.texOffs(12, 87).addBox(-1.0F, -31.6F, -2.3F, 1.0F, 2.0F, 1.0F, new CubeDeformation(0.0F))
 		.texOffs(86, 54).addBox(1.0F, -30.6F, -2.3F, 2.0F, 1.0F, 1.0F, new CubeDeformation(0.0F))
 		.texOffs(0, 77).addBox(-1.4F, -35.6F, -1.7F, 5.0F, 6.0F, 0.0F, new CubeDeformation(0.0F))
-		.texOffs(80, 63).addBox(3.6F, -35.6F, -5.7F, 0.0F, 4.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 27.5F, 1.5F));
+		.texOffs(80, 63).addBox(3.6F, -35.6F, -5.7F, 0.0F, 4.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 27.5F, 3.5F));
 
-		PartDefinition MouthDetails = Head.addOrReplaceChild("MouthDetails", CubeListBuilder.create().texOffs(70, 57).addBox(-4.0F, -28.7F, -7.5F, 8.0F, 6.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 27.5F, 1.5F));
+		PartDefinition MouthDetails = Head.addOrReplaceChild("MouthDetails", CubeListBuilder.create().texOffs(70, 57).addBox(-4.0F, -28.7F, -7.5F, 8.0F, 6.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 27.5F, 3.5F));
 
 		PartDefinition MouthTendrils = MouthDetails.addOrReplaceChild("MouthTendrils", CubeListBuilder.create(), PartPose.offsetAndRotation(-3.5603F, -30.466F, -22.4541F, 0.0F, 3.1416F, 0.0F));
 
@@ -353,7 +270,7 @@ public class ConductorModel<T extends Conductor> extends EntityModel<T> implemen
 
 		PartDefinition Toothie_r2 = Teeth.addOrReplaceChild("Toothie_r2", CubeListBuilder.create().texOffs(86, 4).addBox(-2.0F, -1.0F, 0.0F, 4.0F, 2.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-1.7F, -4.1F, 9.0F, 0.1396F, 0.1745F, 0.0F));
 
-		PartDefinition Foliage = Head.addOrReplaceChild("Foliage", CubeListBuilder.create(), PartPose.offset(-0.0993F, -0.6388F, -0.7988F));
+		PartDefinition Foliage = Head.addOrReplaceChild("Foliage", CubeListBuilder.create(), PartPose.offset(-0.0993F, -0.6388F, 1.2012F));
 
 		PartDefinition Petal_r13 = Foliage.addOrReplaceChild("Petal_r13", CubeListBuilder.create().texOffs(-7, 91).addBox(-3.5F, 0.0F, -3.5F, 7.0F, 0.0F, 7.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-3.5007F, -5.4612F, -2.9012F, 0.1338F, -0.8214F, -0.3972F));
 
@@ -367,15 +284,29 @@ public class ConductorModel<T extends Conductor> extends EntityModel<T> implemen
 
 		PartDefinition Petal_r18 = Foliage.addOrReplaceChild("Petal_r18", CubeListBuilder.create().texOffs(-7, 91).addBox(-3.5F, 0.0F, -3.5F, 7.0F, 0.0F, 7.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(3.1993F, -3.8612F, -6.2012F, 0.3054F, 0.0F, 0.2182F));
 
-		PartDefinition MainBrain = partdefinition.addOrReplaceChild("MainBrain", CubeListBuilder.create().texOffs(28, 39).addBox(-2.1945F, 5.3169F, 0.8882F, 5.0F, 4.0F, 6.0F, new CubeDeformation(-0.3F))
-		.texOffs(32, 72).addBox(0.8055F, 5.3169F, 0.8882F, 2.0F, 4.0F, 6.0F, new CubeDeformation(-0.1F))
-		.texOffs(48, 74).addBox(1.3055F, 6.8169F, 1.3882F, 2.0F, 2.0F, 5.0F, new CubeDeformation(-0.1F))
-		.texOffs(16, 73).addBox(-2.0945F, 5.3169F, 0.8882F, 2.0F, 4.0F, 6.0F, new CubeDeformation(-0.1F))
-		.texOffs(62, 74).addBox(-2.6945F, 6.8169F, 1.3882F, 2.0F, 2.0F, 5.0F, new CubeDeformation(-0.1F)), PartPose.offsetAndRotation(0.0F, -3.0F, -1.5F, 3.1392F, 0.0205F, -0.0203F));
+		PartDefinition MainBrain = partdefinition.addOrReplaceChild("MainBrain", CubeListBuilder.create().texOffs(28, 39).addBox(-2.2355F, 5.3217F, -1.1114F, 5.0F, 4.0F, 6.0F, new CubeDeformation(-0.3F))
+		.texOffs(32, 72).addBox(0.7645F, 5.3217F, -1.1114F, 2.0F, 4.0F, 6.0F, new CubeDeformation(-0.1F))
+		.texOffs(48, 74).addBox(1.2645F, 6.8217F, -0.6114F, 2.0F, 2.0F, 5.0F, new CubeDeformation(-0.1F))
+		.texOffs(16, 73).addBox(-2.1355F, 5.3217F, -1.1114F, 2.0F, 4.0F, 6.0F, new CubeDeformation(-0.1F))
+		.texOffs(62, 74).addBox(-2.7355F, 6.8217F, -0.6114F, 2.0F, 2.0F, 5.0F, new CubeDeformation(-0.1F)), PartPose.offsetAndRotation(0.0F, -3.5F, -2.5F, 3.1392F, 0.0205F, -0.0203F));
 
-		PartDefinition RightSpike2_r1 = MainBrain.addOrReplaceChild("RightSpike2_r1", CubeListBuilder.create().texOffs(16, 83).addBox(-2.5F, -1.0F, 0.0F, 4.0F, 4.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-1.0945F, 9.0169F, 3.3882F, 0.0F, 0.0F, 0.2182F));
+		PartDefinition BrainMatter_r1 = MainBrain.addOrReplaceChild("BrainMatter_r1", CubeListBuilder.create().texOffs(122, 8).addBox(-1.5F, -2.5F, 0.0F, 3.0F, 5.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-4.341F, 3.1049F, -1.0996F, -0.469F, -1.5273F, 0.3336F));
 
-		PartDefinition LeftSpike_r1 = MainBrain.addOrReplaceChild("LeftSpike_r1", CubeListBuilder.create().texOffs(0, 83).addBox(-1.5F, -1.0F, 0.0F, 4.0F, 4.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(2.0055F, 9.2169F, 4.8882F, 0.0F, 0.0F, -0.2182F));
+		PartDefinition BrainMatter_r2 = MainBrain.addOrReplaceChild("BrainMatter_r2", CubeListBuilder.create().texOffs(122, 8).addBox(-1.5F, -2.5F, 0.0F, 3.0F, 5.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(4.959F, 5.5049F, 0.7004F, -1.4455F, 1.5606F, -1.345F));
+
+		PartDefinition BrainMatter_r3 = MainBrain.addOrReplaceChild("BrainMatter_r3", CubeListBuilder.create().texOffs(121, 2).addBox(-1.5F, -2.5F, 0.0F, 3.0F, 5.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.859F, 5.5049F, -2.4996F, 3.0541F, -0.0781F, -3.1374F));
+
+		PartDefinition BrainMatter_r4 = MainBrain.addOrReplaceChild("BrainMatter_r4", CubeListBuilder.create().texOffs(121, 2).addBox(-1.5F, -2.5F, 0.0F, 3.0F, 5.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-1.541F, 5.5049F, 6.0004F, -0.2185F, 0.0511F, -0.0113F));
+
+		PartDefinition BrainClump_r1 = MainBrain.addOrReplaceChild("BrainClump_r1", CubeListBuilder.create().texOffs(31, 42).addBox(-1.0F, -1.5F, -1.5F, 2.0F, 3.0F, 3.0F, new CubeDeformation(-0.3F)), PartPose.offsetAndRotation(0.9707F, 7.5312F, -1.1357F, 1.6102F, 0.1956F, 1.3914F));
+
+		PartDefinition BrainClump_r2 = MainBrain.addOrReplaceChild("BrainClump_r2", CubeListBuilder.create().texOffs(31, 42).addBox(-1.5F, -1.5F, -1.5F, 3.0F, 3.0F, 3.0F, new CubeDeformation(-0.3F)), PartPose.offsetAndRotation(3.4645F, 7.6217F, 0.6886F, 1.5446F, 0.0F, 1.1781F));
+
+		PartDefinition BrainClump_r3 = MainBrain.addOrReplaceChild("BrainClump_r3", CubeListBuilder.create().texOffs(31, 42).addBox(-1.5F, -1.5F, -1.5F, 3.0F, 3.0F, 3.0F, new CubeDeformation(-0.3F)), PartPose.offsetAndRotation(-3.2355F, 6.0217F, -1.2114F, 2.2253F, 0.0F, 1.1781F));
+
+		PartDefinition BrainClump_r4 = MainBrain.addOrReplaceChild("BrainClump_r4", CubeListBuilder.create().texOffs(32, 43).addBox(-2.5F, -1.5F, -1.0F, 5.0F, 3.0F, 2.0F, new CubeDeformation(-0.3F)), PartPose.offsetAndRotation(-0.6355F, 7.1217F, 4.6886F, 0.0172F, 0.0517F, 0.1489F));
+
+		PartDefinition RightTopGrowth_r1 = MainBrain.addOrReplaceChild("RightTopGrowth_r1", CubeListBuilder.create().texOffs(32, 42).addBox(-1.5F, -1.0F, -1.5F, 3.0F, 2.0F, 3.0F, new CubeDeformation(-0.3F)), PartPose.offsetAndRotation(-1.0355F, 9.0217F, 2.3886F, 0.0F, 1.2392F, -0.0873F));
 
 		return LayerDefinition.create(meshdefinition, 128, 128);
 	}

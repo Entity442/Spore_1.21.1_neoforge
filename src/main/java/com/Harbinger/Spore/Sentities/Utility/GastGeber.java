@@ -1,6 +1,7 @@
 package com.Harbinger.Spore.Sentities.Utility;
 
 
+import com.Harbinger.Spore.ExtremelySusThings.Utilities;
 import com.Harbinger.Spore.Sentities.AI.FloatDiveGoal;
 import com.Harbinger.Spore.Sentities.AI.LocHiv.BufferAI;
 import com.Harbinger.Spore.Sentities.BaseEntities.EvolvedInfected;
@@ -232,9 +233,9 @@ public class GastGeber extends EvolvedInfected implements FoliageSpread {
         AABB aabb = this.getBoundingBox().inflate(16);
         List<Entity> entities = level().getEntities(this,aabb, e -> e instanceof LivingEntity living && this.TARGET_SELECTOR.test(living));
         for (Entity entity : entities){
-            if (entity instanceof LivingEntity living){
+            if (entity instanceof LivingEntity living && !Utilities.helmetList().contains(living.getItemBySlot(EquipmentSlot.HEAD).getItem())){
                 living.addEffect(new MobEffectInstance(MobEffects.WEAKNESS,400,0));
-                living.addEffect(new MobEffectInstance(Seffects.MYCELIUM,600,3));
+                living.addEffect(new MobEffectInstance(Seffects.MYCELIUM,600,1));
             }
         }
         if (level() instanceof ServerLevel serverLevel){

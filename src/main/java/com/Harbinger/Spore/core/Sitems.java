@@ -108,6 +108,16 @@ public class Sitems {
             () -> new BaseItem(new Item.Properties()));
     public  static final DeferredItem<Item> REFORGED_BIOMASS_A = ITEMS.register("reforged_biomass_a",
             () -> new BaseItem(new Item.Properties()));
+    public  static final DeferredItem<Item> ACIDIC_GLAND = ITEMS.register("acidic_gland",
+            () -> new BaseItem(new Item.Properties()));
+    public  static final DeferredItem<Item> AMALGAMATED_HEART = ITEMS.register("amalgamated_heart",
+            () -> new BaseItem(new Item.Properties()));
+    public  static final DeferredItem<Item> LIGAMENTS = ITEMS.register("ligaments",
+            () -> new BaseItem(new Item.Properties()));
+    public  static final DeferredItem<Item> FINS = ITEMS.register("fins",
+            () -> new BaseItem(new Item.Properties()));
+    public  static final DeferredItem<Item> HYPERBOLIZED_LIVER = ITEMS.register("hyperbolized_liver",
+            () -> new BaseItem(new Item.Properties()));
     public  static final DeferredItem<Item> RESPIRATOR = ITEMS.register("respirator",
             () -> new BaseItem(new Item.Properties()));
     public  static final DeferredItem<Item> SAUSAGE = ITEMS.register("sausage",
