@@ -345,8 +345,8 @@ public class ConductorModel<T extends Conductor> extends EntityModel<T>  impleme
 		super.prepareMobModel(entity, value1, value2, value3);
 		int attackAnimationTick = entity.getAttackAnimationTick();
 		if (attackAnimationTick > 0) {
-			this.LeftArm.yRot = -1.5F + 3F * Mth.triangleWave((float)attackAnimationTick - value3, 20.0F);
-			this.RightArm.yRot = 1.5F - 3F * Mth.triangleWave((float)attackAnimationTick - value3, 20.0F);
+			this.LeftArm.yRot = -1.25F + 3.5F * Mth.triangleWave((float)attackAnimationTick - value3, 20.0F);
+			this.RightArm.yRot = 1.25F - 3.5F * Mth.triangleWave((float)attackAnimationTick - value3, 20.0F);
 		}
 	}
 	@Override

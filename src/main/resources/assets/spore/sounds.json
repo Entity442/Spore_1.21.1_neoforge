@@ -16,7 +16,13 @@
     "sounds": [
       "spore:saw_sound"
     ]
-  },
+  },"electric" :{
+  "subtitle": "sounds.spore.saw_sound",
+  "sounds": [
+    "spore:electric1",
+    "spore:electric2"
+  ]
+},
   "nuke" :{
     "subtitle": "sounds.spore.nuke",
     "sounds": [

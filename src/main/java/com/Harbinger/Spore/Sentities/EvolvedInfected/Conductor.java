@@ -117,6 +117,7 @@ public class Conductor extends EvolvedInfected{
             float range = Math.abs(getCharge() * 0.15f);
             List<Entity> nearbyEntities = level().getEntities(this,this.getBoundingBox().inflate(1+range));
             int charge = (int) range * 3;
+            this.playSound(Ssounds.ELECTRIC.value());
             for (int i = 0;i<random.nextInt(3 + charge);i++){
                 Vec3 vec3 = Utilities.generatePositionAway(this.position().add(0,2.2,0),1+range);
                 Entity entity = nearbyEntities.isEmpty() ? null : nearbyEntities.get(random.nextInt(nearbyEntities.size()));
@@ -125,7 +126,7 @@ public class Conductor extends EvolvedInfected{
                     living = livingEntity;
                 }
                 if (level().isClientSide){
-                    AmbientSparks ambientSparks = new AmbientSparks(vec3,living,this,8);
+                    AmbientSparks ambientSparks = new AmbientSparks(vec3,living,this,random.nextInt(5,10));
                     sparks.add(ambientSparks);
                 }else {
                     if (living != null){

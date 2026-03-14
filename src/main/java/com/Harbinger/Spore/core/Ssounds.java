@@ -325,6 +325,8 @@ public class Ssounds {
     public static final Holder<SoundEvent> GROBER_AMBIENT = soundRegistry("grober_ambient");
 
     public static final Holder<SoundEvent> OMNI_AMBIENT = soundRegistry("omni_ambient");
+
+    public static final Holder<SoundEvent> ELECTRIC = soundRegistry("electric");
     private Ssounds() {
     }
 
