@@ -156,7 +156,7 @@ public class Sentities {
                     .build(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "lacerator").toString()));
 
     public static final Supplier<EntityType<Conductor>> CONDUCTOR = SPORE_ENTITIES.register("conductor",
-            () -> EntityType.Builder.of(Conductor::new, INFECTED).sized(0.6f, 1.9f)
+            () -> EntityType.Builder.of(Conductor::new, INFECTED).sized(0.6f, 2.2f)
                     .build(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "conductor").toString()));
 
     public static final Supplier<EntityType<Biobloob>> BIOBLOOB = SPORE_ENTITIES.register("biobloob",
