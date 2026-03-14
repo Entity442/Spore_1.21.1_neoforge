@@ -103,11 +103,12 @@ public class Grober extends Hyper implements ArmorPersentageBypass {
             if (getMeleeState() == MELEE_STATES.KICK){
                 living.hurtMarked = true;
                 living.knockback((3f),  Mth.sin(this.getYRot() * ((float) Math.PI / 180F)), (double) (-Mth.cos(this.getYRot() * ((float) Math.PI / 180F))));
+                this.playSound(Ssounds.GROBER_KICK.value());
             }
             if (getMeleeState() == MELEE_STATES.RIGHT_SLAP || getMeleeState() == MELEE_STATES.LEFT_SLAP){
                 living.addEffect(new MobEffectInstance(MobEffects.CONFUSION,200));
                 living.addEffect(new MobEffectInstance(MobEffects.WEAKNESS,100));
-                this.playSound(SoundEvents.PLAYER_ATTACK_CRIT);
+                this.playSound(Ssounds.GROBER_SLAP.value());
             }
          }
         this.attackAnimationTick = 10;
@@ -235,7 +236,7 @@ public class Grober extends Hyper implements ArmorPersentageBypass {
                                 serverLevel.removeBlock(blockpos,false);
                             }
                         }}}}}}
-        this.playSound(Ssounds.LANDING.value());
+        this.playSound(Ssounds.GROBER_SMASH.value());
     }
     public Grober.MELEE_STATES getMeleeState() {
         return Grober.MELEE_STATES.byId(this.entityData.get(ATTACK_TYPE) & 255);
@@ -297,6 +298,7 @@ public class Grober extends Hyper implements ArmorPersentageBypass {
 
         @Override
         public void start() {
+            mob.playSound(Ssounds.GROBER_CHARGE.value());
             mob.setRavageTime(0);
             mob.entityData.set(Grober.RAVAGE_COOLDOWN, 200);
         }
@@ -330,6 +332,7 @@ public class Grober extends Hyper implements ArmorPersentageBypass {
             float damage = (float) mob.getAttributeValue(net.minecraft.world.entity.ai.attributes.Attributes.ATTACK_DAMAGE) * 0.25F;
 
             for (LivingEntity living : victims) {
+                mob.playSound(Ssounds.GROBER_CHOKE.value());
                 living.hurt(mob.damageSources().mobAttack(mob), damage);
                 living.knockback(1.2F,
                         Mth.sin(mob.getYRot() * ((float)Math.PI / 180F)),

@@ -327,6 +327,16 @@ public class Ssounds {
     public static final Holder<SoundEvent> OMNI_AMBIENT = soundRegistry("omni_ambient");
 
     public static final Holder<SoundEvent> ELECTRIC = soundRegistry("electric");
+
+    public static final Holder<SoundEvent> GROBER_SLAP = soundRegistry("grober_slap");
+
+    public static final Holder<SoundEvent> GROBER_SMASH = soundRegistry("grober_smash");
+
+    public static final Holder<SoundEvent> GROBER_KICK = soundRegistry("grober_kick");
+
+    public static final Holder<SoundEvent> GROBER_CHARGE = soundRegistry("grober_charge");
+
+    public static final Holder<SoundEvent> GROBER_CHOKE = soundRegistry("grober_choke");
     private Ssounds() {
     }
 
