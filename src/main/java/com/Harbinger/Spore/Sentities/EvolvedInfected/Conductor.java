@@ -29,6 +29,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
+import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -163,7 +164,8 @@ public class Conductor extends EvolvedInfected{
                 setAttackId(target.getId());
                 beamTicks = 20;
                 level().broadcastEntityEvent(this, (byte)7);
-                target.hurt(level().damageSources().lightningBolt(), (float) (SConfig.SERVER.conductor_el_discharge_damage.get() * SConfig.SERVER.global_damage.get()));
+                int voltageModifier = target instanceof IronGolem ? 3 : 1;
+                target.hurt(level().damageSources().lightningBolt(), (float) (SConfig.SERVER.conductor_el_discharge_damage.get() * SConfig.SERVER.global_damage.get() * voltageModifier));
                 target.setRemainingFireTicks(100);
                 entityData.set(CHARGE, getCharge() - 10f);
                 playSound(SoundEvents.LIGHTNING_BOLT_IMPACT);
