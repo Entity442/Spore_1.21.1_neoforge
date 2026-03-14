@@ -13,6 +13,7 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 
 public class ConductorModel<T extends Conductor> extends EntityModel<T>  implements TentacledModel {
 	// This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
@@ -315,12 +316,39 @@ public class ConductorModel<T extends Conductor> extends EntityModel<T>  impleme
 	public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 		float headX = headPitch * ((float) Math.PI / 180F);
 		float headY = netHeadYaw / (180F / (float) Math.PI);
+		float v1 = Mth.sin(ageInTicks/4)/7;
+		float v2 = Mth.sin(ageInTicks/8)/8;
+		float v3 = Mth.cos(ageInTicks/6)/6;
+		if (entity.getAttackAnimationTick() <= 0){
+			this.RightArm.xRot =  !(limbSwingAmount > -0.15F && limbSwingAmount < 0.15F) ? -90F + v1 : -0.7f + v2;
+			this.LeftArm.xRot =  !(limbSwingAmount > -0.15F && limbSwingAmount < 0.15F) ? -90F - v1 : -0.7f - v2;
+			this.RightArm.yRot = 0;
+			this.LeftArm.yRot = 0;
+		}
+		this.LeftLeg.xRot = Mth.cos(limbSwing * 0.8F) * 0.8F * limbSwingAmount;
+		this.RightLeg.xRot = Mth.cos(limbSwing * 0.8F) * -0.8F * limbSwingAmount;
+		this.LowerLeftLeg.xRot = LeftLeg.xRot < 0 ? -LeftLeg.xRot : 0;
+		this.LowerRightLeg.xRot = RightLeg.xRot < 0 ? -RightLeg.xRot : 0;
+		this.animateTentacleZ(Seg2Tendril1,v1);
+		this.animateTentacleZ(Seg2Tendril2,v2);
+		this.animateTentacleZ(Seg2Tendril3,v3);
+		this.animateTentacleZ(Seg3Tendril1,v1);
+		this.animateTentacleZ(Seg3Tendril2,v2);
+		this.animateTentacleZ(Seg3Tendril3,v3);
 		animateTentacleX(Head,headX);
 		animateTentacleY(Head,headY);
 		animateTentacleX(MainBrain,headX);
 		animateTentacleY(MainBrain,headY);
 	}
-
+	@Override
+	public void prepareMobModel(T entity, float value1, float value2, float value3) {
+		super.prepareMobModel(entity, value1, value2, value3);
+		int attackAnimationTick = entity.getAttackAnimationTick();
+		if (attackAnimationTick > 0) {
+			this.LeftArm.yRot = -1.5F + 3F * Mth.triangleWave((float)attackAnimationTick - value3, 20.0F);
+			this.RightArm.yRot = 1.5F - 3F * Mth.triangleWave((float)attackAnimationTick - value3, 20.0F);
+		}
+	}
 	@Override
 	public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int alpha) {
 		Conductor.render(poseStack, vertexConsumer, packedLight, packedOverlay, alpha);

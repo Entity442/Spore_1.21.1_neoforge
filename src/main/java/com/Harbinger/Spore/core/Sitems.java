@@ -263,6 +263,8 @@ public class Sitems {
             () -> new SporeSpawnEgg(Sentities.INEBRIATER,-412435818,SpawnEggType.EVOLVED));
     public  static final DeferredItem<Item> CHEMIST_SPAWNEGG = ITEMS.register("chemist_spawnegg",
             () -> new SporeSpawnEgg(Sentities.CHEMIST,-455964234,SpawnEggType.EVOLVED));
+    public  static final DeferredItem<Item> CONDUCTOR_SPAWNEGG = ITEMS.register("conductor_spawnegg",
+            () -> new SporeSpawnEgg(Sentities.CONDUCTOR,-655964234,SpawnEggType.EVOLVED));
 
     public  static final DeferredItem<Item> THORN_SPAWNEGG = ITEMS.register("thorn_spawnegg",
             () -> new SporeSpawnEgg(Sentities.THORN,-1243545,SpawnEggType.EVOLVED));

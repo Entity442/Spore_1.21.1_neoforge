@@ -66,17 +66,17 @@ public class Conductor extends EvolvedInfected{
     }
     @Override
     public List<? extends String> getDropList() {
-        return SConfig.DATAGEN.chemist_loot.get();
+        return SConfig.DATAGEN.conductor_loot.get();
     }
     public float getCharge(){
         return entityData.get(CHARGE);
     }
     public static AttributeSupplier.Builder createAttributes() {
         return Mob.createMobAttributes()
-                .add(Attributes.MAX_HEALTH, SConfig.SERVER.chemist_hp.get() * SConfig.SERVER.global_health.get())
+                .add(Attributes.MAX_HEALTH, SConfig.SERVER.conductor_hp.get() * SConfig.SERVER.global_health.get())
                 .add(Attributes.MOVEMENT_SPEED, 0.2)
-                .add(Attributes.ATTACK_DAMAGE, SConfig.SERVER.chemist_damage.get() * SConfig.SERVER.global_damage.get())
-                .add(Attributes.ARMOR, SConfig.SERVER.chemist_armor.get() * SConfig.SERVER.global_armor.get())
+                .add(Attributes.ATTACK_DAMAGE, SConfig.SERVER.conductor_damage.get() * SConfig.SERVER.global_damage.get())
+                .add(Attributes.ARMOR, SConfig.SERVER.conductor_armor.get() * SConfig.SERVER.global_armor.get())
                 .add(Attributes.FOLLOW_RANGE, 32);
 
     }
@@ -130,7 +130,7 @@ public class Conductor extends EvolvedInfected{
                 }else {
                     if (living != null){
                         entityData.set(CHARGE,entityData.get(CHARGE)-1f);
-                        living.hurt(level().damageSources().lightningBolt(),4);
+                        living.hurt(level().damageSources().lightningBolt(), (float) (SConfig.SERVER.conductor_el_small_damage.get() * SConfig.SERVER.global_damage.get()));
                         if (Math.random() < 0.2){
                             living.setRemainingFireTicks(40);
                         }
@@ -162,7 +162,7 @@ public class Conductor extends EvolvedInfected{
                 setAttackId(target.getId());
                 beamTicks = 20;
                 level().broadcastEntityEvent(this, (byte)7);
-                target.hurt(level().damageSources().lightningBolt(),10);
+                target.hurt(level().damageSources().lightningBolt(), (float) (SConfig.SERVER.conductor_el_discharge_damage.get() * SConfig.SERVER.global_damage.get()));
                 target.setRemainingFireTicks(100);
                 entityData.set(CHARGE, getCharge() - 10f);
                 playSound(SoundEvents.LIGHTNING_BOLT_IMPACT);

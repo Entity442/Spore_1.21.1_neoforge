@@ -183,7 +183,7 @@ public class InfectedHazmat extends Infected implements VariantKeeper , Evolving
         if (this.getVariant() == HazmatVariant.TANK){
             return new Chemist(Sentities.CHEMIST.get(),world);
         }
-        return new Chemist(Sentities.CHEMIST.get(),world);
+        return new Chemist(Sentities.CONDUCTOR.get(),world);
     }
 
     private void explodeTank(){
