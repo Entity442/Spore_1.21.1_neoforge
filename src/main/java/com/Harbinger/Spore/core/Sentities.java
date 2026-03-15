@@ -183,6 +183,10 @@ public class Sentities {
             () -> EntityType.Builder.of(Vanguard::new, INFECTED).sized(0.8f, 2.5f)
                     .build(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "vanguard").toString()));
 
+    public static final Supplier<EntityType<Reaper>> REAPER = SPORE_ENTITIES.register("reaper",
+            () -> EntityType.Builder.of(Reaper::new, INFECTED).sized(0.8f, 2.4f)
+                    .build(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "reaper").toString()));
+
     public static final Supplier<EntityType<Bairn>> BAIRN = SPORE_ENTITIES.register("bairn",
             () -> EntityType.Builder.of(Bairn::new, INFECTED).sized(0.8f, 0.8f)
                     .build(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "bairn").toString()));

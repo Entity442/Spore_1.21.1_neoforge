@@ -303,6 +303,9 @@ public class Sitems {
     public  static final DeferredItem<Item> SPECTER_SPAWNEGG = ITEMS.register("specter_spawnegg",
             () -> new SporeSpawnEgg(Sentities.SPECTER,-876534333,SpawnEggType.UNKNOWN));
 
+    public  static final DeferredItem<Item> REAPER_SPAWNEGG = ITEMS.register("reaper_spawnegg",
+            () -> new SporeSpawnEgg(Sentities.REAPER,-454534333,SpawnEggType.UNKNOWN));
+
     public  static final DeferredItem<Item> CONSTRUCT_SPAWNEGG = ITEMS.register("construct_spawnegg",
             () -> new SporeSpawnEgg(Sentities.INF_CONSTRUCT,-65242341,SpawnEggType.UNKNOWN));
 

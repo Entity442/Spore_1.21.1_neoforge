@@ -173,7 +173,7 @@ public class Grober extends Hyper implements ArmorPersentageBypass {
 
     }
     public boolean isOmniMan(){
-        return Objects.equals(this.getCustomName(), Component.literal("Omni-Man"));
+        return Objects.equals(this.getCustomName(), Component.literal("Omni-Man")) || Objects.equals(this.getCustomName(), Component.literal("Nolan"));
     }
     @Override
     public boolean hurt(DamageSource source, float amount) {
