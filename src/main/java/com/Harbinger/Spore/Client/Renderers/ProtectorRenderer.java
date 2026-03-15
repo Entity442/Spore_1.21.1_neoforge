@@ -4,7 +4,6 @@ import com.Harbinger.Spore.Client.Models.ProtectorModel;
 import com.Harbinger.Spore.Client.Special.BaseInfectedRenderer;
 import com.Harbinger.Spore.Sentities.EvolvedInfected.Protector;
 import com.Harbinger.Spore.Spore;
-import com.google.common.collect.Maps;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
@@ -33,7 +32,6 @@ import net.neoforged.neoforge.client.ClientHooks;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @OnlyIn(Dist.CLIENT)
 public class ProtectorRenderer<Type extends Protector> extends BaseInfectedRenderer<Type , ProtectorModel<Type>> {

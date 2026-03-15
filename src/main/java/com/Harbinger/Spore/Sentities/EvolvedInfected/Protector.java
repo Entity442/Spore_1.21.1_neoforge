@@ -1,5 +1,6 @@
 package com.Harbinger.Spore.Sentities.EvolvedInfected;
 
+import com.Harbinger.Spore.ExtremelySusThings.SporeSavedData;
 import com.Harbinger.Spore.Sentities.AI.CustomMeleeAttackGoal;
 import com.Harbinger.Spore.Sentities.ArmedInfected;
 import com.Harbinger.Spore.Sentities.BaseEntities.EvolvedInfected;
@@ -218,7 +219,7 @@ public class Protector extends EvolvedInfected implements ArmedInfected,HasUsabl
     @Override
     public void die(DamageSource source) {
         super.die(source);
-        //SporeSavedData.removeProtector(this);
+        SporeSavedData.removeProtector(this);
     }
 
     @Override

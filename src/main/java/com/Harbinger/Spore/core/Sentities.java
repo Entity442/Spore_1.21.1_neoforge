@@ -151,6 +151,10 @@ public class Sentities {
             () -> EntityType.Builder.of(Plagued::new, INFECTED).sized(0.6f, 1.9f)
                     .build(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "plagued").toString()));
 
+    public static final Supplier<EntityType<Gargoyl>> GARGOYLE = SPORE_ENTITIES.register("gargoyle",
+            () -> EntityType.Builder.of(Gargoyl::new, INFECTED).sized(0.6f, 1.9f)
+                    .build(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "gargoyle").toString()));
+
     public static final Supplier<EntityType<Lacerator>> LACERATOR = SPORE_ENTITIES.register("lacerator",
             () -> EntityType.Builder.of(Lacerator::new, INFECTED).sized(0.6f, 1.9f)
                     .build(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "lacerator").toString()));

@@ -198,6 +198,7 @@ public class ClientModEvents {
         event.registerLayerDefinition(GroberfubModel.LAYER_LOCATION, GroberfubModel::createBodyLayer);
         event.registerLayerDefinition(HarbingerModel.LAYER_LOCATION, HarbingerModel::createBodyLayer);
         event.registerLayerDefinition(ConductorModel.LAYER_LOCATION, ConductorModel::createBodyLayer);
+        event.registerLayerDefinition(gargoyleModel.LAYER_LOCATION, gargoyleModel::createBodyLayer);
     }
     @SubscribeEvent
     public static void registerRenderers(final EntityRenderersEvent.RegisterRenderers event) {
@@ -288,6 +289,7 @@ public class ClientModEvents {
         event.registerEntityRenderer(Sentities.LEVIATHAN_SEG.get(), LeviathanSegRenderer::new);
         event.registerEntityRenderer(Sentities.GROBER.get(), GroberRenderer::new);
         event.registerEntityRenderer(Sentities.CONDUCTOR.get(), ConductorRenderer::new);
+        event.registerEntityRenderer(Sentities.GARGOYLE.get(), GargoyleRenderer::new);
     }
     public static void renderBlockEntities(EntityRenderersEvent.RegisterRenderers event){
         event.registerBlockEntityRenderer(SblockEntities.OVERGROWN_SPAWNER.get(), new OvergrownSpawnerRenderer());
