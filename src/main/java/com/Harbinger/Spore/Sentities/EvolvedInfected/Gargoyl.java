@@ -1,6 +1,7 @@
 package com.Harbinger.Spore.Sentities.EvolvedInfected;
 
 import com.Harbinger.Spore.ExtremelySusThings.Utilities;
+import com.Harbinger.Spore.Sentities.AI.HurtTargetGoal;
 import com.Harbinger.Spore.Sentities.ArmedInfected;
 import com.Harbinger.Spore.Sentities.BaseEntities.EvolvedInfected;
 import com.Harbinger.Spore.Sentities.BaseEntities.Infected;
@@ -20,10 +21,13 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
 import net.minecraft.world.entity.item.FallingBlockEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
@@ -68,7 +72,18 @@ public class Gargoyl extends EvolvedInfected implements FlyingInfected, ArmedInf
     }
 
     public boolean causeFallDamage(float damage_val, float protection_val, DamageSource source) {
-        //Introduce code for dealing damage and shaking blocks based on the amount of fall distance
+        if (fallDistance < 3) return false;
+
+        float ratio = 0.1f;
+        float attackMulti = 1f + (fallDistance * ratio);
+
+        double smashRange = 2 + fallDistance * 0.25;
+        double blockBreaking = 1 + fallDistance * 0.15;
+
+        this.DamageEntities(level(), smashRange, attackMulti);
+        this.SmashStomp(level(), this.blockPosition(), smashRange, blockBreaking);
+
+        this.playSound(Ssounds.LANDING.value(), 2f, 0.8f);
         return false;
     }
     protected void SmashStomp(Level level, BlockPos pos, double range,double breaking){
@@ -88,7 +103,6 @@ public class Gargoyl extends EvolvedInfected implements FlyingInfected, ArmedInf
                                     serverLevel.removeBlock(blockpos,false);
                                 }
                             }}}}}}
-        this.playSound(Ssounds.LANDING.value());
     }
     protected void DamageEntities(Level level,double range,float multiplier){
         AttributeInstance instance = this.getAttribute(Attributes.ATTACK_DAMAGE);
@@ -117,9 +131,29 @@ public class Gargoyl extends EvolvedInfected implements FlyingInfected, ArmedInf
     }
 
 
+    @Override
+    protected void addTargettingGoals() {
+        this.goalSelector.addGoal(2, new HurtTargetGoal(this , livingEntity -> {return TARGET_SELECTOR.test(livingEntity);}, Infected.class).setAlertOthers(Infected.class));
+        this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>
+                (this, LivingEntity.class,  true,livingEntity -> {return livingEntity instanceof Player || SConfig.SERVER.whitelist.get().contains(livingEntity.getEncodeId());}){
+            @Override
+            protected AABB getTargetSearchArea(double targetDistance) {
+                return this.mob.getBoundingBox().inflate(targetDistance, targetDistance, targetDistance);
+            }
+        });
+        this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>
+                (this, LivingEntity.class,  true, livingEntity -> {return SConfig.SERVER.at_mob.get() && TARGET_SELECTOR.test(livingEntity);}){
+            @Override
+            protected AABB getTargetSearchArea(double targetDistance) {
+                return this.mob.getBoundingBox().inflate(targetDistance, targetDistance, targetDistance);
+            }
+        });
+
+    }
 
     @Override
     protected void registerGoals() {
+        this.goalSelector.addGoal(1, new GargoyleDiveGoal(this));
         this.goalSelector.addGoal(3, new RandomStrollGoal(this, 1));
         this.goalSelector.addGoal(4, new RandomLookAroundGoal(this));
         super.registerGoals();
@@ -136,5 +170,80 @@ public class Gargoyl extends EvolvedInfected implements FlyingInfected, ArmedInf
     @Override
     public boolean hasUsableSlot(EquipmentSlot slot) {
         return slot == EquipmentSlot.HEAD;
+    }
+
+    public static class GargoyleDiveGoal extends Goal {
+
+        private final Gargoyl gargoyle;
+        private LivingEntity target;
+        private int state = 0;
+
+        public GargoyleDiveGoal(Gargoyl mob){
+            this.gargoyle = mob;
+        }
+
+        @Override
+        public boolean canUse() {
+            target = gargoyle.getTarget();
+            return target != null && target.isAlive() && gargoyle.distanceTo(target) < 32;
+        }
+
+        @Override
+        public void start(){
+            state = 0;
+        }
+
+        @Override
+        public void tick(){
+
+            if(target == null) return;
+
+            switch (state){
+
+                case 0 -> {
+                    Vec3 pos = new Vec3(
+                            target.getX(),
+                            target.getY() + 10,
+                            target.getZ()
+                    );
+
+                    gargoyle.getMoveControl().setWantedPosition(
+                            pos.x, pos.y, pos.z, 1.2
+                    );
+                    if (pos.y > gargoyle.getY()){
+                        gargoyle.setDeltaMovement(
+                                gargoyle.getDeltaMovement().add(0, 0.1, 0)
+                        );
+                    }
+                    if(gargoyle.distanceToSqr(pos) < 4){
+                        state = 1;
+                    }
+                }
+
+                case 1 -> {
+                    gargoyle.setDeltaMovement(
+                            gargoyle.getDeltaMovement().add(0, -1.6, 0)
+                    );
+                    gargoyle.hurtMarked = true;
+
+                    if(gargoyle.onGround()){
+                        state = 2;
+                    }
+                }
+
+                case 2 -> stop();
+            }
+        }
+
+        @Override
+        public boolean canContinueToUse(){
+            return state != 2;
+        }
+
+        @Override
+        public void stop(){
+            state = 0;
+            target = null;
+        }
     }
 }
