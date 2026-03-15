@@ -337,6 +337,12 @@ public class Ssounds {
     public static final Holder<SoundEvent> GROBER_CHARGE = soundRegistry("grober_charge");
 
     public static final Holder<SoundEvent> GROBER_CHOKE = soundRegistry("grober_choke");
+
+    public static final Holder<SoundEvent> ELECTRIC_SPARK = soundRegistry("electric_spark");
+
+    public static final Holder<SoundEvent> ELECTRIC_DISCHARGE = soundRegistry("electric_discharge");
+
+    public static final Holder<SoundEvent> LEVIATHAN_AMBIENT = soundRegistry("leviathan_ambient");
     private Ssounds() {
     }
 
