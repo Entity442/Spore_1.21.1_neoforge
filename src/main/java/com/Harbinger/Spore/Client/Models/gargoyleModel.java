@@ -361,6 +361,7 @@ public class gargoyleModel<T extends Gargoyl> extends EntityModel<T> implements 
 	@Override
 	public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 		float moveValue = Mth.cos(limbSwing * 0.2F) * 0.2F * limbSwingAmount;
+		float upAndDown = Mth.sin(ageInTicks/10);
 		float defVal = Mth.sin(ageInTicks/6)/6;
 		float defValT1 = Mth.cos(ageInTicks/8)/5;
 		float defValT2 = Mth.sin(ageInTicks/7)/6;
@@ -401,6 +402,9 @@ public class gargoyleModel<T extends Gargoyl> extends EntityModel<T> implements 
 		animateTumor(TumorCluster6,-defValT2);
 		animateTumor(TumorCluster7,-defValT3);
 		animateTumor(TumorCluster8,-defValT4);
+		Gargoyle.y = Gargoyle.getInitialPose().y+upAndDown;
+		HangingFlesh1.y = HangingFlesh1.getInitialPose().y+upAndDown * 1.15f;
+		HangingFlesh2.y = HangingFlesh2.getInitialPose().y+upAndDown * 1.25f;
 	}
 
 	@Override
