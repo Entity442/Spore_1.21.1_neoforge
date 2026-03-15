@@ -368,8 +368,8 @@ public class gargoyleModel<T extends Gargoyl> extends EntityModel<T> implements 
 		float defValT4 = Mth.sin(ageInTicks/5)/8;
 		float bodyAngle = angle * 0.025f;
 		this.Head.yRot = netHeadYaw / (180F / (float) Math.PI);
-		this.Head.xRot = headPitch /  ( 90F / (float) Math.PI);
-		float wingRotation = Mth.sin(ageInTicks)/4;
+		this.Head.xRot = headPitch /  ( 90F / (float) Math.PI) -bodyAngle;
+		float wingRotation = Mth.sin(ageInTicks)/2;
 		animateTentacleY(LeftWing,wingRotation);
 		animateTentacleY(RightWing,-wingRotation);
 		animateTentacleY(leftwing2,-wingRotation);
