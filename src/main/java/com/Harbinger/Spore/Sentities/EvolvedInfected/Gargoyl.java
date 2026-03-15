@@ -1,5 +1,6 @@
 package com.Harbinger.Spore.Sentities.EvolvedInfected;
 
+import com.Harbinger.Spore.ExtremelySusThings.Utilities;
 import com.Harbinger.Spore.Sentities.ArmedInfected;
 import com.Harbinger.Spore.Sentities.BaseEntities.EvolvedInfected;
 import com.Harbinger.Spore.Sentities.BaseEntities.Infected;
@@ -8,19 +9,25 @@ import com.Harbinger.Spore.Sentities.FlyingInfected;
 import com.Harbinger.Spore.Sentities.MovementControls.InfectedArialMovementControl;
 import com.Harbinger.Spore.core.SConfig;
 import com.Harbinger.Spore.core.Ssounds;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
 import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
-import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
+import net.minecraft.world.entity.item.FallingBlockEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
@@ -35,10 +42,10 @@ public class Gargoyl extends EvolvedInfected implements FlyingInfected, ArmedInf
 
     public static AttributeSupplier.Builder createAttributes() {
         return Mob.createMobAttributes()
-                .add(Attributes.MAX_HEALTH, SConfig.SERVER.scavenger_hp.get() * SConfig.SERVER.global_health.get())
+                .add(Attributes.MAX_HEALTH, SConfig.SERVER.gargoyle_health.get() * SConfig.SERVER.global_health.get())
                 .add(Attributes.MOVEMENT_SPEED, 0.2)
-                .add(Attributes.ATTACK_DAMAGE, SConfig.SERVER.scavenger_damage.get() * SConfig.SERVER.global_damage.get())
-                .add(Attributes.ARMOR,  SConfig.SERVER.scavenger_armor.get() * SConfig.SERVER.global_armor.get())
+                .add(Attributes.ATTACK_DAMAGE, SConfig.SERVER.gargoyle_damage.get() * SConfig.SERVER.global_damage.get())
+                .add(Attributes.ARMOR,  SConfig.SERVER.gargoyle_armor.get() * SConfig.SERVER.global_armor.get())
                 .add(Attributes.FOLLOW_RANGE, 48)
                 .add(Attributes.ATTACK_KNOCKBACK, 1)
                 .add(Attributes.FLYING_SPEED, 0.4);
@@ -46,7 +53,7 @@ public class Gargoyl extends EvolvedInfected implements FlyingInfected, ArmedInf
 
     @Override
     public List<? extends String> getDropList() {
-        return SConfig.DATAGEN.scavenger_loot.get();
+        return SConfig.DATAGEN.gargoyle_loot.get();
     }
 
     protected void populateDefaultEquipmentSlots(RandomSource p_219059_, DifficultyInstance p_219060_) {
@@ -60,8 +67,42 @@ public class Gargoyl extends EvolvedInfected implements FlyingInfected, ArmedInf
         return super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData);
     }
 
-    public boolean causeFallDamage(float p_147105_, float p_147106_, DamageSource p_147107_) {
+    public boolean causeFallDamage(float damage_val, float protection_val, DamageSource source) {
+        //Introduce code for dealing damage and shaking blocks based on the amount of fall distance
         return false;
+    }
+    protected void SmashStomp(Level level, BlockPos pos, double range,double breaking){
+        if (level instanceof ServerLevel serverLevel){
+            for(int i = 0; i <= 2*range; ++i) {
+                for(int j = 0; j <= 2*range; ++j) {
+                    for(int k = 0; k <= 2*range; ++k) {
+                        double distance = Mth.sqrt((float) ((i-range)*(i-range) + (j-range)*(j-range) + (k-range)*(k-range)));
+                        if (Math.abs(i) != 2 || Math.abs(j) != 2 || Math.abs(k) != 2) {
+                            if (distance<range+(0.5)){
+                                BlockPos blockpos = pos.offset( i-(int)range,j-(int)range,k-(int)range);
+                                BlockState state = level.getBlockState(blockpos);
+                                boolean airBelow = level.getBlockState(blockpos.below()).isAir();
+                                double breakSpeed = state.getDestroySpeed(level,pos);
+                                if (airBelow && state.getDestroySpeed(level,pos) >= 0 && breakSpeed <= breaking && Math.random() < 0.3){
+                                    FallingBlockEntity.fall(serverLevel,blockpos,state);
+                                    serverLevel.removeBlock(blockpos,false);
+                                }
+                            }}}}}}
+        this.playSound(Ssounds.LANDING.value());
+    }
+    protected void DamageEntities(Level level,double range,float multiplier){
+        AttributeInstance instance = this.getAttribute(Attributes.ATTACK_DAMAGE);
+        if (instance == null || level.isClientSide){
+            return;
+        }
+        instance.setBaseValue(SConfig.SERVER.gargoyle_damage.get() * SConfig.SERVER.global_damage.get() * multiplier);
+        AABB aabb = this.getBoundingBox().inflate(range);
+        List<Entity> entities = level().getEntities(this,aabb);
+        for (Entity entity : entities){
+            if (entity instanceof LivingEntity living && Utilities.TARGET_SELECTOR.Test(living)){
+                this.doHurtTarget(living);
+            }
+        }
     }
     @Override
     public void travel(Vec3 vec) {

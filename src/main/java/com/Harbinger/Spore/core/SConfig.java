@@ -353,6 +353,11 @@ public class SConfig {
         public final ModConfigSpec.ConfigValue<Double> scavenger_damage;
         public final ModConfigSpec.ConfigValue<Double> scavenger_armor;
 
+        public final ModConfigSpec.ConfigValue<Double> gargoyle_health;
+        public final ModConfigSpec.ConfigValue<Double> gargoyle_damage;
+        public final ModConfigSpec.ConfigValue<Double> gargoyle_armor;
+
+
         public final ModConfigSpec.ConfigValue<Double> plagued_hp;
         public final ModConfigSpec.ConfigValue<Double> plagued_damage;
         public final ModConfigSpec.ConfigValue<Double> plagued_armor;
@@ -804,8 +809,14 @@ public class SConfig {
 
             builder.push("Scavenger");
             this.scavenger_hp = builder.comment("Default 25").defineInRange("Sets Scavenger Max health", 25, 1, Double.MAX_VALUE);
-            this.scavenger_damage = builder.comment("Default 10").defineInRange("Sets Scavenger Damage", 7, 1, Double.MAX_VALUE);
+            this.scavenger_damage = builder.comment("Default 7").defineInRange("Sets Scavenger Damage", 7, 1, Double.MAX_VALUE);
             this.scavenger_armor = builder.comment("Default 4").defineInRange("Sets Scavenger Armor", 4, 1, Double.MAX_VALUE);
+            builder.pop();
+
+            builder.push("Gargoyle");
+            this.gargoyle_health = builder.comment("Default 35").defineInRange("Sets Gargoyle Max health", 35, 1, Double.MAX_VALUE);
+            this.gargoyle_damage = builder.comment("Default 8").defineInRange("Sets Gargoyle Damage", 8, 1, Double.MAX_VALUE);
+            this.gargoyle_armor = builder.comment("Default 4").defineInRange("Sets Gargoyle Armor", 6, 1, Double.MAX_VALUE);
             builder.pop();
 
             builder.push("Hallucination");
@@ -1707,6 +1718,7 @@ public class SConfig {
         public final ModConfigSpec.ConfigValue<List<? extends String>> construct_loot;
         public final ModConfigSpec.ConfigValue<List<? extends String>> bloater_loot;
         public final ModConfigSpec.ConfigValue<List<? extends String>> scavenger_loot;
+        public final ModConfigSpec.ConfigValue<List<? extends String>> gargoyle_loot;
         public final ModConfigSpec.ConfigValue<List<? extends String>> nucke_loot;
         public final ModConfigSpec.ConfigValue<List<? extends String>> bairn_loot;
         public final ModConfigSpec.ConfigValue<List<? extends String>> hevoker_loot;
@@ -1829,6 +1841,8 @@ public class SConfig {
                     Lists.newArrayList("spore:mutated_fiber|80|3|12","spore:fang|50|1|2","spore:mutated_heart|25|1|1","spore:armor_fragment|80|3|8","spore:tumor|100|1|3") , o -> o instanceof String);
             this.inf_protector_loot = builder.defineList("Protector",
                     Lists.newArrayList("spore:mutated_fiber|80|3|12","spore:mutated_heart|25|1|1","spore:armor_fragment|80|3|8","spore:shield_fragment|100|1|4") , o -> o instanceof String);
+            this.gargoyle_loot = builder.defineList("Gargoyle",
+                    Lists.newArrayList("spore:mutated_fiber|80|3|13","spore:armor_fragment|50|2|4","spore:claw_fragment|80|1|3","spore:mutated_heart|10|1|1","spore:wing_membrane|60|1|4") , o -> o instanceof String);
 
 
             this.gastgaber_loot = builder.defineList("Gastgaber",
