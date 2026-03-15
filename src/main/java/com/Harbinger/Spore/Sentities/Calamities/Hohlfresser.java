@@ -94,7 +94,13 @@ public class Hohlfresser extends Calamity implements TrueCalamity, RangedAttackM
         builder.define(CHILD_ID, -1);
         builder.define(ORES, 0f);
     }
-
+    @Override
+    public String getMutation() {
+        if (getAdaptation()){
+            return "spore.entity.variant.engorged";
+        }
+        return super.getMutation();
+    }
     @Override
     public void onSyncedDataUpdated(EntityDataAccessor<?> key) {
         super.onSyncedDataUpdated(key);

@@ -135,7 +135,13 @@ public class Grakensenker extends Calamity implements TrueCalamity, WaterInfecte
         }
 
     }
-
+    @Override
+    public String getMutation() {
+        if (getAdaptation()){
+            return "spore.entity.variant.ship";
+        }
+        return super.getMutation();
+    }
     @Override
     public void performRangedAttack(LivingEntity target, float v) {
 
