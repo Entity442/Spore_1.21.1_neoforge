@@ -7,6 +7,7 @@ import com.Harbinger.Spore.Sentities.AI.HybridPathNavigation;
 import com.Harbinger.Spore.Sentities.ArmorPersentageBypass;
 import com.Harbinger.Spore.Sentities.BaseEntities.UtilityEntity;
 import com.Harbinger.Spore.Sentities.MovementControls.InfectedWallMovementControl;
+import com.Harbinger.Spore.Sentities.Projectile.VomitUsurperBall;
 import com.Harbinger.Spore.core.SConfig;
 import com.Harbinger.Spore.core.Sblocks;
 import com.Harbinger.Spore.core.Seffects;
@@ -29,12 +30,10 @@ import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
 import net.minecraft.world.entity.monster.Enemy;
+import net.minecraft.world.entity.monster.RangedAttackMob;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.CropBlock;
-import net.minecraft.world.level.block.SaplingBlock;
-import net.minecraft.world.level.block.SweetBerryBushBlock;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
@@ -47,9 +46,10 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
-public class Reaper extends UtilityEntity implements Enemy, ArmorPersentageBypass {
-    public static final List<BlockState> states = new ArrayList<>(){{add(Blocks.HAY_BLOCK.defaultBlockState());add(Blocks.SUGAR_CANE.defaultBlockState());add(Blocks.PUMPKIN.defaultBlockState());add(Blocks.MELON.defaultBlockState());add(Blocks.SWEET_BERRY_BUSH.defaultBlockState());}};
+public class Reaper extends UtilityEntity implements Enemy, ArmorPersentageBypass, RangedAttackMob {
+    public static final List<BlockState> states = new ArrayList<>(){{add(Blocks.HAY_BLOCK.defaultBlockState());add(Blocks.SUGAR_CANE.defaultBlockState());add(Blocks.PUMPKIN.defaultBlockState());add(Blocks.CARVED_PUMPKIN.defaultBlockState());add(Blocks.MELON.defaultBlockState());add(Blocks.SWEET_BERRY_BUSH.defaultBlockState());}};
     private int attackAnimationTick;
+    private int rangedAttackAnimationTick;
     @Nullable
     private BlockPos Targetpos;
     public static final EntityDataAccessor<Integer> BIOMASS = SynchedEntityData.defineId(Reaper.class, EntityDataSerializers.INT);
@@ -88,6 +88,9 @@ public class Reaper extends UtilityEntity implements Enemy, ArmorPersentageBypas
     public int getAttackAnimationTick(){
         return attackAnimationTick;
     }
+    public int getRangedAttackAnimationTick(){
+        return attackAnimationTick;
+    }
     @Override
     protected void registerGoals() {
         addTargettingGoals();
@@ -110,13 +113,15 @@ public class Reaper extends UtilityEntity implements Enemy, ArmorPersentageBypas
     public void handleEntityEvent(byte value) {
         if (value == 4) {
             this.attackAnimationTick = 10;
+        }else if (value == 5) {
+            this.rangedAttackAnimationTick = 10;
         }else {
             super.handleEntityEvent(value);
         }
     }
     @Override
     public float amountOfDamage(float value) {
-        return (float) ((SConfig.SERVER.specter_damage.get() * SConfig.SERVER.global_damage.get())/4f);
+        return (float) ((SConfig.SERVER.reaper_damage.get() * SConfig.SERVER.global_damage.get())/4f);
     }
     @Override
     public boolean hurt(DamageSource source, float amount) {
@@ -127,16 +132,20 @@ public class Reaper extends UtilityEntity implements Enemy, ArmorPersentageBypas
     }
     public static AttributeSupplier.Builder createAttributes() {
         return Mob.createMobAttributes()
-                .add(Attributes.MAX_HEALTH, SConfig.SERVER.specter_hp.get() * SConfig.SERVER.global_health.get())
+                .add(Attributes.MAX_HEALTH, SConfig.SERVER.reaper_hp.get() * SConfig.SERVER.global_health.get())
                 .add(Attributes.MOVEMENT_SPEED, 0.35)
-                .add(Attributes.ATTACK_DAMAGE, SConfig.SERVER.specter_damage.get() * SConfig.SERVER.global_damage.get())
-                .add(Attributes.ARMOR, SConfig.SERVER.specter_armor.get() * SConfig.SERVER.global_armor.get())
+                .add(Attributes.ATTACK_DAMAGE, SConfig.SERVER.reaper_damage.get() * SConfig.SERVER.global_damage.get())
+                .add(Attributes.ARMOR, SConfig.SERVER.reaper_armor.get() * SConfig.SERVER.global_armor.get())
                 .add(Attributes.FOLLOW_RANGE, 48)
                 .add(Attributes.STEP_HEIGHT, 1)
-                .add(Attributes.ATTACK_KNOCKBACK, 3);
+                .add(Attributes.ATTACK_KNOCKBACK, 2);
 
     }
 
+    @Override
+    public List<? extends String> getDropList() {
+        return SConfig.DATAGEN.reaper_loot.get();
+    }
 
     private void buffAI(){
         if (this.getHealth() < this.getMaxHealth() && !hasEffect(MobEffects.REGENERATION)){
@@ -204,7 +213,7 @@ public class Reaper extends UtilityEntity implements Enemy, ArmorPersentageBypas
         AABB aabb = this.getBoundingBox().inflate(32,4,32);
         for(BlockPos blockpos : BlockPos.betweenClosed(Mth.floor(aabb.minX), Mth.floor(aabb.minY), Mth.floor(aabb.minZ), Mth.floor(aabb.maxX), Mth.floor(aabb.maxY), Mth.floor(aabb.maxZ))) {
             BlockState block = level().getBlockState(blockpos);
-            if (states.contains(block) || block.getBlock() instanceof CropBlock || block.getBlock() instanceof SaplingBlock){
+            if (states.contains(block) || block.getBlock() instanceof CropBlock || block.getBlock() instanceof StemBlock || block.getBlock() instanceof SaplingBlock){
                 if (hasLineOfSightBlocks(blockpos) && this.random.nextFloat() < 0.5f){
                     setTargetPos(blockpos);
                     break;
@@ -224,13 +233,22 @@ public class Reaper extends UtilityEntity implements Enemy, ArmorPersentageBypas
         super.tick();
         if (tickCount % 200 == 0){
             searchBlocks();
-            if (getStomach() > 10f){
+            if (getStomach() > 20f){
                 setBiomass(getBiomass()+1);
-                setStomach(getStomach()-10);
+                setStomach(getStomach()-5);
+            }
+        }
+        if (tickCount % 100 == 0 && getStomach() > 0){
+            LivingEntity living = this.getTarget();
+            if (living != null && hasLineOfSight(living)){
+                performRangedAttack(living,0);
             }
         }
         if (attackAnimationTick > 0){
             attackAnimationTick--;
+        }
+        if (rangedAttackAnimationTick > 0){
+            rangedAttackAnimationTick--;
         }
         if (tickCount % 20 == 0 && getBiomass() > 0){
             this.buffAI();
@@ -258,20 +276,27 @@ public class Reaper extends UtilityEntity implements Enemy, ArmorPersentageBypas
     }
     public boolean interractWithBlock(BlockPos blockPos,Level level){
         BlockState state = level.getBlockState(blockPos);
-        if (state.getBlock() instanceof CropBlock && Math.random() < 0.3){
-            this.setStomach(getStomach() + random.nextInt(4));
-            this.playSound(SoundEvents.GENERIC_EAT);
+        if ((state.getBlock() instanceof CropBlock || state.getBlock() instanceof StemBlock) && Math.random() < 0.3){
             return level.setBlock(blockPos, Sblocks.ROTTEN_CROPS.get().defaultBlockState(), 3);
         }
         if ((state.getBlock() instanceof SaplingBlock || state.getBlock() instanceof SweetBerryBushBlock) && Math.random() < 0.3){
-            this.setStomach(getStomach() + random.nextInt(4));
-            this.playSound(SoundEvents.GENERIC_EAT);
             return level.setBlock(blockPos, Sblocks.ROTTEN_BUSH.get().defaultBlockState(), 3);
         }
+        this.setStomach(getStomach() + random.nextInt(4));
+        this.playSound(SoundEvents.GENERIC_EAT);
         this.attackAnimationTick = 10;
         this.level().broadcastEntityEvent(this, (byte)4);
         return level.destroyBlock(blockPos, false, this);
     }
+
+    @Override
+    public void performRangedAttack(LivingEntity livingEntity, float v) {
+        VomitUsurperBall.shoot(this,livingEntity,(float) (SConfig.SERVER.reaper_ranged_damage.get() * SConfig.SERVER.global_damage.get()));
+        this.setStomach(getStomach()-1);
+        this.rangedAttackAnimationTick = 10;
+        this.level().broadcastEntityEvent(this, (byte)5);
+    }
+
     public static class SearchAroundGoal extends Goal {
         private final Reaper specter;
         public int tryTicks;
@@ -305,7 +330,7 @@ public class Reaper extends UtilityEntity implements Enemy, ArmorPersentageBypas
 
         @Override
         public boolean canContinueToUse() {
-            return specter.getTarget() == null;
+            return specter.getTarget() == null && specter.getTargetPos() != null ;
         }
 
         public boolean shouldRecalculatePath() {
@@ -330,6 +355,7 @@ public class Reaper extends UtilityEntity implements Enemy, ArmorPersentageBypas
                 specter.interractWithBlock(pos,specter.level());
                 specter.setTargetPos((BlockPos) null);
                 specter.searchBlocks();
+                specter.navigation.stop();
             }
         }
     }

@@ -1,6 +1,7 @@
 package com.Harbinger.Spore.Client.Models;// Made with Blockbench 5.0.7
 // Exported for Minecraft version 1.17 or later with Mojang mappings
 // Paste this class into your mod and generate all required imports
+import com.Harbinger.Spore.Client.Models.TentacledModel;
 import com.Harbinger.Spore.Sentities.Utility.Reaper;
 import com.Harbinger.Spore.Spore;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -13,7 +14,7 @@ import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
-public class ReaperModel<T extends Reaper> extends EntityModel<T> implements TentacledModel{
+public class ReaperModel<T extends Reaper> extends EntityModel<T> implements TentacledModel {
 	// This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
 	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "reapermodel"), "main");
 	private final ModelPart Reaper;
@@ -50,6 +51,7 @@ public class ReaperModel<T extends Reaper> extends EntityModel<T> implements Ten
 	private final ModelPart Nose;
 	private final ModelPart Jaw;
 	private final ModelPart Tumor5;
+	private final ModelPart headwear;
 	private final ModelPart Arms;
 	private final ModelPart LeftArm;
 	private final ModelPart LeftArmMidSeg;
@@ -105,6 +107,7 @@ public class ReaperModel<T extends Reaper> extends EntityModel<T> implements Ten
 		this.Nose = this.Head.getChild("Nose");
 		this.Jaw = this.Head.getChild("Jaw");
 		this.Tumor5 = this.Head.getChild("Tumor5");
+		this.headwear = this.Head.getChild("headwear");
 		this.Arms = this.Body.getChild("Arms");
 		this.LeftArm = this.Arms.getChild("LeftArm");
 		this.LeftArmMidSeg = this.LeftArm.getChild("LeftArmMidSeg");
@@ -294,6 +297,10 @@ public class ReaperModel<T extends Reaper> extends EntityModel<T> implements Ten
 
 		PartDefinition NeckTumour_r1 = Tumor5.addOrReplaceChild("NeckTumour_r1", CubeListBuilder.create().texOffs(0, 53).addBox(-4.0F, -5.0F, -1.0F, 5.0F, 5.0F, 5.0F, new CubeDeformation(-0.9F)), PartPose.offsetAndRotation(1.1015F, 2.5671F, -1.7167F, 0.1109F, 0.4158F, -0.0842F));
 
+		PartDefinition headwear = Head.addOrReplaceChild("headwear", CubeListBuilder.create().texOffs(93, 116).addBox(-4.0F, -4.0F, -4.0F, 8.0F, 4.0F, 8.0F, new CubeDeformation(0.51F)), PartPose.offsetAndRotation(0.4F, -5.8F, -4.35F, -0.1304F, -0.0114F, -0.0865F));
+
+		PartDefinition headwear2_r1 = headwear.addOrReplaceChild("headwear2_r1", CubeListBuilder.create().texOffs(59, 111).addBox(-8.0F, -32.0F, -6.0F, 16.0F, 16.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 6.5F, -24.0F, -1.5708F, 0.0F, 0.0F));
+
 		PartDefinition Arms = Body.addOrReplaceChild("Arms", CubeListBuilder.create(), PartPose.offset(2.0F, -8.95F, -10.9F));
 
 		PartDefinition LeftArm = Arms.addOrReplaceChild("LeftArm", CubeListBuilder.create(), PartPose.offsetAndRotation(5.2F, 0.15F, 1.1F, 0.0F, -0.192F, 0.0F));
@@ -376,7 +383,7 @@ public class ReaperModel<T extends Reaper> extends EntityModel<T> implements Ten
 
 		PartDefinition Legs = Reaper.addOrReplaceChild("Legs", CubeListBuilder.create(), PartPose.offset(0.2353F, -22.5072F, 4.9723F));
 
-		PartDefinition RightLeg = Legs.addOrReplaceChild("RightLeg", CubeListBuilder.create(), PartPose.offset(-4.2F, 0.0F, 0.0F));
+		PartDefinition RightLeg = Legs.addOrReplaceChild("RightLeg", CubeListBuilder.create(), PartPose.offset(-4.2F, 0.0F, -1.0F));
 
 		PartDefinition Petal_r12 = RightLeg.addOrReplaceChild("Petal_r12", CubeListBuilder.create().texOffs(48, 34).addBox(-3.0F, 0.0F, -3.0F, 6.0F, 0.0F, 6.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-0.6277F, 9.5297F, -4.9146F, 0.5042F, -0.7563F, -0.5026F));
 
@@ -432,6 +439,7 @@ public class ReaperModel<T extends Reaper> extends EntityModel<T> implements Ten
 
 		return LayerDefinition.create(meshdefinition, 128, 128);
 	}
+
 	public void moveZ(ModelPart part,float val){
 		part.z = part.getInitialPose().z+val;
 	}
@@ -439,6 +447,7 @@ public class ReaperModel<T extends Reaper> extends EntityModel<T> implements Ten
 	public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 		float val = Mth.cos(limbSwing * 0.5f) * 0.5f * limbSwingAmount;
 		float rangedAttackAnimationTick = entity.getAttackAnimationTick();
+		float spitAttackAnimationTick = entity.getRangedAttackAnimationTick();
 		float r1 = Mth.sin(ageInTicks/6)/8;
 		float r2 = Mth.cos(ageInTicks/7)/6;
 		float r3 = Mth.sin(ageInTicks/8)/5;
@@ -471,9 +480,15 @@ public class ReaperModel<T extends Reaper> extends EntityModel<T> implements Ten
 			animateTentacleX(LeftSickle,r2);
 			animateTentacleX(RightSickle,r4);
 		}
+		if (spitAttackAnimationTick > 0){
+			float swing = -2.0F + 1.5F * Mth.triangleWave(spitAttackAnimationTick, 20.0F);
+			this.Head.xRot = swing/2;
+			animateTentacleX(Jaw,-swing/2);
+		}else {
+			this.Head.xRot = headPitch / (90F / (float) Math.PI);
+			animateTentacleX(Jaw,r2);
+		}
 		this.Head.yRot = netHeadYaw / (180F / (float) Math.PI);
-		this.Head.xRot = headPitch / (90F / (float) Math.PI);
-		animateTentacleX(Jaw,r2);
 		animateTumor(Tumor,r4);
 		animateTumor(Tumor2,r5);
 		animateTumor(Tumor3,r4);

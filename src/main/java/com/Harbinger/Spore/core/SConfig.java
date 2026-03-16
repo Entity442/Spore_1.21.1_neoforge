@@ -259,6 +259,11 @@ public class SConfig {
         public final ModConfigSpec.ConfigValue<Double> specter_damage;
         public final ModConfigSpec.ConfigValue<Double> specter_armor;
 
+        public final ModConfigSpec.ConfigValue<Double> reaper_hp;
+        public final ModConfigSpec.ConfigValue<Double> reaper_damage;
+        public final ModConfigSpec.ConfigValue<Double> reaper_armor;
+        public final ModConfigSpec.ConfigValue<Double> reaper_ranged_damage;
+
         public final ModConfigSpec.ConfigValue<Double> vanguard_hp;
         public final ModConfigSpec.ConfigValue<Double> vanguard_damage;
         public final ModConfigSpec.ConfigValue<Double> vanguard_armor;
@@ -1213,7 +1218,12 @@ public class SConfig {
             this.specter_damage = builder.comment("Default 10").defineInRange("Sets Specter Damage", 10, 1, Double.MAX_VALUE);
             this.specter_armor = builder.comment("Default 8").defineInRange("Sets Specter Armor", 8, 0, Double.MAX_VALUE);
             builder.pop();
-
+            builder.push("Reaper");
+            this.reaper_hp = builder.comment("Default 80").defineInRange("Sets Reaper Max health", 80, 1, Double.MAX_VALUE);
+            this.reaper_damage = builder.comment("Default 10").defineInRange("Sets Reaper Damage", 10, 1, Double.MAX_VALUE);
+            this.reaper_armor = builder.comment("Default 8").defineInRange("Sets Reaper Armor", 8, 0, Double.MAX_VALUE);
+            this.reaper_ranged_damage = builder.comment("Default 5").defineInRange("Sets Spit Damage Armor", 5, 0, Double.MAX_VALUE);
+            builder.pop();
             builder.push("Vanguard");
             this.vanguard_hp = builder.comment("Default 110").defineInRange("Sets Vanguard Max health", 110, 1, Double.MAX_VALUE);
             this.vanguard_damage = builder.comment("Default 12").defineInRange("Sets Vanguard Damage", 12, 1, Double.MAX_VALUE);
@@ -1714,6 +1724,7 @@ public class SConfig {
         public final ModConfigSpec.ConfigValue<List<? extends String>> bioblob_loot;
         public final ModConfigSpec.ConfigValue<List<? extends String>> thorn_loot;
         public final ModConfigSpec.ConfigValue<List<? extends String>> specter_loot;
+        public final ModConfigSpec.ConfigValue<List<? extends String>> reaper_loot;
         public final ModConfigSpec.ConfigValue<List<? extends String>> jagd_loot;
         public final ModConfigSpec.ConfigValue<List<? extends String>> construct_loot;
         public final ModConfigSpec.ConfigValue<List<? extends String>> bloater_loot;
@@ -1850,6 +1861,8 @@ public class SConfig {
             this.bairn_loot = builder.defineList("Bairn",
                     Lists.newArrayList("spore:mutated_fiber|80|1|5","spore:mutated_heart|10|1|1","spore:claw_fragment|80|1|3") , o -> o instanceof String);
             this.specter_loot = builder.defineList("Specter",
+                    Lists.newArrayList("spore:mutated_fiber|80|5|17","spore:fang|50|1|2","spore:armor_fragment|80|2|9","spore:mutated_heart|10|1|3","spore:claw_fragment|80|6|9","spore:innards|50|1|2","spore:tumor|100|4|8","spore:tendons|60|3|7") , o -> o instanceof String);
+            this.reaper_loot = builder.defineList("Reaper",
                     Lists.newArrayList("spore:mutated_fiber|80|5|17","spore:fang|50|1|2","spore:armor_fragment|80|2|9","spore:mutated_heart|10|1|3","spore:claw_fragment|80|6|9","spore:innards|50|1|2","spore:tumor|100|4|8","spore:tendons|60|3|7") , o -> o instanceof String);
             this.vanguard_loot = builder.defineList("Vanguard",
                     Lists.newArrayList("spore:mutated_fiber|80|5|17","minecraft:emerald_block|50|1|2","spore:armor_fragment|80|2|9","spore:mutated_heart|10|1|3","spore:claw_fragment|80|6|9","spore:innards|50|1|2","spore:tumor|100|4|8","spore:tendons|60|3|7","minecraft:arrow|60|3|7") , o -> o instanceof String);
