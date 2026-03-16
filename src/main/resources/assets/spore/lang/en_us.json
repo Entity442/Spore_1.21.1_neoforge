@@ -809,6 +809,8 @@
   "advancement.spore.conductor.description" : "Meet the Conductor.",
   "advancement.spore.gargoyle.title" : "Tactical Gargoyle Incoming",
   "advancement.spore.gargoyle.description" : "Encounter the Gargoyle.",
+  "advancement.spore.reaper.title" : "Swamp Thing !?",
+  "advancement.spore.reaper.description" : "Encounter the Reaper.",
 
   "spore.proto.message.0": "You're gonna need a bigger sword :P",
   "spore.proto.message.1": "Rage quit already you're done",
