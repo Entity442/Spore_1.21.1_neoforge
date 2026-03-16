@@ -16,6 +16,7 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
@@ -47,7 +48,7 @@ import java.util.EnumSet;
 import java.util.List;
 
 public class Reaper extends UtilityEntity implements Enemy, ArmorPersentageBypass {
-    public static final List<BlockState> states = new ArrayList<>(){{add(Blocks.HAY_BLOCK.defaultBlockState());add(Blocks.PUMPKIN.defaultBlockState());add(Blocks.MELON.defaultBlockState());add(Blocks.SWEET_BERRY_BUSH.defaultBlockState());}};
+    public static final List<BlockState> states = new ArrayList<>(){{add(Blocks.HAY_BLOCK.defaultBlockState());add(Blocks.SUGAR_CANE.defaultBlockState());add(Blocks.PUMPKIN.defaultBlockState());add(Blocks.MELON.defaultBlockState());add(Blocks.SWEET_BERRY_BUSH.defaultBlockState());}};
     private int attackAnimationTick;
     @Nullable
     private BlockPos Targetpos;
@@ -259,12 +260,16 @@ public class Reaper extends UtilityEntity implements Enemy, ArmorPersentageBypas
         BlockState state = level.getBlockState(blockPos);
         if (state.getBlock() instanceof CropBlock && Math.random() < 0.3){
             this.setStomach(getStomach() + random.nextInt(4));
+            this.playSound(SoundEvents.GENERIC_EAT);
             return level.setBlock(blockPos, Sblocks.ROTTEN_CROPS.get().defaultBlockState(), 3);
         }
         if ((state.getBlock() instanceof SaplingBlock || state.getBlock() instanceof SweetBerryBushBlock) && Math.random() < 0.3){
             this.setStomach(getStomach() + random.nextInt(4));
+            this.playSound(SoundEvents.GENERIC_EAT);
             return level.setBlock(blockPos, Sblocks.ROTTEN_BUSH.get().defaultBlockState(), 3);
         }
+        this.attackAnimationTick = 10;
+        this.level().broadcastEntityEvent(this, (byte)4);
         return level.destroyBlock(blockPos, false, this);
     }
     public static class SearchAroundGoal extends Goal {
@@ -292,6 +297,11 @@ public class Reaper extends UtilityEntity implements Enemy, ArmorPersentageBypas
             super.start();
         }
 
+        @Override
+        public void stop() {
+            super.stop();
+            specter.navigation.stop();
+        }
 
         @Override
         public boolean canContinueToUse() {
