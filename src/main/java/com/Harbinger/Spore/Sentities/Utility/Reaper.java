@@ -231,7 +231,7 @@ public class Reaper extends UtilityEntity implements Enemy, ArmorPersentageBypas
         super.tick();
         if (tickCount % 200 == 0){
             searchBlocks();
-            if (getStomach() > 20f){
+            if (getStomach() > 25f){
                 setBiomass(getBiomass()+1);
                 setStomach(getStomach()-5);
             }
