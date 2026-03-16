@@ -44,7 +44,7 @@ public class InfectedDiseasedVillager extends InfectedVillager{
                 double z0 = livingEntity.getZ() + (random.nextFloat() - 0.1) * 0.1D;
                 serverLevel.sendParticles(ParticleTypes.EXPLOSION_EMITTER, x0, y0, z0, 2, 0, 0, 0, 1);
             }
-        }else{
+        }else {
             super.Evolve(livingEntity, value, variants);
         }
     }

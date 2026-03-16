@@ -938,13 +938,13 @@ public class SConfig {
 
             this.vigil_middle_wave = builder.comment("The mixed wave of infected a vigil can summon").defineList("Vigil mix wave",
                     Lists.newArrayList("spore:inf_human", "spore:inf_villager", "spore:inf_pillager", "spore:inf_wanderer",
-                            "spore:knight", "spore:griefer","spore:mephitic", "spore:thorn", "spore:nuclea", "spore:jagd", "spore:scavenger", "spore:bloater","spore:slasher", "spore:leaper", "spore:inf_evoker", "spore:spitter") , o -> o instanceof String);
+                            "spore:knight", "spore:griefer", "spore:gargoyle","spore:mephitic", "spore:thorn", "spore:nuclea", "spore:jagd", "spore:scavenger", "spore:bloater","spore:slasher", "spore:leaper", "spore:inf_evoker", "spore:spitter") , o -> o instanceof String);
 
             this.vigil_max_wave = builder.comment("The max wave of infected a vigil can summon").defineList("Vigil max wave",
                     Lists.newArrayList("spore:inf_vindicator", "spore:busser", "spore:inf_witch", "spore:brute",
                             "spore:knight", "spore:griefer", "spore:thorn", "spore:jagd", "spore:leaper", "spore:inf_evoker", "spore:spitter", "spore:stalker",
                             "spore:howler", "spore:braiomil", "spore:wendigo","spore:hevoker", "spore:scavenger", "spore:bloater","spore:ogre","spore:slasher", "spore:inquisitor", "spore:brot"
-                            , "spore:volatile","spore:mephitic", "spore:hvindicator", "spore:grober") , o -> o instanceof String);
+                            , "spore:volatile","spore:mephitic", "spore:gargoyle", "spore:hvindicator", "spore:grober") , o -> o instanceof String);
 
             builder.pop();
 
@@ -1988,7 +1988,7 @@ public class SConfig {
                             "ButtonHatBoy", "Gistique", "yile_ouo", "BigXplosion", "Atomiclbomb", "Mad_Dog", "Ripley", "gregTheTyrant", "Joker_de_Coeur",
                             "xXFuryXx", "Nova69", "Belladonna","Entity","Keymind","Whisper","Helldwin", "ExeedingSky74", "Flash62724", "Hank_o", "JWT114",
                             "DawnsSlayers", "Dr_Pilot_MOO", "NexouuZ", "Mr_Door12323", "PedroHenrry", "TVGuy", "ThatGardener", "TheCaramelGuy", "TokenOni420",
-                            "lightigivhi", "CODATOWER", "mrlambert6","DivnejFelix","ThatGardener", "SyrCrypt", "KaratFeng","Toasteroni","UnmeiHa","AllToAshes","0dna","minisketchy0919") , o -> o instanceof String);
+                            "lightigivhi", "CODATOWER","hammbug", "mrlambert6","DivnejFelix","ThatGardener", "SyrCrypt", "KaratFeng","Toasteroni","UnmeiHa","AllToAshes","0dna","minisketchy0919") , o -> o instanceof String);
             builder.comment("Items|chance of giving");
             this.player_h = builder.defineList("Head Slot",
                     Lists.newArrayList("minecraft:leather_helmet|50","minecraft:iron_helmet|20","minecraft:chainmail_helmet|20") , o -> o instanceof String);
@@ -2042,7 +2042,7 @@ public class SConfig {
             this.raid_level_3= builder.defineList("Raid level 3 spawns",
                     Lists.newArrayList("spore:griefer","spore:howler","spore:mephitic","spore:nuclea","spore:thorn","spore:busser", "spore:scavenger", "spore:bloater","spore:knight","spore:brute","spore:slasher","spore:volatile","spore:braiomil" , "spore:leaper", "spore:spitter","spore:jagd","spore:inf_pillager","spore:stalker","spore:inf_vindicator","spore:inf_evoker") , o -> o instanceof String);
             this.special= builder.defineList("Special Spawns",
-                    Lists.newArrayList("spore:brot","spore:grober","spore:saugling","spore:inquisitor","spore:hevoker","spore:gastgaber","spore:hvendicator","spore:biobloob" ,"spore:wendigo","spore:ogre" , "spore:specter","spore:plagued","spore:lacerator","spore:inf_construct") , o -> o instanceof String);
+                    Lists.newArrayList("spore:brot","spore:grober","reaper","spore:saugling","spore:inquisitor","spore:hevoker","spore:gastgaber","spore:hvendicator","spore:biobloob" ,"spore:wendigo","spore:ogre" , "spore:specter","spore:plagued","spore:lacerator","spore:inf_construct") , o -> o instanceof String);
             this.drops= builder.defineList("Items that may drop at the end of the raid",
                     Lists.newArrayList("spore:fleshy_bone","spore:hardened_bind","spore:fleshy_claw" ,"spore:living_core" , "spore:spine","spore:armor_plate","spore:plated_muscle","spore:altered_spleen","spore:corrosive_sack","spore:sickle_fragment","spore:vigil_eye","spore:symbiotic_reagent"
                             ,"spore:cryogenic_reagent","spore:gastric_reagent","spore:corrosive_reagent","spore:serrated_reagent","spore:voracious_reagent","spore:calcified_tumor","spore:frozen_tumor","spore:sicken_tumor","spore:bile_tumor") , o -> o instanceof String);
