@@ -88,9 +88,7 @@ public class Reaper extends UtilityEntity implements Enemy, ArmorPersentageBypas
     public int getAttackAnimationTick(){
         return attackAnimationTick;
     }
-    public int getRangedAttackAnimationTick(){
-        return attackAnimationTick;
-    }
+    public int getRangedAttackAnimationTick(){return rangedAttackAnimationTick;}
     @Override
     protected void registerGoals() {
         addTargettingGoals();
