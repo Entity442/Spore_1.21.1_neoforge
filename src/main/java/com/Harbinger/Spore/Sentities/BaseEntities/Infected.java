@@ -415,6 +415,7 @@ public class Infected extends UtilityEntity implements Enemy {
                 }
 
                 level().setBlock(abovePos, remains, 3);
+                break;
             }
         }
     }
