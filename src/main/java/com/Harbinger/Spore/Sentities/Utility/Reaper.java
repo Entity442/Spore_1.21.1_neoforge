@@ -335,7 +335,8 @@ public class Reaper extends UtilityEntity implements Enemy, ArmorPersentageBypas
         if ((state.getBlock() instanceof SaplingBlock || state.getBlock() instanceof SweetBerryBushBlock) && Math.random() < 0.3){
             return level.setBlock(blockPos, Sblocks.ROTTEN_BUSH.get().defaultBlockState(), 3);
         }
-        this.setStomach(getStomach() + random.nextInt(4));
+        int compostMod = getComposter() ? 8 : 4;
+        this.setStomach(getStomach() + random.nextInt(compostMod));
         this.playSound(SoundEvents.GENERIC_EAT);
         this.attackAnimationTick = 10;
         if (state.getBlock().equals(Blocks.COMPOSTER)){
