@@ -292,7 +292,7 @@ public class Reaper extends UtilityEntity implements Enemy, ArmorPersentageBypas
         }
     }
     public void FeedNearbyInfected(){
-        AABB aabb = this.getBoundingBox().inflate(16);
+        AABB aabb = this.getBoundingBox().inflate(getComposter() ? 24 : 16);
         List<Infected> entities = level().getEntitiesOfClass(Infected.class,aabb);
         for (Infected infected : entities){
             if (infected.getEvoPoints() < SConfig.SERVER.min_kills.get() && infected instanceof EvolvingInfected && !(infected instanceof EvolvedInfected)){
@@ -337,12 +337,17 @@ public class Reaper extends UtilityEntity implements Enemy, ArmorPersentageBypas
         }
         int compostMod = getComposter() ? 8 : 4;
         this.setStomach(getStomach() + random.nextInt(compostMod));
-        this.playSound(SoundEvents.GENERIC_EAT);
         this.attackAnimationTick = 10;
         if (state.getBlock().equals(Blocks.COMPOSTER)){
+            playSound(SoundEvents.WOOD_BREAK);
             setComposter(true);
+        }else {
+            if (Math.random() < 0.2){
+                this.playSound(SoundEvents.GENERIC_EAT);
+            }else {
+                playSound(Ssounds.REAPER_HARVEST.value());
+            }
         }
-        playSound(Ssounds.REAPER_HARVEST.value());
         this.level().broadcastEntityEvent(this, (byte)4);
         return level.destroyBlock(blockPos, false, this);
     }
