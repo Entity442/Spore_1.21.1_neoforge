@@ -4,7 +4,10 @@
       "id": "spore:specter_spawnegg"
     },
     "title":{"translate": "advancement.spore.specter.title"},
-    "description":{"translate": "advancement.spore.specter.description"}
+    "description":{"translate": "advancement.spore.specter.description"},
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": true
   },
 
   "parent": "spore:inf_trader",
@@ -14,6 +17,7 @@
       "conditions": {
         "entity": {
           "type": "spore:specter"
+        }
       }
     },
     "hurt_by_infected": {
@@ -22,7 +26,6 @@
         "damage": {
           "source_entity": {
             "type": "spore:specter"
-          }
           }
         }
       }
