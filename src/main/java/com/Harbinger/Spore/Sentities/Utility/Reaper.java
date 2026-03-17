@@ -5,8 +5,10 @@ import com.Harbinger.Spore.ExtremelySusThings.Utilities;
 import com.Harbinger.Spore.Sentities.AI.AOEMeleeAttackGoal;
 import com.Harbinger.Spore.Sentities.AI.HybridPathNavigation;
 import com.Harbinger.Spore.Sentities.ArmorPersentageBypass;
+import com.Harbinger.Spore.Sentities.BaseEntities.EvolvedInfected;
 import com.Harbinger.Spore.Sentities.BaseEntities.Infected;
 import com.Harbinger.Spore.Sentities.BaseEntities.UtilityEntity;
+import com.Harbinger.Spore.Sentities.EvolvingInfected;
 import com.Harbinger.Spore.Sentities.MovementControls.InfectedWallMovementControl;
 import com.Harbinger.Spore.Sentities.Projectile.VomitUsurperBall;
 import com.Harbinger.Spore.core.SConfig;
@@ -293,7 +295,7 @@ public class Reaper extends UtilityEntity implements Enemy, ArmorPersentageBypas
         AABB aabb = this.getBoundingBox().inflate(16);
         List<Infected> entities = level().getEntitiesOfClass(Infected.class,aabb);
         for (Infected infected : entities){
-            if (infected.getEvoPoints() < SConfig.SERVER.min_kills.get()){
+            if (infected.getEvoPoints() < SConfig.SERVER.min_kills.get() && infected instanceof EvolvingInfected && !(infected instanceof EvolvedInfected)){
                 int charge = SConfig.SERVER.min_kills.get() - infected.getEvoPoints();
                 infected.setEvoPoints(infected.getEvoPoints() + charge);
                 infected.setKills(infected.getKills() + charge);
