@@ -12,12 +12,14 @@ import com.Harbinger.Spore.Sentities.Projectile.VomitUsurperBall;
 import com.Harbinger.Spore.core.SConfig;
 import com.Harbinger.Spore.core.Sblocks;
 import com.Harbinger.Spore.core.Seffects;
+import com.Harbinger.Spore.core.Ssounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
@@ -106,6 +108,7 @@ public class Reaper extends UtilityEntity implements Enemy, ArmorPersentageBypas
             living.addEffect(new MobEffectInstance(MobEffects.CONFUSION,200,0));
             living.addEffect(new MobEffectInstance(Seffects.MYCELIUM,200,1));
         }
+        playSound(Ssounds.REAPER_ATTACK.value());
         this.attackAnimationTick = 10;
         this.level().broadcastEntityEvent(this, (byte)4);
         return super.doHurtTarget(entity);
@@ -249,6 +252,9 @@ public class Reaper extends UtilityEntity implements Enemy, ArmorPersentageBypas
                 int val = getComposter() ? 2 : 5;
                 setBiomass(getBiomass()+1);
                 setStomach(getStomach()-val);
+                if (getComposter()){
+                    playSound(Ssounds.REAPER_COMPOST.value());
+                }
             }
             if (getBiomass() > 10){
                 FeedNearbyInfected();
@@ -297,6 +303,21 @@ public class Reaper extends UtilityEntity implements Enemy, ArmorPersentageBypas
             }
         }
     }
+    protected SoundEvent getAmbientSound() {
+        return isInvisible() ? null : Ssounds.REAPER_AMBIENT.value();
+    }
+
+    protected SoundEvent getHurtSound(DamageSource p_34327_) {
+        return Ssounds.EVOLVE_HURT.value();
+    }
+
+    protected SoundEvent getDeathSound() {
+        return Ssounds.INF_DAMAGE.value();
+    }
+
+    protected SoundEvent getStepSound() {
+        return SoundEvents.ZOMBIE_STEP;
+    }
     public boolean interactBlock(BlockPos blockPos, Level level) {
         BlockState state = level.getBlockState(blockPos);
         if (state.is(Utilities.biomass)){
@@ -318,6 +339,7 @@ public class Reaper extends UtilityEntity implements Enemy, ArmorPersentageBypas
         if (state.getBlock().equals(Blocks.COMPOSTER)){
             setComposter(true);
         }
+        playSound(Ssounds.REAPER_HARVEST.value());
         this.level().broadcastEntityEvent(this, (byte)4);
         return level.destroyBlock(blockPos, false, this);
     }
@@ -328,6 +350,7 @@ public class Reaper extends UtilityEntity implements Enemy, ArmorPersentageBypas
         this.setStomach(getStomach()-1);
         this.rangedAttackAnimationTick = 10;
         this.level().broadcastEntityEvent(this, (byte)5);
+        playSound(Ssounds.REAPER_SPIT.value());
     }
 
     public static class SearchAroundGoal extends Goal {

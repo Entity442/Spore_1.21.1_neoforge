@@ -343,6 +343,16 @@ public class Ssounds {
     public static final Holder<SoundEvent> ELECTRIC_DISCHARGE = soundRegistry("electric_discharge");
 
     public static final Holder<SoundEvent> LEVIATHAN_AMBIENT = soundRegistry("leviathan_ambient");
+
+    public static final Holder<SoundEvent> REAPER_AMBIENT = soundRegistry("reaper_ambient");
+
+    public static final Holder<SoundEvent> REAPER_ATTACK = soundRegistry("reaper_attack");
+
+    public static final Holder<SoundEvent> REAPER_SPIT = soundRegistry("reaper_spit");
+
+    public static final Holder<SoundEvent> REAPER_HARVEST = soundRegistry("reaper_harvest");
+
+    public static final Holder<SoundEvent> REAPER_COMPOST = soundRegistry("reaper_compost");
     private Ssounds() {
     }
 
