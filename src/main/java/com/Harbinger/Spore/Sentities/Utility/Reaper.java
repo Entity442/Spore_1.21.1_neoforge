@@ -5,6 +5,7 @@ import com.Harbinger.Spore.ExtremelySusThings.Utilities;
 import com.Harbinger.Spore.Sentities.AI.AOEMeleeAttackGoal;
 import com.Harbinger.Spore.Sentities.AI.HybridPathNavigation;
 import com.Harbinger.Spore.Sentities.ArmorPersentageBypass;
+import com.Harbinger.Spore.Sentities.BaseEntities.Infected;
 import com.Harbinger.Spore.Sentities.BaseEntities.UtilityEntity;
 import com.Harbinger.Spore.Sentities.MovementControls.InfectedWallMovementControl;
 import com.Harbinger.Spore.Sentities.Projectile.VomitUsurperBall;
@@ -54,6 +55,7 @@ public class Reaper extends UtilityEntity implements Enemy, ArmorPersentageBypas
     private BlockPos Targetpos;
     public static final EntityDataAccessor<Integer> BIOMASS = SynchedEntityData.defineId(Reaper.class, EntityDataSerializers.INT);
     public static final EntityDataAccessor<Integer> STOMACH = SynchedEntityData.defineId(Reaper.class, EntityDataSerializers.INT);
+    public static final EntityDataAccessor<Boolean> COMPOSTER = SynchedEntityData.defineId(Reaper.class, EntityDataSerializers.BOOLEAN);
     public Reaper(EntityType<? extends PathfinderMob> type, Level level) {
         super(type, level);
         this.moveControl = new InfectedWallMovementControl(this);
@@ -169,6 +171,7 @@ public class Reaper extends UtilityEntity implements Enemy, ArmorPersentageBypas
         super.defineSynchedData(builder);
         builder.define(STOMACH,0);
         builder.define(BIOMASS,0);
+        builder.define(COMPOSTER,false);
     }
 
     @Override
@@ -176,6 +179,7 @@ public class Reaper extends UtilityEntity implements Enemy, ArmorPersentageBypas
         super.readAdditionalSaveData(tag);
         setBiomass(tag.getInt("biomass"));
         setStomach(tag.getInt("stomach"));
+        setComposter(tag.getBoolean("composter"));
     }
 
     @Override
@@ -183,12 +187,22 @@ public class Reaper extends UtilityEntity implements Enemy, ArmorPersentageBypas
         super.addAdditionalSaveData(tag);
         tag.putInt("biomass",getBiomass());
         tag.putInt("stomach",getStomach());
+        tag.putBoolean("composter",getComposter());
     }
     @Override
     public boolean canDrownInFluidType(FluidType type) {
         return false;
     }
 
+    public void setComposter(boolean value){
+        entityData.set(COMPOSTER,value);
+    }
+    public boolean getComposter(){
+       return entityData.get(COMPOSTER);
+    }
+    private boolean searchComposter(BlockState block){
+        return !getComposter() && block.getBlock().equals(Blocks.COMPOSTER);
+    }
     @Override
     public void awardKillScore(Entity p_19953_, int p_19954_, DamageSource p_19955_) {
         this.setBiomass(this.getBiomass()+1);
@@ -211,7 +225,7 @@ public class Reaper extends UtilityEntity implements Enemy, ArmorPersentageBypas
         AABB aabb = this.getBoundingBox().inflate(32,4,32);
         for(BlockPos blockpos : BlockPos.betweenClosed(Mth.floor(aabb.minX), Mth.floor(aabb.minY), Mth.floor(aabb.minZ), Mth.floor(aabb.maxX), Mth.floor(aabb.maxY), Mth.floor(aabb.maxZ))) {
             BlockState block = level().getBlockState(blockpos);
-            if (states.contains(block) || block.getBlock() instanceof CropBlock || block.getBlock() instanceof StemBlock || block.getBlock() instanceof SaplingBlock){
+            if (states.contains(block) || block.getBlock() instanceof CropBlock || block.getBlock() instanceof StemBlock || block.getBlock() instanceof SaplingBlock || searchComposter(block)){
                 if (hasLineOfSightBlocks(blockpos) && this.random.nextFloat() < 0.5f){
                     setTargetPos(blockpos);
                     break;
@@ -232,8 +246,12 @@ public class Reaper extends UtilityEntity implements Enemy, ArmorPersentageBypas
         if (tickCount % 200 == 0){
             searchBlocks();
             if (getStomach() > 25f){
+                int val = getComposter() ? 2 : 5;
                 setBiomass(getBiomass()+1);
-                setStomach(getStomach()-5);
+                setStomach(getStomach()-val);
+            }
+            if (getBiomass() > 10){
+                FeedNearbyInfected();
             }
         }
         if (tickCount % 100 == 0 && getStomach() > 0){
@@ -265,6 +283,20 @@ public class Reaper extends UtilityEntity implements Enemy, ArmorPersentageBypas
             }
         }
     }
+    public void FeedNearbyInfected(){
+        AABB aabb = this.getBoundingBox().inflate(16);
+        List<Infected> entities = level().getEntitiesOfClass(Infected.class,aabb);
+        for (Infected infected : entities){
+            if (infected.getEvoPoints() < SConfig.SERVER.min_kills.get()){
+                int charge = SConfig.SERVER.min_kills.get() - infected.getEvoPoints();
+                infected.setEvoPoints(infected.getEvoPoints() + charge);
+                infected.setKills(infected.getKills() + charge);
+                infected.addEffect(new MobEffectInstance(MobEffects.REGENERATION,400,0));
+                this.setBiomass(getBiomass()-charge);
+                break;
+            }
+        }
+    }
     public boolean interactBlock(BlockPos blockPos, Level level) {
         BlockState state = level.getBlockState(blockPos);
         if (state.is(Utilities.biomass)){
@@ -283,6 +315,9 @@ public class Reaper extends UtilityEntity implements Enemy, ArmorPersentageBypas
         this.setStomach(getStomach() + random.nextInt(4));
         this.playSound(SoundEvents.GENERIC_EAT);
         this.attackAnimationTick = 10;
+        if (state.getBlock().equals(Blocks.COMPOSTER)){
+            setComposter(true);
+        }
         this.level().broadcastEntityEvent(this, (byte)4);
         return level.destroyBlock(blockPos, false, this);
     }
