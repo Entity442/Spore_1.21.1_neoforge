@@ -427,6 +427,8 @@ public class Sitems {
             MistMaker::new);
     public  static final DeferredItem<Item> BILE_BLASTER = ITEMS.register("bile_blaster",
             BileBlaster::new);
+    public  static final DeferredItem<Item> ACIDIC_ASSASSIN = ITEMS.register("acidic_assassin",
+            AcidicAssasin::new);
     public  static final DeferredItem<Item> VIGIL_EYE = ITEMS.register("vigil_eye",
             VigilEye::new);
     public static final DeferredItem<Item> SYMBIOTIC_REAGENT = ITEMS.register("symbiotic_reagent",

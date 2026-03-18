@@ -1,10 +1,6 @@
 package com.Harbinger.Spore.Client.Models;// Made with Blockbench 5.0.7
 // Exported for Minecraft version 1.17 or later with Mojang mappings
 // Paste this class into your mod and generate all required imports
-import com.Harbinger.Spore.Client.AnimationTrackers.BileBlasterReloadAnimationTracker;
-import com.Harbinger.Spore.Client.AnimationTrackers.BileBlasterShootAnimationTracker;
-import com.Harbinger.Spore.Client.AnimationTrackers.MistMakerShootAnimationTracker;
-import com.Harbinger.Spore.Sitems.Tumor;
 import com.Harbinger.Spore.Spore;
 import net.minecraft.client.model.EntityModel;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -18,9 +14,11 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 
-public class BileBlasterArmModel<T extends LivingEntity> extends EntityModel<T> implements TentacledModel{
+import com.Harbinger.Spore.Client.AnimationTrackers.BileBlasterShootAnimationTracker;
+
+public class BileBlasterArmModel<T extends LivingEntity> extends EntityModel<T> implements TentacledModel {
 	// This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
-	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "bileblastermodel"), "main");
+	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation( ResourceLocation.fromNamespaceAndPath(Spore.MODID, "bileblastermodelarm"), "main");
 	public final ModelPart Bile_Blaster;
 	private final ModelPart innards;
 	private final ModelPart head;
@@ -54,9 +52,9 @@ public class BileBlasterArmModel<T extends LivingEntity> extends EntityModel<T> 
 		MeshDefinition meshdefinition = new MeshDefinition();
 		PartDefinition partdefinition = meshdefinition.getRoot();
 
-		PartDefinition Bile_Blaster = partdefinition.addOrReplaceChild("Bile_Blaster", CubeListBuilder.create(), PartPose.offsetAndRotation(-0.5F, 24.0F, 0.0F, 0.0F, 1.5708F, 0.0F));
+		PartDefinition Bile_Blaster = partdefinition.addOrReplaceChild("Bile_Blaster", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 26.0F, -27.0F, 1.5708F, -0.0436F, 1.5708F));
 
-		PartDefinition innards = Bile_Blaster.addOrReplaceChild("innards", CubeListBuilder.create().texOffs(84, 46).addBox(-25.0F, -1.0F, -9.0F, 9.0F, 0.0F, 7.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 0.0F, 0.0F));
+		PartDefinition innards = Bile_Blaster.addOrReplaceChild("innards", CubeListBuilder.create().texOffs(84, 46).addBox(-25.0F, -1.0F, -9.0F, 9.0F, 0.0F, 7.0F, new CubeDeformation(0.0F)), PartPose.offset(4.5F, 22.0F, -4.0F));
 
 		PartDefinition cube_r1 = innards.addOrReplaceChild("cube_r1", CubeListBuilder.create().texOffs(120, 91).addBox(-5.0F, -2.0F, -1.0F, 6.0F, 2.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-31.75F, -0.75F, 4.75F, 0.0779F, -0.7545F, 0.7718F));
 
@@ -118,7 +116,7 @@ public class BileBlasterArmModel<T extends LivingEntity> extends EntityModel<T> 
 
 		PartDefinition cube_r20 = tumor2.addOrReplaceChild("cube_r20", CubeListBuilder.create().texOffs(116, 27).addBox(-5.0F, -4.0F, -1.0F, 6.0F, 6.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.3124F, 0.2079F, 0.0666F));
 
-		PartDefinition barrel = Bile_Blaster.addOrReplaceChild("barrel", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
+		PartDefinition barrel = Bile_Blaster.addOrReplaceChild("barrel", CubeListBuilder.create(), PartPose.offset(4.5F, 22.0F, -4.0F));
 
 		PartDefinition cube_r21 = barrel.addOrReplaceChild("cube_r21", CubeListBuilder.create().texOffs(66, 66).addBox(-44.0F, -3.5F, -3.5F, 16.0F, 6.0F, 6.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(68.0F, -0.75F, 0.5F, -0.7854F, 0.0F, 0.0F));
 
@@ -139,7 +137,7 @@ public class BileBlasterArmModel<T extends LivingEntity> extends EntityModel<T> 
 				.texOffs(0, 76).addBox(-28.5F, -2.5F, -2.5F, 13.0F, 3.0F, 6.0F, new CubeDeformation(0.0F))
 				.texOffs(66, 59).addBox(-26.5F, -4.5F, -2.5F, 29.0F, 1.0F, 6.0F, new CubeDeformation(0.0F))
 				.texOffs(122, 12).addBox(-5.5F, -2.5F, -2.5F, 1.0F, 3.0F, 6.0F, new CubeDeformation(0.0F))
-				.texOffs(70, 38).addBox(-12.0F, -2.5F, -0.5F, 20.0F, 6.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 0.0F, 0.0F));
+				.texOffs(70, 38).addBox(-12.0F, -2.5F, -0.5F, 20.0F, 6.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offset(4.5F, 22.0F, -4.0F));
 
 		PartDefinition cube_r23 = body.addOrReplaceChild("cube_r23", CubeListBuilder.create().texOffs(70, 46).addBox(-1.0F, -1.0F, -1.0F, 1.0F, 2.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(11.5F, -5.0F, 0.5F, -0.7854F, 0.0F, 0.0F));
 
@@ -147,7 +145,7 @@ public class BileBlasterArmModel<T extends LivingEntity> extends EntityModel<T> 
 				.texOffs(86, 97).addBox(-30.75F, 2.5F, -1.5F, 11.0F, 2.0F, 4.0F, new CubeDeformation(0.0F))
 				.texOffs(28, 85).addBox(-18.75F, 2.5F, -1.5F, 1.0F, 2.0F, 4.0F, new CubeDeformation(0.0F))
 				.texOffs(122, 21).addBox(-16.75F, 2.5F, -1.5F, 1.0F, 2.0F, 4.0F, new CubeDeformation(0.0F))
-				.texOffs(60, 122).addBox(-14.75F, 2.5F, -1.5F, 1.0F, 2.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 0.0F, 0.0F));
+				.texOffs(60, 122).addBox(-14.75F, 2.5F, -1.5F, 1.0F, 2.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offset(4.5F, 22.0F, -4.0F));
 
 		PartDefinition cube_r24 = underbarre_and_grip.addOrReplaceChild("cube_r24", CubeListBuilder.create().texOffs(84, 53).addBox(-7.0F, -1.0F, -1.0F, 9.0F, 1.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-21.0F, 8.45F, 0.4F, 0.0F, 0.0F, 0.1745F));
 
@@ -168,7 +166,6 @@ public class BileBlasterArmModel<T extends LivingEntity> extends EntityModel<T> 
 
 	@Override
 	public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-		Bile_Blaster.getAllParts().forEach(ModelPart::resetPose);
 		float lungVal = Mth.sin(ageInTicks/7)/16;
 		float tum1 = Mth.sin(ageInTicks/6)/7;
 		float tum2 = Mth.cos(ageInTicks/7)/6;

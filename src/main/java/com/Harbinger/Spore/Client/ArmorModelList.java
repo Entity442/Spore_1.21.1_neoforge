@@ -28,6 +28,8 @@ public class ArmorModelList {
     private static final MistmakerModel<LivingEntity> mistmakerModel = new MistmakerModel<>();
     private static final MistmakerModelArm<LivingEntity> mistmakerModelArm = new MistmakerModelArm<>();
     private static final BileBlasterModel<LivingEntity> bileblaster = new BileBlasterModel<>();
+    private static final AcidicAssasinModel<LivingEntity> acidicAssasinModel = new AcidicAssasinModel<>();
+    private static final AcidicAssasinArmModel<LivingEntity> acidicAssasinArmModel = new AcidicAssasinArmModel<>();
     private static final BileBlasterArmModel<LivingEntity> bileblasterarm = new BileBlasterArmModel<>();
     private static final SyringeGunModelArm<LivingEntity> syringeGunModelArm = new SyringeGunModelArm<>();
 
@@ -39,6 +41,8 @@ public class ArmorModelList {
     private static final MistMakerPart LEFT_MISTMAKER = new MistMakerPart(InteractionHand.OFF_HAND,mistmakerModel,mistmakerModel.gun,-1f, 0.25f, -1.75f,1f,0,0,180);
     private static final BileBlasterPart RIGHT_BILEBLASTER = new BileBlasterPart(InteractionHand.MAIN_HAND,bileblaster,bileblaster.Bile_Blaster,0.95f, 0.25f, -3.5f,1f,0,0,180);
     private static final BileBlasterPart LEFT_BILEBLASTER = new BileBlasterPart(InteractionHand.OFF_HAND,bileblaster,bileblaster.Bile_Blaster,-1f, 0.25f, -3.5f,1f,0,0,180);
+    private static final AcidicAssassinPart RIGHT_ACIDASSASIN = new AcidicAssassinPart(InteractionHand.MAIN_HAND,acidicAssasinModel,acidicAssasinModel.Caspian,0.95f, 0.25f, -3.5f,1f,0,0,180);
+    private static final AcidicAssassinPart LEFT_ACIDASSASIN = new AcidicAssassinPart(InteractionHand.OFF_HAND,acidicAssasinModel,acidicAssasinModel.Caspian,-1f, 0.25f, -3.5f,1f,0,0,180);
 
     public static final List<ComplexHandModelItem> ITEM_RENDERING_BITS = new ArrayList<>(){{
         add(RIGHT_PCI);
@@ -49,6 +53,8 @@ public class ArmorModelList {
         add(LEFT_MISTMAKER);
         add(RIGHT_BILEBLASTER);
         add(LEFT_BILEBLASTER);
+        add(RIGHT_ACIDASSASIN);
+        add(LEFT_ACIDASSASIN);
     }};
 
 
@@ -103,6 +109,8 @@ public class ArmorModelList {
     private static final MistmakerPartLeft MIST_MAKER_LEFT = new MistmakerPartLeft(() -> mistmakerModelArm,() -> mistmakerModelArm.gun,0f, 1.2f, 0.3f, 0.4f);
     private static final BileBlasterPartRight BILE_BLASTER_RIGHT = new BileBlasterPartRight(() -> bileblasterarm,() -> bileblasterarm.Bile_Blaster,0.1f, 0.6f, 0f, 0.4f);
     private static final BileBlasterPartLeft BILE_BLASTER_LEFT = new BileBlasterPartLeft(() -> bileblasterarm,() -> bileblasterarm.Bile_Blaster,0f, 0.6f, 0f, 0.4f);
+    private static final AcidicAssassinPartRight ACIDIC_ASSASSIN_RIGHT = new AcidicAssassinPartRight(() -> acidicAssasinArmModel,() -> acidicAssasinArmModel.Caspian,0.1f, 0.6f, 0f, 0.4f);
+    private static final AcidicAssassinPartLeft ACIDIC_ASSASSIN_LEFT = new AcidicAssassinPartLeft(() -> acidicAssasinArmModel,() -> acidicAssasinArmModel.Caspian,0.15f, 0.6f, 0f, 0.4f);
 
 
     private static final List<Item> fleshBlackList = List.of(Sitems.LIVING_HELMET.get(),Sitems.LIVING_CHEST.get(),Sitems.LIVING_PANTS.get(),Sitems.LIVING_BOOTS.get());
@@ -166,6 +174,8 @@ public class ArmorModelList {
         add(MIST_MAKER_RIGHT);
         add(BILE_BLASTER_LEFT);
         add(BILE_BLASTER_RIGHT);
+        add(ACIDIC_ASSASSIN_RIGHT);
+        add(ACIDIC_ASSASSIN_LEFT);
     }};
 
     public static final List<EnchantingPart> ENCHANTING_RENDERING_BITS = new ArrayList<>(){{
