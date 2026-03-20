@@ -177,7 +177,7 @@ public class BileBlasterArmModel<T extends LivingEntity> extends EntityModel<T> 
 		animateTentacleZ(jaw,Mth.sin(ageInTicks/6)/8);
 		if (entity instanceof Player player){
 			float anim = BileBlasterShootAnimationTracker.getProgress(player, 0);
-			this.barrel.x = barrel.x + anim;
+			this.barrel.x = barrel.x - anim * 2;
 		}
 	}
 

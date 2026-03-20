@@ -1,10 +1,13 @@
 package com.Harbinger.Spore.Sevents;
 
 import com.Harbinger.Spore.Effect.SporeEffectsHandler;
+import com.Harbinger.Spore.Sentities.BaseEntities.UtilityEntity;
+import com.Harbinger.Spore.Sentities.TrueCalamity;
 import com.Harbinger.Spore.Sitems.BaseWeapons.SporeArmorData;
 import com.Harbinger.Spore.Sitems.BaseWeapons.SporeToolsBaseItem;
 import com.Harbinger.Spore.core.Seffects;
 import com.Harbinger.Spore.core.Senchantments;
+import com.Harbinger.Spore.core.Sfluids;
 import com.Harbinger.Spore.core.Ssounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
@@ -13,6 +16,7 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -25,11 +29,29 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.Harbinger.Spore.Fluids.BileLiquid.bileEffects;
+
 public class LivingTickEvent {
     private static final TagKey<Block> tag = BlockTags.create(ResourceLocation.parse("spore:fungal_blocks"));
     public static void TickEvents(EntityTickEvent.Pre event) {
         if (!(event.getEntity() instanceof LivingEntity living)) {
             return;
+        }
+        if (living.isInFluidType(Sfluids.BILE_FLUID_TYPE)) {
+
+            if (living instanceof UtilityEntity || living instanceof TrueCalamity) {
+                living.setDeltaMovement(living.getDeltaMovement().scale(1.2).add(0, 0.01, 0));
+                living.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 100, 1));
+            } else {
+                living.setDeltaMovement(living.getDeltaMovement().scale(0.4));
+
+                if (living.tickCount % 40 == 0) {
+                    for (MobEffectInstance effect : bileEffects()) {
+                        living.addEffect(effect);
+                    }
+                    living.hurt(living.damageSources().generic(), 1f);
+                }
+            }
         }
         List<MobEffectInstance> instances = living.getActiveEffects().stream()
                 .filter(instance -> instance.getEffect().value() instanceof SporeEffectsHandler)
