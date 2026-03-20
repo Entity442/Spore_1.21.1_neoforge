@@ -170,7 +170,7 @@ public class Sitems {
                     .effect(()-> new MobEffectInstance(MobEffects.HEALTH_BOOST,600,1),1f)
                     .effect(()-> new MobEffectInstance(MobEffects.REGENERATION,600,0),1f)
                     .effect(()-> new MobEffectInstance(MobEffects.ABSORPTION,600,1),1f)
-                    .effect(()-> new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE,500,1),1f).build())));
+                    .effect(()-> new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE,500,1),1f).alwaysEdible().build())));
     public  static final DeferredItem<Item> FLESHY_RIBS = ITEMS.register("fleshy_ribs",
             () -> new BaseItem(new Item.Properties().food(new FoodProperties.Builder().nutrition(4).saturationModifier(2F).effect(()-> new MobEffectInstance(Seffects.MYCELIUM,200,0),0.4f)
                     .effect(()-> new MobEffectInstance(MobEffects.DAMAGE_BOOST,400,1),1f).build())));
@@ -186,7 +186,7 @@ public class Sitems {
                     .effect(()-> new MobEffectInstance(MobEffects.DOLPHINS_GRACE,1200,0),1f)
                     .effect(()-> new MobEffectInstance(MobEffects.CONDUIT_POWER,1200,0),1f).build())));
     public  static final DeferredItem<Item> STUFFED_ABOMINATION = ITEMS.register("stuffed_abomination",
-            () -> new BaseItem(new Item.Properties().stacksTo(16).food(new FoodProperties.Builder().nutrition(18).saturationModifier(7F).alwaysEdible().effect(()-> new MobEffectInstance(Seffects.MYCELIUM,200,0),0.4f)
+            () -> new BaseItem(new Item.Properties().stacksTo(16).food(new FoodProperties.Builder().nutrition(18).saturationModifier(7F).effect(()-> new MobEffectInstance(Seffects.MYCELIUM,200,0),0.4f)
                     .effect(()-> new MobEffectInstance(MobEffects.MOVEMENT_SPEED,1000,1),1f)
                     .effect(()-> new MobEffectInstance(MobEffects.SLOW_FALLING,1000,0),1f).alwaysEdible().build())));
     public  static final DeferredItem<Item> FROZEN_DECAYED_BIOMASS = ITEMS.register("frozen_decayed_biomass",
