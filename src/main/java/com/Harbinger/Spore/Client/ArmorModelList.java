@@ -39,10 +39,10 @@ public class ArmorModelList {
     private static final SyringeGunPart LEFT_SYRINGE_GUN = new SyringeGunPart(InteractionHand.OFF_HAND,syringeGunModel,syringeGunModel.syringeGun,-1f, 0.5f, -1.25f,1f,0,0,180);
     private static final MistMakerPart RIGHT_MISTMAKER = new MistMakerPart(InteractionHand.MAIN_HAND,mistmakerModel,mistmakerModel.gun,0.95f, 0.25f, -1.75f,1f,0,0,180);
     private static final MistMakerPart LEFT_MISTMAKER = new MistMakerPart(InteractionHand.OFF_HAND,mistmakerModel,mistmakerModel.gun,-1f, 0.25f, -1.75f,1f,0,0,180);
-    private static final BileBlasterPart RIGHT_BILEBLASTER = new BileBlasterPart(InteractionHand.MAIN_HAND,bileblaster,bileblaster.Bile_Blaster,0.95f, 0.25f, -3.5f,1f,0,0,180);
-    private static final BileBlasterPart LEFT_BILEBLASTER = new BileBlasterPart(InteractionHand.OFF_HAND,bileblaster,bileblaster.Bile_Blaster,-1f, 0.25f, -3.5f,1f,0,0,180);
-    private static final AcidicAssassinPart RIGHT_ACIDASSASIN = new AcidicAssassinPart(InteractionHand.MAIN_HAND,acidicAssasinModel,acidicAssasinModel.Caspian,0.95f, 0.25f, -3.5f,1f,0,0,180);
-    private static final AcidicAssassinPart LEFT_ACIDASSASIN = new AcidicAssassinPart(InteractionHand.OFF_HAND,acidicAssasinModel,acidicAssasinModel.Caspian,-1f, 0.25f, -3.5f,1f,0,0,180);
+    private static final BileBlasterPart RIGHT_BILEBLASTER = new BileBlasterPart(InteractionHand.MAIN_HAND,bileblaster,bileblaster.Bile_Blaster,0.95f, 0.25f, -2.5f,1f,0,0,180);
+    private static final BileBlasterPart LEFT_BILEBLASTER = new BileBlasterPart(InteractionHand.OFF_HAND,bileblaster,bileblaster.Bile_Blaster,-1f, 0.25f, -2.5f,1f,0,0,180);
+    private static final AcidicAssassinPart RIGHT_ACIDASSASIN = new AcidicAssassinPart(InteractionHand.MAIN_HAND,acidicAssasinModel,acidicAssasinModel.Caspian,0.95f, 0.25f, -2.5f,1f,0,0,180);
+    private static final AcidicAssassinPart LEFT_ACIDASSASIN = new AcidicAssassinPart(InteractionHand.OFF_HAND,acidicAssasinModel,acidicAssasinModel.Caspian,-1f, 0.25f, -2.5f,1f,0,0,180);
 
     public static final List<ComplexHandModelItem> ITEM_RENDERING_BITS = new ArrayList<>(){{
         add(RIGHT_PCI);

@@ -62,6 +62,11 @@ public class SyringeGun extends BaseItem2 implements CustomModelArmorData,GunHel
     }
 
     @Override
+    public boolean onEntitySwing(ItemStack stack, LivingEntity entity, InteractionHand hand) {
+        return true;
+    }
+
+    @Override
     public int getUseDuration(ItemStack stack, LivingEntity entity) {
         return 72000;
     }

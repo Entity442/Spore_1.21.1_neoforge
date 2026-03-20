@@ -330,6 +330,9 @@ public class ClientModEvents {
         event.registerEntityRenderer(Sentities.DROWNED_FLESH_BOMB.get(), DrownedFleshBombRenderer::new);
         event.registerEntityRenderer(Sentities.FALLEN_ACID_BULB.get(), FallenAcidSackRenderer::new);
         event.registerEntityRenderer(Sentities.HARPOON.get(), HarpoonRenderer::new);
+        event.registerEntityRenderer(Sentities.GORE_BULLET.get(), GoreBulletRenderer::new);
+        event.registerEntityRenderer(Sentities.ASSASSIN_BULLET.get(), AcidBulletRenderer::new);
+        event.registerEntityRenderer(Sentities.BILE_BULLET.get(), BileBulletRenderer::new);
     }
 
 
@@ -387,6 +390,12 @@ public class ClientModEvents {
                 VomitParticle.Provider::new);
         Minecraft.getInstance().particleEngine.register(Sparticles.VOMIT_ORES.get(),
                 VomitParticle.Provider::new);
+        Minecraft.getInstance().particleEngine.register(Sparticles.ACID_BULLET.get(),
+                AcidBulletParticle.Provider::new);
+        Minecraft.getInstance().particleEngine.register(Sparticles.GORE_BULLET.get(),
+                GoreBulletParticle.Provider::new);
+        Minecraft.getInstance().particleEngine.register(Sparticles.BILE_BULLET.get(),
+                BileBulletParticle.Provider::new);
     }
 
     @SubscribeEvent
@@ -456,6 +465,7 @@ public class ClientModEvents {
         MistMakerShootAnimationTracker.tickAll();
         BileBlasterShootAnimationTracker.tickAll();
         BileBlasterReloadAnimationTracker.tickAll();
+        AssassinShootAnimationTracker.tickAll();
     }
     @SubscribeEvent
     public static void onRenderHand(RenderHandEvent event) {

@@ -34,6 +34,13 @@ public class Sparticles {
             PARTICLE_TYPES.register("vomit_bone", () -> new SimpleParticleType(true));
     public static final Supplier<SimpleParticleType> VOMIT_ORES =
             PARTICLE_TYPES.register("vomit_ores", () -> new SimpleParticleType(true));
+
+    public static final Supplier<SimpleParticleType> ACID_BULLET =
+            PARTICLE_TYPES.register("acid_bullet", () -> new SimpleParticleType(true));
+    public static final Supplier<SimpleParticleType> GORE_BULLET =
+            PARTICLE_TYPES.register("gore_bullet", () -> new SimpleParticleType(true));
+    public static final Supplier<SimpleParticleType> BILE_BULLET =
+            PARTICLE_TYPES.register("bile_bullet", () -> new SimpleParticleType(true));
     public static void register(IEventBus eventBus) {
         PARTICLE_TYPES.register(eventBus);
     }

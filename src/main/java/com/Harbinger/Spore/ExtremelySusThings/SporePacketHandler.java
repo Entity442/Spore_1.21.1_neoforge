@@ -1,6 +1,7 @@
 package com.Harbinger.Spore.ExtremelySusThings;
 
 import com.Harbinger.Spore.ExtremelySusThings.Package.*;
+import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
@@ -15,13 +16,18 @@ public class SporePacketHandler {
         registrar.playToServer(AdvancementGivingPackage.TYPE, AdvancementGivingPackage.STREAM_CODEC, AdvancementGivingPackage::handle);
         registrar.playToServer(OpenSurgeryScreenPacket.TYPE, OpenSurgeryScreenPacket.STREAM_CODEC, OpenSurgeryScreenPacket::handle);
         registrar.playToServer(OpenGraftingScreenPacket.TYPE, OpenGraftingScreenPacket.STREAM_CODEC, OpenGraftingScreenPacket::handle);
+        registrar.playToServer(ShootBulletProjectilePacket.TYPE, ShootBulletProjectilePacket.STREAM_CODEC, ShootBulletProjectilePacket::handle);
 
         // Register client-bound packets (server -> client)
         registrar.playToClient(SyncAdvancementPacket.TYPE, SyncAdvancementPacket.STREAM_CODEC, SyncAdvancementPacket::handle);
     }
 
     public static void sendToServer(net.minecraft.network.protocol.common.custom.CustomPacketPayload packet) {
-        net.minecraft.client.Minecraft.getInstance().getConnection().send(packet);
+        ClientPacketListener clientPacketListener = net.minecraft.client.Minecraft.getInstance().getConnection();
+        if (clientPacketListener == null){
+            return;
+        }
+        clientPacketListener.send(packet);
     }
 
     public static void sendToClient(net.minecraft.network.protocol.common.custom.CustomPacketPayload packet, ServerPlayer player) {

@@ -1,6 +1,7 @@
 package com.Harbinger.Spore.Client.Models;// Made with Blockbench 5.0.7
 // Exported for Minecraft version 1.17 or later with Mojang mappings
 // Paste this class into your mod and generate all required imports
+import com.Harbinger.Spore.Client.AnimationTrackers.AssassinShootAnimationTracker;
 import com.Harbinger.Spore.Spore;
 import net.minecraft.client.model.EntityModel;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -12,6 +13,7 @@ import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 
 public class AcidicAssasinArmModel<T extends LivingEntity> extends EntityModel<T> implements TentacledModel{
 	// This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
@@ -121,7 +123,12 @@ public class AcidicAssasinArmModel<T extends LivingEntity> extends EntityModel<T
 
 	@Override
 	public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+		Caspian.getAllParts().forEach(ModelPart::resetPose);
 		animateTentacleX(jaw, Mth.sin(ageInTicks/6)/8);
+		if (entity instanceof Player player){
+			float anim = AssassinShootAnimationTracker.getProgress(player, 0);
+			this.barrelPiece1.z = barrelPiece1.z + anim * 4;
+		}
 	}
 
 	@Override
