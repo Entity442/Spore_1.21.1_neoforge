@@ -50,7 +50,7 @@ public class BileBlaster extends AbstractSporeGun implements CustomModelArmorDat
 
     @Override
     public Item getAmmoItem() {
-        return Sitems.BUCKET_OF_BILE.asItem();
+        return Sitems.CRUSTED_BILE.asItem();
     }
 
     @Override
