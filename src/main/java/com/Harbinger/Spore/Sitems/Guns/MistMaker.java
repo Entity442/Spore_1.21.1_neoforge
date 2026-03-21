@@ -2,17 +2,19 @@ package com.Harbinger.Spore.Sitems.Guns;
 
 import com.Harbinger.Spore.Client.AnimationTrackers.MistMakerSawAnimationTracker;
 import com.Harbinger.Spore.Client.AnimationTrackers.MistMakerShootAnimationTracker;
-import com.Harbinger.Spore.ExtremelySusThings.Package.ShootBulletProjectilePacket;
 import com.Harbinger.Spore.ExtremelySusThings.SporePacketHandler;
+import com.Harbinger.Spore.Sentities.Projectile.GunProjectiles.GoreBullet;
 import com.Harbinger.Spore.Sitems.CustomModelArmorData;
 import com.Harbinger.Spore.core.SConfig;
+import com.Harbinger.Spore.core.Sentities;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 
 public class MistMaker extends AbstractSporeGun implements CustomModelArmorData {
     private static final ResourceLocation TEXTURE = ResourceLocation.parse("spore:textures/item/mistmaker.png");
@@ -21,20 +23,54 @@ public class MistMaker extends AbstractSporeGun implements CustomModelArmorData 
     }
 
     @Override
-    public boolean onEntitySwing(ItemStack stack, LivingEntity entity, InteractionHand hand) {
-        if (entity.level().isClientSide && entity instanceof Player player && !player.getCooldowns().isOnCooldown(this)) {
-            MistMakerShootAnimationTracker.trigger(player);
-            SporePacketHandler.sendToServer(new ShootBulletProjectilePacket(player.getId(),0,hand == InteractionHand.MAIN_HAND ? -1 : 0));
-        }
-        return super.onEntitySwing(stack, entity, hand);
+    public boolean needsToReload() {
+        return false;
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
-        if (player.level().isClientSide && !player.getCooldowns().isOnCooldown(this)) {
-            MistMakerSawAnimationTracker.trigger(player);
+    public int getDefaultTimeBeforeReload() {
+        return 0;
+    }
+
+    @Override
+    public int getTimeBeforeChangingClip() {
+        return 40;
+    }
+
+    @Override
+    public int timeBeforeStomachContentsConvertIntoAmmo() {
+        return 0;
+    }
+
+    @Override
+    public int getClipSize() {
+        return 0;
+    }
+
+    @Override
+    public Item getAmmoItem() {
+        return null;
+    }
+
+    @Override
+    public void clientShoot(Player player, InteractionHand interactionHand) {
+        MistMakerShootAnimationTracker.trigger(player);
+    }
+
+    @Override
+    public void serverShoot(ItemStack stack, ServerPlayer player, InteractionHand interactionHand, Vec3 vec3) {
+        for (int i = 0;i<4;i++){
+            GoreBullet bullet = new GoreBullet(Sentities.GORE_BULLET.get(),player.level());
+            bullet.moveTo(player.getX()+vec3.x, player.getY()+1.25D ,player.getZ()+vec3.z);
+            bullet.shootFrom(player,1.5f,6);
+            player.level().addFreshEntity(bullet);
         }
-        return super.use(level, player, usedHand);
+    }
+
+    @Override
+    public void triggerReloadAnimation(Player player) {
+        super.triggerReloadAnimation(player);
+        MistMakerSawAnimationTracker.trigger(player);
     }
 
     @Override

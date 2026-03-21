@@ -16,10 +16,11 @@ public class SporePacketHandler {
         registrar.playToServer(AdvancementGivingPackage.TYPE, AdvancementGivingPackage.STREAM_CODEC, AdvancementGivingPackage::handle);
         registrar.playToServer(OpenSurgeryScreenPacket.TYPE, OpenSurgeryScreenPacket.STREAM_CODEC, OpenSurgeryScreenPacket::handle);
         registrar.playToServer(OpenGraftingScreenPacket.TYPE, OpenGraftingScreenPacket.STREAM_CODEC, OpenGraftingScreenPacket::handle);
-        registrar.playToServer(ShootBulletProjectilePacket.TYPE, ShootBulletProjectilePacket.STREAM_CODEC, ShootBulletProjectilePacket::handle);
+        registrar.playToServer(SporeGunFirePacket.TYPE, SporeGunFirePacket.STREAM_CODEC, SporeGunFirePacket::handle);
 
         // Register client-bound packets (server -> client)
         registrar.playToClient(SyncAdvancementPacket.TYPE, SyncAdvancementPacket.STREAM_CODEC, SyncAdvancementPacket::handle);
+        registrar.playToClient(SporeGunFireSyncPacket.TYPE, SporeGunFireSyncPacket.STREAM_CODEC, SporeGunFireSyncPacket::handle);
     }
 
     public static void sendToServer(net.minecraft.network.protocol.common.custom.CustomPacketPayload packet) {

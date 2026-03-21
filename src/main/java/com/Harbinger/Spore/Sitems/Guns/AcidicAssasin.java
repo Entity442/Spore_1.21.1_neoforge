@@ -1,18 +1,20 @@
 package com.Harbinger.Spore.Sitems.Guns;
 
 import com.Harbinger.Spore.Client.AnimationTrackers.AssassinShootAnimationTracker;
-import com.Harbinger.Spore.Client.AnimationTrackers.BileBlasterShootAnimationTracker;
-import com.Harbinger.Spore.ExtremelySusThings.Package.ShootBulletProjectilePacket;
 import com.Harbinger.Spore.ExtremelySusThings.SporePacketHandler;
+import com.Harbinger.Spore.Sentities.Projectile.GunProjectiles.AssassinBullet;
 import com.Harbinger.Spore.Sitems.CustomModelArmorData;
 import com.Harbinger.Spore.core.SConfig;
+import com.Harbinger.Spore.core.Sentities;
+import com.Harbinger.Spore.core.Sitems;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 
 public class AcidicAssasin extends AbstractSporeGun implements CustomModelArmorData {
     private static final ResourceLocation TEXTURE = ResourceLocation.parse("spore:textures/item/acidic_assasin.png");
@@ -21,19 +23,46 @@ public class AcidicAssasin extends AbstractSporeGun implements CustomModelArmorD
     }
 
     @Override
-    public boolean onEntitySwing(ItemStack stack, LivingEntity entity, InteractionHand hand) {
-        if (entity.level().isClientSide && entity instanceof Player player && !player.getCooldowns().isOnCooldown(this)) {
-            AssassinShootAnimationTracker.trigger(player);
-            SporePacketHandler.sendToServer(new ShootBulletProjectilePacket(player.getId(),2,hand == InteractionHand.MAIN_HAND ? -1 : 0));
-        }
+    public boolean needsToReload() {
         return true;
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
-        if (player.level().isClientSide && !player.getCooldowns().isOnCooldown(this)) {
-        }
-        return super.use(level, player, usedHand);
+    public int getDefaultTimeBeforeReload() {
+        return 80;
+    }
+
+    @Override
+    public int getTimeBeforeChangingClip() {
+        return 40;
+    }
+
+    @Override
+    public int timeBeforeStomachContentsConvertIntoAmmo() {
+        return 200;
+    }
+
+    @Override
+    public int getClipSize() {
+        return 6;
+    }
+
+    @Override
+    public Item getAmmoItem() {
+        return Sitems.CORROSIVE_SACK.asItem();
+    }
+
+    @Override
+    public void clientShoot(Player player, InteractionHand interactionHand) {
+        AssassinShootAnimationTracker.trigger(player);
+    }
+
+    @Override
+    public void serverShoot(ItemStack stack, ServerPlayer player, InteractionHand interactionHand, Vec3 vec3) {
+        AssassinBullet bullet = new AssassinBullet(Sentities.ASSASSIN_BULLET.get(),player.level());
+        bullet.moveTo(player.getX()+vec3.x, player.getY()+1.25D ,player.getZ()+vec3.z);
+        bullet.shootFrom(player,5,0);
+        player.level().addFreshEntity(bullet);
     }
 
     @Override

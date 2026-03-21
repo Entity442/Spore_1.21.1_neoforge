@@ -70,6 +70,20 @@ public class SdataComponents {
     public static final Supplier<DataComponentType<Boolean>> RELOADING = DATA_COMPONENTS.register(
             "reloading_gun", () -> DataComponentType.<Boolean>builder().persistent(Codec.BOOL).build());
 
+    public static final Supplier<DataComponentType<Integer>> SHOOT_DELAY = DATA_COMPONENTS.register(
+            "shoot_delay", () -> DataComponentType.<Integer>builder().persistent(Codec.INT).build());
+
+    public static final Supplier<DataComponentType<Integer>> RELOAD_DELAY = DATA_COMPONENTS.register(
+            "reload_delay", () -> DataComponentType.<Integer>builder().persistent(Codec.INT).build());
+
+    public static final Supplier<DataComponentType<Integer>> FLESH_AMMO = DATA_COMPONENTS.register(
+            "flesh_ammo", () -> DataComponentType.<Integer>builder().persistent(Codec.INT).build());
+
+    public static final Supplier<DataComponentType<Integer>> STOMACH_CONTENTS = DATA_COMPONENTS.register(
+            "stomach_contents", () -> DataComponentType.<Integer>builder().persistent(Codec.INT).build());
+
+    public static final Supplier<DataComponentType<Integer>> CLIP_SIZE = DATA_COMPONENTS.register(
+            "clip_size", () -> DataComponentType.<Integer>builder().persistent(Codec.INT).build());
 
     public static void register(IEventBus eventBus) {
         DATA_COMPONENTS.register(eventBus);

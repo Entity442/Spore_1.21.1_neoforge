@@ -166,6 +166,7 @@ public class BileBlasterArmModel<T extends LivingEntity> extends EntityModel<T> 
 
 	@Override
 	public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+		Bile_Blaster.getAllParts().forEach(ModelPart::resetPose);
 		float lungVal = Mth.sin(ageInTicks/7)/16;
 		float tum1 = Mth.sin(ageInTicks/6)/7;
 		float tum2 = Mth.cos(ageInTicks/7)/6;
