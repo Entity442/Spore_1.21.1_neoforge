@@ -49,7 +49,7 @@ public abstract class AbstractSporeGun extends BaseItem implements GunHeldItem, 
         if (entity instanceof Player player) {
             SporePacketHandler.sendToServer(new SporeGunFirePacket(player.getId(), hand == InteractionHand.MAIN_HAND ? 0 : 1));
         }
-        return false;
+        return true;
     }
 
 

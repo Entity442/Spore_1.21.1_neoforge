@@ -99,48 +99,46 @@ public class MistMaker extends AbstractSporeGun implements CustomModelArmorData 
         if (level.isClientSide()) {
             MistMakerSawAnimationTracker.trigger(player);
         } else {
-            if (player.tickCount % 10 == 0) {
-                Vec3 lookVec = player.getLookAngle();
-                double range = 4.0;
-                double radius = 1.5;
+            Vec3 lookVec = player.getLookAngle();
+            double range = 4.0;
+            double radius = 1.5;
 
-                Vec3 startPos = player.getEyePosition();
-                AABB attackArea = new AABB(
-                        startPos.x - radius, startPos.y - radius, startPos.z - radius,
-                        startPos.x + radius, startPos.y + radius, startPos.z + radius
-                ).expandTowards(lookVec.scale(range));
-                List<Entity> entities = level.getEntities(player, attackArea,
-                        entity -> entity instanceof LivingEntity &&
-                                entity != player &&
-                                !entity.isSpectator() &&
-                                entity.isAlive()
-                );
+            Vec3 startPos = player.getEyePosition();
+            AABB attackArea = new AABB(
+                    startPos.x - radius, startPos.y - radius, startPos.z - radius,
+                    startPos.x + radius, startPos.y + radius, startPos.z + radius
+            ).expandTowards(lookVec.scale(range));
+            List<Entity> entities = level.getEntities(player, attackArea,
+                    entity -> entity instanceof LivingEntity &&
+                            entity != player &&
+                            !entity.isSpectator() &&
+                            entity.isAlive()
+            );
 
-                int hitCount = 0;
+            int hitCount = 0;
 
-                for (Entity entity : entities) {
-                    Vec3 toEntity = entity.position().subtract(startPos).normalize();
-                    double dot = lookVec.dot(toEntity);
+            for (Entity entity : entities) {
+                Vec3 toEntity = entity.position().subtract(startPos).normalize();
+                double dot = lookVec.dot(toEntity);
 
-                    if (dot > 0.5) {
-                        double distance = startPos.distanceTo(entity.position());
-                        if (distance <= range) {
-                            if (entity instanceof LivingEntity living) {
-                                living.hurt(level.damageSources().playerAttack(player), 5.0f);
-                                hitCount++;
-                            }
+                if (dot > 0.5) {
+                    double distance = startPos.distanceTo(entity.position());
+                    if (distance <= range) {
+                        if (entity instanceof LivingEntity living) {
+                            living.hurt(level.damageSources().playerAttack(player), 5.0f);
+                            hitCount++;
                         }
                     }
                 }
+            }
 
-                if (hitCount > 0) {
-                    int currentStomach = stack.getOrDefault(SdataComponents.STOMACH_CONTENTS.get(), 0);
-                    int newStomach = Math.min(currentStomach + hitCount, getClipSize());
-                    stack.set(SdataComponents.STOMACH_CONTENTS.get(), newStomach);
+            if (hitCount > 0) {
+                int currentStomach = stack.getOrDefault(SdataComponents.STOMACH_CONTENTS.get(), 0);
+                int newStomach = Math.min(currentStomach + hitCount, getClipSize());
+                stack.set(SdataComponents.STOMACH_CONTENTS.get(), newStomach);
 
-                    level.playSound(null, player.getX(), player.getY(), player.getZ(),
-                            SoundEvents.PLAYER_ATTACK_SWEEP, SoundSource.PLAYERS, 1.0f, 1.0f);
-                }
+                level.playSound(null, player.getX(), player.getY(), player.getZ(),
+                        SoundEvents.PLAYER_ATTACK_SWEEP, SoundSource.PLAYERS, 1.0f, 1.0f);
             }
         }
 
