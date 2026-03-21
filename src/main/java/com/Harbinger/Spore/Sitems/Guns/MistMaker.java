@@ -42,7 +42,17 @@ public class MistMaker extends AbstractSporeGun implements CustomModelArmorData 
 
     @Override
     public int getClipSize() {
-        return 0;
+        return 60;
+    }
+
+    @Override
+    public int getAmmoUsage() {
+        return 4;
+    }
+
+    @Override
+    public int getBaseAmmoShotRequirement() {
+        return 4;
     }
 
     @Override

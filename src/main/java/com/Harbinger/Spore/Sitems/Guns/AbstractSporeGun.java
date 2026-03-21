@@ -41,7 +41,8 @@ public abstract class AbstractSporeGun extends BaseItem implements GunHeldItem, 
     public abstract int timeBeforeStomachContentsConvertIntoAmmo();
     public abstract int getClipSize();
     public abstract Item getAmmoItem();
-
+    public int getAmmoUsage(){return 1;}
+    public int getBaseAmmoShotRequirement(){return 1;}
 
     @Override
     public boolean onEntitySwing(ItemStack stack, LivingEntity entity, InteractionHand hand) {
@@ -123,6 +124,10 @@ public abstract class AbstractSporeGun extends BaseItem implements GunHeldItem, 
             player.playNotifySound(Ssounds.SYRINGE_SUCK.value(), SoundSource.AMBIENT, 1f, 1f);
         }
         if (clickAction == ClickAction.SECONDARY){
+            int current = stack.getOrDefault(SdataComponents.STOMACH_CONTENTS.get(), 0);
+            if (!needsToReload() && current >= getClipSize()){
+                return false;
+            }
             if (itemStack.getFoodProperties(player) == null){
                 return false;
             }
@@ -134,7 +139,6 @@ public abstract class AbstractSporeGun extends BaseItem implements GunHeldItem, 
 
                 int value = (int)(nutrition + saturation);
 
-                int current = stack.getOrDefault(SdataComponents.STOMACH_CONTENTS.get(), 0);
                 stack.set(SdataComponents.STOMACH_CONTENTS.get(), current + value);
                 itemStack.shrink(1);
             }

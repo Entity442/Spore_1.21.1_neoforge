@@ -35,7 +35,7 @@ public class BileBlaster extends AbstractSporeGun implements CustomModelArmorDat
 
     @Override
     public int getTimeBeforeChangingClip() {
-        return 10;
+        return 5;
     }
 
     @Override
