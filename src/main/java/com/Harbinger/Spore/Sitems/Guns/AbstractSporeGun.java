@@ -63,7 +63,7 @@ public abstract class AbstractSporeGun extends BaseItem implements GunHeldItem, 
                     if (getAmmoItem().equals(invStack.getItem())) {
 
                         invStack.shrink(1);
-                        gun.set(SdataComponents.FLESH_AMMO.get(), ammo + 1);
+                        gun.set(SdataComponents.FLESH_AMMO.get(), getClipSize());
                         gun.set(SdataComponents.RELOAD_DELAY.get(), getDefaultTimeBeforeReload());
 
                         break;
