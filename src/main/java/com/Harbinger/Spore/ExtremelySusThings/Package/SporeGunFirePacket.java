@@ -66,7 +66,6 @@ public record SporeGunFirePacket(int id,int hand) implements CustomPacketPayload
                 stack.set(SdataComponents.SHOOT_DELAY.get(), gun.getTimeBeforeChangingClip());
 
                 gun.serverShoot(stack, playerValue, interactionHand, vec3);
-                SporePacketHandler.sendToClient(new SporeGunFireSyncPacket(message.id, message.hand), playerValue);
             }
         }).exceptionally(e -> {
             e.printStackTrace();

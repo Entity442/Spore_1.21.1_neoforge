@@ -1,6 +1,7 @@
 package com.Harbinger.Spore.Sitems.Guns;
 
 import com.Harbinger.Spore.ExtremelySusThings.Package.SporeGunFirePacket;
+import com.Harbinger.Spore.ExtremelySusThings.Package.SporeGunFireSyncPacket;
 import com.Harbinger.Spore.ExtremelySusThings.SporePacketHandler;
 import com.Harbinger.Spore.Sitems.BaseItem;
 import com.Harbinger.Spore.Sitems.BaseWeapons.SporeToolsMutations;
@@ -34,6 +35,7 @@ import java.util.List;
 public abstract class AbstractSporeGun extends BaseItem implements GunHeldItem, SporeWeaponData {
     public AbstractSporeGun(int durability) {
         super(new Properties().stacksTo(1).durability(durability));
+        Sitems.TINTABLE_ITEMS.add(this);
     }
     public abstract boolean needsToReload();
     public abstract int getDefaultTimeBeforeReload();
@@ -80,6 +82,7 @@ public abstract class AbstractSporeGun extends BaseItem implements GunHeldItem, 
     public void triggerReloadAnimation(Player player){
 
     }
+
 
     @Override
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int slot, boolean selected) {
@@ -142,9 +145,8 @@ public abstract class AbstractSporeGun extends BaseItem implements GunHeldItem, 
                 itemStack.shrink(1);
             }
             player.playNotifySound(SoundEvents.GENERIC_EAT, SoundSource.AMBIENT, 1f, 1f);
-            return true;
         }
-        return false;
+        return shouldOverride;
     }
 
     @Override
@@ -175,9 +177,13 @@ public abstract class AbstractSporeGun extends BaseItem implements GunHeldItem, 
             tooltip.add(Component.literal("Reloading: " + reloadDelay + " ticks")
                     .withStyle(ChatFormatting.YELLOW));
         }
+        if (getVariant(stack) != SporeToolsMutations.DEFAULT) {
+            tooltip.add(Component.literal(Component.translatable("spore.item.mutation").getString() + Component.translatable(getVariant(stack).getName()).getString()));
+        }
     }
 
-    public void serverShoot(ItemStack stack, ServerPlayer player, InteractionHand interactionHand, Vec3 vec3) {
+    public void serverShoot(ItemStack stack, ServerPlayer player, InteractionHand hand, Vec3 vec3) {
+        SporePacketHandler.sendToClient(new SporeGunFireSyncPacket(player.getId(), hand == InteractionHand.MAIN_HAND ? 0 : 1), player);
     }
 
     public void clientShoot(Player player, InteractionHand interactionHand) {

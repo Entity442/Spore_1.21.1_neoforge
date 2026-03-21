@@ -1,5 +1,6 @@
 package com.Harbinger.Spore.Client.ArmorParts;
 
+import com.Harbinger.Spore.Sitems.BaseWeapons.SporeWeaponData;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
@@ -51,11 +52,12 @@ public abstract class ComplexHandModelItem {
         float yaw = Mth.lerp(partialTicks, livingEntity.yRotO, livingEntity.getYRot());
         float pitch = Mth.lerp(partialTicks, livingEntity.xRotO, livingEntity.getXRot());
         this.model.setupAnim(livingEntity, 0, 0, ticks, yaw, pitch);
-        renderModel(poseStack,consumer,light,bufferSource ,stack);
+        int color = stack.getItem() instanceof SporeWeaponData data ? data.getVariant(stack).getColor() : -1;
+        renderModel(poseStack,consumer,light,bufferSource ,stack,color);
     }
-    protected void renderModel(PoseStack poseStack,VertexConsumer consumer,int light,MultiBufferSource source,ItemStack stack){
+    protected void renderModel(PoseStack poseStack,VertexConsumer consumer,int light,MultiBufferSource source,ItemStack stack,int color){
         applyTransformEx(poseStack,this.x,this.y,this.z,this.expand,this.Xspin,this.Yspin,this.Zspin,() ->{
-            this.part.render(poseStack,consumer,light, OverlayTexture.NO_OVERLAY,-1);
+            this.part.render(poseStack,consumer,light, OverlayTexture.NO_OVERLAY,color);
         });
     }
 

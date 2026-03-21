@@ -59,7 +59,8 @@ public class BileBlaster extends AbstractSporeGun implements CustomModelArmorDat
     }
 
     @Override
-    public void serverShoot(ItemStack stack, ServerPlayer player, InteractionHand interactionHand, Vec3 vec3) {
+    public void serverShoot(ItemStack stack, ServerPlayer player, InteractionHand hand, Vec3 vec3) {
+        super.serverShoot(stack, player, hand, vec3);
         BileBullet bullet = new BileBullet(Sentities.BILE_BULLET.get(),player.level());
         bullet.moveTo(player.getX()+vec3.x, player.getY()+1.25D ,player.getZ()+vec3.z);
         bullet.shootFrom(player,2.5f,2);

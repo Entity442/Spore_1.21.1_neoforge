@@ -28,7 +28,7 @@ public class PCIHandModelItem extends ComplexHandModelItem{
     }
 
     @Override
-    protected void renderModel(PoseStack poseStack, VertexConsumer consumer, int light, MultiBufferSource source,ItemStack stack) {
+    protected void renderModel(PoseStack poseStack, VertexConsumer consumer, int light, MultiBufferSource source,ItemStack stack,int color) {
         applyTransformEx(poseStack,this.x,this.y,this.z,this.expand,this.Xspin,this.Yspin,this.Zspin,() ->{
             this.part.render(poseStack,consumer,light, OverlayTexture.NO_OVERLAY,-1);
             VertexConsumer vertexConsumer = displayglow(source,stack);

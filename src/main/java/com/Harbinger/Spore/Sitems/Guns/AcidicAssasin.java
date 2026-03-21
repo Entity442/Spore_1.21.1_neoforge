@@ -1,6 +1,7 @@
 package com.Harbinger.Spore.Sitems.Guns;
 
 import com.Harbinger.Spore.Client.AnimationTrackers.AssassinShootAnimationTracker;
+import com.Harbinger.Spore.ExtremelySusThings.Package.SporeGunFireSyncPacket;
 import com.Harbinger.Spore.ExtremelySusThings.SporePacketHandler;
 import com.Harbinger.Spore.Sentities.Projectile.GunProjectiles.AssassinBullet;
 import com.Harbinger.Spore.Sitems.CustomModelArmorData;
@@ -58,7 +59,8 @@ public class AcidicAssasin extends AbstractSporeGun implements CustomModelArmorD
     }
 
     @Override
-    public void serverShoot(ItemStack stack, ServerPlayer player, InteractionHand interactionHand, Vec3 vec3) {
+    public void serverShoot(ItemStack stack, ServerPlayer player, InteractionHand hand, Vec3 vec3) {
+        super.serverShoot(stack, player, hand, vec3);
         AssassinBullet bullet = new AssassinBullet(Sentities.ASSASSIN_BULLET.get(),player.level());
         bullet.moveTo(player.getX()+vec3.x, player.getY()+1.25D ,player.getZ()+vec3.z);
         bullet.shootFrom(player,5,0);
