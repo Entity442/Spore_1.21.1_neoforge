@@ -180,6 +180,7 @@ public class BileBlasterModel<T extends LivingEntity> extends EntityModel<T> imp
 			float anim = BileBlasterShootAnimationTracker.getProgress(player, 0);
 			this.Bile_Blaster.zRot = -anim * 0.025f;
 			this.barrel.x = barrel.x - anim * 2;
+			this.Bile_Blaster.z = this.Bile_Blaster.getInitialPose().z +(anim * 3);
 		}
 	}
 

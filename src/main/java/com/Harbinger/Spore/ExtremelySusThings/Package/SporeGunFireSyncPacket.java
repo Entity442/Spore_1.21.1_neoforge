@@ -30,7 +30,7 @@ public record SporeGunFireSyncPacket(int playerId, int hand) implements CustomPa
         context.enqueueWork(() -> {
             Player sender = context.player();
             Level level = sender.level();
-            if (level.isClientSide){
+            if (!level.isClientSide){
                 return;
             }
 

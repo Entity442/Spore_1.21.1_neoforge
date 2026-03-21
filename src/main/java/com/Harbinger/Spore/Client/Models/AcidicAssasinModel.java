@@ -129,6 +129,7 @@ public class AcidicAssasinModel<T extends LivingEntity> extends EntityModel<T> i
 		if (entity instanceof Player player){
 			float anim = AssassinShootAnimationTracker.getProgress(player, 0);
 			this.Caspian.xRot = -anim * 0.025f;
+			this.Caspian.z = this.Caspian.getInitialPose().z +(anim * 3);
 			this.barrelPiece1.z = barrelPiece1.z + anim * 4;
 		}
 	}

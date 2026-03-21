@@ -51,7 +51,7 @@ public abstract class AbstractSporeGun extends BaseItem implements GunHeldItem, 
         if (entity instanceof Player player && player.level().isClientSide()) {
             SporePacketHandler.sendToServer(new SporeGunFirePacket(player.getId(), hand == InteractionHand.MAIN_HAND ? 0 : 1));
         }
-        return true;
+        return false;
     }
 
 
@@ -145,8 +145,9 @@ public abstract class AbstractSporeGun extends BaseItem implements GunHeldItem, 
                 itemStack.shrink(1);
             }
             player.playNotifySound(SoundEvents.GENERIC_EAT, SoundSource.AMBIENT, 1f, 1f);
+            return true;
         }
-        return shouldOverride;
+        return false;
     }
 
     @Override
