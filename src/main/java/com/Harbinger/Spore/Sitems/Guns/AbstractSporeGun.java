@@ -51,15 +51,15 @@ public abstract class AbstractSporeGun extends BaseItem implements GunHeldItem, 
         if (entity instanceof Player player && player.level().isClientSide()) {
             SporePacketHandler.sendToServer(new SporeGunFirePacket(player.getId(), hand == InteractionHand.MAIN_HAND ? 0 : 1));
         }
-        return false;
+        return true;
     }
 
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack gun = player.getItemInHand(hand);
-        if (needsToReload() && !level.isClientSide) {
-            int ammo = gun.getOrDefault(SdataComponents.FLESH_AMMO.get(), 0);
+        int ammo = gun.getOrDefault(SdataComponents.FLESH_AMMO.get(), 0);
+        if (needsToReload() && !level.isClientSide && ammo < getClipSize()) {
             if (ammo <= getClipSize()) {
                 for (ItemStack invStack : player.getInventory().items) {
                     if (getAmmoItem().equals(invStack.getItem())) {
