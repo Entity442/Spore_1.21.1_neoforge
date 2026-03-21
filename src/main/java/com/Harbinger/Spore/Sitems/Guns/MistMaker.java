@@ -5,14 +5,25 @@ import com.Harbinger.Spore.Client.AnimationTrackers.MistMakerShootAnimationTrack
 import com.Harbinger.Spore.Sentities.Projectile.GunProjectiles.GoreBullet;
 import com.Harbinger.Spore.Sitems.CustomModelArmorData;
 import com.Harbinger.Spore.core.SConfig;
+import com.Harbinger.Spore.core.SdataComponents;
 import com.Harbinger.Spore.core.Sentities;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.UseAnim;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+
+import java.util.List;
 
 public class MistMaker extends AbstractSporeGun implements CustomModelArmorData {
     private static final ResourceLocation TEXTURE = ResourceLocation.parse("spore:textures/item/mistmaker.png");
@@ -75,10 +86,65 @@ public class MistMaker extends AbstractSporeGun implements CustomModelArmorData 
         }
     }
 
+
     @Override
-    public void triggerReloadAnimation(Player player) {
-        super.triggerReloadAnimation(player);
-        MistMakerSawAnimationTracker.trigger(player);
+    public UseAnim getUseAnimation(ItemStack stack) {
+        return UseAnim.NONE;
+    }
+
+    @Override
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+        ItemStack stack = player.getItemInHand(hand);
+
+        if (level.isClientSide()) {
+            MistMakerSawAnimationTracker.trigger(player);
+        } else {
+            if (player.tickCount % 10 == 0) {
+                Vec3 lookVec = player.getLookAngle();
+                double range = 4.0;
+                double radius = 1.5;
+
+                Vec3 startPos = player.getEyePosition();
+                AABB attackArea = new AABB(
+                        startPos.x - radius, startPos.y - radius, startPos.z - radius,
+                        startPos.x + radius, startPos.y + radius, startPos.z + radius
+                ).expandTowards(lookVec.scale(range));
+                List<Entity> entities = level.getEntities(player, attackArea,
+                        entity -> entity instanceof LivingEntity &&
+                                entity != player &&
+                                !entity.isSpectator() &&
+                                entity.isAlive()
+                );
+
+                int hitCount = 0;
+
+                for (Entity entity : entities) {
+                    Vec3 toEntity = entity.position().subtract(startPos).normalize();
+                    double dot = lookVec.dot(toEntity);
+
+                    if (dot > 0.5) {
+                        double distance = startPos.distanceTo(entity.position());
+                        if (distance <= range) {
+                            if (entity instanceof LivingEntity living) {
+                                living.hurt(level.damageSources().playerAttack(player), 5.0f);
+                                hitCount++;
+                            }
+                        }
+                    }
+                }
+
+                if (hitCount > 0) {
+                    int currentStomach = stack.getOrDefault(SdataComponents.STOMACH_CONTENTS.get(), 0);
+                    int newStomach = Math.min(currentStomach + hitCount, getClipSize());
+                    stack.set(SdataComponents.STOMACH_CONTENTS.get(), newStomach);
+
+                    level.playSound(null, player.getX(), player.getY(), player.getZ(),
+                            SoundEvents.PLAYER_ATTACK_SWEEP, SoundSource.PLAYERS, 1.0f, 1.0f);
+                }
+            }
+        }
+
+        return InteractionResultHolder.success(stack);
     }
 
     @Override

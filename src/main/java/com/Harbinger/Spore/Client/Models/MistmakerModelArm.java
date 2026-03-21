@@ -46,6 +46,8 @@ public class MistmakerModelArm<T extends LivingEntity> extends EntityModel<T> im
 	private final ModelPart tumor4;
 	private final ModelPart tumor5;
 	private final ModelPart flower;
+	private boolean switchSaw = false;
+	private int sawOut = 0;
 
 	public MistmakerModelArm() {
 		ModelPart root = createBodyLayer().bakeRoot();
@@ -219,7 +221,6 @@ public class MistmakerModelArm<T extends LivingEntity> extends EntityModel<T> im
 	public void animateLung(ModelPart part,float val){
 		part.xScale = 1 + val;
 	}
-	int counter = 0;
 	@Override
 	public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 		gun.getAllParts().forEach(ModelPart::resetPose);
@@ -236,9 +237,10 @@ public class MistmakerModelArm<T extends LivingEntity> extends EntityModel<T> im
 		animateTumor(tumor3,tum3);
 		animateTumor(tumor4,tum4);
 		animateTumor(tumor5,tum5);
-		if (counter >= 10){
-			counter = 0;
+		if (entity.tickCount % 10 == 0){
+			switchSaw = !switchSaw;
 		}
+
 		if (entity instanceof Player player){
 			float anim = MistMakerShootAnimationTracker.getProgress(player, 0);
 			this.B_L_end.z = B_L_end.z + anim;
@@ -247,15 +249,25 @@ public class MistmakerModelArm<T extends LivingEntity> extends EntityModel<T> im
 			this.Barrel_L.z = Barrel_L.z + anim;
 			this.gun.z = gun.z + anim/2;
 			float bite = MistMakerSawAnimationTracker.getProgress(player, 0);
-			float v = bite * 12;
-			tongue.z = tongue.z - v;
-			upperjaw.xRot = upperjaw.xRot - bite;
-			lowerjaw.xRot = lowerjaw.xRot + bite;
-			saw.z = saw.z - v;
-			saw2.z = saw2.z - v;
-			saw.visible = counter <= 5;
-			saw2.visible = counter > 5;
+			if (bite > 0){
+				if (sawOut < 40){
+					sawOut++;
+				}
+			}else {
+				if (sawOut > 0){
+					sawOut--;
+				}
+			}
 		}
+		float v = sawOut * 0.35f;
+		tongue.z = tongue.z - v;
+		upperjaw.xRot = upperjaw.xRot - sawOut * 0.025f;
+		lowerjaw.xRot = lowerjaw.xRot + sawOut * 0.025f;
+		saw.z = saw.z - v;
+		saw2.z = saw2.z - v;
+
+		saw.visible = switchSaw;
+		saw2.visible = !switchSaw;
 	}
 
 	@Override
