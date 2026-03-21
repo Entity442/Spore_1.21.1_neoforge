@@ -2,7 +2,6 @@ package com.Harbinger.Spore.Sitems.Guns;
 
 import com.Harbinger.Spore.Client.AnimationTrackers.MistMakerSawAnimationTracker;
 import com.Harbinger.Spore.Client.AnimationTrackers.MistMakerShootAnimationTracker;
-import com.Harbinger.Spore.ExtremelySusThings.SporePacketHandler;
 import com.Harbinger.Spore.Sentities.Projectile.GunProjectiles.GoreBullet;
 import com.Harbinger.Spore.Sitems.CustomModelArmorData;
 import com.Harbinger.Spore.core.SConfig;
@@ -10,7 +9,6 @@ import com.Harbinger.Spore.core.Sentities;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;

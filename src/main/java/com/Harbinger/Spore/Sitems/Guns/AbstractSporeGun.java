@@ -140,14 +140,12 @@ public abstract class AbstractSporeGun extends BaseItem implements GunHeldItem, 
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
 
         int stomach = stack.getOrDefault(SdataComponents.STOMACH_CONTENTS.get(), 0);
-        int reserve = stack.getOrDefault(SdataComponents.FLESH_AMMO.get(), 0);
-        int clip = stack.getOrDefault(SdataComponents.CLIP_SIZE.get(), 0);
+        int clip = stack.getOrDefault(SdataComponents.FLESH_AMMO.get(), 0);
 
         tooltip.add(Component.literal(""));
 
         if (needsToReload()) {
             tooltip.add(Component.literal("Stomach: " + stomach).withStyle(ChatFormatting.DARK_GREEN));
-            tooltip.add(Component.literal("Reserve Ammo: " + reserve).withStyle(ChatFormatting.GREEN));
             tooltip.add(Component.literal("Clip: " + clip + "/" + getClipSize()).withStyle(ChatFormatting.GOLD));
         } else {
             tooltip.add(Component.literal("Biomass: " + stomach + "/" + getClipSize())

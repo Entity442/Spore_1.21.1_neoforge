@@ -82,9 +82,6 @@ public class SdataComponents {
     public static final Supplier<DataComponentType<Integer>> STOMACH_CONTENTS = DATA_COMPONENTS.register(
             "stomach_contents", () -> DataComponentType.<Integer>builder().persistent(Codec.INT).build());
 
-    public static final Supplier<DataComponentType<Integer>> CLIP_SIZE = DATA_COMPONENTS.register(
-            "clip_size", () -> DataComponentType.<Integer>builder().persistent(Codec.INT).build());
-
     public static void register(IEventBus eventBus) {
         DATA_COMPONENTS.register(eventBus);
     }

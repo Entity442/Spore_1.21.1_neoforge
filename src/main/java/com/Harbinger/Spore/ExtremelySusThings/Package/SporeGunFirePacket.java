@@ -52,10 +52,10 @@ public record SporeGunFirePacket(int id,int hand) implements CustomPacketPayload
                 if (shootDelay > 0) return;
 
                 if (gun.needsToReload()) {
-                    int clip = stack.getOrDefault(SdataComponents.CLIP_SIZE.get(), 0);
+                    int clip = stack.getOrDefault(SdataComponents.FLESH_AMMO.get(), 0);
                     if (clip <= 0) return;
 
-                    stack.set(SdataComponents.CLIP_SIZE.get(), clip - 1);
+                    stack.set(SdataComponents.FLESH_AMMO.get(), clip - 1);
                 } else {
                     int stomach = stack.getOrDefault(SdataComponents.STOMACH_CONTENTS.get(), 0);
                     if (stomach <= 0) return;
