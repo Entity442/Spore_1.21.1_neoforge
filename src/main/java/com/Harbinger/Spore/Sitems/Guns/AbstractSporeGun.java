@@ -46,9 +46,9 @@ public abstract class AbstractSporeGun extends BaseItem implements GunHeldItem, 
     @Override
     public boolean onEntitySwing(ItemStack stack, LivingEntity entity, InteractionHand hand) {
         if (entity instanceof Player player) {
-            SporePacketHandler.sendToServer(new SporeGunFirePacket(player.getId(),hand == InteractionHand.MAIN_HAND ? -1 : 0));
+            SporePacketHandler.sendToServer(new SporeGunFirePacket(player.getId(), hand == InteractionHand.MAIN_HAND ? 0 : 1));
         }
-        return true;
+        return false;
     }
 
 
@@ -59,7 +59,6 @@ public abstract class AbstractSporeGun extends BaseItem implements GunHeldItem, 
             if (!level.isClientSide) {
                 int ammo = gun.getOrDefault(SdataComponents.FLESH_AMMO.get(), 0);
                 if (ammo <= getClipSize()) {
-                    // Try to find ammo item
                     for (ItemStack invStack : player.getInventory().items) {
                         if (getAmmoItem().equals(invStack.getItem())) {
 
@@ -84,7 +83,16 @@ public abstract class AbstractSporeGun extends BaseItem implements GunHeldItem, 
 
     @Override
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int slot, boolean selected) {
-        if (needsToReload()) {
+        int shootDelay = stack.getOrDefault(SdataComponents.SHOOT_DELAY.get(), 0);
+        if (shootDelay > 0) {
+            stack.set(SdataComponents.SHOOT_DELAY.get(), shootDelay - 1);
+        }
+
+        int reloadDelay = stack.getOrDefault(SdataComponents.RELOAD_DELAY.get(), 0);
+        if (reloadDelay > 0) {
+            stack.set(SdataComponents.RELOAD_DELAY.get(), reloadDelay - 1);
+        }
+        if (needsToReload() && stack.getOrDefault(SdataComponents.FLESH_AMMO.get(), 0) < getClipSize()) {
             int tick = (int)(level.getGameTime() % timeBeforeStomachContentsConvertIntoAmmo());
 
             if (tick == 0) {
@@ -124,10 +132,10 @@ public abstract class AbstractSporeGun extends BaseItem implements GunHeldItem, 
                 int nutrition = food.nutrition();
                 float saturation = food.saturation();
 
-                int value = (int)(nutrition + (saturation * 10));
+                int value = (int)(nutrition + saturation);
 
-                int current = itemStack.getOrDefault(SdataComponents.STOMACH_CONTENTS.get(), 0);
-                itemStack.set(SdataComponents.STOMACH_CONTENTS.get(), current + value);
+                int current = stack.getOrDefault(SdataComponents.STOMACH_CONTENTS.get(), 0);
+                stack.set(SdataComponents.STOMACH_CONTENTS.get(), current + value);
                 itemStack.shrink(1);
             }
             player.playNotifySound(SoundEvents.GENERIC_EAT, SoundSource.AMBIENT, 1f, 1f);

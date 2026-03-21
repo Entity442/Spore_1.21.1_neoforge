@@ -43,9 +43,9 @@ public record SporeGunFirePacket(int id,int hand) implements CustomPacketPayload
             if (truePlayer instanceof ServerPlayer playerValue) {
                 InteractionHand interactionHand = message.hand == 0 ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
                 ItemStack stack = playerValue.getItemInHand(interactionHand);
-                boolean right = message.hand() == -1;
-                Vec3 offset =  right ? new Vec3(-0.2,0,0.3) : new Vec3(-0.2,0,-0.3);
+                Vec3 offset = message.hand == 0 ? new Vec3(-0.2, 0, 0.3) : new Vec3(-0.2, 0, -0.3);
                 Vec3 vec3 = (offset).yRot(-playerValue.getYRot() * ((float)Math.PI / 180F) - ((float)Math.PI / 2F));
+
                 if (!(stack.getItem() instanceof AbstractSporeGun gun)) return;
 
                 int shootDelay = stack.getOrDefault(SdataComponents.SHOOT_DELAY.get(), 0);
@@ -65,9 +65,10 @@ public record SporeGunFirePacket(int id,int hand) implements CustomPacketPayload
 
                 stack.set(SdataComponents.SHOOT_DELAY.get(), gun.getTimeBeforeChangingClip());
 
-                gun.serverShoot(stack, playerValue, interactionHand,vec3);
-                SporePacketHandler.sendToClient(new SporeGunFireSyncPacket(message.id, message.hand),playerValue);
-            }}).exceptionally(e -> {
+                gun.serverShoot(stack, playerValue, interactionHand, vec3);
+                SporePacketHandler.sendToClient(new SporeGunFireSyncPacket(message.id, message.hand), playerValue);
+            }
+        }).exceptionally(e -> {
             e.printStackTrace();
             return null;
         });

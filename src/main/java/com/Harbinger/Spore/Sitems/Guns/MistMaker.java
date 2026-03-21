@@ -32,7 +32,7 @@ public class MistMaker extends AbstractSporeGun implements CustomModelArmorData 
 
     @Override
     public int getTimeBeforeChangingClip() {
-        return 40;
+        return 20;
     }
 
     @Override
