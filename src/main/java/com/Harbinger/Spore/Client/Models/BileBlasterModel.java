@@ -1,6 +1,7 @@
 package com.Harbinger.Spore.Client.Models;// Made with Blockbench 5.0.7
 // Exported for Minecraft version 1.17 or later with Mojang mappings
 // Paste this class into your mod and generate all required imports
+
 import com.Harbinger.Spore.Client.AnimationTrackers.BileBlasterReloadAnimationTracker;
 import com.Harbinger.Spore.Client.AnimationTrackers.BileBlasterShootAnimationTracker;
 import com.Harbinger.Spore.Spore;
@@ -20,6 +21,7 @@ public class BileBlasterModel<T extends LivingEntity> extends EntityModel<T> imp
 	// This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
 	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "bileblastermodel"), "main");
 	public final ModelPart Bile_Blaster;
+	private final ModelPart rotate;
 	private final ModelPart innards;
 	private final ModelPart head;
 	private final ModelPart jaw;
@@ -35,16 +37,17 @@ public class BileBlasterModel<T extends LivingEntity> extends EntityModel<T> imp
 	public BileBlasterModel() {
 		ModelPart root = createBodyLayer().bakeRoot();
 		this.Bile_Blaster = root.getChild("Bile_Blaster");
-		this.innards = this.Bile_Blaster.getChild("innards");
+		this.rotate = this.Bile_Blaster.getChild("rotate");
+		this.innards = this.rotate.getChild("innards");
 		this.head = this.innards.getChild("head");
 		this.jaw = this.head.getChild("jaw");
 		this.stomach = this.innards.getChild("stomach");
 		this.tumor3 = this.innards.getChild("tumor3");
 		this.tumor = this.innards.getChild("tumor");
 		this.tumor2 = this.innards.getChild("tumor2");
-		this.barrel = this.Bile_Blaster.getChild("barrel");
-		this.body = this.Bile_Blaster.getChild("body");
-		this.underbarre_and_grip = this.Bile_Blaster.getChild("underbarre_and_grip");
+		this.barrel = this.rotate.getChild("barrel");
+		this.body = this.rotate.getChild("body");
+		this.underbarre_and_grip = this.rotate.getChild("underbarre_and_grip");
 		this.trigger = this.underbarre_and_grip.getChild("trigger");
 	}
 
@@ -52,9 +55,11 @@ public class BileBlasterModel<T extends LivingEntity> extends EntityModel<T> imp
 		MeshDefinition meshdefinition = new MeshDefinition();
 		PartDefinition partdefinition = meshdefinition.getRoot();
 
-		PartDefinition Bile_Blaster = partdefinition.addOrReplaceChild("Bile_Blaster", CubeListBuilder.create(), PartPose.offsetAndRotation(-0.5F, 24.0F, 0.0F, 0.0F, 1.5708F, 0.0F));
+		PartDefinition Bile_Blaster = partdefinition.addOrReplaceChild("Bile_Blaster", CubeListBuilder.create(), PartPose.offset(-0.5F, 24.0F, 0.0F));
 
-		PartDefinition innards = Bile_Blaster.addOrReplaceChild("innards", CubeListBuilder.create().texOffs(84, 46).addBox(-25.0F, -1.0F, -9.0F, 9.0F, 0.0F, 7.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 0.0F, 0.0F));
+		PartDefinition rotate = Bile_Blaster.addOrReplaceChild("rotate", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, 1.5708F, 0.0F));
+
+		PartDefinition innards = rotate.addOrReplaceChild("innards", CubeListBuilder.create().texOffs(84, 46).addBox(-25.0F, -1.0F, -9.0F, 9.0F, 0.0F, 7.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 0.0F, 0.0F));
 
 		PartDefinition cube_r1 = innards.addOrReplaceChild("cube_r1", CubeListBuilder.create().texOffs(120, 91).addBox(-5.0F, -2.0F, -1.0F, 6.0F, 2.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-31.75F, -0.75F, 4.75F, 0.0779F, -0.7545F, 0.7718F));
 
@@ -63,14 +68,14 @@ public class BileBlasterModel<T extends LivingEntity> extends EntityModel<T> imp
 		PartDefinition cube_r3 = innards.addOrReplaceChild("cube_r3", CubeListBuilder.create().texOffs(84, 46).addBox(-5.0F, 0.0F, -6.5F, 9.0F, 0.0F, 7.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-20.0F, -1.0F, -2.5F, 0.2618F, 0.0F, 0.0F));
 
 		PartDefinition cube_r4 = innards.addOrReplaceChild("cube_r4", CubeListBuilder.create().texOffs(86, 103).addBox(-1.0F, -2.5F, -3.5F, 2.0F, 6.0F, 6.0F, new CubeDeformation(0.0F))
-				.texOffs(86, 103).addBox(-4.0F, -2.5F, -3.5F, 2.0F, 6.0F, 6.0F, new CubeDeformation(0.0F))
-				.texOffs(86, 103).addBox(-7.0F, -2.5F, -3.5F, 2.0F, 6.0F, 6.0F, new CubeDeformation(0.0F))
-				.texOffs(86, 103).addBox(-10.0F, -2.5F, -3.5F, 2.0F, 6.0F, 6.0F, new CubeDeformation(0.0F))
-				.texOffs(86, 103).addBox(2.0F, -2.5F, -3.5F, 2.0F, 6.0F, 6.0F, new CubeDeformation(0.0F))
-				.texOffs(86, 103).addBox(5.0F, -2.5F, -3.5F, 2.0F, 6.0F, 6.0F, new CubeDeformation(0.0F))
-				.texOffs(86, 103).addBox(8.0F, -2.5F, -3.5F, 2.0F, 6.0F, 6.0F, new CubeDeformation(0.0F))
-				.texOffs(86, 103).addBox(11.0F, -2.5F, -3.5F, 2.0F, 6.0F, 6.0F, new CubeDeformation(0.0F))
-				.texOffs(86, 103).addBox(14.0F, -2.5F, -3.5F, 2.0F, 6.0F, 6.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-19.0F, -4.2929F, 0.5F, 0.7854F, 0.0F, 0.0F));
+		.texOffs(86, 103).addBox(-4.0F, -2.5F, -3.5F, 2.0F, 6.0F, 6.0F, new CubeDeformation(0.0F))
+		.texOffs(86, 103).addBox(-7.0F, -2.5F, -3.5F, 2.0F, 6.0F, 6.0F, new CubeDeformation(0.0F))
+		.texOffs(86, 103).addBox(-10.0F, -2.5F, -3.5F, 2.0F, 6.0F, 6.0F, new CubeDeformation(0.0F))
+		.texOffs(86, 103).addBox(2.0F, -2.5F, -3.5F, 2.0F, 6.0F, 6.0F, new CubeDeformation(0.0F))
+		.texOffs(86, 103).addBox(5.0F, -2.5F, -3.5F, 2.0F, 6.0F, 6.0F, new CubeDeformation(0.0F))
+		.texOffs(86, 103).addBox(8.0F, -2.5F, -3.5F, 2.0F, 6.0F, 6.0F, new CubeDeformation(0.0F))
+		.texOffs(86, 103).addBox(11.0F, -2.5F, -3.5F, 2.0F, 6.0F, 6.0F, new CubeDeformation(0.0F))
+		.texOffs(86, 103).addBox(14.0F, -2.5F, -3.5F, 2.0F, 6.0F, 6.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-19.0F, -4.2929F, 0.5F, 0.7854F, 0.0F, 0.0F));
 
 		PartDefinition cube_r5 = innards.addOrReplaceChild("cube_r5", CubeListBuilder.create().texOffs(102, 8).addBox(-13.0F, -2.0F, -1.0F, 14.0F, 2.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-21.5F, 7.25F, 9.0F, 0.3356F, -0.2598F, 0.6426F));
 
@@ -116,36 +121,36 @@ public class BileBlasterModel<T extends LivingEntity> extends EntityModel<T> imp
 
 		PartDefinition cube_r20 = tumor2.addOrReplaceChild("cube_r20", CubeListBuilder.create().texOffs(116, 27).addBox(-5.0F, -4.0F, -1.0F, 6.0F, 6.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.3124F, 0.2079F, 0.0666F));
 
-		PartDefinition barrel = Bile_Blaster.addOrReplaceChild("barrel", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
+		PartDefinition barrel = rotate.addOrReplaceChild("barrel", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
 
 		PartDefinition cube_r21 = barrel.addOrReplaceChild("cube_r21", CubeListBuilder.create().texOffs(66, 66).addBox(-44.0F, -3.5F, -3.5F, 16.0F, 6.0F, 6.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(68.0F, -0.75F, 0.5F, -0.7854F, 0.0F, 0.0F));
 
 		PartDefinition cube_r22 = barrel.addOrReplaceChild("cube_r22", CubeListBuilder.create().texOffs(0, 0).addBox(-44.0F, -1.5F, -1.5F, 58.0F, 4.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(10.0F, -2.25F, 0.5F, -0.7854F, 0.0F, 0.0F));
 
-		PartDefinition body = Bile_Blaster.addOrReplaceChild("body", CubeListBuilder.create().texOffs(120, 87).addBox(11.0F, -4.75F, -0.5F, 7.0F, 2.0F, 2.0F, new CubeDeformation(0.0F))
-				.texOffs(0, 18).addBox(-30.0F, -5.0F, -2.0F, 42.0F, 6.0F, 5.0F, new CubeDeformation(0.0F))
-				.texOffs(0, 8).addBox(-33.0F, -4.0F, -1.5F, 47.0F, 6.0F, 4.0F, new CubeDeformation(0.0F))
-				.texOffs(32, 116).addBox(9.5F, -2.5F, -2.5F, 1.0F, 3.0F, 6.0F, new CubeDeformation(0.0F))
-				.texOffs(116, 46).addBox(6.5F, -2.5F, -2.5F, 1.0F, 3.0F, 6.0F, new CubeDeformation(0.0F))
-				.texOffs(118, 95).addBox(0.5F, -2.5F, -2.5F, 1.0F, 3.0F, 6.0F, new CubeDeformation(0.0F))
-				.texOffs(118, 104).addBox(3.5F, -2.5F, -2.5F, 1.0F, 3.0F, 6.0F, new CubeDeformation(0.0F))
-				.texOffs(114, 119).addBox(-8.5F, -2.5F, -2.5F, 1.0F, 3.0F, 6.0F, new CubeDeformation(0.0F))
-				.texOffs(120, 78).addBox(-2.5F, -2.5F, -2.5F, 1.0F, 3.0F, 6.0F, new CubeDeformation(0.0F))
-				.texOffs(46, 122).addBox(-11.5F, -2.5F, -2.5F, 1.0F, 3.0F, 6.0F, new CubeDeformation(0.0F))
-				.texOffs(66, 56).addBox(-28.0F, -5.5F, -0.5F, 38.0F, 1.0F, 2.0F, new CubeDeformation(0.0F))
-				.texOffs(0, 51).addBox(-28.5F, -5.25F, -1.5F, 38.0F, 1.0F, 4.0F, new CubeDeformation(0.0F))
-				.texOffs(0, 76).addBox(-28.5F, -2.5F, -2.5F, 13.0F, 3.0F, 6.0F, new CubeDeformation(0.0F))
-				.texOffs(66, 59).addBox(-26.5F, -4.5F, -2.5F, 29.0F, 1.0F, 6.0F, new CubeDeformation(0.0F))
-				.texOffs(122, 12).addBox(-5.5F, -2.5F, -2.5F, 1.0F, 3.0F, 6.0F, new CubeDeformation(0.0F))
-				.texOffs(70, 38).addBox(-12.0F, -2.5F, -0.5F, 20.0F, 6.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 0.0F, 0.0F));
+		PartDefinition body = rotate.addOrReplaceChild("body", CubeListBuilder.create().texOffs(120, 87).addBox(11.0F, -4.75F, -0.5F, 7.0F, 2.0F, 2.0F, new CubeDeformation(0.0F))
+		.texOffs(0, 18).addBox(-30.0F, -5.0F, -2.0F, 42.0F, 6.0F, 5.0F, new CubeDeformation(0.0F))
+		.texOffs(0, 8).addBox(-33.0F, -4.0F, -1.5F, 47.0F, 6.0F, 4.0F, new CubeDeformation(0.0F))
+		.texOffs(32, 116).addBox(9.5F, -2.5F, -2.5F, 1.0F, 3.0F, 6.0F, new CubeDeformation(0.0F))
+		.texOffs(116, 46).addBox(6.5F, -2.5F, -2.5F, 1.0F, 3.0F, 6.0F, new CubeDeformation(0.0F))
+		.texOffs(118, 95).addBox(0.5F, -2.5F, -2.5F, 1.0F, 3.0F, 6.0F, new CubeDeformation(0.0F))
+		.texOffs(118, 104).addBox(3.5F, -2.5F, -2.5F, 1.0F, 3.0F, 6.0F, new CubeDeformation(0.0F))
+		.texOffs(114, 119).addBox(-8.5F, -2.5F, -2.5F, 1.0F, 3.0F, 6.0F, new CubeDeformation(0.0F))
+		.texOffs(120, 78).addBox(-2.5F, -2.5F, -2.5F, 1.0F, 3.0F, 6.0F, new CubeDeformation(0.0F))
+		.texOffs(46, 122).addBox(-11.5F, -2.5F, -2.5F, 1.0F, 3.0F, 6.0F, new CubeDeformation(0.0F))
+		.texOffs(66, 56).addBox(-28.0F, -5.5F, -0.5F, 38.0F, 1.0F, 2.0F, new CubeDeformation(0.0F))
+		.texOffs(0, 51).addBox(-28.5F, -5.25F, -1.5F, 38.0F, 1.0F, 4.0F, new CubeDeformation(0.0F))
+		.texOffs(0, 76).addBox(-28.5F, -2.5F, -2.5F, 13.0F, 3.0F, 6.0F, new CubeDeformation(0.0F))
+		.texOffs(66, 59).addBox(-26.5F, -4.5F, -2.5F, 29.0F, 1.0F, 6.0F, new CubeDeformation(0.0F))
+		.texOffs(122, 12).addBox(-5.5F, -2.5F, -2.5F, 1.0F, 3.0F, 6.0F, new CubeDeformation(0.0F))
+		.texOffs(70, 38).addBox(-12.0F, -2.5F, -0.5F, 20.0F, 6.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 0.0F, 0.0F));
 
 		PartDefinition cube_r23 = body.addOrReplaceChild("cube_r23", CubeListBuilder.create().texOffs(70, 46).addBox(-1.0F, -1.0F, -1.0F, 1.0F, 2.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(11.5F, -5.0F, 0.5F, -0.7854F, 0.0F, 0.0F));
 
-		PartDefinition underbarre_and_grip = Bile_Blaster.addOrReplaceChild("underbarre_and_grip", CubeListBuilder.create().texOffs(70, 29).addBox(-32.0F, -1.0F, -1.0F, 20.0F, 6.0F, 3.0F, new CubeDeformation(0.0F))
-				.texOffs(86, 97).addBox(-30.75F, 2.5F, -1.5F, 11.0F, 2.0F, 4.0F, new CubeDeformation(0.0F))
-				.texOffs(28, 85).addBox(-18.75F, 2.5F, -1.5F, 1.0F, 2.0F, 4.0F, new CubeDeformation(0.0F))
-				.texOffs(122, 21).addBox(-16.75F, 2.5F, -1.5F, 1.0F, 2.0F, 4.0F, new CubeDeformation(0.0F))
-				.texOffs(60, 122).addBox(-14.75F, 2.5F, -1.5F, 1.0F, 2.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 0.0F, 0.0F));
+		PartDefinition underbarre_and_grip = rotate.addOrReplaceChild("underbarre_and_grip", CubeListBuilder.create().texOffs(70, 29).addBox(-32.0F, -1.0F, -1.0F, 20.0F, 6.0F, 3.0F, new CubeDeformation(0.0F))
+		.texOffs(86, 97).addBox(-30.75F, 2.5F, -1.5F, 11.0F, 2.0F, 4.0F, new CubeDeformation(0.0F))
+		.texOffs(28, 85).addBox(-18.75F, 2.5F, -1.5F, 1.0F, 2.0F, 4.0F, new CubeDeformation(0.0F))
+		.texOffs(122, 21).addBox(-16.75F, 2.5F, -1.5F, 1.0F, 2.0F, 4.0F, new CubeDeformation(0.0F))
+		.texOffs(60, 122).addBox(-14.75F, 2.5F, -1.5F, 1.0F, 2.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 0.0F, 0.0F));
 
 		PartDefinition cube_r24 = underbarre_and_grip.addOrReplaceChild("cube_r24", CubeListBuilder.create().texOffs(84, 53).addBox(-7.0F, -1.0F, -1.0F, 9.0F, 1.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-21.0F, 8.45F, 0.4F, 0.0F, 0.0F, 0.1745F));
 
@@ -183,8 +188,8 @@ public class BileBlasterModel<T extends LivingEntity> extends EntityModel<T> imp
 			this.Bile_Blaster.z = this.Bile_Blaster.getInitialPose().z +(anim * 3);
 
 			float reloadAnim = BileBlasterReloadAnimationTracker.getProgress(player,0);
-			this.Bile_Blaster.xRot = -reloadAnim * 0.25f;
-			this.Bile_Blaster.y = this.Bile_Blaster.getInitialPose().y -(reloadAnim * 0.5f);
+			this.Bile_Blaster.xRot = reloadAnim * 0.25f;
+			this.Bile_Blaster.y = this.Bile_Blaster.getInitialPose().y +(reloadAnim * 3f);
 		}
 	}
 
