@@ -95,7 +95,6 @@ public class MistMaker extends AbstractSporeGun implements CustomModelArmorData 
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
-
         if (level.isClientSide()) {
             MistMakerSawAnimationTracker.trigger(player);
         } else {
@@ -124,7 +123,7 @@ public class MistMaker extends AbstractSporeGun implements CustomModelArmorData 
                 if (dot > 0.5) {
                     double distance = startPos.distanceTo(entity.position());
                     if (distance <= range) {
-                        if (entity instanceof LivingEntity living) {
+                        if (entity instanceof LivingEntity living && living.hurtTime == 0) {
                             living.hurt(level.damageSources().playerAttack(player), 5.0f);
                             hitCount++;
                         }
@@ -141,8 +140,7 @@ public class MistMaker extends AbstractSporeGun implements CustomModelArmorData 
                         SoundEvents.PLAYER_ATTACK_SWEEP, SoundSource.PLAYERS, 1.0f, 1.0f);
             }
         }
-
-        return InteractionResultHolder.success(stack);
+        return super.use(level, player, hand);
     }
 
     @Override

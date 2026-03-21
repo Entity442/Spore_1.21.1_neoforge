@@ -46,7 +46,7 @@ public abstract class AbstractSporeGun extends BaseItem implements GunHeldItem, 
 
     @Override
     public boolean onEntitySwing(ItemStack stack, LivingEntity entity, InteractionHand hand) {
-        if (entity instanceof Player player) {
+        if (entity instanceof Player player && player.level().isClientSide()) {
             SporePacketHandler.sendToServer(new SporeGunFirePacket(player.getId(), hand == InteractionHand.MAIN_HAND ? 0 : 1));
         }
         return true;
@@ -56,28 +56,27 @@ public abstract class AbstractSporeGun extends BaseItem implements GunHeldItem, 
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack gun = player.getItemInHand(hand);
-        if (needsToReload()) {
-            if (!level.isClientSide) {
-                int ammo = gun.getOrDefault(SdataComponents.FLESH_AMMO.get(), 0);
-                if (ammo <= getClipSize()) {
-                    for (ItemStack invStack : player.getInventory().items) {
-                        if (getAmmoItem().equals(invStack.getItem())) {
+        if (needsToReload() && !level.isClientSide) {
+            int ammo = gun.getOrDefault(SdataComponents.FLESH_AMMO.get(), 0);
+            if (ammo <= getClipSize()) {
+                for (ItemStack invStack : player.getInventory().items) {
+                    if (getAmmoItem().equals(invStack.getItem())) {
 
-                            invStack.shrink(1);
-                            gun.set(SdataComponents.FLESH_AMMO.get(), ammo + 1);
-                            gun.set(SdataComponents.RELOAD_DELAY.get(), getDefaultTimeBeforeReload());
+                        invStack.shrink(1);
+                        gun.set(SdataComponents.FLESH_AMMO.get(), ammo + 1);
+                        gun.set(SdataComponents.RELOAD_DELAY.get(), getDefaultTimeBeforeReload());
 
-                            break;
-                        }
+                        break;
                     }
                 }
-            }else {
-                triggerReloadAnimation(player);
             }
             return InteractionResultHolder.success(gun);
+        }else {
+            triggerReloadAnimation(player);
         }
-        return InteractionResultHolder.pass(gun);
+        return super.use(level, player, hand);
     }
+
     public void triggerReloadAnimation(Player player){
 
     }
