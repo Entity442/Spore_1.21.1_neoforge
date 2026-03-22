@@ -1,7 +1,6 @@
 package com.Harbinger.Spore.ExtremelySusThings.Package;
 
 
-import com.Harbinger.Spore.ExtremelySusThings.SporePacketHandler;
 import com.Harbinger.Spore.Sitems.Guns.AbstractSporeGun;
 import com.Harbinger.Spore.Spore;
 import com.Harbinger.Spore.core.SdataComponents;
@@ -49,26 +48,27 @@ public record SporeGunFirePacket(int id) implements CustomPacketPayload{
                 int shootDelay = stack.getOrDefault(SdataComponents.SHOOT_DELAY.get(), 0);
                 int reloadDelay = stack.getOrDefault(SdataComponents.RELOAD_DELAY.get(), 0);
                 if (shootDelay > 0 || reloadDelay > 0) return;
-
                 if (gun.needsToReload()) {
                     int clip = stack.getOrDefault(SdataComponents.FLESH_AMMO.get(), 0);
                     if (clip < gun.getBaseAmmoShotRequirement()){
                         gun.playEmptyFireSounds(playerValue);
+                        stack.set(SdataComponents.SHOOT_DELAY.get(), 5);
+                        playerValue.getCooldowns().addCooldown(gun,5);
                         return;
                     }
-
                     stack.set(SdataComponents.FLESH_AMMO.get(), clip - gun.getAmmoUsage());
                 } else {
                     int stomach = stack.getOrDefault(SdataComponents.STOMACH_CONTENTS.get(), 0);
                     if (stomach < gun.getBaseAmmoShotRequirement()) {
                         gun.playEmptyFireSounds(playerValue);
+                        stack.set(SdataComponents.SHOOT_DELAY.get(), 5);
+                        playerValue.getCooldowns().addCooldown(gun,5);
                         return;
                     }
-
                     stack.set(SdataComponents.STOMACH_CONTENTS.get(), stomach - gun.getAmmoUsage());
                 }
-
                 stack.set(SdataComponents.SHOOT_DELAY.get(), gun.getTimeBeforeChangingClip());
+                playerValue.getCooldowns().addCooldown(gun,gun.getTimeBeforeChangingClip());
 
                 gun.serverShoot(stack, playerValue, InteractionHand.MAIN_HAND, vec3);
             }

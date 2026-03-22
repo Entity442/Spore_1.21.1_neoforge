@@ -539,11 +539,7 @@ public class ClientModEvents {
                 int shootDelay = stack.getOrDefault(SdataComponents.SHOOT_DELAY.get(), 0);
                 int reloadDelay = stack.getOrDefault(SdataComponents.RELOAD_DELAY.get(), 0);
 
-                int ammo = gun.needsToReload()
-                        ? stack.getOrDefault(SdataComponents.FLESH_AMMO.get(), 0)
-                        : stack.getOrDefault(SdataComponents.STOMACH_CONTENTS.get(), 0);
-
-                if (ammo >= gun.getBaseAmmoShotRequirement() && shootDelay <= 0 && reloadDelay <= 0 && !player.getCooldowns().isOnCooldown(gun)) {
+                if (shootDelay <= 0 && reloadDelay <= 0 && !player.getCooldowns().isOnCooldown(gun)) {
                     SporePacketHandler.sendToServer(new SporeGunFirePacket(player.getId()));
                 }
             }
