@@ -13,6 +13,7 @@ import com.Harbinger.Spore.Sentities.ChunkLoaderMob;
 import com.Harbinger.Spore.Sentities.EvolvedInfected.Protector;
 import com.Harbinger.Spore.Sentities.Organoids.Proto;
 import com.Harbinger.Spore.Sitems.BaseWeapons.SporeBaseArmor;
+import com.Harbinger.Spore.Sitems.Guns.AbstractSporeGun;
 import com.Harbinger.Spore.Spore;
 import com.Harbinger.Spore.core.*;
 import net.minecraft.core.Holder;
@@ -43,6 +44,7 @@ import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.entity.*;
 import net.neoforged.neoforge.event.entity.EntityEvent;
 import net.neoforged.neoforge.event.entity.living.*;
+import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
 import net.neoforged.neoforge.event.entity.player.CanPlayerSleepEvent;
 import net.neoforged.neoforge.event.entity.player.ItemFishedEvent;
 import net.neoforged.neoforge.event.level.LevelEvent;
@@ -303,5 +305,14 @@ public class HandlerEvents {
         event.addListener(new SporeConversionReloadListener());
         event.addListener(new SporeMobConversionReloadListener());
         event.addListener(new SporeCduConversionReloadListener());
+    }
+
+    @SubscribeEvent
+    public static void onAttack(AttackEntityEvent event) {
+        Player player = event.getEntity();
+
+        if (player.getMainHandItem().getItem() instanceof AbstractSporeGun) {
+            event.setCanceled(true);
+        }
     }
 }
