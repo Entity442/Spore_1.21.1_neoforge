@@ -127,7 +127,7 @@ public class AcidicAssasinArmModel<T extends LivingEntity> extends EntityModel<T
 		animateTentacleX(jaw, Mth.sin(ageInTicks/6)/8);
 		if (entity instanceof Player player){
 			float anim = AssassinShootAnimationTracker.getProgress(player, 0);
-			this.barrelPiece1.z = barrelPiece1.z + anim * 4;
+			this.barrelPiece1.z = barrelPiece1.z + (anim * 7);
 		}
 	}
 
