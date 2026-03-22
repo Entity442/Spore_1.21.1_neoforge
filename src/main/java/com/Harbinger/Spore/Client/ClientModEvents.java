@@ -466,6 +466,7 @@ public class ClientModEvents {
         BileBlasterShootAnimationTracker.tickAll();
         BileBlasterReloadAnimationTracker.tickAll();
         AssassinShootAnimationTracker.tickAll();
+        AssassinReloadAnimationTracker.tickAll();
     }
     @SubscribeEvent
     public static void onRenderHand(RenderHandEvent event) {

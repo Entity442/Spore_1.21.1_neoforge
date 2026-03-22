@@ -59,22 +59,23 @@ public abstract class AbstractSporeGun extends BaseItem implements GunHeldItem, 
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack gun = player.getItemInHand(hand);
         int ammo = gun.getOrDefault(SdataComponents.FLESH_AMMO.get(), 0);
-        if (needsToReload() && !level.isClientSide && ammo < getClipSize()) {
+        if (needsToReload() && ammo < getClipSize()) {
             if (ammo <= getClipSize()) {
                 for (ItemStack invStack : player.getInventory().items) {
                     if (getAmmoItem().equals(invStack.getItem())) {
-
-                        invStack.shrink(1);
-                        gun.set(SdataComponents.FLESH_AMMO.get(), getClipSize());
-                        gun.set(SdataComponents.RELOAD_DELAY.get(), getDefaultTimeBeforeReload());
-
+                        if (level.isClientSide){
+                            triggerReloadAnimation(player);
+                            player.playNotifySound(Ssounds.BIOGUN_RELOAD.value(),SoundSource.MASTER,1,1);
+                        }else {
+                            player.getCooldowns().addCooldown(this,getDefaultTimeBeforeReload());
+                            invStack.shrink(1);
+                            gun.set(SdataComponents.FLESH_AMMO.get(), getClipSize());
+                            gun.set(SdataComponents.RELOAD_DELAY.get(), getDefaultTimeBeforeReload());
+                        }
                         break;
                     }
                 }
             }
-            return InteractionResultHolder.success(gun);
-        }else {
-            triggerReloadAnimation(player);
         }
         return super.use(level, player, hand);
     }

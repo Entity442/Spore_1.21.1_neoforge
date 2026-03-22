@@ -434,6 +434,10 @@ public class Sitems {
             AcidicAssasin::new);
     public  static final DeferredItem<Item> VIGIL_EYE = ITEMS.register("vigil_eye",
             VigilEye::new);
+    public  static final DeferredItem<Item> BILE_VIAL = ITEMS.register("bile_vial",
+            () -> new BaseItem(new Item.Properties()));
+    public  static final DeferredItem<Item> ACID_VIAL = ITEMS.register("acid_vial",
+            () -> new BaseItem(new Item.Properties()));
     public static final DeferredItem<Item> SYMBIOTIC_REAGENT = ITEMS.register("symbiotic_reagent",
             () -> new BiologicalReagent(BiologicalReagent.AcceptedTypes.ALL_TYPES,Senchantments.SYMBIOTIC_RECONSTITUTION));
     public  static final DeferredItem<Item> CRYOGENIC_REAGENT = ITEMS.register("cryogenic_reagent",

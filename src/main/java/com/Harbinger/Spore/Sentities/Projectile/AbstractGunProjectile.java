@@ -4,15 +4,18 @@ import com.Harbinger.Spore.Sentities.BaseEntities.CalamityMultipart;
 import com.Harbinger.Spore.Sitems.BaseWeapons.SporeToolsMutations;
 import com.Harbinger.Spore.Sitems.BaseWeapons.SporeWeaponData;
 import com.Harbinger.Spore.core.Sitems;
+import com.Harbinger.Spore.core.Ssounds;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -75,7 +78,11 @@ public abstract class AbstractGunProjectile extends AbstractArrow implements Spo
             }
             living.hurt(level().damageSources().mobProjectile(this,owner),damage);
             doHitAfterEffects(living,owner);
-            playSound(entityImpactSound());
+            if (living instanceof Player && owner instanceof Player player){
+                player.playNotifySound(Ssounds.BIOGUN_HIT_PLAYER.value(), SoundSource.MASTER,1,1);
+            }else {
+                playSound(entityImpactSound());
+            }
         }
     }
     public SporeToolsMutations getMutationVariant() {
@@ -131,7 +138,11 @@ public abstract class AbstractGunProjectile extends AbstractArrow implements Spo
             this.discard();
         }
         if (level().isClientSide){
-            level().addParticle(getParticle(),this.getX(),this.getY(),this.getZ(),0,-0.02,0);
+            int i = this.getMutationVariant().getColor();
+            float r = (float) (i >> 16 & 255) / 255.0F;
+            float g = (float) (i >> 8 & 255) / 255.0F;
+            float b = (float) (i & 255) / 255.0F;
+            level().addParticle(getParticle(),this.getX(),this.getY(),this.getZ(),r,g,b);
         }
     }
 }

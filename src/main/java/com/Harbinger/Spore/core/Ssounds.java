@@ -379,6 +379,10 @@ public class Ssounds {
     public static final Holder<SoundEvent> ASSASSIN_BULLET_BLOCK = soundRegistry("assassin_bullet_block");
 
     public static final Holder<SoundEvent> ASSASSIN_BULLET_ENTITY = soundRegistry("assassin_bullet_entity");
+
+    public static final Holder<SoundEvent> BIOGUN_RELOAD = soundRegistry("biogun_reload");
+
+    public static final Holder<SoundEvent> BIOGUN_HIT_PLAYER = soundRegistry("biogun_hit_player");
     private Ssounds() {
     }
 

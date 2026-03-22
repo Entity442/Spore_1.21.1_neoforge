@@ -1025,6 +1025,16 @@
     "spore:assassin_bullet_entity",
     "spore:assassin_bullet_entity2"
   ]
+},"biogun_reload" :{
+  "subtitle": "sounds.spore.weapon_use",
+  "sounds": [
+    "spore:biogun_reload"
+  ]
+},"biogun_hit_player" :{
+  "subtitle": "sounds.spore.weapon_use",
+  "sounds": [
+    "spore:biogun_hitmark_player"
+  ]
 }
 
 }

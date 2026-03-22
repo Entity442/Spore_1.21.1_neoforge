@@ -1,5 +1,6 @@
 package com.Harbinger.Spore.Sitems.Guns;
 
+import com.Harbinger.Spore.Client.AnimationTrackers.AssassinReloadAnimationTracker;
 import com.Harbinger.Spore.Client.AnimationTrackers.AssassinShootAnimationTracker;
 import com.Harbinger.Spore.Sentities.Projectile.GunProjectiles.AssassinBullet;
 import com.Harbinger.Spore.Sitems.CustomModelArmorData;
@@ -49,7 +50,13 @@ public class AcidicAssasin extends AbstractSporeGun implements CustomModelArmorD
 
     @Override
     public Item getAmmoItem() {
-        return Sitems.CORROSIVE_SACK.asItem();
+        return Sitems.ACID_VIAL.asItem();
+    }
+
+    @Override
+    public void triggerReloadAnimation(Player player) {
+        super.triggerReloadAnimation(player);
+        AssassinReloadAnimationTracker.trigger(player);
     }
 
     @Override

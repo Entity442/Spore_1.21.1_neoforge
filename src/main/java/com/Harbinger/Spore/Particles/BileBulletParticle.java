@@ -8,20 +8,20 @@ import net.neoforged.api.distmarker.OnlyIn;
 
 public class BileBulletParticle extends TextureSheetParticle {
 
-    protected BileBulletParticle(ClientLevel level, double xCoord, double yCoord, double zCoord, double xd, double yd, double zd) {
-        super(level, xCoord, yCoord, zCoord, xd, yd, zd);
+    protected BileBulletParticle(ClientLevel level, double xCoord, double yCoord, double zCoord, double r, double g, double b) {
+        super(level, xCoord, yCoord, zCoord, 0,-0.02,0);
         this.gravity = 1f;
         this.hasPhysics = true;
         this.friction = 0F;
-        this.xd = xd;
-        this.yd = yd;
-        this.zd = zd;
+        this.xd = 0;
+        this.yd = -0.02;
+        this.zd = 0;
         this.quadSize *= 1.2F;
         this.lifetime = 30;
 
-        this.rCol = 1f;
-        this.gCol = 1f;
-        this.bCol = 1f;
+        this.rCol = (float) r;
+        this.gCol = (float) g;
+        this.bCol = (float) b;
     }
 
     @Override

@@ -16,6 +16,6 @@ public class AcidicAssassinPart extends ComplexHandModelItem{
 
     @Override
     public RenderType type(ResourceLocation location) {
-        return RenderType.entityCutout(location);
+        return RenderType.entityTranslucent(location);
     }
 }
