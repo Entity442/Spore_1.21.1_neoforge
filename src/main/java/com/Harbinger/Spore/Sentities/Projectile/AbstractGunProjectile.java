@@ -131,7 +131,7 @@ public abstract class AbstractGunProjectile extends AbstractArrow implements Spo
             this.discard();
         }
         if (level().isClientSide){
-            level().addParticle(getParticle(),this.getX(),this.getY(),this.getZ(),0,-0.01,0);
+            level().addParticle(getParticle(),this.getX(),this.getY(),this.getZ(),0,-0.02,0);
         }
     }
 }
