@@ -1007,6 +1007,24 @@
     "spore:bile_blaster_bullet_entity",
     "spore:bile_blaster_bullet_entity2"
   ]
+},"assassin_shot" :{
+  "subtitle": "sounds.spore.weapon_use",
+  "sounds": [
+    "spore:assassin_shot1",
+    "spore:assassin_shot2"
+  ]
+},"assassin_bullet_block" :{
+  "subtitle": "sounds.spore.weapon_use",
+  "sounds": [
+    "spore:assassin_bullet_block",
+    "spore:assassin_bullet_block2"
+  ]
+},"assassin_bullet_entity" :{
+  "subtitle": "sounds.spore.weapon_use",
+  "sounds": [
+    "spore:assassin_bullet_entity",
+    "spore:assassin_bullet_entity2"
+  ]
 }
 
 }

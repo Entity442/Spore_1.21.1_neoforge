@@ -80,8 +80,10 @@ public class MistMaker extends AbstractSporeGun implements CustomModelArmorData 
     @Override
     public void serverShoot(ItemStack stack, ServerPlayer player, InteractionHand hand, Vec3 vec3) {
         super.serverShoot(stack, player, hand, vec3);
+        int getVar = this.getTypeVariant(stack);
         for (int i = 0;i<4;i++){
             GoreBullet bullet = new GoreBullet(Sentities.GORE_BULLET.get(),player.level());
+            bullet.setVariant(getVar);
             bullet.moveTo(player.getX()+vec3.x, player.getY()+1.25D ,player.getZ()+vec3.z);
             bullet.shootFrom(player,1.5f,6);
             player.level().addFreshEntity(bullet);

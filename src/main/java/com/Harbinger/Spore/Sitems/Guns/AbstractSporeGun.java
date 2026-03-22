@@ -90,6 +90,9 @@ public abstract class AbstractSporeGun extends BaseItem implements GunHeldItem, 
 
     @Override
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int slot, boolean selected) {
+        if (level.isClientSide){
+            return;
+        }
         int shootDelay = stack.getOrDefault(SdataComponents.SHOOT_DELAY.get(), 0);
         if (shootDelay > 0) {
             stack.set(SdataComponents.SHOOT_DELAY.get(), shootDelay - 1);

@@ -20,12 +20,12 @@ public class AssassinBullet extends AbstractGunProjectile implements ArmorPersen
 
     @Override
     public SoundEvent blockImpactSound() {
-        return Ssounds.INFECTED_WEAPON_THROW.value();
+        return Ssounds.ASSASSIN_BULLET_BLOCK.value();
     }
 
     @Override
     public SoundEvent entityImpactSound() {
-        return Ssounds.INFECTED_WEAPON_THROW.value();
+        return Ssounds.ASSASSIN_BULLET_ENTITY.value();
     }
 
     @Override
