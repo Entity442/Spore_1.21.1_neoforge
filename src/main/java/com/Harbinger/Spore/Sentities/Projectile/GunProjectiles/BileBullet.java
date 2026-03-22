@@ -20,12 +20,12 @@ public class BileBullet extends AbstractGunProjectile {
 
     @Override
     public SoundEvent blockImpactSound() {
-        return Ssounds.INFECTED_WEAPON_THROW.value();
+        return Ssounds.BILE_BLASTER_BULLET_BLOCK.value();
     }
 
     @Override
     public SoundEvent entityImpactSound() {
-        return Ssounds.INFECTED_WEAPON_THROW.value();
+        return Ssounds.BILE_BLASTER_BULLET_ENTITY.value();
     }
 
     @Override

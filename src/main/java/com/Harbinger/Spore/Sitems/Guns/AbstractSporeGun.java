@@ -83,6 +83,10 @@ public abstract class AbstractSporeGun extends BaseItem implements GunHeldItem, 
 
     }
 
+    public void playEmptyFireSounds(ServerPlayer player){
+        player.level().playSound(null, player.getX(), player.getY(), player.getZ(),
+                Ssounds.BIOGUN_NO_AMMO, SoundSource.PLAYERS, 1.0f, 1.0f);
+    }
 
     @Override
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int slot, boolean selected) {

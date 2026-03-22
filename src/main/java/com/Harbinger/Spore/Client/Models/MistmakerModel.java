@@ -6,6 +6,7 @@ package com.Harbinger.Spore.Client.Models;// Made with Blockbench 5.0.7
 import com.Harbinger.Spore.Client.AnimationTrackers.MistMakerSawAnimationTracker;
 import com.Harbinger.Spore.Client.AnimationTrackers.MistMakerShootAnimationTracker;
 import com.Harbinger.Spore.Spore;
+import com.Harbinger.Spore.core.Ssounds;
 import net.minecraft.client.model.EntityModel;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -14,6 +15,7 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -252,10 +254,16 @@ public class MistmakerModel<T extends LivingEntity> extends EntityModel<T> imple
 			if (bite > 0){
 				if (sawOut < 40){
 					sawOut++;
+					if (sawOut == 10){
+						player.playNotifySound(Ssounds.MISTMAKER_DEPLOY.value(),SoundSource.MASTER,1,1);
+					}
 				}
 			}else {
 				if (sawOut > 0){
 					sawOut--;
+					if (sawOut == 30){
+						player.playNotifySound(Ssounds.MISTMAKER_RETRACT.value(),SoundSource.MASTER,1,1);
+					}
 				}
 			}
 		}

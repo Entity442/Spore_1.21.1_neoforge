@@ -7,8 +7,10 @@ import com.Harbinger.Spore.Sitems.CustomModelArmorData;
 import com.Harbinger.Spore.core.SConfig;
 import com.Harbinger.Spore.core.Sentities;
 import com.Harbinger.Spore.core.Sitems;
+import com.Harbinger.Spore.core.Ssounds;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -63,6 +65,8 @@ public class BileBlaster extends AbstractSporeGun implements CustomModelArmorDat
         bullet.moveTo(player.getX()+vec3.x, player.getY()+1.25D ,player.getZ()+vec3.z);
         bullet.shootFrom(player,2.5f,2);
         player.level().addFreshEntity(bullet);
+        player.level().playSound(null, player.getX(), player.getY(), player.getZ(),
+                Ssounds.BILE_BLASTER_SHOT, SoundSource.PLAYERS, 1.0f, 1.0f);
     }
 
     @Override

@@ -7,6 +7,7 @@ import com.Harbinger.Spore.Sitems.CustomModelArmorData;
 import com.Harbinger.Spore.core.SConfig;
 import com.Harbinger.Spore.core.SdataComponents;
 import com.Harbinger.Spore.core.Sentities;
+import com.Harbinger.Spore.core.Ssounds;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -85,6 +86,8 @@ public class MistMaker extends AbstractSporeGun implements CustomModelArmorData 
             bullet.shootFrom(player,1.5f,6);
             player.level().addFreshEntity(bullet);
         }
+        player.level().playSound(null, player.getX(), player.getY(), player.getZ(),
+                Ssounds.MISTMAKER_SHOT, SoundSource.PLAYERS, 1.0f, 1.0f);
     }
 
     @Override
@@ -137,7 +140,7 @@ public class MistMaker extends AbstractSporeGun implements CustomModelArmorData 
                 stack.set(SdataComponents.STOMACH_CONTENTS.get(), newStomach);
 
                 level.playSound(null, player.getX(), player.getY(), player.getZ(),
-                        SoundEvents.PLAYER_ATTACK_SWEEP, SoundSource.PLAYERS, 1.0f, 1.0f);
+                        Ssounds.MISTMAKER_BITE, SoundSource.PLAYERS, 1.0f, 1.0f);
             }
         }
         return super.use(level, player, hand);

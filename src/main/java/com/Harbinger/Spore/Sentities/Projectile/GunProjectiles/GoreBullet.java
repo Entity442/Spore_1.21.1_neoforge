@@ -17,12 +17,12 @@ public class GoreBullet extends AbstractGunProjectile {
 
     @Override
     public SoundEvent blockImpactSound() {
-        return Ssounds.INFECTED_WEAPON_THROW.value();
+        return Ssounds.MISTMAKER_BULLET_BLOCK.value();
     }
 
     @Override
     public SoundEvent entityImpactSound() {
-        return Ssounds.INFECTED_WEAPON_THROW.value();
+        return Ssounds.MISTMAKER_BULLET_ENTITY.value();
     }
 
     @Override
