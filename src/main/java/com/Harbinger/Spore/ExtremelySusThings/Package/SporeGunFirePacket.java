@@ -18,18 +18,17 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-public record SporeGunFirePacket(int id,int hand) implements CustomPacketPayload{
+public record SporeGunFirePacket(int id) implements CustomPacketPayload{
     public static final CustomPacketPayload.Type<SporeGunFirePacket> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "gun_processing"));
     public static final StreamCodec<FriendlyByteBuf, SporeGunFirePacket> STREAM_CODEC = StreamCodec.of(
             SporeGunFirePacket::encode,
             SporeGunFirePacket::new
     );
     public SporeGunFirePacket(FriendlyByteBuf buffer) {
-        this(buffer.readInt(),buffer.readInt());
+        this(buffer.readInt());
     }
     public static void encode(FriendlyByteBuf buffer, SporeGunFirePacket packet) {
         buffer.writeInt(packet.id);
-        buffer.writeInt(packet.hand);
     }
 
     public static void handle(SporeGunFirePacket message, IPayloadContext context) {
@@ -41,9 +40,8 @@ public record SporeGunFirePacket(int id,int hand) implements CustomPacketPayload
             }
             Entity truePlayer = level.getEntity(message.id);
             if (truePlayer instanceof ServerPlayer playerValue) {
-                InteractionHand interactionHand = message.hand == 0 ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
-                ItemStack stack = playerValue.getItemInHand(interactionHand);
-                Vec3 offset = message.hand == 0 ? new Vec3(-0.2, 0, 0.3) : new Vec3(-0.2, 0, -0.3);
+                ItemStack stack = playerValue.getItemInHand(InteractionHand.MAIN_HAND);
+                Vec3 offset =  new Vec3(-0.2, 0, 0.3);
                 Vec3 vec3 = (offset).yRot(-playerValue.getYRot() * ((float)Math.PI / 180F) - ((float)Math.PI / 2F));
 
                 if (!(stack.getItem() instanceof AbstractSporeGun gun)) return;
@@ -72,7 +70,7 @@ public record SporeGunFirePacket(int id,int hand) implements CustomPacketPayload
 
                 stack.set(SdataComponents.SHOOT_DELAY.get(), gun.getTimeBeforeChangingClip());
 
-                gun.serverShoot(stack, playerValue, interactionHand, vec3);
+                gun.serverShoot(stack, playerValue, InteractionHand.MAIN_HAND, vec3);
             }
         }).exceptionally(e -> {
             e.printStackTrace();

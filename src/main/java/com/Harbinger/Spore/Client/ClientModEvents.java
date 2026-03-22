@@ -532,10 +532,8 @@ public class ClientModEvents {
         Minecraft mc = Minecraft.getInstance();
         LocalPlayer player = mc.player;
         if (player == null) return;
-        if (mc.options.keyAttack.isDown() || mc.options.keyUse.isDown()) {
-            InteractionHand hand = mc.options.keyAttack.isDown() ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
-            ItemStack stack = player.getItemInHand(hand);
-
+        if (mc.options.keyAttack.isDown()) {
+            ItemStack stack = player.getItemInHand(InteractionHand.MAIN_HAND);
             if (stack.getItem() instanceof AbstractSporeGun gun) {
 
                 int shootDelay = stack.getOrDefault(SdataComponents.SHOOT_DELAY.get(), 0);
@@ -546,7 +544,7 @@ public class ClientModEvents {
                         : stack.getOrDefault(SdataComponents.STOMACH_CONTENTS.get(), 0);
 
                 if (ammo >= gun.getBaseAmmoShotRequirement() && shootDelay <= 0 && reloadDelay <= 0 && !player.getCooldowns().isOnCooldown(gun)) {
-                    SporePacketHandler.sendToServer(new SporeGunFirePacket(player.getId(),hand == InteractionHand.MAIN_HAND ? 0 : 1));
+                    SporePacketHandler.sendToServer(new SporeGunFirePacket(player.getId()));
                 }
             }
         }
