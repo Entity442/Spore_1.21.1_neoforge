@@ -1,6 +1,5 @@
 package com.Harbinger.Spore.Sitems.Guns;
 
-import com.Harbinger.Spore.ExtremelySusThings.Package.SporeGunFirePacket;
 import com.Harbinger.Spore.ExtremelySusThings.Package.SporeGunFireSyncPacket;
 import com.Harbinger.Spore.ExtremelySusThings.SporePacketHandler;
 import com.Harbinger.Spore.Sitems.BaseItem;
@@ -18,7 +17,6 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodProperties;
@@ -46,13 +44,6 @@ public abstract class AbstractSporeGun extends BaseItem implements GunHeldItem, 
     public int getAmmoUsage(){return 1;}
     public int getBaseAmmoShotRequirement(){return 1;}
 
-    @Override
-    public boolean onEntitySwing(ItemStack stack, LivingEntity entity, InteractionHand hand) {
-        if (entity instanceof Player player && player.level().isClientSide() && tooHurt(stack)) {
-            SporePacketHandler.sendToServer(new SporeGunFirePacket(player.getId(), hand == InteractionHand.MAIN_HAND ? 0 : 1));
-        }
-        return true;
-    }
 
 
     @Override

@@ -9,6 +9,8 @@ import com.Harbinger.Spore.Client.Models.NukeParts.BombFunnelModel;
 import com.Harbinger.Spore.Client.Models.NukeParts.FireDiskModel;
 import com.Harbinger.Spore.Client.Models.NukeParts.MushroomExplosionTop;
 import com.Harbinger.Spore.Client.Renderers.*;
+import com.Harbinger.Spore.ExtremelySusThings.Package.SporeGunFirePacket;
+import com.Harbinger.Spore.ExtremelySusThings.SporePacketHandler;
 import com.Harbinger.Spore.Particles.*;
 import com.Harbinger.Spore.Screens.*;
 import com.Harbinger.Spore.Sentities.Calamities.Hohlfresser;
@@ -530,9 +532,9 @@ public class ClientModEvents {
         Minecraft mc = Minecraft.getInstance();
         LocalPlayer player = mc.player;
         if (player == null) return;
-        if (mc.options.keyAttack.isDown()) {
-
-            ItemStack stack = player.getMainHandItem();
+        if (mc.options.keyAttack.isDown() || mc.options.keyUse.isDown()) {
+            InteractionHand hand = mc.options.keyAttack.isDown() ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
+            ItemStack stack = player.getItemInHand(hand);
 
             if (stack.getItem() instanceof AbstractSporeGun gun) {
 
@@ -544,7 +546,7 @@ public class ClientModEvents {
                         : stack.getOrDefault(SdataComponents.STOMACH_CONTENTS.get(), 0);
 
                 if (ammo >= gun.getBaseAmmoShotRequirement() && shootDelay <= 0 && reloadDelay <= 0 && !player.getCooldowns().isOnCooldown(gun)) {
-                    gun.onEntitySwing(stack,player, InteractionHand.MAIN_HAND);
+                    SporePacketHandler.sendToServer(new SporeGunFirePacket(player.getId(),hand == InteractionHand.MAIN_HAND ? 0 : 1));
                 }
             }
         }
