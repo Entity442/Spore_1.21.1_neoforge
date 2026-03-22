@@ -142,7 +142,12 @@ public abstract class AbstractGunProjectile extends AbstractArrow implements Spo
             float r = (float) (i >> 16 & 255) / 255.0F;
             float g = (float) (i >> 8 & 255) / 255.0F;
             float b = (float) (i & 255) / 255.0F;
-            level().addParticle(getParticle(),this.getX(),this.getY(),this.getZ(),r,g,b);
+            int tries = random.nextInt(4);
+            for (int u = 0; u<tries; u++){
+                float x = (random.nextFloat()-random.nextFloat()) * 0.1f;
+                float z = (random.nextFloat()-random.nextFloat()) * 0.1f;
+                level().addParticle(getParticle(),this.getX()+x,this.getY(),this.getZ()+z,r,g,b);
+            }
         }
     }
 }

@@ -71,7 +71,7 @@ public class AcidicAssasin extends AbstractSporeGun implements CustomModelArmorD
         AssassinBullet bullet = new AssassinBullet(Sentities.ASSASSIN_BULLET.get(),player.level());
         bullet.setVariant(getVar);
         bullet.moveTo(player.getX()+vec3.x, player.getY()+1.25D ,player.getZ()+vec3.z);
-        bullet.shootFrom(player,5,0);
+        bullet.shootFrom(player,7,0);
         player.level().addFreshEntity(bullet);
         player.level().playSound(null, player.getX(), player.getY(), player.getZ(),
                 Ssounds.ASSASSIN_SHOT, SoundSource.PLAYERS, 1.0f, 1.0f);
