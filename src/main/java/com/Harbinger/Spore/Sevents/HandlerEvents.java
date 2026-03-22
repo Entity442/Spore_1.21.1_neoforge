@@ -47,6 +47,7 @@ import net.neoforged.neoforge.event.entity.living.*;
 import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
 import net.neoforged.neoforge.event.entity.player.CanPlayerSleepEvent;
 import net.neoforged.neoforge.event.entity.player.ItemFishedEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.level.LevelEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
@@ -309,6 +310,14 @@ public class HandlerEvents {
 
     @SubscribeEvent
     public static void onAttack(AttackEntityEvent event) {
+        Player player = event.getEntity();
+
+        if (player.getMainHandItem().getItem() instanceof AbstractSporeGun) {
+            event.setCanceled(true);
+        }
+    }
+    @SubscribeEvent
+    public static void onLeftClickBlock(PlayerInteractEvent.LeftClickBlock event) {
         Player player = event.getEntity();
 
         if (player.getMainHandItem().getItem() instanceof AbstractSporeGun) {
