@@ -33,8 +33,9 @@ public class GoreBulletRenderer extends EntityRenderer<GoreBullet> {
         stack.pushPose();
         stack.mulPose(Axis.YP.rotationDegrees(Mth.lerp(partial, spear.yRotO, spear.getYRot()) - 90.0F));
         stack.mulPose(Axis.ZP.rotationDegrees(Mth.lerp(partial, spear.xRotO, spear.getXRot()) + 90.0F));
+        int i = spear.getMutationVariant().getColor();
         VertexConsumer vertexconsumer = bufferSource.getBuffer(RenderType.entityTranslucent(getTextureLocation(spear)));
-        this.model.renderToBuffer(stack, vertexconsumer, light, OverlayTexture.NO_OVERLAY, -1);
+        this.model.renderToBuffer(stack, vertexconsumer, light, OverlayTexture.NO_OVERLAY, i);
         stack.popPose();
         super.render(spear, p_116112_, partial, stack, bufferSource, light);
     }
