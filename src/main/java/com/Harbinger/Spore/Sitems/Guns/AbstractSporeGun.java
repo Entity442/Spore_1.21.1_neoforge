@@ -48,7 +48,7 @@ public abstract class AbstractSporeGun extends BaseItem implements GunHeldItem, 
 
     @Override
     public boolean onEntitySwing(ItemStack stack, LivingEntity entity, InteractionHand hand) {
-        if (entity instanceof Player player && player.level().isClientSide()) {
+        if (entity instanceof Player player && player.level().isClientSide() && tooHurt(stack)) {
             SporePacketHandler.sendToServer(new SporeGunFirePacket(player.getId(), hand == InteractionHand.MAIN_HAND ? 0 : 1));
         }
         return true;
@@ -193,6 +193,8 @@ public abstract class AbstractSporeGun extends BaseItem implements GunHeldItem, 
 
     public void serverShoot(ItemStack stack, ServerPlayer player, InteractionHand hand, Vec3 vec3) {
         SporePacketHandler.sendToClient(new SporeGunFireSyncPacket(player.getId(), hand == InteractionHand.MAIN_HAND ? 0 : 1), player);
+        int value = 1;
+        hurtTool(stack,player,value);
     }
 
     public void clientShoot(Player player, InteractionHand interactionHand) {
