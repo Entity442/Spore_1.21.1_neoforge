@@ -45,7 +45,7 @@ public class BileBlaster extends AbstractSporeGun implements CustomModelArmorDat
 
     @Override
     public int getClipSize() {
-        return 12;
+        return 16;
     }
 
     @Override

@@ -1672,13 +1672,13 @@ public class SConfig {
             this.living_h_protection = builder.comment("Default 20").defineInRange("Living Horse Armor Protection", 20, 0, Integer.MAX_VALUE);
             builder.pop();
             builder.push("Living Guns");
-            this.mistmaker_durability = builder.comment("Default 300").defineInRange("Living Mist Maker Durability", 300, 1, Integer.MAX_VALUE);
-            this.bile_blaster_durability = builder.comment("Default 300").defineInRange("Living Bile Blaster Durability", 300, 1, Integer.MAX_VALUE);
-            this.acidic_assassin_durability = builder.comment("Default 300").defineInRange("Living Acidic Assassin Durability", 300, 1, Integer.MAX_VALUE);
-            this.mistmaker_damage = builder.comment("Default 5").defineInRange("Living Mist Maker Pallet Damage", 5, 1, Integer.MAX_VALUE);
-            this.mistmaker_melee_damage = builder.comment("Default 5").defineInRange("Living Mist Maker Saw Damage", 5, 1, Integer.MAX_VALUE);
-            this.bile_blaster_damage = builder.comment("Default 8").defineInRange("Living Bile Blaster Damage", 8, 1, Integer.MAX_VALUE);
-            this.acidic_assassin_damage = builder.comment("Default 10").defineInRange("Living Acidic Assassin Damage", 10, 1, Integer.MAX_VALUE);
+            this.mistmaker_durability = builder.comment("Default 300").defineInRange("Mist Maker Durability", 300, 1, Integer.MAX_VALUE);
+            this.bile_blaster_durability = builder.comment("Default 300").defineInRange("Bile Blaster Durability", 300, 1, Integer.MAX_VALUE);
+            this.acidic_assassin_durability = builder.comment("Default 300").defineInRange("Acidic Assassin Durability", 300, 1, Integer.MAX_VALUE);
+            this.mistmaker_damage = builder.comment("Default 5").defineInRange("Mist Maker Pallet Damage", 5, 1, Integer.MAX_VALUE);
+            this.mistmaker_melee_damage = builder.comment("Default 5").defineInRange("Mist Maker Saw Damage", 5, 1, Integer.MAX_VALUE);
+            this.bile_blaster_damage = builder.comment("Default 8").defineInRange("Bile Blaster Damage", 8, 1, Integer.MAX_VALUE);
+            this.acidic_assassin_damage = builder.comment("Default 15").defineInRange("Acidic Assassin Damage", 15, 1, Integer.MAX_VALUE);
             builder.pop();
         }
     }

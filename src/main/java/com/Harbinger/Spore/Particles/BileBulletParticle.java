@@ -14,10 +14,10 @@ public class BileBulletParticle extends TextureSheetParticle {
         this.hasPhysics = true;
         this.friction = 0F;
         this.xd = 0;
-        this.yd = -0.02;
+        this.yd = -0.03;
         this.zd = 0;
         this.quadSize *= 1.2F;
-        this.lifetime = 30;
+        this.lifetime = 50;
 
         this.rCol = (float) r;
         this.gCol = (float) g;
@@ -27,6 +27,11 @@ public class BileBulletParticle extends TextureSheetParticle {
     @Override
     public void tick() {
         super.tick();
+        fadeOut();
+    }
+
+    private void fadeOut() {
+        this.alpha = (-(1/(float)lifetime) * age + 1);
     }
 
     @Override

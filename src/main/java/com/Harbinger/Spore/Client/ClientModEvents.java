@@ -543,7 +543,7 @@ public class ClientModEvents {
                         ? stack.getOrDefault(SdataComponents.FLESH_AMMO.get(), 0)
                         : stack.getOrDefault(SdataComponents.STOMACH_CONTENTS.get(), 0);
 
-                if (ammo >= gun.getBaseAmmoShotRequirement() && shootDelay <= 0 && reloadDelay <= 0) {
+                if (ammo >= gun.getBaseAmmoShotRequirement() && shootDelay <= 0 && reloadDelay <= 0 && !player.getCooldowns().isOnCooldown(gun)) {
                     gun.onEntitySwing(stack,player, InteractionHand.MAIN_HAND);
                 }
             }
