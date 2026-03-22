@@ -2,6 +2,7 @@ package com.Harbinger.Spore.Sentities.Projectile.GunProjectiles;
 
 import com.Harbinger.Spore.Sentities.ArmorPersentageBypass;
 import com.Harbinger.Spore.Sentities.Projectile.AbstractGunProjectile;
+import com.Harbinger.Spore.core.SConfig;
 import com.Harbinger.Spore.core.Seffects;
 import com.Harbinger.Spore.core.Sparticles;
 import com.Harbinger.Spore.core.Ssounds;
@@ -40,7 +41,7 @@ public class AssassinBullet extends AbstractGunProjectile implements ArmorPersen
 
     @Override
     public float getConfigDamage() {
-        return 10f;
+        return SConfig.SERVER.acidic_assassin_damage.get();
     }
 
     @Override

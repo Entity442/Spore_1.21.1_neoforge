@@ -20,7 +20,7 @@ import net.minecraft.world.phys.Vec3;
 public class AcidicAssasin extends AbstractSporeGun implements CustomModelArmorData {
     private static final ResourceLocation TEXTURE = ResourceLocation.parse("spore:textures/item/acidic_assasin.png");
     public AcidicAssasin() {
-        super(SConfig.SERVER.pci_durability.get());
+        super(SConfig.SERVER.acidic_assassin_durability.get());
     }
 
     @Override

@@ -598,6 +598,14 @@ public class SConfig {
         public final ModConfigSpec.ConfigValue<Integer> ely_toughness;
         public final ModConfigSpec.ConfigValue<Integer> ely_knockback_resistance;
 
+        public final ModConfigSpec.ConfigValue<Integer> mistmaker_durability;
+        public final ModConfigSpec.ConfigValue<Integer> bile_blaster_durability;
+        public final ModConfigSpec.ConfigValue<Integer> acidic_assassin_durability;
+        public final ModConfigSpec.ConfigValue<Integer> mistmaker_damage;
+        public final ModConfigSpec.ConfigValue<Integer> mistmaker_melee_damage;
+        public final ModConfigSpec.ConfigValue<Integer> bile_blaster_damage;
+        public final ModConfigSpec.ConfigValue<Integer> acidic_assassin_damage;
+
         public final ModConfigSpec.ConfigValue<Integer> flesh_h_protection;
         public final ModConfigSpec.ConfigValue<Integer> plate_h_protection;
         public final ModConfigSpec.ConfigValue<Integer> living_h_protection;
@@ -1662,6 +1670,15 @@ public class SConfig {
             this.flesh_h_protection = builder.comment("Default 8").defineInRange("Flesh Horse Armor Protection", 8, 0, Integer.MAX_VALUE);
             this.plate_h_protection = builder.comment("Default 12").defineInRange("Plated Horse Armor Protection", 12, 0, Integer.MAX_VALUE);
             this.living_h_protection = builder.comment("Default 20").defineInRange("Living Horse Armor Protection", 20, 0, Integer.MAX_VALUE);
+            builder.pop();
+            builder.push("Living Guns");
+            this.mistmaker_durability = builder.comment("Default 300").defineInRange("Living Mist Maker Durability", 300, 1, Integer.MAX_VALUE);
+            this.bile_blaster_durability = builder.comment("Default 300").defineInRange("Living Bile Blaster Durability", 300, 1, Integer.MAX_VALUE);
+            this.acidic_assassin_durability = builder.comment("Default 300").defineInRange("Living Acidic Assassin Durability", 300, 1, Integer.MAX_VALUE);
+            this.mistmaker_damage = builder.comment("Default 5").defineInRange("Living Mist Maker Pallet Damage", 5, 1, Integer.MAX_VALUE);
+            this.mistmaker_melee_damage = builder.comment("Default 5").defineInRange("Living Mist Maker Saw Damage", 5, 1, Integer.MAX_VALUE);
+            this.bile_blaster_damage = builder.comment("Default 8").defineInRange("Living Bile Blaster Damage", 8, 1, Integer.MAX_VALUE);
+            this.acidic_assassin_damage = builder.comment("Default 10").defineInRange("Living Acidic Assassin Damage", 10, 1, Integer.MAX_VALUE);
             builder.pop();
         }
     }

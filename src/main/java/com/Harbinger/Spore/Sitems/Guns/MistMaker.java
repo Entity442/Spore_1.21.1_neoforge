@@ -10,7 +10,6 @@ import com.Harbinger.Spore.core.Sentities;
 import com.Harbinger.Spore.core.Ssounds;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -29,7 +28,7 @@ import java.util.List;
 public class MistMaker extends AbstractSporeGun implements CustomModelArmorData {
     private static final ResourceLocation TEXTURE = ResourceLocation.parse("spore:textures/item/mistmaker.png");
     public MistMaker() {
-        super(SConfig.SERVER.pci_durability.get());
+        super(SConfig.SERVER.mistmaker_durability.get());
     }
 
     @Override
@@ -129,7 +128,7 @@ public class MistMaker extends AbstractSporeGun implements CustomModelArmorData 
                     double distance = startPos.distanceTo(entity.position());
                     if (distance <= range) {
                         if (entity instanceof LivingEntity living && living.hurtTime == 0) {
-                            living.hurt(level.damageSources().playerAttack(player), 5.0f);
+                            living.hurt(level.damageSources().playerAttack(player), SConfig.SERVER.mistmaker_melee_damage.get());
                             hitCount++;
                         }
                     }

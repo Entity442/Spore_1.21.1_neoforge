@@ -2,6 +2,7 @@ package com.Harbinger.Spore.Sentities.Projectile.GunProjectiles;
 
 import com.Harbinger.Spore.Fluids.BileLiquid;
 import com.Harbinger.Spore.Sentities.Projectile.AbstractGunProjectile;
+import com.Harbinger.Spore.core.SConfig;
 import com.Harbinger.Spore.core.Sparticles;
 import com.Harbinger.Spore.core.Ssounds;
 import net.minecraft.core.particles.ParticleOptions;
@@ -40,7 +41,7 @@ public class BileBullet extends AbstractGunProjectile {
 
     @Override
     public float getConfigDamage() {
-        return 8;
+        return SConfig.SERVER.bile_blaster_damage.get();
     }
 
     @Override

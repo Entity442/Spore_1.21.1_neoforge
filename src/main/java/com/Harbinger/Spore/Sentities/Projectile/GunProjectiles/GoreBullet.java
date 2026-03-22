@@ -1,6 +1,7 @@
 package com.Harbinger.Spore.Sentities.Projectile.GunProjectiles;
 
 import com.Harbinger.Spore.Sentities.Projectile.AbstractGunProjectile;
+import com.Harbinger.Spore.core.SConfig;
 import com.Harbinger.Spore.core.Sparticles;
 import com.Harbinger.Spore.core.Ssounds;
 import net.minecraft.core.particles.ParticleOptions;
@@ -37,7 +38,7 @@ public class GoreBullet extends AbstractGunProjectile {
 
     @Override
     public float getConfigDamage() {
-        return 5;
+        return SConfig.SERVER.mistmaker_damage.get();
     }
 
     @Override
