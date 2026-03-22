@@ -49,7 +49,8 @@ public record SporeGunFirePacket(int id,int hand) implements CustomPacketPayload
                 if (!(stack.getItem() instanceof AbstractSporeGun gun)) return;
 
                 int shootDelay = stack.getOrDefault(SdataComponents.SHOOT_DELAY.get(), 0);
-                if (shootDelay > 0) return;
+                int reloadDelay = stack.getOrDefault(SdataComponents.RELOAD_DELAY.get(), 0);
+                if (shootDelay > 0 || reloadDelay > 0) return;
 
                 if (gun.needsToReload()) {
                     int clip = stack.getOrDefault(SdataComponents.FLESH_AMMO.get(), 0);
