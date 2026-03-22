@@ -17,6 +17,7 @@ import com.Harbinger.Spore.Sitems.Agents.AbstractSyringe;
 import com.Harbinger.Spore.Sitems.BaseWeapons.SporeArmorData;
 import com.Harbinger.Spore.Sitems.BaseWeapons.SporeWeaponData;
 import com.Harbinger.Spore.Sitems.CustomModelArmorData;
+import com.Harbinger.Spore.Sitems.Guns.AbstractSporeGun;
 import com.Harbinger.Spore.Spore;
 import com.Harbinger.Spore.core.*;
 import net.minecraft.client.Minecraft;
@@ -32,6 +33,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -46,6 +48,8 @@ import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 
 import java.util.List;
+
+import static org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_LEFT;
 
 @Mod(value = Spore.MODID, dist = Dist.CLIENT)
 @EventBusSubscriber(modid = Spore.MODID, value = Dist.CLIENT)
@@ -458,6 +462,7 @@ public class ClientModEvents {
     }
     @SubscribeEvent
     public static void onClientTick(ClientTickEvent.Post event) {
+        handleGunTrigger();
         PCIAnimationTracker.tickAll();
         SGAnimationTracker.tickAll();
         SGReloadAnimationTracker.tickAll();
@@ -518,6 +523,30 @@ public class ClientModEvents {
 
             event.setYaw(event.getYaw() + shakeX);
             event.setPitch(event.getPitch() + shakeY);
+        }
+    }
+
+    public static void handleGunTrigger(){
+        Minecraft mc = Minecraft.getInstance();
+        LocalPlayer player = mc.player;
+        if (player == null) return;
+        if (mc.options.keyAttack.isDown()) {
+
+            ItemStack stack = player.getMainHandItem();
+
+            if (stack.getItem() instanceof AbstractSporeGun gun) {
+
+                int shootDelay = stack.getOrDefault(SdataComponents.SHOOT_DELAY.get(), 0);
+                int reloadDelay = stack.getOrDefault(SdataComponents.RELOAD_DELAY.get(), 0);
+
+                int ammo = gun.needsToReload()
+                        ? stack.getOrDefault(SdataComponents.FLESH_AMMO.get(), 0)
+                        : stack.getOrDefault(SdataComponents.STOMACH_CONTENTS.get(), 0);
+
+                if (ammo > 0 && shootDelay <= 0 && reloadDelay <= 0) {
+                    gun.onEntitySwing(stack,player, InteractionHand.MAIN_HAND);
+                }
+            }
         }
     }
 }
