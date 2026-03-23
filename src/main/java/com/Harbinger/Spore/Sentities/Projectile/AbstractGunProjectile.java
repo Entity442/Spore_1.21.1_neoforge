@@ -107,7 +107,7 @@ public abstract class AbstractGunProjectile extends AbstractArrow implements Spo
             AABB aabb = victim.getBoundingBox().inflate(2f);
             List<Entity> entities = level().getEntities(this,aabb);
             for (Entity entity : entities){
-                if (entity instanceof LivingEntity living && living.hurtTime == 0){
+                if (entity instanceof LivingEntity living && living.hurtTime == 0 && !living.equals(owner)){
                     living.hurt(level().damageSources().mobProjectile(this,owner),getDamage() * 0.5f);
                 }
             }
