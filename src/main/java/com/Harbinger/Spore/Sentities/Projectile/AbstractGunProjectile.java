@@ -1,5 +1,6 @@
 package com.Harbinger.Spore.Sentities.Projectile;
 
+import com.Harbinger.Spore.ExtremelySusThings.Utilities;
 import com.Harbinger.Spore.Sentities.BaseEntities.CalamityMultipart;
 import com.Harbinger.Spore.Sitems.BaseWeapons.SporeToolsMutations;
 import com.Harbinger.Spore.Sitems.BaseWeapons.SporeWeaponData;
@@ -12,6 +13,8 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -19,8 +22,11 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
+
+import java.util.List;
 
 public abstract class AbstractGunProjectile extends AbstractArrow implements SporeWeaponData {
     private static final EntityDataAccessor<Float> DAMAGE = SynchedEntityData.defineId(AbstractGunProjectile.class, EntityDataSerializers.FLOAT);
@@ -44,7 +50,7 @@ public abstract class AbstractGunProjectile extends AbstractArrow implements Spo
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
-        builder.define(DAMAGE, getConfigDamage());
+        builder.define(DAMAGE, 0f);
         builder.define(TRAVEL, 0f);
         builder.define(VARIANT, 0);
     }
@@ -83,6 +89,37 @@ public abstract class AbstractGunProjectile extends AbstractArrow implements Spo
             }else {
                 playSound(entityImpactSound());
             }
+            mutationBuffs(living,owner);
+        }
+    }
+    protected void mutationBuffs(LivingEntity victim, LivingEntity owner) {
+        SporeToolsMutations mutations = this.getMutationVariant();
+        if (mutations == SporeToolsMutations.TOXIC) {
+            victim.addEffect(new MobEffectInstance(Utilities.wrapHolder(MobEffects.POISON.value()), 60, 1));
+        }
+        if (mutations == SporeToolsMutations.ROTTEN) {
+            victim.addEffect(new MobEffectInstance(Utilities.wrapHolder(MobEffects.WITHER.value()), 60, 1));
+        }
+        if (mutations == SporeToolsMutations.VAMPIRIC && owner.getHealth() < owner.getMaxHealth()) {
+            owner.heal(2f);
+        }
+        if (mutations == SporeToolsMutations.CALCIFIED) {
+            AABB aabb = victim.getBoundingBox().inflate(2f);
+            List<Entity> entities = level().getEntities(this,aabb);
+            for (Entity entity : entities){
+                if (entity instanceof LivingEntity living && living.hurtTime == 0){
+                    living.hurt(level().damageSources().mobProjectile(this,owner),getDamage() * 0.5f);
+                }
+            }
+        }
+        if (mutations == SporeToolsMutations.BEZERK && Math.random() < 0.3) {
+            if (Math.random() < 0.5) {
+                owner.addEffect(new MobEffectInstance(Utilities.wrapHolder(MobEffects.MOVEMENT_SPEED.value()), 60, 0));
+            } else if (Math.random() < 0.5) {
+                owner.addEffect(new MobEffectInstance(Utilities.wrapHolder(MobEffects.DAMAGE_BOOST.value()), 60, 0));
+            } else {
+                owner.addEffect(new MobEffectInstance(Utilities.wrapHolder(MobEffects.SATURATION.value()), 60, 0));
+            }
         }
     }
     public SporeToolsMutations getMutationVariant() {
@@ -95,7 +132,6 @@ public abstract class AbstractGunProjectile extends AbstractArrow implements Spo
     public abstract SoundEvent entityImpactSound();
     public abstract float getMaxBlockRange();
     public abstract float getProDamage();
-    public abstract float getConfigDamage();
     public abstract void doHitAfterEffects(LivingEntity living,LivingEntity owner);
     public abstract ParticleOptions getParticle();
     @Override
@@ -108,7 +144,7 @@ public abstract class AbstractGunProjectile extends AbstractArrow implements Spo
         return 0.99F;
     }
 
-    public void shootFrom(LivingEntity shooter, float velocity, float inaccuracy) {
+    public void shootFrom(LivingEntity shooter, float velocity, float inaccuracy,float damage) {
         this.setOwner(shooter);
 
         float xRot = shooter.getXRot();
@@ -120,7 +156,7 @@ public abstract class AbstractGunProjectile extends AbstractArrow implements Spo
 
         this.shoot(x, y, z, velocity, inaccuracy);
 
-        this.setDamage(getConfigDamage());
+        this.setDamage(damage);
     }
     @Override
     public void tick() {

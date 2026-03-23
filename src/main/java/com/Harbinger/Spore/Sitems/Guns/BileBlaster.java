@@ -34,7 +34,7 @@ public class BileBlaster extends AbstractSporeGun implements CustomModelArmorDat
     }
 
     @Override
-    public int getTimeBeforeChangingClip() {
+    public int getTimeBeforeChangingClip(ItemStack stack) {
         return 5;
     }
 
@@ -65,7 +65,7 @@ public class BileBlaster extends AbstractSporeGun implements CustomModelArmorDat
         BileBullet bullet = new BileBullet(Sentities.BILE_BULLET.get(),player.level());
         bullet.setVariant(getVar);
         bullet.moveTo(player.getX()+vec3.x, player.getY()+1.25D ,player.getZ()+vec3.z);
-        bullet.shootFrom(player,2.5f,2);
+        bullet.shootFrom(player,2.5f,2,(float) calculateTrueDamage(stack,SConfig.SERVER.bile_blaster_damage.get()));
         player.level().addFreshEntity(bullet);
         player.level().playSound(null, player.getX(), player.getY(), player.getZ(),
                 Ssounds.BILE_BLASTER_SHOT, SoundSource.PLAYERS, 1.0f, 1.0f);

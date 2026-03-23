@@ -37,11 +37,6 @@ public class GoreBullet extends AbstractGunProjectile {
     }
 
     @Override
-    public float getConfigDamage() {
-        return SConfig.SERVER.mistmaker_damage.get();
-    }
-
-    @Override
     public void doHitAfterEffects(LivingEntity living, LivingEntity owner) {
         living.hurtTime = 0;
         living.invulnerableTime = 0;

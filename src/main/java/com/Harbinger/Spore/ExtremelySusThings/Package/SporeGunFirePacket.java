@@ -67,8 +67,9 @@ public record SporeGunFirePacket(int id) implements CustomPacketPayload{
                     }
                     stack.set(SdataComponents.STOMACH_CONTENTS.get(), stomach - gun.getAmmoUsage());
                 }
-                stack.set(SdataComponents.SHOOT_DELAY.get(), gun.getTimeBeforeChangingClip());
-                playerValue.getCooldowns().addCooldown(gun,gun.getTimeBeforeChangingClip());
+                int getTimeOut = gun.getTimeBeforeChangingClip(stack);
+                stack.set(SdataComponents.SHOOT_DELAY.get(), getTimeOut);
+                playerValue.getCooldowns().addCooldown(gun,getTimeOut);
 
                 gun.serverShoot(stack, playerValue, InteractionHand.MAIN_HAND, vec3);
             }

@@ -42,7 +42,7 @@ public class MistMaker extends AbstractSporeGun implements CustomModelArmorData 
     }
 
     @Override
-    public int getTimeBeforeChangingClip() {
+    public int getTimeBeforeChangingClip(ItemStack stack) {
         return 20;
     }
 
@@ -84,7 +84,7 @@ public class MistMaker extends AbstractSporeGun implements CustomModelArmorData 
             GoreBullet bullet = new GoreBullet(Sentities.GORE_BULLET.get(),player.level());
             bullet.setVariant(getVar);
             bullet.moveTo(player.getX()+vec3.x, player.getY()+1.25D ,player.getZ()+vec3.z);
-            bullet.shootFrom(player,1.5f,6);
+            bullet.shootFrom(player,1.5f,6,(float) calculateTrueDamage(stack,SConfig.SERVER.mistmaker_damage.get()));
             player.level().addFreshEntity(bullet);
         }
         player.level().playSound(null, player.getX(), player.getY(), player.getZ(),
@@ -128,7 +128,8 @@ public class MistMaker extends AbstractSporeGun implements CustomModelArmorData 
                     double distance = startPos.distanceTo(entity.position());
                     if (distance <= range) {
                         if (entity instanceof LivingEntity living && living.hurtTime == 0) {
-                            living.hurt(level.damageSources().playerAttack(player), SConfig.SERVER.mistmaker_melee_damage.get());
+                            living.hurt(level.damageSources().playerAttack(player), (float) calculateTrueDamage(stack,SConfig.SERVER.mistmaker_melee_damage.get()));
+                            doEntityHurtAfterEffects(stack,living,player);
                             hitCount++;
                         }
                     }
@@ -142,6 +143,8 @@ public class MistMaker extends AbstractSporeGun implements CustomModelArmorData 
 
                 level.playSound(null, player.getX(), player.getY(), player.getZ(),
                         Ssounds.MISTMAKER_BITE, SoundSource.PLAYERS, 1.0f, 1.0f);
+                int i = calculateDurabilityLostForMutations(1,stack);
+                this.hurtTool(stack,player,i);
             }
         }
         return super.use(level, player, hand);

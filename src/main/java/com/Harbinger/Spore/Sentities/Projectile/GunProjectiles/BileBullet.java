@@ -39,10 +39,6 @@ public class BileBullet extends AbstractGunProjectile {
         return 0.05f;
     }
 
-    @Override
-    public float getConfigDamage() {
-        return SConfig.SERVER.bile_blaster_damage.get();
-    }
 
     @Override
     public void doHitAfterEffects(LivingEntity living, LivingEntity owner) {

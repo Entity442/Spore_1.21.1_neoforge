@@ -40,11 +40,6 @@ public class AssassinBullet extends AbstractGunProjectile implements ArmorPersen
     }
 
     @Override
-    public float getConfigDamage() {
-        return SConfig.SERVER.acidic_assassin_damage.get();
-    }
-
-    @Override
     public void doHitAfterEffects(LivingEntity living, LivingEntity owner) {
         living.addEffect(new MobEffectInstance(Seffects.CORROSION,200,1));
     }

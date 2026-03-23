@@ -37,7 +37,7 @@ public abstract class AbstractSporeGun extends BaseItem implements GunHeldItem, 
     }
     public abstract boolean needsToReload();
     public abstract int getDefaultTimeBeforeReload();
-    public abstract int getTimeBeforeChangingClip();
+    public abstract int getTimeBeforeChangingClip(ItemStack stack);
     public abstract int timeBeforeStomachContentsConvertIntoAmmo();
     public abstract int getClipSize();
     public abstract Item getAmmoItem();
@@ -184,7 +184,7 @@ public abstract class AbstractSporeGun extends BaseItem implements GunHeldItem, 
 
     public void serverShoot(ItemStack stack, ServerPlayer player, InteractionHand hand, Vec3 vec3) {
         SporePacketHandler.sendToClient(new SporeGunFireSyncPacket(player.getId(), hand == InteractionHand.MAIN_HAND ? 0 : 1), player);
-        int value = 1;
+        int value = calculateDurabilityLostForMutations(1,stack);
         hurtTool(stack,player,value);
     }
 
