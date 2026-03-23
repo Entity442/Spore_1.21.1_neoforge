@@ -45,6 +45,10 @@ public abstract class AbstractSporeGun extends BaseItem implements GunHeldItem, 
     public int getBaseAmmoShotRequirement(){return 1;}
 
 
+    @Override
+    public int getEnchantmentValue(ItemStack stack) {
+        return getLuck(stack);
+    }
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {

@@ -20,6 +20,7 @@ import com.Harbinger.Spore.Sitems.BaseWeapons.SporeArmorData;
 import com.Harbinger.Spore.Sitems.BaseWeapons.SporeWeaponData;
 import com.Harbinger.Spore.Sitems.CustomModelArmorData;
 import com.Harbinger.Spore.Sitems.Guns.AbstractSporeGun;
+import com.Harbinger.Spore.Sitems.Guns.AcidicAssasin;
 import com.Harbinger.Spore.Spore;
 import com.Harbinger.Spore.core.*;
 import net.minecraft.client.Minecraft;
@@ -542,6 +543,19 @@ public class ClientModEvents {
                 if (shootDelay <= 0 && reloadDelay <= 0 && !player.getCooldowns().isOnCooldown(gun)) {
                     SporePacketHandler.sendToServer(new SporeGunFirePacket(player.getId()));
                 }
+            }
+        }
+    }
+    @SubscribeEvent
+    public static void onFovUpdate(ViewportEvent.ComputeFov event) {
+        Minecraft mc = Minecraft.getInstance();
+        LocalPlayer player = mc.player;
+        if (player == null) return;
+        ItemStack stack = player.getMainHandItem();
+        if (stack.getItem() instanceof AcidicAssasin) {
+            if (player.isShiftKeyDown()) {
+                float zoomMultiplier = 0.4f;
+                event.setFOV(event.getFOV() * zoomMultiplier);
             }
         }
     }

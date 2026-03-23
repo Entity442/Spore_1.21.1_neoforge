@@ -2,10 +2,8 @@ package com.Harbinger.Spore.Sentities.Projectile.GunProjectiles;
 
 import com.Harbinger.Spore.Sentities.ArmorPersentageBypass;
 import com.Harbinger.Spore.Sentities.Projectile.AbstractGunProjectile;
-import com.Harbinger.Spore.core.SConfig;
-import com.Harbinger.Spore.core.Seffects;
-import com.Harbinger.Spore.core.Sparticles;
-import com.Harbinger.Spore.core.Ssounds;
+import com.Harbinger.Spore.core.*;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -13,6 +11,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.BlockHitResult;
 
 public class AssassinBullet extends AbstractGunProjectile implements ArmorPersentageBypass {
     public AssassinBullet(EntityType<? extends AbstractArrow> entityType, Level level) {
@@ -52,5 +51,18 @@ public class AssassinBullet extends AbstractGunProjectile implements ArmorPersen
     @Override
     public float amountOfDamage(float value) {
         return value * 0.5f;
+    }
+
+    @Override
+    protected void onHitBlock(BlockHitResult result) {
+        super.onHitBlock(result);
+        if (level().isClientSide){
+            return;
+        }else {
+            BlockPos pos = result.getBlockPos().above();
+            if (level().getBlockState(pos).isAir()){
+                level().setBlock(pos, Sblocks.ACID.get().defaultBlockState(),3);
+            }
+        }
     }
 }
