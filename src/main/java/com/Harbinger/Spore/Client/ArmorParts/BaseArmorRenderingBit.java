@@ -3,6 +3,7 @@ package com.Harbinger.Spore.Client.ArmorParts;
 
 import com.Harbinger.Spore.ExtremelySusThings.Utilities;
 import com.Harbinger.Spore.Sitems.BaseWeapons.SporeArmorData;
+import com.Harbinger.Spore.Sitems.BaseWeapons.SporeWeaponData;
 import com.Harbinger.Spore.Sitems.CustomModelArmorData;
 import com.Harbinger.Spore.core.Senchantments;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -82,6 +83,8 @@ public abstract class BaseArmorRenderingBit {
         int color;
         if (itemStack.getItem() instanceof SporeArmorData armorData){
             color = armorData.getVariant(itemStack).getColor();
+        }else if (itemStack.getItem() instanceof SporeWeaponData weaponData){
+            color = weaponData.getVariant(itemStack).getColor();
         } else {
             color = -1;
         }
