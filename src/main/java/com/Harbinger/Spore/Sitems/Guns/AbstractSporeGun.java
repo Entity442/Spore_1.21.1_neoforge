@@ -10,6 +10,7 @@ import com.Harbinger.Spore.core.SdataComponents;
 import com.Harbinger.Spore.core.Sitems;
 import com.Harbinger.Spore.core.Ssounds;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -144,7 +145,7 @@ public abstract class AbstractSporeGun extends BaseItem implements GunHeldItem, 
 
                 int value = (int)(nutrition + saturation);
 
-                stack.set(SdataComponents.STOMACH_CONTENTS.get(), current + value);
+                stack.set(SdataComponents.STOMACH_CONTENTS.get(),needsToReload() ? Math.max(current + value,getClipSize()) : current + value);
                 itemStack.shrink(1);
             }
             player.playNotifySound(SoundEvents.GENERIC_EAT, SoundSource.AMBIENT, 1f, 1f);
@@ -162,27 +163,18 @@ public abstract class AbstractSporeGun extends BaseItem implements GunHeldItem, 
         tooltip.add(Component.literal(""));
 
         if (needsToReload()) {
-            tooltip.add(Component.literal("Stomach: " + stomach).withStyle(ChatFormatting.DARK_GREEN));
-            tooltip.add(Component.literal("Clip: " + clip + "/" + getClipSize()).withStyle(ChatFormatting.GOLD));
+            tooltip.add(Component.literal(Component.translatable("spore.item.clip").getString() + clip + "/" + getClipSize()).withStyle(ChatFormatting.GOLD));
         } else {
-            tooltip.add(Component.literal("Biomass: " + stomach + "/" + getClipSize())
+            tooltip.add(Component.literal(Component.translatable("spore.item.biomass").getString() + stomach + "/" + getClipSize())
                     .withStyle(ChatFormatting.LIGHT_PURPLE));
         }
-
-        int shootDelay = stack.getOrDefault(SdataComponents.SHOOT_DELAY.get(), 0);
-        int reloadDelay = stack.getOrDefault(SdataComponents.RELOAD_DELAY.get(), 0);
-
-        if (shootDelay > 0) {
-            tooltip.add(Component.literal("Cooling: " + shootDelay + " ticks")
-                    .withStyle(ChatFormatting.RED));
-        }
-
-        if (reloadDelay > 0) {
-            tooltip.add(Component.literal("Reloading: " + reloadDelay + " ticks")
-                    .withStyle(ChatFormatting.YELLOW));
-        }
-        if (getVariant(stack) != SporeToolsMutations.DEFAULT) {
-            tooltip.add(Component.literal(Component.translatable("spore.item.mutation").getString() + Component.translatable(getVariant(stack).getName()).getString()));
+        if (Screen.hasShiftDown()){
+            tooltip.add(Component.literal(Component.translatable("spore.item.stomach").getString() + stomach).withStyle(ChatFormatting.DARK_GREEN));
+            if (getVariant(stack) != SporeToolsMutations.DEFAULT) {
+                tooltip.add(Component.literal(Component.translatable("spore.item.mutation").getString() + Component.translatable(getVariant(stack).getName()).getString()));
+            }
+        }else {
+            tooltip.add(Component.translatable("item.armor.normal").withStyle(ChatFormatting.GOLD));
         }
     }
 
