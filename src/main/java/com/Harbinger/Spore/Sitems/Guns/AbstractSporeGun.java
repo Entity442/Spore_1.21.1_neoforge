@@ -145,7 +145,7 @@ public abstract class AbstractSporeGun extends BaseItem implements GunHeldItem, 
 
                 int value = (int)(nutrition + saturation);
 
-                stack.set(SdataComponents.STOMACH_CONTENTS.get(),needsToReload() ? Math.max(current + value,getClipSize()) : current + value);
+                stack.set(SdataComponents.STOMACH_CONTENTS.get(),needsToReload() ? current + value : Math.min(current + value,getClipSize()));
                 itemStack.shrink(1);
             }
             player.playNotifySound(SoundEvents.GENERIC_EAT, SoundSource.AMBIENT, 1f, 1f);
