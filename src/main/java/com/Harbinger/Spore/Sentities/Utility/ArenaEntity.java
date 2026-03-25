@@ -270,7 +270,8 @@ public class ArenaEntity extends UtilityEntity {
             Item item = Utilities.tryToCreateStack(ResourceLocation.parse(string)).getItem();
             int i = getWaveLevel() > 0 ? random.nextInt(getWaveLevel(), 3 * getWaveLevel()) : 1;
             if (Math.random() < 0.2f * Math.min(1,getWaveLevel())){
-                ItemStack itemStack = new ItemStack(item,i);
+                ItemStack itemStack = new ItemStack(item);
+                itemStack.setCount(Math.min(itemStack.getMaxStackSize(), i));
                 ItemEntity itemEntity = new ItemEntity(this.level(), this.getX() , this.getY(),this.getZ(),itemStack);
                 level().addFreshEntity(itemEntity);
             }
