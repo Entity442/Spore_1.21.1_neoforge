@@ -1,8 +1,6 @@
 package com.Harbinger.Spore.Client.Renderers;
 
-import com.Harbinger.Spore.Client.Models.HowlerModel;
-import com.Harbinger.Spore.Client.Models.SculkHowlerModel;
-import com.Harbinger.Spore.Client.Models.bansheeHowlerModel;
+import com.Harbinger.Spore.Client.Models.*;
 import com.Harbinger.Spore.Client.Special.BaseInfectedRenderer;
 import com.Harbinger.Spore.Sentities.EvolvedInfected.Howler;
 import com.Harbinger.Spore.Sentities.Variants.HowlerVariants;
@@ -24,6 +22,8 @@ public class HowlerRenderer<Type extends Howler> extends BaseInfectedRenderer<Ty
     private final EntityModel<Type> defaultModel = this.getModel();
     private final EntityModel<Type> banshee;
     private final EntityModel<Type> sculk;
+    private final EntityModel<Type> forlow;
+    private final EntityModel<Type> swarm;
     private static final ResourceLocation EYES_TEXTURE =  ResourceLocation.fromNamespaceAndPath(Spore.MODID,
             "textures/entity/eyes/howler.png");
     public static final Map<HowlerVariants, ResourceLocation> TEXTURE =
@@ -34,12 +34,18 @@ public class HowlerRenderer<Type extends Howler> extends BaseInfectedRenderer<Ty
                          ResourceLocation.fromNamespaceAndPath(Spore.MODID, "textures/entity/freaky_howler.png"));
                 p_114874_.put(HowlerVariants.SONIC,
                          ResourceLocation.fromNamespaceAndPath(Spore.MODID, "textures/entity/sculkhowler.png"));
+                p_114874_.put(HowlerVariants.FORLORN,
+                        ResourceLocation.fromNamespaceAndPath(Spore.MODID, "textures/entity/forlorn_howler.png"));
+                p_114874_.put(HowlerVariants.SWARMER,
+                        ResourceLocation.fromNamespaceAndPath(Spore.MODID, "textures/entity/swarmer_howler.png"));
             });
 
     public HowlerRenderer(EntityRendererProvider.Context context) {
         super(context, new HowlerModel<>(context.bakeLayer(HowlerModel.LAYER_LOCATION)), 0.5f);
         banshee = new bansheeHowlerModel<>(context.bakeLayer(bansheeHowlerModel.LAYER_LOCATION));
         sculk = new SculkHowlerModel<>(context.bakeLayer(SculkHowlerModel.LAYER_LOCATION));
+        forlow = new ForlornHowlerModel<>(context.bakeLayer(ForlornHowlerModel.LAYER_LOCATION));
+        swarm = new SwarmerHowlerModel<>(context.bakeLayer(SwarmerHowlerModel.LAYER_LOCATION));
     }
 
     @Override
@@ -47,15 +53,23 @@ public class HowlerRenderer<Type extends Howler> extends BaseInfectedRenderer<Ty
         return TEXTURE.get(entity.getVariant());
     }
 
-
     @Override
     public ResourceLocation eyeLayerTexture() {
         return EYES_TEXTURE;
     }
 
+    public EntityModel<Type> getModel(HowlerVariants variants){
+        return switch (variants){
+            case BANSHEE -> banshee;
+            case SONIC -> sculk;
+            case FORLORN -> forlow;
+            case SWARMER -> swarm;
+            default -> defaultModel;
+        };
+    }
     @Override
     public void render(Type type, float value1, float value2, PoseStack stack, MultiBufferSource bufferSource, int light) {
-        this.model = type.getVariant() == HowlerVariants.BANSHEE ? banshee : type.getVariant() == HowlerVariants.SONIC ? sculk : defaultModel;
+        this.model = getModel(type.getVariant());
         super.render(type, value1, value2, stack, bufferSource, light);
     }
 }

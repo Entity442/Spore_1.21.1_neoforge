@@ -5,11 +5,14 @@ import com.Harbinger.Spore.Sentities.AI.CustomMeleeAttackGoal;
 import com.Harbinger.Spore.Sentities.ArmorPersentageBypass;
 import com.Harbinger.Spore.Sentities.BaseEntities.EvolvedInfected;
 import com.Harbinger.Spore.Sentities.BaseEntities.Infected;
+import com.Harbinger.Spore.Sentities.BasicInfected.Bairn;
 import com.Harbinger.Spore.Sentities.Carrier;
+import com.Harbinger.Spore.Sentities.Utility.Illusion;
 import com.Harbinger.Spore.Sentities.VariantKeeper;
 import com.Harbinger.Spore.Sentities.Variants.HowlerVariants;
 import com.Harbinger.Spore.core.SConfig;
 import com.Harbinger.Spore.core.Seffects;
+import com.Harbinger.Spore.core.Sentities;
 import com.Harbinger.Spore.core.Ssounds;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
@@ -128,13 +131,18 @@ public class Howler extends EvolvedInfected implements VariantKeeper, ArmorPerse
     public void ScreamAOE(Entity origin) {
         AABB area = origin.getBoundingBox().inflate(12);
         List<Entity> targets = origin.level().getEntities(origin, area, EntitySelector.NO_CREATIVE_OR_SPECTATOR);
-
         for (Entity target : targets) {
-            if (target instanceof Infected infected) {
-                infected.addEffect(new MobEffectInstance(Seffects.MARKER, 400, 0));
-            } else if (target instanceof Player player) {
-                player.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 100, 0));
-                player.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 200, 0));
+            if (target instanceof Player player) {
+                if (getVariant() == HowlerVariants.FORLORN) {
+                    player.addEffect(new MobEffectInstance(Seffects.UNEASY, 3600, 0));
+                    player.addEffect(new MobEffectInstance(Seffects.MADNESS, 3600, 1));
+                } else if (getVariant() == HowlerVariants.SWARMER) {
+                    player.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 100, 0));
+                    player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 200, 1));
+                } else {
+                    player.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 100, 0));
+                    player.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 200, 0));
+                }
             }
         }
     }
@@ -192,7 +200,39 @@ public class Howler extends EvolvedInfected implements VariantKeeper, ArmorPerse
             }
         }
     }
-
+    public void SummonSpecialScream(LivingEntity caster,LivingEntity target) {
+        ServerLevelAccessor levelAccessor = (ServerLevelAccessor) caster.level();
+        Level level = caster.level();
+        int dx = random.nextInt(-8, 9);
+        int dz = random.nextInt(-8, 9);
+        int dy = random.nextInt(0, 2);
+        if (getVariant() == HowlerVariants.FORLORN) {
+            Illusion entityType = new Illusion(Sentities.ILLUSION.get(), level);
+            entityType.teleportRelative(caster.getX() + dx, caster.getY() + 0.5D + dy, caster.getZ() + dz);
+            entityType.setTargetId(target == null ? 0 : target.getId());
+            entityType.setSeeAble(false);
+            entityType.finalizeSpawn(
+                    levelAccessor,
+                    level.getCurrentDifficultyAt(BlockPos.containing(caster.position())),
+                    MobSpawnType.MOB_SUMMONED,
+                    null
+            );
+            level.addFreshEntity(entityType);
+            this.playSound(Ssounds.HOWLER_GROWL.value());
+        }
+        if (getVariant() == HowlerVariants.SWARMER) {
+            Bairn entityType = new Bairn(Sentities.BAIRN.get(), level);
+            entityType.teleportRelative(caster.getX() + dx, caster.getY() + 0.5D + dy, caster.getZ() + dz);
+            entityType.finalizeSpawn(
+                    levelAccessor,
+                    level.getCurrentDifficultyAt(BlockPos.containing(caster.position())),
+                    MobSpawnType.MOB_SUMMONED,
+                    null
+            );
+            level.addFreshEntity(entityType);
+            this.playSound(Ssounds.HOWLER_GROWL.value());
+        }
+    }
     @Override
     protected void defineSynchedData(SynchedEntityData.@NotNull Builder builder) {
         super.defineSynchedData(builder);
@@ -219,6 +259,9 @@ public class Howler extends EvolvedInfected implements VariantKeeper, ArmorPerse
 
         for (Entity entity : nearby) {
             if (entity instanceof Infected && !(SConfig.SERVER.support.get().contains(entity.getEncodeId()) || entity instanceof Carrier)) {
+                return true;
+            }
+            if (entity instanceof Illusion && this.getVariant() == HowlerVariants.FORLORN){
                 return true;
             }
         }
@@ -257,14 +300,27 @@ public class Howler extends EvolvedInfected implements VariantKeeper, ArmorPerse
             if (dist > 120.0D) {
                 mob.getNavigation().moveTo(target, speed);
             } else if (screamTimer <= 0) {
+                ScreamAOE(mob);
                 if (checkForInfected(mob)) {
-                    ScreamAOE(mob);
                     ScreamBuffInfected(mob);
                 } else {
                     boolean skulk = ModList.get().isLoaded("sculkhorde");
-                    int summons =skulk ? random.nextInt(3, 9): random.nextInt(1, 4);
+                    int summons;
+                    if (skulk){
+                        summons = random.nextInt(3, 9);
+                    }else if (getVariant() == HowlerVariants.SWARMER){
+                        summons = random.nextInt(4, 7);
+                    }else if (getVariant() == HowlerVariants.FORLORN){
+                        summons = random.nextInt(3, 5);
+                    }else {
+                        summons = random.nextInt(1, 3);
+                    }
                     for (int i = 0; i < summons; i++) {
-                        SummonScream(mob,isSkulk,skulk);
+                        if (getVariant() == HowlerVariants.SWARMER || getVariant() == HowlerVariants.FORLORN){
+                            SummonSpecialScream(mob,target);
+                        }else {
+                            SummonScream(mob,isSkulk,skulk);
+                        }
                     }
                 }
                 if (this.mob.getVariant() == HowlerVariants.SONIC){
