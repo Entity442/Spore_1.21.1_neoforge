@@ -39,11 +39,13 @@ public class LivingTickEvent {
         }
         if (living.isInFluidType(Sfluids.BILE_FLUID_TYPE)) {
 
-            if (living instanceof UtilityEntity || living instanceof TrueCalamity) {
+            if ((living instanceof UtilityEntity || living instanceof TrueCalamity)) {
                 living.setDeltaMovement(living.getDeltaMovement().scale(1.2).add(0, 0.01, 0));
-                living.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 100, 1));
+                if (!living.hasEffect(MobEffects.REGENERATION)){
+                    living.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 100, 1));
+                }
             } else {
-                living.setDeltaMovement(living.getDeltaMovement().scale(0.4));
+                living.setDeltaMovement(living.getDeltaMovement().scale(0.8));
 
                 if (living.tickCount % 40 == 0) {
                     for (MobEffectInstance effect : bileEffects()) {
