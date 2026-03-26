@@ -10,7 +10,6 @@ import com.Harbinger.Spore.Sentities.BasicInfected.InfectedDrowned;
 import com.Harbinger.Spore.Sentities.ChunkLoaderMob;
 import com.Harbinger.Spore.Sentities.EvolvedInfected.Protector;
 import com.Harbinger.Spore.Sentities.Organoids.Proto;
-import com.Harbinger.Spore.Sentities.Utility.Vanguard;
 import com.Harbinger.Spore.Sitems.BaseWeapons.SporeBaseArmor;
 import com.Harbinger.Spore.Sitems.Guns.AbstractSporeGun;
 import com.Harbinger.Spore.Spore;
@@ -75,18 +74,6 @@ public class HandlerEvents {
                         SporePacketHandler.sendToClient(new SongInitializingPacket(-1,false,postProto),serverPlayer);
                     }
                 }
-            }
-        }
-    }
-    @SubscribeEvent
-    public static void onMobLoseTarget(LivingChangeTargetEvent event) {
-        LivingEntity living = event.getEntity();
-        if (event.getNewAboutToBeSetTarget() instanceof ServerPlayer serverPlayer && serverPlayer.tickCount % 20 == 0){
-            if (living instanceof Calamity){
-                SporePacketHandler.sendToClient(new SongInitializingPacket(0,true,false),serverPlayer);
-            }
-            if (living instanceof Vanguard){
-                SporePacketHandler.sendToClient(new SongInitializingPacket(1,true,false),serverPlayer);
             }
         }
     }

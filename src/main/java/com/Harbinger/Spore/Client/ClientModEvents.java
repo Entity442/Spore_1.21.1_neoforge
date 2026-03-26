@@ -485,11 +485,7 @@ public class ClientModEvents {
         Minecraft mc = Minecraft.getInstance();
         SporeMusicPlayer.tickMusic();
         if (mc.screen instanceof TitleScreen) {
-            mc.getMusicManager().stopPlaying();
             MenuMusicPlayer.tick();
-        }
-        if (true && mc.level != null){
-            mc.getMusicManager().stopPlaying();
         }
     }
     @SubscribeEvent

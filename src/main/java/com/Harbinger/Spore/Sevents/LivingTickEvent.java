@@ -1,8 +1,13 @@
 package com.Harbinger.Spore.Sevents;
 
 import com.Harbinger.Spore.Effect.SporeEffectsHandler;
+import com.Harbinger.Spore.ExtremelySusThings.Package.SongInitializingPacket;
+import com.Harbinger.Spore.ExtremelySusThings.SporePacketHandler;
+import com.Harbinger.Spore.Sentities.BaseEntities.Calamity;
 import com.Harbinger.Spore.Sentities.BaseEntities.UtilityEntity;
+import com.Harbinger.Spore.Sentities.Organoids.Vigil;
 import com.Harbinger.Spore.Sentities.TrueCalamity;
+import com.Harbinger.Spore.Sentities.Utility.Vanguard;
 import com.Harbinger.Spore.Sitems.BaseWeapons.SporeArmorData;
 import com.Harbinger.Spore.Sitems.BaseWeapons.SporeToolsBaseItem;
 import com.Harbinger.Spore.core.Seffects;
@@ -12,6 +17,7 @@ import com.Harbinger.Spore.core.Ssounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.effect.MobEffect;
@@ -19,6 +25,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
@@ -100,6 +107,24 @@ public class LivingTickEvent {
             }
 
 
+        }
+        if (!(event.getEntity() instanceof Mob mob))
+            return;
+
+        if (!(mob.getTarget() instanceof ServerPlayer player))
+            return;
+
+        if (mob.tickCount % 20 != 0)
+            return;
+
+        switch (mob) {
+            case Calamity ignored ->
+                    SporePacketHandler.sendToClient(new SongInitializingPacket(0, true, true), player);
+            case Vanguard ignored ->
+                    SporePacketHandler.sendToClient(new SongInitializingPacket(1, true, true), player);
+            case Vigil ignored -> SporePacketHandler.sendToClient(new SongInitializingPacket(2, true, true), player);
+            default -> {
+            }
         }
     }
     public static void TickEffects(PlayerTickEvent.Pre event) {

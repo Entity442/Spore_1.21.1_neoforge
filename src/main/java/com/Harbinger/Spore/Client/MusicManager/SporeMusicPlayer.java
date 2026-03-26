@@ -16,12 +16,20 @@ import java.util.List;
 
 @OnlyIn(Dist.CLIENT)
 public class SporeMusicPlayer {
+
     private static final SoundManager SoundManager = Minecraft.getInstance().getSoundManager();
+
     private static SoundInstance currentMusic;
     private static SoundEvent oldMusic;
-    private static final RandomSource random = RandomSource.create();
+
+    // ===== MUSIC STATE =====
+    private static SoundEvent battleMusic;   // null = not in combat
+    private static boolean postPhase;        // false = default playlist, true = post playlist
     private static int battleMusicTicks;
 
+    private static final RandomSource random = RandomSource.create();
+
+    // ===== AMBIENT PLAYLISTS =====
     private static final List<SoundEvent> DEFAULT_PLAYLIST = List.of(
             Ssounds.BICENTENNIAL.value(),
             Ssounds.CYCLE_OF_EVOLUTION.value(),
@@ -40,6 +48,7 @@ public class SporeMusicPlayer {
             Ssounds.THEY_AWAKEN.value(),
             Ssounds.THEY_GROW_BELOW.value()
     );
+
     private static final List<SoundEvent> POST_PLAYLIST = List.of(
             Ssounds.BROKEN_REFLECTION.value(),
             Ssounds.DECAY.value(),
@@ -57,73 +66,109 @@ public class SporeMusicPlayer {
             Ssounds.WHAT_WE_BECOME.value(),
             Ssounds.WHISPERS.value()
     );
-    public static void tickMusic(){
-        if (battleMusicTicks > 0){
+
+    // =========================================================
+    // ===================== TICK LOOP ==========================
+    // =========================================================
+
+    public static void tickMusic() {
+
+        // Always kill vanilla overworld music
+        Minecraft.getInstance().getMusicManager().stopPlaying();
+
+        // ===== COMBAT ACTIVE =====
+        if (battleMusicTicks > 0) {
             battleMusicTicks--;
-            if (battleMusicTicks == 1){
+
+            if (battleMusic != null) {
+                playMusic(battleMusic);
+            }
+
+            // combat just ended
+            if (battleMusicTicks <= 1) {
+                battleMusic = null;
                 stopMusic();
             }
+
+            return; // block ambient while fighting
         }
-    }
 
-    public static void playRandomDefault() {
-        SoundEvent pick = DEFAULT_PLAYLIST.get(random.nextInt(DEFAULT_PLAYLIST.size()));
-        playMusic(pick,false);
-    }
-    public static void playRandomPreDefault() {
-        SoundEvent pick = POST_PLAYLIST.get(random.nextInt(POST_PLAYLIST.size()));
-        playMusic(pick,false);
-    }
-
-    public static void playMusic(SoundEvent music,boolean forceCut) {
-        if (forceCut && (DEFAULT_PLAYLIST.contains(music) || POST_PLAYLIST.contains(music))){
-            stopMusic();
-            oldMusic = null;
-        }
-        if (forceCut && oldMusic != null && !oldMusic.equals(music)){
-            stopMusic();
-            oldMusic = null;
-        }
-        if (currentMusic != null && SoundManager.isActive(currentMusic)){
-            return;
-        }
-        stopMusic();
-
-        currentMusic = SimpleSoundInstance.forMusic(
-                music
-        );
-
-        SoundManager.play(currentMusic);
-        oldMusic = music;
-    }
-
-    public static void stopMusic() {
-        if (currentMusic != null)
-            SoundManager.stop(currentMusic);
-    }
-
-    public static void handlePacket(boolean pro, int id, boolean val) {
-        if (val && id != -1){
-            battleMusicTicks = 100;
-            SoundEvent event = SongVariantsPerEntity.getVariant(id).getName();
-            playMusic(event,true);
-        }else {
-            if (pro){
-                playRandomPreDefault();
-            }else {
+        // ===== AMBIENT MODE =====
+        if (currentMusic == null || !SoundManager.isActive(currentMusic)) {
+            if (postPhase) {
+                playRandomPost();
+            } else {
                 playRandomDefault();
             }
         }
     }
 
+    // =========================================================
+    // ===================== PLAY HELPERS =======================
+    // =========================================================
 
+    private static void playRandomDefault() {
+        SoundEvent pick = DEFAULT_PLAYLIST.get(random.nextInt(DEFAULT_PLAYLIST.size()));
+        playMusic(pick);
+    }
+
+    private static void playRandomPost() {
+        SoundEvent pick = POST_PLAYLIST.get(random.nextInt(POST_PLAYLIST.size()));
+        playMusic(pick);
+    }
+
+    private static void playMusic(SoundEvent music) {
+        // prevent restarting same track
+        if (currentMusic != null && SoundManager.isActive(currentMusic) && music.equals(oldMusic))
+            return;
+
+        stopMusic();
+
+        currentMusic = SimpleSoundInstance.forMusic(music);
+        SoundManager.play(currentMusic);
+        oldMusic = music;
+    }
+
+    private static void stopMusic() {
+        if (currentMusic != null)
+            SoundManager.stop(currentMusic);
+    }
+
+    // =========================================================
+    // ===================== NETWORK PACKET =====================
+    // =========================================================
+
+    public static void handlePacket(boolean pro, int id, boolean inCombat) {
+
+        // update world progression state (ambient playlist)
+        postPhase = pro;
+
+        // ===== COMBAT START / REFRESH =====
+        if (inCombat && id >= 0) {
+            battleMusicTicks = 200;
+            battleMusic = SongVariantsPerEntity.getVariant(id).getName();
+            return;
+        }
+
+        // ===== COMBAT END =====
+        battleMusicTicks = 0;
+        battleMusic = null;
+    }
+
+    // =========================================================
+    // ================= ENTITY COMBAT TRACKS ===================
+    // =========================================================
 
     public enum SongVariantsPerEntity {
-        CALAMITY(0,Ssounds.VIRULENT_VIGIL.value()),
-        VANGUARD(1,Ssounds.BANE_OF_SETTLEMENT.value());
+        CALAMITY(0, Ssounds.MYCONOCLAST.value()),
+        VANGUARD(1, Ssounds.BANE_OF_SETTLEMENT.value()),
+        VIGIL(2, Ssounds.VIRULENT_VIGIL.value());
 
-        private static final SongVariantsPerEntity[] BY_ID = Arrays.stream(values()).sorted(Comparator.
-                comparingInt(SongVariantsPerEntity::getId)).toArray(SongVariantsPerEntity[]::new);
+        private static final SongVariantsPerEntity[] BY_ID =
+                Arrays.stream(values())
+                        .sorted(Comparator.comparingInt(SongVariantsPerEntity::getId))
+                        .toArray(SongVariantsPerEntity[]::new);
+
         private final int id;
         private final SoundEvent name;
 
@@ -131,19 +176,21 @@ public class SporeMusicPlayer {
             this.id = id;
             this.name = name;
         }
-        public SoundEvent getName(){
+
+        public SoundEvent getName() {
             return name;
         }
 
         public int getId() {
-            return this.id;
+            return id;
         }
 
         public static SongVariantsPerEntity byId(int id) {
             return BY_ID[id % BY_ID.length];
         }
+
         public static SongVariantsPerEntity getVariant(int var) {
-            return SongVariantsPerEntity.byId(var & 255);
+            return byId(var & 255);
         }
     }
 }

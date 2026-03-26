@@ -24,6 +24,7 @@ public class MenuMusicPlayer {
 
     public static void tick() {
         Minecraft mc = Minecraft.getInstance();
+        mc.getMusicManager().stopPlaying();
         if (currentMusic != null && mc.getSoundManager().isActive(currentMusic)) return;
         SoundEvent track = MENU_TRACKS.get(random.nextInt(MENU_TRACKS.size()));
 
