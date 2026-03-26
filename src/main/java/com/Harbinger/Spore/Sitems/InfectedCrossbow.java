@@ -122,6 +122,8 @@ public class InfectedCrossbow extends CrossbowItem implements SporeWeaponData {
                 components.add(Component.literal(Component.translatable("spore.item.mutation").getString()+Component.translatable(getVariant(stack).getName()).getString()));
             }
             components.add(Component.translatable("spore.item.desc."+"crossbow").withStyle(ChatFormatting.RED));
+        }else {
+            components.add(Component.translatable("item.armor.normal").withStyle(ChatFormatting.GOLD));
         }
     }
 
