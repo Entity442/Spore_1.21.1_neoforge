@@ -151,7 +151,7 @@ public class Sitems {
                     .effect(()-> new MobEffectInstance(MobEffects.SLOW_FALLING,300,1),1f).build())));
     public  static final DeferredItem<Item> BIOMASS_BACON = ITEMS.register("biomass_bacon",
             () -> new BaseItem(new Item.Properties().food(new FoodProperties.Builder().nutrition(4).saturationModifier(0.5F).effect(()-> new MobEffectInstance(Seffects.MYCELIUM,200,0),0.4f)
-                    .effect(()-> new MobEffectInstance(MobEffects.SATURATION,300,1),1f).build())));
+                    .effect(()-> new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE,300,0),1f).build())));
     public  static final DeferredItem<Item> TENDON_GUM = ITEMS.register("tendon_gum",
             () -> new BaseItem(new Item.Properties().food(new FoodProperties.Builder().nutrition(4).saturationModifier(1F).effect(()-> new MobEffectInstance(Seffects.MYCELIUM,200,0),0.4f)
                     .effect(()-> new MobEffectInstance(MobEffects.JUMP,300,1),1f).build())));
