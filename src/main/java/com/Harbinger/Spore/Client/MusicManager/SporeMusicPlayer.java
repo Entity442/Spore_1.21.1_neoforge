@@ -20,15 +20,51 @@ public class SporeMusicPlayer {
     private static SoundInstance currentMusic;
     private static SoundEvent oldMusic;
     private static final RandomSource random = RandomSource.create();
+    private static int battleMusicTicks;
 
     private static final List<SoundEvent> DEFAULT_PLAYLIST = List.of(
-            Ssounds.FORSAKEN_FUTURE.value(),
-            Ssounds.FORGOTTEN_PATIENT.value()
+            Ssounds.BICENTENNIAL.value(),
+            Ssounds.CYCLE_OF_EVOLUTION.value(),
+            Ssounds.DESOLATION.value(),
+            Ssounds.FALL_OF_MAN.value(),
+            Ssounds.MANMADE_HORRORS.value(),
+            Ssounds.MYCONOCLAST.value(),
+            Ssounds.NOURISHMENT.value(),
+            Ssounds.PROJECT_REGENESIS.value(),
+            Ssounds.RECLAIMATION.value(),
+            Ssounds.RESTLESS_REACH.value(),
+            Ssounds.ROADS_ONCE_TRAVELLED.value(),
+            Ssounds.SLEEPLESS_DREAMING.value(),
+            Ssounds.START_ANEW.value(),
+            Ssounds.THE_SOIL_TALKS.value(),
+            Ssounds.THEY_AWAKEN.value(),
+            Ssounds.THEY_GROW_BELOW.value()
     );
     private static final List<SoundEvent> POST_PLAYLIST = List.of(
-            Ssounds.CALAMITY_SPAWN.value()
+            Ssounds.BROKEN_REFLECTION.value(),
+            Ssounds.DECAY.value(),
+            Ssounds.ENDLESS_FEAST.value(),
+            Ssounds.MYCONAUT.value(),
+            Ssounds.NATURAL_OCCURANCE.value(),
+            Ssounds.NEUROGENESIS.value(),
+            Ssounds.PROTOTYPE.value(),
+            Ssounds.REPURPOSED.value(),
+            Ssounds.ROT.value(),
+            Ssounds.SOMETHING_ONCE_GREAT.value(),
+            Ssounds.SPORE_BURST_SONG.value(),
+            Ssounds.SYNAPTIC_RELAPSE.value(),
+            Ssounds.THEY_LISTEN.value(),
+            Ssounds.WHAT_WE_BECOME.value(),
+            Ssounds.WHISPERS.value()
     );
-
+    public static void tickMusic(){
+        if (battleMusicTicks > 0){
+            battleMusicTicks--;
+            if (battleMusicTicks == 1){
+                stopMusic();
+            }
+        }
+    }
 
     public static void playRandomDefault() {
         SoundEvent pick = DEFAULT_PLAYLIST.get(random.nextInt(DEFAULT_PLAYLIST.size()));
@@ -68,6 +104,7 @@ public class SporeMusicPlayer {
 
     public static void handlePacket(boolean pro, int id, boolean val) {
         if (val && id != -1){
+            battleMusicTicks = 100;
             SoundEvent event = SongVariantsPerEntity.getVariant(id).getName();
             playMusic(event,true);
         }else {
@@ -82,8 +119,8 @@ public class SporeMusicPlayer {
 
 
     public enum SongVariantsPerEntity {
-        CALAMITY(0,Ssounds.BIOBLOB.value()),
-        VANGUARD(1,Ssounds.SIEGER_AMBIENT.value());
+        CALAMITY(0,Ssounds.VIRULENT_VIGIL.value()),
+        VANGUARD(1,Ssounds.BANE_OF_SETTLEMENT.value());
 
         private static final SongVariantsPerEntity[] BY_ID = Arrays.stream(values()).sorted(Comparator.
                 comparingInt(SongVariantsPerEntity::getId)).toArray(SongVariantsPerEntity[]::new);
