@@ -383,6 +383,52 @@ public class Ssounds {
     public static final Holder<SoundEvent> BIOGUN_RELOAD = soundRegistry("biogun_reload");
 
     public static final Holder<SoundEvent> BIOGUN_HIT_PLAYER = soundRegistry("biogun_hit_player");
+
+
+
+
+    ///SONGS///
+
+    public static final Holder<SoundEvent> BANE_OF_SETTLEMENT = soundRegistry("bane_of_settlement");
+    public static final Holder<SoundEvent> BICENTENNIAL = soundRegistry("bicentennial");
+    public static final Holder<SoundEvent> BROKEN_REFLECTION = soundRegistry("broken_reflection");
+    public static final Holder<SoundEvent> CYCLE_OF_EVOLUTION = soundRegistry("cycle_of_evolution");
+    public static final Holder<SoundEvent> DECAY = soundRegistry("decay");
+    public static final Holder<SoundEvent> DESOLATION = soundRegistry("desolation");
+    public static final Holder<SoundEvent> ENDLESS_FEAST = soundRegistry("endless_feast");
+    public static final Holder<SoundEvent> FALL_OF_MAN = soundRegistry("fall_of_man");
+    public static final Holder<SoundEvent> INSOLENCE = soundRegistry("insolence");
+    public static final Holder<SoundEvent> INSOLENCE_INTRO = soundRegistry("insolence_intro");
+    public static final Holder<SoundEvent> MANMADE_HORRORS = soundRegistry("manmade_horrors");
+    public static final Holder<SoundEvent> MENTAL_MUTILATION = soundRegistry("mental_mutilation");
+    public static final Holder<SoundEvent> MYCONAUT = soundRegistry("myconaut");
+    public static final Holder<SoundEvent> MYCONOCLAST = soundRegistry("myconoclast");
+    public static final Holder<SoundEvent> MYCOPHOBIA = soundRegistry("mycophobia");
+    public static final Holder<SoundEvent> NATURAL_OCCURANCE = soundRegistry("natural_occurance");
+    public static final Holder<SoundEvent> NEUROGENESIS = soundRegistry("neurogenesis");
+    public static final Holder<SoundEvent> NOURISHMENT = soundRegistry("nourishment");
+    public static final Holder<SoundEvent> ONCE_HERE = soundRegistry("once_here");
+    public static final Holder<SoundEvent> PROJECT_REGENESIS = soundRegistry("project_regenesis");
+    public static final Holder<SoundEvent> PROTOTYPE = soundRegistry("prototype");
+    public static final Holder<SoundEvent> RECLAIMATION = soundRegistry("reclaimation");
+    public static final Holder<SoundEvent> REPURPOSED = soundRegistry("repurposed");
+    public static final Holder<SoundEvent> RESTLESS_REACH = soundRegistry("restless_reach");
+    public static final Holder<SoundEvent> ROADS_ONCE_TRAVELLED = soundRegistry("roads_once_travelled");
+    public static final Holder<SoundEvent> ROT = soundRegistry("rot");
+    public static final Holder<SoundEvent> SLEEPLESS_DREAMING = soundRegistry("sleepless_dreaming");
+    public static final Holder<SoundEvent> SOMETHING_ONCE_GREAT = soundRegistry("something_once_great");
+    public static final Holder<SoundEvent> SPORE_BURST_SONG = soundRegistry("spore_burst_song");
+    public static final Holder<SoundEvent> START_ANEW = soundRegistry("start_anew");
+    public static final Holder<SoundEvent> SYNAPTIC_RELAPSE = soundRegistry("synaptic_relapse");
+    public static final Holder<SoundEvent> THE_SOIL_TALKS = soundRegistry("the_soil_talks");
+    public static final Holder<SoundEvent> THEY_AWAKEN = soundRegistry("they_awaken");
+    public static final Holder<SoundEvent> THEY_GROW_BELOW = soundRegistry("they_grow_below");
+    public static final Holder<SoundEvent> THEY_LISTEN = soundRegistry("they_listen");
+    public static final Holder<SoundEvent> VIRULENT_VIGIL = soundRegistry("virulent_vigil");
+    public static final Holder<SoundEvent> WHISPERS = soundRegistry("whispers");
+    public static final Holder<SoundEvent> WHAT_WE_BECOME = soundRegistry("what_we_become");
+
+
     private Ssounds() {
     }
 

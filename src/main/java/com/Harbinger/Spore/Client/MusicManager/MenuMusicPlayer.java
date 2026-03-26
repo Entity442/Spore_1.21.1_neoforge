@@ -17,7 +17,7 @@ public class MenuMusicPlayer {
     private static SoundInstance currentMusic;
 
     private static final List<SoundEvent> MENU_TRACKS = List.of(
-            Ssounds.FORGOTTEN_PATIENT.value()
+            Ssounds.ONCE_HERE.value()
     );
 
     private static final RandomSource random = RandomSource.create();
