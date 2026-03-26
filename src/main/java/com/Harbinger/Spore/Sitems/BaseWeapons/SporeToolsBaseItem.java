@@ -166,8 +166,11 @@ public class SporeToolsBaseItem extends BaseItem implements SporeWeaponData , II
             if (getVariant(stack) != SporeToolsMutations.DEFAULT) {
                 components.add(Component.literal(Component.translatable("spore.item.mutation").getString() + Component.translatable(getVariant(stack).getName()).getString()));
             }
-            components.add(Component.translatable("spore.item.desc."+desc));
+            components.add(Component.translatable("spore.item.desc."+desc).withStyle(getDeskColor()));
         }
+    }
+    protected ChatFormatting getDeskColor(){
+        return ChatFormatting.RED;
     }
 
     @Override
