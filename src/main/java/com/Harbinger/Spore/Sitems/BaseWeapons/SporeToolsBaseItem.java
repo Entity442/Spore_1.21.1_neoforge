@@ -40,13 +40,15 @@ public class SporeToolsBaseItem extends BaseItem implements SporeWeaponData , II
     protected final double meleeReach;
     protected final double meleeRecharge;
     protected final int miningLevel;
+    protected final String desc;
     public static final ResourceLocation BASE_ATTACK_REACH_ID = ResourceLocation.withDefaultNamespace("base_attack_reach");
-    public SporeToolsBaseItem(double meleeDamage, double meleeReach, double meleeRecharge, int durability, int miningLevel, Tool toolComponentData) {
+    public SporeToolsBaseItem(double meleeDamage, double meleeReach, double meleeRecharge, int durability, int miningLevel, Tool toolComponentData, String desc) {
         super(new Item.Properties().stacksTo(1).durability(durability).component(DataComponents.TOOL,toolComponentData));
         this.meleeDamage = meleeDamage;
         this.meleeReach = meleeReach;
         this.meleeRecharge = meleeRecharge;
         this.miningLevel = miningLevel;
+        this.desc = desc;
         Sitems.TINTABLE_ITEMS.add(this);
     }
 
@@ -164,6 +166,7 @@ public class SporeToolsBaseItem extends BaseItem implements SporeWeaponData , II
             if (getVariant(stack) != SporeToolsMutations.DEFAULT) {
                 components.add(Component.literal(Component.translatable("spore.item.mutation").getString() + Component.translatable(getVariant(stack).getName()).getString()));
             }
+            components.add(Component.translatable("spore.item.desc."+desc));
         }
     }
 

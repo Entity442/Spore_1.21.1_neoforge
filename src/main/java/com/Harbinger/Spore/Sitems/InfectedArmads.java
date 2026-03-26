@@ -3,17 +3,19 @@ package com.Harbinger.Spore.Sitems;
 import com.Harbinger.Spore.Sitems.BaseWeapons.SporeAxeItems;
 import com.Harbinger.Spore.core.SConfig;
 import net.minecraft.core.BlockPos;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class InfectedArmads extends SporeAxeItems {
     public InfectedArmads() {
-        super(SConfig.SERVER.armads_damage.get(), 3.5, 3.2, SConfig.SERVER.armads_durability.get(), 3);
+        super(SConfig.SERVER.armads_damage.get(), 3.5, 3.2, SConfig.SERVER.armads_durability.get() ,3, "armads");
     }
 
     @Override

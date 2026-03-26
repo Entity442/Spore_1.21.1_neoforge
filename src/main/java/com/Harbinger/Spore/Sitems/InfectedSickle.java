@@ -26,7 +26,7 @@ import java.util.List;
 
 public class InfectedSickle extends SporeSwordBase {
     public InfectedSickle() {
-        super(SConfig.SERVER.sickle_damage.get(), 2f, 2, SConfig.SERVER.sickle_durability.get());
+        super(SConfig.SERVER.sickle_damage.get(), 2f, 2, SConfig.SERVER.sickle_durability.get(),"sickle");
     }
 
     @Override

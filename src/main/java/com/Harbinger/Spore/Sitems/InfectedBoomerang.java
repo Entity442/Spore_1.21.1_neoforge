@@ -18,7 +18,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class InfectedBoomerang extends SporeSwordBase {
     public InfectedBoomerang() {
-        super(SConfig.SERVER.boomerang_damage.get(), 1f, 3f, SConfig.SERVER.boomerang_durability.get());
+        super(SConfig.SERVER.boomerang_damage.get(), 1f, 3f, SConfig.SERVER.boomerang_durability.get(),"boomerang");
     }
 
     @Override

@@ -34,7 +34,7 @@ public class InfectedCleaver extends SporeSwordBase implements DeathRewardingWea
     private static final Logger LOGGER = LogUtils.getLogger();
     private final List<EnAndItem> heads;
     public InfectedCleaver() {
-        super(SConfig.SERVER.cleaver_damage.get(), 2.5f, 3F, SConfig.SERVER.cleaver_durability.get());
+        super(SConfig.SERVER.cleaver_damage.get(), 2.5f, 3F, SConfig.SERVER.cleaver_durability.get(),"cleaver");
         this.heads = getHeads();
     }
 

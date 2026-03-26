@@ -28,9 +28,9 @@ import java.util.List;
 import java.util.function.Consumer;
 
 public class InfectedShield extends SporeToolsBaseItem implements Equipable{
-    public static final int MAX_CHARGE = 25;
+    public static final int MAX_CHARGE = 10;
     public InfectedShield() {
-        super(SConfig.SERVER.shield_damage.get(), 0, 1, SConfig.SERVER.shield_durability.get(), 0, null);
+        super(SConfig.SERVER.shield_damage.get(), 0, 1, SConfig.SERVER.shield_durability.get(), 0, null,"shield");
         DispenserBlock.registerBehavior(this, ArmorItem.DISPENSE_ITEM_BEHAVIOR);
     }
 

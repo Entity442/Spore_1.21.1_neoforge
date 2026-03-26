@@ -13,7 +13,7 @@ public class InfectedGreatSword extends SporeSwordBase {
     private final ResourceLocation BONUS_ARMOR_MODIFIER_UUID = ResourceLocation.withDefaultNamespace("base_armor");
     private final ResourceLocation BONUS_TOUGHNESS_MODIFIER_UUID = ResourceLocation.withDefaultNamespace("base_toughness");
     public InfectedGreatSword() {
-        super(SConfig.SERVER.greatsword_damage.get(), 2.5f, 3F, SConfig.SERVER.greatsword_durability.get());
+        super(SConfig.SERVER.greatsword_damage.get(), 2.5f, 3F, SConfig.SERVER.greatsword_durability.get(),"greatsword");
     }
 
 

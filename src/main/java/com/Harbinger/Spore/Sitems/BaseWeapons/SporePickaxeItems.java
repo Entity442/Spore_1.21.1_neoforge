@@ -6,8 +6,8 @@ import net.neoforged.neoforge.common.ItemAbilities;
 import net.neoforged.neoforge.common.ItemAbility;
 
 public class SporePickaxeItems extends SporeDiggerTools{
-    public SporePickaxeItems(double meleeDamage, double meleeReach, double meleeRecharge, int durability, int miningLevel) {
-        super(meleeDamage, meleeReach, meleeRecharge, durability, miningLevel, BlockTags.MINEABLE_WITH_PICKAXE);
+    public SporePickaxeItems(double meleeDamage, double meleeReach, double meleeRecharge, int durability, int miningLevel, String s) {
+        super(meleeDamage, meleeReach, meleeRecharge, durability, miningLevel,  BlockTags.MINEABLE_WITH_PICKAXE, s);
     }
 
     public boolean canPerformAction(ItemStack stack, ItemAbility itemAbility) {

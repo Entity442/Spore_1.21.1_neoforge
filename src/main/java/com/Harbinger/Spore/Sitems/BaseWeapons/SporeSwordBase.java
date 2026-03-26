@@ -15,9 +15,9 @@ import net.neoforged.neoforge.common.ItemAbility;
 import java.util.List;
 
 public class SporeSwordBase extends SporeToolsBaseItem{
-    public SporeSwordBase(double meleeDamage, double meleeReach, double meleeRecharge, int durability) {
+    public SporeSwordBase(double meleeDamage, double meleeReach, double meleeRecharge, int durability, String desc) {
         super(meleeDamage, meleeReach, meleeRecharge, durability, 1,
-                new Tool(List.of(Tool.Rule.minesAndDrops(List.of(Blocks.COBWEB), 15.0F), Tool.Rule.overrideSpeed(BlockTags.SWORD_EFFICIENT, 1.5F)), 1.0F, 2));
+                new Tool(List.of(Tool.Rule.minesAndDrops(List.of(Blocks.COBWEB), 15.0F), Tool.Rule.overrideSpeed(BlockTags.SWORD_EFFICIENT, 1.5F)), 1.0F,2),desc);
     }
 
     public boolean canAttackBlock(BlockState state, Level level, BlockPos pos, Player player) {

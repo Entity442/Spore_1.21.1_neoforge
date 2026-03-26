@@ -6,6 +6,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -14,6 +15,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.neoforged.neoforge.common.ItemAbilities;
@@ -22,8 +24,8 @@ import net.neoforged.neoforge.common.ItemAbility;
 import java.util.Optional;
 
 public class SporeAxeItems extends SporeDiggerTools{
-    public SporeAxeItems(double meleeDamage, double meleeReach, double meleeRecharge, int durability, int miningLevel) {
-        super(meleeDamage, meleeReach, meleeRecharge, durability, miningLevel, BlockTags.MINEABLE_WITH_AXE);
+    public SporeAxeItems(double meleeDamage, double meleeReach, double meleeRecharge, int durability, int miningLevel, String s) {
+        super(meleeDamage, meleeReach, meleeRecharge, durability, miningLevel, BlockTags.MINEABLE_WITH_AXE, s);
     }
 
     public InteractionResult useOn(UseOnContext context) {

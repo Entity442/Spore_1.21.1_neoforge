@@ -25,7 +25,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class InfectedSpearItem extends SporeSwordBase implements ProjectileItem {
     public InfectedSpearItem() {
-        super(SConfig.SERVER.spear_damage.get(), 2.5f, 3, SConfig.SERVER.spear_durability.get());
+        super(SConfig.SERVER.spear_damage.get(), 2.5f, 3, SConfig.SERVER.spear_durability.get(),"spear");
     }
 
     public UseAnim getUseAnimation(ItemStack stack) {

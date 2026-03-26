@@ -13,7 +13,7 @@ import java.util.List;
 
 public class InfectedMace extends SporeToolsBaseItem implements DamagePiercingModifier {
     public InfectedMace() {
-        super(SConfig.SERVER.mace_damage.get(), 2f, 3, SConfig.SERVER.mace_durability.get(), 1,createToolProperties(BlockTags.MINEABLE_WITH_AXE,1));
+        super(SConfig.SERVER.mace_damage.get(), 2f, 3, SConfig.SERVER.mace_durability.get(), 1,createToolProperties(BlockTags.MINEABLE_WITH_AXE,1),"mace");
     }
     private static Tool createToolProperties(TagKey<Block> block, double mining) {
         return new Tool(List.of(Tool.Rule.minesAndDrops(block, (float) mining)), 1.0F, 1);

@@ -33,7 +33,7 @@ import java.util.List;
 public class InfectedPickaxe extends SporePickaxeItems {
     private static final TagKey<Block> ORE_TAG = TagKey.create(Registries.BLOCK, ResourceLocation.parse("c:ores"));
     public InfectedPickaxe() {
-        super(SConfig.SERVER.inf_pickaxe_damage.get(), 2.5f, 3F, SConfig.SERVER.inf_pickaxe_durability.get(), 7);
+        super(SConfig.SERVER.inf_pickaxe_damage.get(), 2.5f, 3F, SConfig.SERVER.inf_pickaxe_durability.get(), 7,"pickaxe");
     }
     record StoreDouble(Block value1, Block value2){}
     private List<StoreDouble> getBlockChange(){

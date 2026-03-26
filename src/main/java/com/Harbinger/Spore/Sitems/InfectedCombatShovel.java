@@ -33,7 +33,7 @@ public class InfectedCombatShovel extends SporeDiggerTools {
     protected static final Map<Block, BlockState> FLATTENABLES;
 
     public InfectedCombatShovel() {
-        super(SConfig.SERVER.shovel_damage.get(), 3f, 2f, SConfig.SERVER.shovel_durability.get(), 5, BlockTags.MINEABLE_WITH_SHOVEL);
+        super(SConfig.SERVER.shovel_damage.get(), 3f, 2f, SConfig.SERVER.shovel_durability.get(), 5, BlockTags.MINEABLE_WITH_SHOVEL,"shovel");
     }
 
     @Override

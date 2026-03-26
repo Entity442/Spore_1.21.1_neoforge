@@ -18,9 +18,9 @@ import java.util.List;
 
 public class SporeDiggerTools extends SporeToolsBaseItem{
     protected final TagKey<Block> blocks;
-    public SporeDiggerTools(double meleeDamage, double meleeReach, double meleeRecharge, int durability, int miningLevel, TagKey<Block> blocks) {
+    public SporeDiggerTools(double meleeDamage, double meleeReach, double meleeRecharge, int durability, int miningLevel, TagKey<Block> blocks,String s) {
         super(meleeDamage, meleeReach, meleeRecharge, durability, miningLevel,
-                createToolProperties(blocks,miningLevel));
+                createToolProperties(blocks,miningLevel),s);
         this.blocks = blocks;
     }
     private static Tool createToolProperties(TagKey<Block> block,double mining) {

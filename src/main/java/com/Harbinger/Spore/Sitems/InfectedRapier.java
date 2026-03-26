@@ -4,7 +4,6 @@ import com.Harbinger.Spore.core.*;
 import com.Harbinger.Spore.Sitems.BaseWeapons.DamagePiercingModifier;
 import com.Harbinger.Spore.Sitems.BaseWeapons.SporeSwordBase;
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
@@ -14,7 +13,7 @@ import java.util.List;
 
 public class InfectedRapier extends SporeSwordBase implements DamagePiercingModifier {
     public InfectedRapier() {
-        super(SConfig.SERVER.rapier_damage.get(), 2, 2, SConfig.SERVER.rapier_durability.get());
+        super(SConfig.SERVER.rapier_damage.get(), 2, 2, SConfig.SERVER.rapier_durability.get(),"rapier");
     }
 
     @Override

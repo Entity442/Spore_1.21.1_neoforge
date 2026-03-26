@@ -19,7 +19,7 @@ import net.minecraft.world.level.Level;
 
 public class InfectedKnife extends SporeSwordBase implements LootModifierWeapon {
     public InfectedKnife() {
-        super(SConfig.SERVER.knife_damage.get(), 0, -1, SConfig.SERVER.knife_durability.get());
+        super(SConfig.SERVER.knife_damage.get(), 0, -1, SConfig.SERVER.knife_durability.get(),"knife");
     }
 
     @Override
