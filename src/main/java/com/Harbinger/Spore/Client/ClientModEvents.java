@@ -8,6 +8,8 @@ import com.Harbinger.Spore.Client.Models.*;
 import com.Harbinger.Spore.Client.Models.NukeParts.BombFunnelModel;
 import com.Harbinger.Spore.Client.Models.NukeParts.FireDiskModel;
 import com.Harbinger.Spore.Client.Models.NukeParts.MushroomExplosionTop;
+import com.Harbinger.Spore.Client.MusicManager.MenuMusicPlayer;
+import com.Harbinger.Spore.Client.MusicManager.SporeMusicPlayer;
 import com.Harbinger.Spore.Client.Renderers.*;
 import com.Harbinger.Spore.ExtremelySusThings.Package.SporeGunFirePacket;
 import com.Harbinger.Spore.ExtremelySusThings.SporePacketHandler;
@@ -24,6 +26,7 @@ import com.Harbinger.Spore.Sitems.Guns.AcidicAssasin;
 import com.Harbinger.Spore.Spore;
 import com.Harbinger.Spore.core.*;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.player.LocalPlayer;
@@ -478,6 +481,15 @@ public class ClientModEvents {
         BileBlasterReloadAnimationTracker.tickAll();
         AssassinShootAnimationTracker.tickAll();
         AssassinReloadAnimationTracker.tickAll();
+
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.screen instanceof TitleScreen) {
+            mc.getMusicManager().stopPlaying();
+            MenuMusicPlayer.tick();
+        }
+        if (true && mc.level != null){
+            mc.getMusicManager().stopPlaying();
+        }
     }
     @SubscribeEvent
     public static void onRenderHand(RenderHandEvent event) {

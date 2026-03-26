@@ -1,17 +1,16 @@
 package com.Harbinger.Spore.Sevents;
 
-import com.Harbinger.Spore.ExtremelySusThings.ChunkLoadRequest;
-import com.Harbinger.Spore.ExtremelySusThings.ChunkLoaderHelper;
+import com.Harbinger.Spore.ExtremelySusThings.*;
 import com.Harbinger.Spore.ExtremelySusThings.CustomJsonReader.SporeCduConversionReloadListener;
 import com.Harbinger.Spore.ExtremelySusThings.CustomJsonReader.SporeConversionReloadListener;
 import com.Harbinger.Spore.ExtremelySusThings.CustomJsonReader.SporeMobConversionReloadListener;
-import com.Harbinger.Spore.ExtremelySusThings.SporeSavedData;
-import com.Harbinger.Spore.ExtremelySusThings.Utilities;
+import com.Harbinger.Spore.ExtremelySusThings.Package.SongInitializingPacket;
 import com.Harbinger.Spore.Sentities.BaseEntities.*;
 import com.Harbinger.Spore.Sentities.BasicInfected.InfectedDrowned;
 import com.Harbinger.Spore.Sentities.ChunkLoaderMob;
 import com.Harbinger.Spore.Sentities.EvolvedInfected.Protector;
 import com.Harbinger.Spore.Sentities.Organoids.Proto;
+import com.Harbinger.Spore.Sentities.Utility.Vanguard;
 import com.Harbinger.Spore.Sitems.BaseWeapons.SporeBaseArmor;
 import com.Harbinger.Spore.Sitems.Guns.AbstractSporeGun;
 import com.Harbinger.Spore.Spore;
@@ -21,6 +20,7 @@ import net.minecraft.core.SectionPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.players.PlayerList;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.*;
@@ -58,12 +58,38 @@ import java.util.*;
 
 @EventBusSubscriber(modid = Spore.MODID)
 public class HandlerEvents {
+    private static int val;
     @SubscribeEvent
     public static void onServerTick(ServerTickEvent.Post event) {
         DespawnSystem.tickMobCleaner(event.getServer());
         ChunkLoaderHelper.tick();
+        val++;
+        if (val % 200 == 0){
+            PlayerList players = event.getServer().getPlayerList();
+            if (players.getPlayers().isEmpty()){
+                return;
+            }else {
+                for (Player player : players.getPlayers()){
+                    if (player instanceof ServerPlayer serverPlayer){
+                        boolean postProto = SporeSavedData.getHiveminds(serverPlayer.serverLevel()).size() > SConfig.SERVER.proto_spawn_world_mod.get();
+                        SporePacketHandler.sendToClient(new SongInitializingPacket(-1,false,postProto),serverPlayer);
+                    }
+                }
+            }
+        }
     }
-
+    @SubscribeEvent
+    public static void onMobLoseTarget(LivingChangeTargetEvent event) {
+        LivingEntity living = event.getEntity();
+        if (event.getNewAboutToBeSetTarget() instanceof ServerPlayer serverPlayer && serverPlayer.tickCount % 20 == 0){
+            if (living instanceof Calamity){
+                SporePacketHandler.sendToClient(new SongInitializingPacket(0,true,false),serverPlayer);
+            }
+            if (living instanceof Vanguard){
+                SporePacketHandler.sendToClient(new SongInitializingPacket(1,true,false),serverPlayer);
+            }
+        }
+    }
     @SubscribeEvent
     public static void onWorldLoad(LevelEvent.Load event) {
         if (event.getLevel() instanceof ServerLevel level) {

@@ -20,6 +20,7 @@ public class SporePacketHandler {
 
         // Register client-bound packets (server -> client)
         registrar.playToClient(SyncAdvancementPacket.TYPE, SyncAdvancementPacket.STREAM_CODEC, SyncAdvancementPacket::handle);
+        registrar.playToClient(SongInitializingPacket.TYPE, SongInitializingPacket.STREAM_CODEC, SongInitializingPacket::handle);
         registrar.playToClient(SporeGunFireSyncPacket.TYPE, SporeGunFireSyncPacket.STREAM_CODEC, SporeGunFireSyncPacket::handle);
     }
 
