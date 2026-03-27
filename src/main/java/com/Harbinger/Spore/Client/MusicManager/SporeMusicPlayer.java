@@ -1,5 +1,6 @@
 package com.Harbinger.Spore.Client.MusicManager;
 
+import com.Harbinger.Spore.core.SConfig;
 import com.Harbinger.Spore.core.Ssounds;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.TitleScreen;
@@ -141,7 +142,7 @@ public class SporeMusicPlayer {
             playMusic(Ssounds.SOMETHING_ONCE_GREAT.value());
             return;
         }
-        if (inCombat && id >= 0) {
+        if (inCombat && id >= 0 && SConfig.SERVER.encounter_songs.get()) {
             battleMusicTicks = 200;
             battleMusic = SongVariantsPerEntity.getVariant(id).getName();
             return;

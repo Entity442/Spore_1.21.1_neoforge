@@ -481,11 +481,14 @@ public class ClientModEvents {
         BileBlasterReloadAnimationTracker.tickAll();
         AssassinShootAnimationTracker.tickAll();
         AssassinReloadAnimationTracker.tickAll();
-
         Minecraft mc = Minecraft.getInstance();
-        Minecraft.getInstance().getMusicManager().stopPlaying();
-        SporeMusicPlayer.tickMusic();
-        if (mc.screen instanceof TitleScreen) {
+        if (SConfig.SERVER.disable_vanilla.get()){
+            Minecraft.getInstance().getMusicManager().stopPlaying();
+        }
+        if (!SConfig.SERVER.disable_system.get()){
+            SporeMusicPlayer.tickMusic();
+        }
+        if (mc.screen instanceof TitleScreen && SConfig.SERVER.menu_song.get()) {
             MenuMusicPlayer.tick();
         }
     }

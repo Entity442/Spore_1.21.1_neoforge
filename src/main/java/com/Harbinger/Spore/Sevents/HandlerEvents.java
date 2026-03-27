@@ -62,8 +62,13 @@ public class HandlerEvents {
     public static void onServerTick(ServerTickEvent.Post event) {
         DespawnSystem.tickMobCleaner(event.getServer());
         ChunkLoaderHelper.tick();
+        int i = 20 * 60 * SConfig.SERVER.time_song_trigger.get();
         val++;
-        if (val % 200 == 0){
+        if (val % i == 0){
+            if (!SConfig.SERVER.ambient_song.get() || SConfig.SERVER.disable_system.get()){
+                val = 0;
+                return;
+            }
             PlayerList players = event.getServer().getPlayerList();
             if (players.getPlayers().isEmpty()){
                 return;
@@ -75,6 +80,7 @@ public class HandlerEvents {
                     }
                 }
             }
+            val = 0;
         }
     }
     @SubscribeEvent

@@ -636,6 +636,13 @@ public class SConfig {
         public final ModConfigSpec.ConfigValue<Integer> kami_busser_explosion;
         public final ModConfigSpec.ConfigValue<Integer> volatile_explosion;
 
+        public final ModConfigSpec.ConfigValue<Integer> time_song_trigger;
+        public final ModConfigSpec.ConfigValue<Boolean> menu_song;
+        public final ModConfigSpec.ConfigValue<Boolean> encounter_songs;
+        public final ModConfigSpec.ConfigValue<Boolean> ambient_song;
+        public final ModConfigSpec.ConfigValue<Boolean> disable_vanilla;
+        public final ModConfigSpec.ConfigValue<Boolean> disable_system;
+
         public final ModConfigSpec.ConfigValue<List<? extends String>> howler_effects_buff;
 
         public final ModConfigSpec.ConfigValue<List<? extends String>> mycelium;
@@ -656,6 +663,14 @@ public class SConfig {
         public final ModConfigSpec.ConfigValue<List<? extends String>> gas_masks;
 
         public Server(ModConfigSpec.Builder builder) {
+            builder.push("Music System");
+            this.time_song_trigger = builder.define("Time before ambient songs start playing in minutes",7);
+            this.menu_song = builder.comment("Default true").define("Should we play songs in the minecraft menu?",true);
+            this.encounter_songs = builder.comment("Default true").define("Should we play songs in certain entity encounters?",true);
+            this.ambient_song = builder.comment("Default true").define("Should we play songs in the minecraft world?",true);
+            this.disable_vanilla = builder.comment("Default true").define("Turn off Vanilla music?",true);
+            this.disable_system = builder.comment("Default false").define("Turn off the system?",false);
+            builder.pop();
             builder.push("Despawning system");
             this.max_infected_cap = builder.define("Maximum number of regular infected",60);
             this.max_evolved_cap = builder.define("Maximum number of evolved infected",35);
