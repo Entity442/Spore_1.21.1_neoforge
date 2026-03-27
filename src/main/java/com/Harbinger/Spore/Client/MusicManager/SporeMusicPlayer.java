@@ -26,7 +26,6 @@ public class SporeMusicPlayer {
     private static SoundEvent battleMusic;
     private static int battleMusicTicks;
     private static int worldUpdateDelay;
-
     private static final RandomSource random = RandomSource.create();
 
     // ===== AMBIENT PLAYLISTS =====
@@ -143,8 +142,10 @@ public class SporeMusicPlayer {
             return;
         }
         if (inCombat && id >= 0 && SConfig.SERVER.encounter_songs.get()) {
+            if (battleMusicTicks <= 0){
+                battleMusic = SongVariantsPerEntity.getVariant(id).getName();
+            }
             battleMusicTicks = 200;
-            battleMusic = SongVariantsPerEntity.getVariant(id).getName();
             return;
         }
         battleMusicTicks = 0;
