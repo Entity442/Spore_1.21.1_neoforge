@@ -24,7 +24,7 @@ license="${mod_license}"
 modId="spore" #mandatory
 
 # The version number of the mod
-version="2.1.9" #mandatory
+version="2.2.0" #mandatory
 
 # A display name for the mod
 displayName="Spore" #mandatory
