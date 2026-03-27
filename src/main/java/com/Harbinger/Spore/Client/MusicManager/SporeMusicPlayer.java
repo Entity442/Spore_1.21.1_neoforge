@@ -26,6 +26,7 @@ public class SporeMusicPlayer {
     private static SoundEvent battleMusic;   // null = not in combat
     private static boolean postPhase;        // false = default playlist, true = post playlist
     private static int battleMusicTicks;
+    private static int worldUpdateDelay;
 
     private static final RandomSource random = RandomSource.create();
 
@@ -73,9 +74,6 @@ public class SporeMusicPlayer {
 
     public static void tickMusic() {
 
-        // Always kill vanilla overworld music
-        Minecraft.getInstance().getMusicManager().stopPlaying();
-
         // ===== COMBAT ACTIVE =====
         if (battleMusicTicks > 0) {
             battleMusicTicks--;
@@ -92,7 +90,9 @@ public class SporeMusicPlayer {
 
             return; // block ambient while fighting
         }
-
+        if (worldUpdateDelay > 0) {
+            worldUpdateDelay--;
+        }
         // ===== AMBIENT MODE =====
         if (currentMusic == null || !SoundManager.isActive(currentMusic)) {
             if (postPhase) {
@@ -140,8 +140,10 @@ public class SporeMusicPlayer {
 
     public static void handlePacket(boolean pro, int id, boolean inCombat) {
 
-        // update world progression state (ambient playlist)
-        postPhase = pro;
+        if (worldUpdateDelay > 0){
+            postPhase = pro;
+            worldUpdateDelay = 200;
+        }
 
         // ===== COMBAT START / REFRESH =====
         if (inCombat && id >= 0) {

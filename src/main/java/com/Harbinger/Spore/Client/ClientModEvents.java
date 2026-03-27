@@ -483,6 +483,7 @@ public class ClientModEvents {
         AssassinReloadAnimationTracker.tickAll();
 
         Minecraft mc = Minecraft.getInstance();
+        Minecraft.getInstance().getMusicManager().stopPlaying();
         SporeMusicPlayer.tickMusic();
         if (mc.screen instanceof TitleScreen) {
             MenuMusicPlayer.tick();

@@ -70,7 +70,7 @@ public class HandlerEvents {
             }else {
                 for (Player player : players.getPlayers()){
                     if (player instanceof ServerPlayer serverPlayer){
-                        boolean postProto = SporeSavedData.getHiveminds(serverPlayer.serverLevel()).size() > SConfig.SERVER.proto_spawn_world_mod.get();
+                        boolean postProto = !SporeSavedData.getHiveminds(serverPlayer.serverLevel()).isEmpty();
                         SporePacketHandler.sendToClient(new SongInitializingPacket(-1,false,postProto),serverPlayer);
                     }
                 }
