@@ -4,7 +4,6 @@ import com.Harbinger.Spore.ExtremelySusThings.Utilities;
 import com.Harbinger.Spore.Sentities.AI.CustomMeleeAttackGoal;
 import com.Harbinger.Spore.Sentities.BaseEntities.EvolvedInfected;
 import com.Harbinger.Spore.Sentities.BaseEntities.Infected;
-import com.Harbinger.Spore.Sentities.MovementControls.InfectedWallMovementControl;
 import com.Harbinger.Spore.core.SConfig;
 import com.Harbinger.Spore.core.Seffects;
 import com.Harbinger.Spore.core.Spotion;
@@ -26,7 +25,6 @@ import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
 import net.minecraft.world.entity.ai.goal.UseItemGoal;
-import net.minecraft.world.entity.ai.navigation.WallClimberNavigation;
 import net.minecraft.world.entity.monster.RangedAttackMob;
 import net.minecraft.world.entity.projectile.ThrownPotion;
 import net.minecraft.world.item.ItemStack;
@@ -51,8 +49,6 @@ public class Mephetic extends EvolvedInfected implements RangedAttackMob {
     private int ticksBeforeThrown;
     public Mephetic(EntityType<? extends Infected> type, Level level) {
         super(type, level);
-        this.navigation = new WallClimberNavigation(this,level);
-        this.moveControl = new InfectedWallMovementControl(this);
     }
 
     @Override
@@ -89,6 +85,13 @@ public class Mephetic extends EvolvedInfected implements RangedAttackMob {
         }
     }
 
+    @Override
+    public boolean addEffect(MobEffectInstance effectInstance, @org.jetbrains.annotations.Nullable Entity entity) {
+        if (effectInstance.getEffect().value().isBeneficial()){
+            return super.addEffect(effectInstance, entity);
+        }
+        return false;
+    }
     @Override
     public boolean doHurtTarget(Entity entity) {
         this.attackAnimationTick = 10;
