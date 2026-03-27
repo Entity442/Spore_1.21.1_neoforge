@@ -25,7 +25,6 @@ public class SporeMusicPlayer {
     // ===== MUSIC STATE =====
     private static SoundEvent battleMusic;
     private static int battleMusicTicks;
-    private static int worldUpdateDelay;
     private static final RandomSource random = RandomSource.create();
 
     // ===== AMBIENT PLAYLISTS =====
@@ -77,10 +76,6 @@ public class SporeMusicPlayer {
         // Tick currently playing music
         if (currentMusic != null) {
             currentMusic.tick();
-        }
-
-        if (worldUpdateDelay > 0) {
-            worldUpdateDelay--;
         }
         if (battleMusicTicks > 0) {
             battleMusicTicks--;
