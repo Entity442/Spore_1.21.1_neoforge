@@ -1106,7 +1106,7 @@
 },"myconoclast" :{
   "subtitle": "sounds.spore.song",
   "sounds": [
-    "spore:post_proto/myconoclast"
+    "spore:pre_proto/myconoclast"
   ]
 },"mycophobia" :{
   "subtitle": "sounds.spore.song",

@@ -1,6 +1,9 @@
 package com.Harbinger.Spore.Sblocks;
 
 
+import com.Harbinger.Spore.ExtremelySusThings.Package.SongInitializingPacket;
+import com.Harbinger.Spore.ExtremelySusThings.SporePacketHandler;
+import com.Harbinger.Spore.ExtremelySusThings.SporeSavedData;
 import com.Harbinger.Spore.SBlockEntities.HiveSpawnBlockEntity;
 import com.Harbinger.Spore.SBlockEntities.LivingStructureBlocks;
 import com.Harbinger.Spore.Sentities.BaseEntities.Infected;
@@ -98,6 +101,9 @@ public class HiveSpawn extends BaseEntityBlock implements SimpleWaterloggedBlock
                 for(ServerPlayer player : level.getServer().getPlayerList().getPlayers()){
                     player.playNotifySound(Ssounds.REBIRTH.value(),SoundSource.AMBIENT,1f,1f);
                     player.displayClientMessage(Component.translatable("hivemind_summon_message"), false);
+                    if (SporeSavedData.getHiveminds(level).size() == 1){
+                        SporePacketHandler.sendToClient(new SongInitializingPacket(3,false,true),player);
+                    }
                 }
             }else if (structureBlocks.getKills() >= SConfig.DATAGEN.hive_spawn_kills.get() && !checkForOtherMinds(blockPos,level)){
                 StructureTemplate template = level.getStructureManager().getOrCreate(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "mega_biomass_tower"));

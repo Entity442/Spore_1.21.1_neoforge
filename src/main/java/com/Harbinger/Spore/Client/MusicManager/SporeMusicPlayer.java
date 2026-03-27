@@ -2,8 +2,7 @@ package com.Harbinger.Spore.Client.MusicManager;
 
 import com.Harbinger.Spore.core.Ssounds;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.sounds.SimpleSoundInstance;
-import net.minecraft.client.resources.sounds.SoundInstance;
+import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.RandomSource;
@@ -19,12 +18,11 @@ public class SporeMusicPlayer {
 
     private static final SoundManager SoundManager = Minecraft.getInstance().getSoundManager();
 
-    private static SoundInstance currentMusic;
+    private static SporeMusicInstance currentMusic;
     private static SoundEvent oldMusic;
 
     // ===== MUSIC STATE =====
-    private static SoundEvent battleMusic;   // null = not in combat
-    private static boolean postPhase;        // false = default playlist, true = post playlist
+    private static SoundEvent battleMusic;
     private static int battleMusicTicks;
     private static int worldUpdateDelay;
 
@@ -47,7 +45,9 @@ public class SporeMusicPlayer {
             Ssounds.START_ANEW.value(),
             Ssounds.THE_SOIL_TALKS.value(),
             Ssounds.THEY_AWAKEN.value(),
-            Ssounds.THEY_GROW_BELOW.value()
+            Ssounds.THEY_GROW_BELOW.value(),
+            Ssounds.MYCONOCLAST.value()
+
     );
 
     private static final List<SoundEvent> POST_PLAYLIST = List.of(
@@ -60,12 +60,12 @@ public class SporeMusicPlayer {
             Ssounds.PROTOTYPE.value(),
             Ssounds.REPURPOSED.value(),
             Ssounds.ROT.value(),
-            Ssounds.SOMETHING_ONCE_GREAT.value(),
             Ssounds.SPORE_BURST_SONG.value(),
             Ssounds.SYNAPTIC_RELAPSE.value(),
             Ssounds.THEY_LISTEN.value(),
             Ssounds.WHAT_WE_BECOME.value(),
-            Ssounds.WHISPERS.value()
+            Ssounds.WHISPERS.value(),
+            Ssounds.MENTAL_MUTILATION.value()
     );
 
     // =========================================================
@@ -74,31 +74,22 @@ public class SporeMusicPlayer {
 
     public static void tickMusic() {
 
-        // ===== COMBAT ACTIVE =====
-        if (battleMusicTicks > 0) {
-            battleMusicTicks--;
-
-            if (battleMusic != null) {
-                playMusic(battleMusic);
-            }
-
-            // combat just ended
-            if (battleMusicTicks <= 1) {
-                battleMusic = null;
-                stopMusic();
-            }
-
-            return; // block ambient while fighting
+        // Tick currently playing music
+        if (currentMusic != null) {
+            currentMusic.tick();
         }
+
         if (worldUpdateDelay > 0) {
             worldUpdateDelay--;
         }
-        // ===== AMBIENT MODE =====
-        if (currentMusic == null || !SoundManager.isActive(currentMusic)) {
-            if (postPhase) {
-                playRandomPost();
-            } else {
-                playRandomDefault();
+        if (battleMusicTicks > 0) {
+            battleMusicTicks--;
+
+            if (battleMusic != null && oldMusic != battleMusic) {
+                playMusic(battleMusic);
+            }
+            if (battleMusicTicks == 60 && oldMusic == battleMusic) {
+                stopMusic();
             }
         }
     }
@@ -118,20 +109,26 @@ public class SporeMusicPlayer {
     }
 
     private static void playMusic(SoundEvent music) {
-        // prevent restarting same track
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.screen instanceof TitleScreen) {
+            return;
+        }
         if (currentMusic != null && SoundManager.isActive(currentMusic) && music.equals(oldMusic))
             return;
 
         stopMusic();
 
-        currentMusic = SimpleSoundInstance.forMusic(music);
+        currentMusic = new SporeMusicInstance(music);
+        currentMusic.fadeIn();
+
         SoundManager.play(currentMusic);
         oldMusic = music;
     }
 
     private static void stopMusic() {
-        if (currentMusic != null)
-            SoundManager.stop(currentMusic);
+        if (currentMusic != null && !currentMusic.isStopped()) {
+            currentMusic.fadeOut();
+        }
     }
 
     // =========================================================
@@ -139,22 +136,25 @@ public class SporeMusicPlayer {
     // =========================================================
 
     public static void handlePacket(boolean pro, int id, boolean inCombat) {
-
-        if (worldUpdateDelay > 0){
-            postPhase = pro;
-            worldUpdateDelay = 200;
+        if (pro && id == 3){
+            currentMusic = null;
+            playMusic(Ssounds.SOMETHING_ONCE_GREAT.value());
+            return;
         }
-
-        // ===== COMBAT START / REFRESH =====
         if (inCombat && id >= 0) {
             battleMusicTicks = 200;
             battleMusic = SongVariantsPerEntity.getVariant(id).getName();
             return;
         }
-
-        // ===== COMBAT END =====
         battleMusicTicks = 0;
         battleMusic = null;
+        if (currentMusic == null || !SoundManager.isActive(currentMusic)) {
+            if (pro) {
+                playRandomPost();
+            } else {
+                playRandomDefault();
+            }
+        }
     }
 
     // =========================================================
@@ -162,9 +162,10 @@ public class SporeMusicPlayer {
     // =========================================================
 
     public enum SongVariantsPerEntity {
-        CALAMITY(0, Ssounds.MYCONOCLAST.value()),
+        CALAMITY(0, Ssounds.MYCOPHOBIA.value()),
         VANGUARD(1, Ssounds.BANE_OF_SETTLEMENT.value()),
-        VIGIL(2, Ssounds.VIRULENT_VIGIL.value());
+        VIGIL(2, Ssounds.VIRULENT_VIGIL.value()),
+        PROTO(3, Ssounds.SOMETHING_ONCE_GREAT.value());
 
         private static final SongVariantsPerEntity[] BY_ID =
                 Arrays.stream(values())
