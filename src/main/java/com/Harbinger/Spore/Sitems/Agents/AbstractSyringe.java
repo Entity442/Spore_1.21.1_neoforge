@@ -32,9 +32,11 @@ public abstract class AbstractSyringe extends BaseItem2 {
         return UseAnim.BOW;
     }
 
-    public int getUseDuration(ItemStack p_43419_) {
+    @Override
+    public int getUseDuration(ItemStack stack, LivingEntity entity) {
         return 72000;
     }
+
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
@@ -56,7 +58,7 @@ public abstract class AbstractSyringe extends BaseItem2 {
 
     @Override
     public void releaseUsing(ItemStack stack, Level level, LivingEntity living, int value) {
-        if ((getUseDuration(stack) - value) > 40){
+        if ((getUseDuration(stack,living) - value) > 10){
             useSyringe(stack,living);
         }
         super.releaseUsing(stack, level, living, value);
