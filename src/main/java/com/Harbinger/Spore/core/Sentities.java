@@ -42,20 +42,20 @@ public class Sentities {
     private static <T extends Entity> Supplier<EntityType<T>> register(String registryname, EntityType.Builder<T> entityTypeBuilder) {
         return SPORE_ENTITIES.register(registryname, () -> entityTypeBuilder.build(registryname));
     }
-
-    public static final MobCategory INFECTED = MobCategory.MONSTER;//MobCategory.create("infected","infected",SConfig.SERVER.mob_cap.get(),false,false,128);
+    public static final MobCategory BASIC_INFECTED = MobCategory.MONSTER;
+    public static final MobCategory INFECTED = MobCategory.MISC;//MobCategory.create("infected","infected",SConfig.SERVER.mob_cap.get(),false,false,128);
     public static final MobCategory ORGANOID = MobCategory.MISC;//MobCategory.create("organoid","organoid",20,false,false,64);
 
     public static final Supplier<EntityType<InfectedHuman>> INF_HUMAN = SPORE_ENTITIES.register("inf_human",
-            () -> EntityType.Builder.of(InfectedHuman::new, INFECTED).sized(0.6f, 1.9f)
+            () -> EntityType.Builder.of(InfectedHuman::new, BASIC_INFECTED).sized(0.6f, 1.9f)
                     .build(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "inf_human").toString()));
 
     public static final Supplier<EntityType<InfectedHusk>> INF_HUSK = SPORE_ENTITIES.register("inf_husk",
-            () -> EntityType.Builder.of(InfectedHusk::new, INFECTED).sized(0.6f, 2.1f)
+            () -> EntityType.Builder.of(InfectedHusk::new, BASIC_INFECTED).sized(0.6f, 2.1f)
                     .build(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "inf_husk").toString()));
 
     public static final Supplier<EntityType<InfectedPlayer>> INF_PLAYER = SPORE_ENTITIES.register("inf_player",
-            () -> EntityType.Builder.of(InfectedPlayer::new, INFECTED).sized(0.6f, 1.9f)
+            () -> EntityType.Builder.of(InfectedPlayer::new, BASIC_INFECTED).sized(0.6f, 1.9f)
                     .build(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "inf_player").toString()));
 
     public static final Supplier<EntityType<Knight>> KNIGHT = SPORE_ENTITIES.register("knight",
@@ -67,11 +67,11 @@ public class Sentities {
                     .build(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "protector").toString()));
 
     public static final Supplier<EntityType<Inebriator>> INEBRIATER = SPORE_ENTITIES.register("inebriater",
-            () -> EntityType.Builder.of(Inebriator::new, INFECTED).sized(0.6f, 1.8f)
+            () -> EntityType.Builder.of(Inebriator::new, BASIC_INFECTED).sized(0.6f, 1.8f)
                     .build(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "inebriater").toString()));
 
     public static final Supplier<EntityType<Saugling>> SAUGLING = SPORE_ENTITIES.register("saugling",
-            () -> EntityType.Builder.of(Saugling::new, INFECTED).sized(0.9f, 0.9f)
+            () -> EntityType.Builder.of(Saugling::new, BASIC_INFECTED).sized(0.9f, 0.9f)
                     .build(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "saugling").toString()));
 
     public static final Supplier<EntityType<Griefer>> GRIEFER = SPORE_ENTITIES.register("griefer",
@@ -83,11 +83,11 @@ public class Sentities {
                     .build(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "braiomil").toString()));
 
     public static final Supplier<EntityType<InfectedVillager>> INF_VILLAGER = SPORE_ENTITIES.register("inf_villager",
-            () -> EntityType.Builder.of(InfectedVillager::new, INFECTED).sized(0.6f, 1.9f)
+            () -> EntityType.Builder.of(InfectedVillager::new, BASIC_INFECTED).sized(0.6f, 1.9f)
                     .build(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "inf_villager").toString()));
 
     public static final Supplier<EntityType<InfectedDiseasedVillager>> INF_DISEASED_VILLAGER = SPORE_ENTITIES.register("inf_diseased_villager",
-            () -> EntityType.Builder.of(InfectedDiseasedVillager::new, INFECTED).sized(0.6f, 1.9f)
+            () -> EntityType.Builder.of(InfectedDiseasedVillager::new, BASIC_INFECTED).sized(0.6f, 1.9f)
                     .build(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "inf_diseased_villager").toString()));
 
     public static final Supplier<EntityType<InfectedWanderingTrader>> INF_WANDERER = SPORE_ENTITIES.register("inf_wanderer",
@@ -95,7 +95,7 @@ public class Sentities {
                     .build(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "inf_wanderer").toString()));
 
     public static final Supplier<EntityType<InfectedWitch>> INF_WITCH = SPORE_ENTITIES.register("inf_witch",
-            () -> EntityType.Builder.of(InfectedWitch::new, INFECTED).sized(0.6f, 1.9f)
+            () -> EntityType.Builder.of(InfectedWitch::new, BASIC_INFECTED).sized(0.6f, 1.9f)
                     .build(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "inf_witch").toString()));
 
     public static final Supplier<EntityType<Leaper>> LEAPER = SPORE_ENTITIES.register("leaper",
@@ -119,7 +119,7 @@ public class Sentities {
                     .build(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "mephitic").toString()));
 
     public static final Supplier<EntityType<Chemist>> CHEMIST = SPORE_ENTITIES.register("chemist",
-            () -> EntityType.Builder.of(Chemist::new, INFECTED).sized(0.6f, 1.8f)
+            () -> EntityType.Builder.of(Chemist::new, BASIC_INFECTED).sized(0.6f, 1.8f)
                     .build(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "chemist").toString()));
 
     public static final Supplier<EntityType<Naiad>> NAIAD = SPORE_ENTITIES.register("naiad",
@@ -147,11 +147,11 @@ public class Sentities {
                     .build(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "scamper").toString()));
 
     public static final Supplier<EntityType<InfectedPillager>> INF_PILLAGER = SPORE_ENTITIES.register("inf_pillager",
-            () -> EntityType.Builder.of(InfectedPillager::new, INFECTED).sized(0.6f, 1.9f)
+            () -> EntityType.Builder.of(InfectedPillager::new, BASIC_INFECTED).sized(0.6f, 1.9f)
                     .build(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "inf_pillager").toString()));
 
     public static final Supplier<EntityType<Plagued>> PLAGUED = SPORE_ENTITIES.register("plagued",
-            () -> EntityType.Builder.of(Plagued::new, INFECTED).sized(0.6f, 1.9f)
+            () -> EntityType.Builder.of(Plagued::new, BASIC_INFECTED).sized(0.6f, 1.9f)
                     .build(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "plagued").toString()));
 
     public static final Supplier<EntityType<Gargoyl>> GARGOYLE = SPORE_ENTITIES.register("gargoyle",
@@ -159,23 +159,23 @@ public class Sentities {
                     .build(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "gargoyle").toString()));
 
     public static final Supplier<EntityType<Lacerator>> LACERATOR = SPORE_ENTITIES.register("lacerator",
-            () -> EntityType.Builder.of(Lacerator::new, INFECTED).sized(0.6f, 1.9f)
+            () -> EntityType.Builder.of(Lacerator::new, BASIC_INFECTED).sized(0.6f, 1.9f)
                     .build(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "lacerator").toString()));
 
     public static final Supplier<EntityType<Conductor>> CONDUCTOR = SPORE_ENTITIES.register("conductor",
-            () -> EntityType.Builder.of(Conductor::new, INFECTED).sized(0.6f, 2.2f)
+            () -> EntityType.Builder.of(Conductor::new, BASIC_INFECTED).sized(0.6f, 2.2f)
                     .build(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "conductor").toString()));
 
     public static final Supplier<EntityType<Biobloob>> BIOBLOOB = SPORE_ENTITIES.register("biobloob",
-            () -> EntityType.Builder.of(Biobloob::new, INFECTED).sized(2.6f, 1.9f)
+            () -> EntityType.Builder.of(Biobloob::new, BASIC_INFECTED).sized(2.6f, 1.9f)
                     .build(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "biobloob").toString()));
 
     public static final Supplier<EntityType<InfectedHazmat>> INF_HAZMAT = SPORE_ENTITIES.register("inf_hazmat",
-            () -> EntityType.Builder.of(InfectedHazmat::new, INFECTED).sized(0.6f, 1.9f)
+            () -> EntityType.Builder.of(InfectedHazmat::new, BASIC_INFECTED).sized(0.6f, 1.9f)
                     .build(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "inf_hazmat").toString()));
 
     public static final Supplier<EntityType<InfectedVendicator>> INF_VINDICATOR = SPORE_ENTITIES.register("inf_vindicator",
-            () -> EntityType.Builder.of(InfectedVendicator::new, INFECTED).sized(0.6f, 1.9f)
+            () -> EntityType.Builder.of(InfectedVendicator::new, BASIC_INFECTED).sized(0.6f, 1.9f)
                     .build(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "inf_vindicator").toString()));
 
     public static final Supplier<EntityType<InfestedConstruct>> INF_CONSTRUCT = SPORE_ENTITIES.register("inf_contruct",
@@ -191,12 +191,12 @@ public class Sentities {
                     .build(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "reaper").toString()));
 
     public static final Supplier<EntityType<Bairn>> BAIRN = SPORE_ENTITIES.register("bairn",
-            () -> EntityType.Builder.of(Bairn::new, INFECTED).sized(0.8f, 0.8f)
+            () -> EntityType.Builder.of(Bairn::new, BASIC_INFECTED).sized(0.8f, 0.8f)
                     .build(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "bairn").toString()));
 
 
     public static final Supplier<EntityType<InfectedEvoker>> INF_EVOKER = SPORE_ENTITIES.register("inf_evoker",
-            () -> EntityType.Builder.of(InfectedEvoker::new, INFECTED).sized(0.6f, 1.9f)
+            () -> EntityType.Builder.of(InfectedEvoker::new, BASIC_INFECTED).sized(0.6f, 1.9f)
                     .build(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "inf_evoker").toString()));
 
     public static final Supplier<EntityType<Howler>> HOWLER = SPORE_ENTITIES.register("howler",
@@ -248,7 +248,7 @@ public class Sentities {
                     .build(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "volatile").toString()));
 
     public static final Supplier<EntityType<InfectedDrowned>> INF_DROWNED = SPORE_ENTITIES.register("inf_drowned",
-            () -> EntityType.Builder.of(InfectedDrowned::new, INFECTED).sized(0.6f, 2f)
+            () -> EntityType.Builder.of(InfectedDrowned::new, BASIC_INFECTED).sized(0.6f, 2f)
                     .build(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "inf_drowned").toString()));
 
     public static final Supplier<EntityType<Vigil>> VIGIL = SPORE_ENTITIES.register("vigil",
