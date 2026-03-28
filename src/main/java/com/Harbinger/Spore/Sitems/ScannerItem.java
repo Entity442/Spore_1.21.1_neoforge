@@ -233,6 +233,9 @@ public class ScannerItem extends BaseItem2 {
         ItemStack itemStack = slot.getItem();
         if (itemStack.getItem() instanceof OrganItem organItem && clickAction == ClickAction.SECONDARY) {
             player.playNotifySound(Ssounds.SCANNER_ITEM.value(), SoundSource.AMBIENT,1F,1F);
+            if (organItem.getAdvancementIds() == null){
+                return false;
+            }
             SporePacketHandler.sendToServer(new AdvancementGivingPackage(organItem.getAdvancementIds(),player.getId()));
             return true;
         }
