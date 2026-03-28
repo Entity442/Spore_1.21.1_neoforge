@@ -138,7 +138,7 @@ public class SporeMusicPlayer {
         }
         if (inCombat && id >= 0 && SConfig.SERVER.encounter_songs.get()) {
             SongVariantsPerEntity variants = SongVariantsPerEntity.getVariant(id);
-            if (battleMusicTicks <= 0 || (currentMusic != null && currentMusic.getTickCount() >= variants.getDuration())){
+            if (battleMusicTicks <= 0 || (currentMusic != null && currentMusic.getTickCount() >= (variants.getDuration()-10))){
                 SoundEvent event = variants.getName();
                 if (currentMusic != null){
                     currentMusic.fadeOut();
