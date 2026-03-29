@@ -106,23 +106,29 @@ public class Hohlfresser extends Calamity implements TrueCalamity, RangedAttackM
         super.onSyncedDataUpdated(key);
         if (ORES.equals(key) && !getAdaptation()){
             if (getOres() > 50 && getKills() > 50){
-                entityData.set(ADAPTED,true);
+                setAdapted(true);
                 refreshDimensions();
-                AttributeInstance health = this.getAttribute(Attributes.MAX_HEALTH);
-                AttributeInstance armor = this.getAttribute(Attributes.ARMOR);
-                AttributeInstance damage = this.getAttribute(Attributes.ATTACK_DAMAGE);
-                if (health != null){
-                    health.setBaseValue(health.getValue()*2);
-                }
-                if (armor != null){
-                    armor.setBaseValue(armor.getValue()*1.5);
-                }
-                if (damage != null){
-                    damage.setBaseValue(damage.getValue()*1.25);
-                }
             }
         }
     }
+    public void setAdapted(boolean val){
+        if (val){
+            AttributeInstance health = this.getAttribute(Attributes.MAX_HEALTH);
+            AttributeInstance armor = this.getAttribute(Attributes.ARMOR);
+            AttributeInstance damage = this.getAttribute(Attributes.ATTACK_DAMAGE);
+            if (health != null){
+                health.setBaseValue(health.getValue()*2);
+            }
+            if (armor != null){
+                armor.setBaseValue(armor.getValue()*1.5);
+            }
+            if (damage != null){
+                damage.setBaseValue(damage.getValue()*1.25);
+            }
+        }
+        entityData.set(ADAPTED,val);
+    }
+
 
     public float getSpin(){
         float speed = (float) Math.sqrt(this.getDeltaMovement().x * this.getDeltaMovement().x +
@@ -188,7 +194,7 @@ public class Hohlfresser extends Calamity implements TrueCalamity, RangedAttackM
 
     @Override
     public void ActivateAdaptation() {
-        entityData.set(ADAPTED,true);
+        setAdapted(true);
     }
 
     @Override
