@@ -3,6 +3,7 @@ package com.Harbinger.Spore.Sitems.Agents;
 import com.Harbinger.Spore.Sentities.BaseEntities.Calamity;
 import com.Harbinger.Spore.Sentities.BaseEntities.EvolvedInfected;
 import com.Harbinger.Spore.Sentities.BaseEntities.Infected;
+import com.Harbinger.Spore.Sentities.EvolvedInfected.Scamper;
 import com.Harbinger.Spore.Sentities.EvolvingInfected;
 import com.Harbinger.Spore.Sentities.Organoids.Mound;
 import com.Harbinger.Spore.Sitems.BaseItem2;
@@ -31,22 +32,30 @@ public class EvolutionSyringe extends BaseItem2 {
 
     @Override
     public InteractionResult interactLivingEntity(ItemStack stack, Player player, LivingEntity living, InteractionHand hand) {
-        if (living instanceof Infected infected && infected instanceof EvolvingInfected){
-            if (infected instanceof EvolvedInfected){
-                infected.setEvoPoints(infected.getEvoPoints()+ SConfig.SERVER.min_kills_hyper.get());
-            }else{
-                infected.setEvoPoints(infected.getEvoPoints()+SConfig.SERVER.min_kills.get());
+        switch (living) {
+            case Infected infected when infected instanceof EvolvingInfected -> {
+                if (infected instanceof EvolvedInfected) {
+                    infected.setEvoPoints(infected.getEvoPoints() + SConfig.SERVER.min_kills_hyper.get());
+                } else {
+                    infected.setEvoPoints(infected.getEvoPoints() + SConfig.SERVER.min_kills.get());
+                }
+                infected.setEvolution(SConfig.SERVER.evolution_age_human.get());
+                return InteractionResult.SUCCESS;
             }
-            infected.setEvolution(SConfig.SERVER.evolution_age_human.get());
-            return InteractionResult.SUCCESS;
-        }
-        if (living instanceof Mound mound){
-            mound.setAge(mound.getAge()+1);
-            return InteractionResult.SUCCESS;
-        }
-        if (living instanceof Calamity calamity && !calamity.getAdaptation()){
-            calamity.ActivateAdaptation();
-            return InteractionResult.SUCCESS;
+            case Mound mound -> {
+                mound.setAge(mound.getAge() + 1);
+                return InteractionResult.SUCCESS;
+            }
+            case Calamity calamity when !calamity.getAdaptation() -> {
+                calamity.ActivateAdaptation();
+                return InteractionResult.SUCCESS;
+            }
+            case Scamper scamper -> {
+                scamper.setAge(SConfig.SERVER.scamper_age.get());
+                return InteractionResult.SUCCESS;
+            }
+            default -> {
+            }
         }
         return super.interactLivingEntity(stack, player, living, hand);
     }
