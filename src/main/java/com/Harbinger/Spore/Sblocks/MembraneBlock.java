@@ -4,7 +4,6 @@ import com.Harbinger.Spore.Sentities.BaseEntities.Infected;
 import com.Harbinger.Spore.Sentities.BaseEntities.UtilityEntity;
 import com.Harbinger.Spore.core.Seffects;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -13,7 +12,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.EntityCollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -27,7 +25,7 @@ public class MembraneBlock extends Block {
                 .isSuffocating((p_61036_, p_61037_, p_61038_) -> false).isViewBlocking((p_61036_, p_61037_, p_61038_) -> false));
     }
     protected boolean isAllowedToPass(LivingEntity livingEntity){
-        if (livingEntity instanceof Infected || livingEntity instanceof UtilityEntity){
+        if (livingEntity instanceof UtilityEntity){
             return true;
         }
         return livingEntity instanceof Player player && (player.getAbilities().instabuild || player.hasEffect(Seffects.SYMBIOSIS));
@@ -56,12 +54,10 @@ public class MembraneBlock extends Block {
         }
         return super.getCollisionShape(state, getter, pos, collisionContext);
     }
-    public boolean isPathfindable(BlockState p_154258_, BlockGetter p_154259_, BlockPos p_154260_, PathComputationType p_154261_) {
-        return true;
-    }
+
     @Override
     public void attack(BlockState p_60499_, Level p_60500_, BlockPos p_60501_, Player player) {
-        player.addEffect(new MobEffectInstance(Seffects.SYMBIOSIS,1200,0));
+        player.addEffect(new MobEffectInstance(Seffects.MARKER,1200,0));
         super.attack(p_60499_, p_60500_, p_60501_, player);
     }
 }
