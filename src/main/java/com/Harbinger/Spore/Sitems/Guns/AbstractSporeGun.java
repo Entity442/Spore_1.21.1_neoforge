@@ -188,9 +188,16 @@ public abstract class AbstractSporeGun extends BaseItem implements GunHeldItem, 
             }if (getAdditionalDurability(stack) > 0){
                 tooltip.add(Component.literal(Component.translatable("spore.item.additional_durability").getString()+ getAdditionalDurability(stack)));
             }
+            Component component = extraTips();
+            if (component != null){
+                tooltip.add(component);
+            }
         }else {
             tooltip.add(Component.translatable("item.armor.normal").withStyle(ChatFormatting.GOLD));
         }
+    }
+    public Component extraTips(){
+        return null;
     }
 
     public void serverShoot(ItemStack stack, ServerPlayer player, InteractionHand hand, Vec3 vec3) {

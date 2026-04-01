@@ -8,6 +8,8 @@ import com.Harbinger.Spore.core.SConfig;
 import com.Harbinger.Spore.core.Sentities;
 import com.Harbinger.Spore.core.Sitems;
 import com.Harbinger.Spore.core.Ssounds;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
@@ -76,7 +78,10 @@ public class BileBlaster extends AbstractSporeGun implements CustomModelArmorDat
         super.triggerReloadAnimation(player);
         BileBlasterReloadAnimationTracker.trigger(player);
     }
-
+    @Override
+    public Component extraTips() {
+        return Component.translatable("spore.item.desc.bileblaster").withStyle(ChatFormatting.YELLOW);
+    }
     @Override
     public ResourceLocation getTextureLocation() {
         return TEXTURE;
