@@ -313,6 +313,7 @@ public class ClientModEvents {
         event.registerBlockEntityRenderer(SblockEntities.INCUBATOR.get(), new IncubatorRenderer());
         event.registerBlockEntityRenderer(SblockEntities.OUTPOST_WATCHER.get(), new OutpostWatcherRenderer());
         event.registerBlockEntityRenderer(SblockEntities.HIVE_SPAWN.get(), new ReconMindRenderer());
+        event.registerBlockEntityRenderer(SblockEntities.CDU.get(), new CduRenderer());
     }
 
     public static void renderUtilities(EntityRenderersEvent.RegisterRenderers event){
