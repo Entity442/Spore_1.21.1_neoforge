@@ -135,12 +135,16 @@ public class Bairn extends Infected implements VariantKeeper {
     }
     @Override
     public boolean doHurtTarget(Entity entity) {
-        if (entity instanceof LivingEntity living && getVariant() == BairnSkins.HUSK){
-            living.addEffect(new MobEffectInstance(MobEffects.HUNGER,1200,0));
-        }
-        if (entity instanceof LivingEntity living && getVariant() == BairnSkins.ZOMBIE_VILLAGER){
-            living.addEffect(new MobEffectInstance(MobEffects.POISON,200,0));
-            living.addEffect(new MobEffectInstance(MobEffects.CONFUSION,200,0));
+        if (entity instanceof LivingEntity living){
+            if (getVariant() == BairnSkins.HUSK){
+                living.addEffect(new MobEffectInstance(MobEffects.HUNGER,1200,0));
+            }
+            if (getVariant() == BairnSkins.ZOMBIE_VILLAGER){
+                living.addEffect(new MobEffectInstance(MobEffects.POISON,200,0));
+                living.addEffect(new MobEffectInstance(MobEffects.CONFUSION,200,0));
+            }
+            living.hurtTime = 0;
+            living.invulnerableTime = 0;
         }
         return super.doHurtTarget(entity);
     }
