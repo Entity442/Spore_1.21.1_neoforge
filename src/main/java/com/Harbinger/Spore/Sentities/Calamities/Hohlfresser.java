@@ -328,6 +328,7 @@ public class Hohlfresser extends Calamity implements TrueCalamity, RangedAttackM
                     if (instance != null && hostInstance != null && instance.getValue() != hostInstance.getValue()){
                         instance.setBaseValue(hostInstance.getBaseValue());
                     }
+                    hohlMultipart.setHealth(this.getHealth());
                 }
             }
 
