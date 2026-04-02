@@ -316,6 +316,7 @@ public class Hohlfresser extends Calamity implements TrueCalamity, RangedAttackM
             if (tickCount % 20 == 0 && parts != null && getAdaptation()){
                 refreshDimensions();
                 float size = 1.2f;
+                AttributeInstance hostInstance = this.getAttribute(Attributes.MAX_HEALTH);
                 for(int i = 0;i<parts.length;i++){
                     size = size - 0.05f;
                     HohlMultipart hohlMultipart = parts[i];
@@ -323,6 +324,10 @@ public class Hohlfresser extends Calamity implements TrueCalamity, RangedAttackM
                     hohlMultipart.setAdapted(this.getAdaptation());
                     hohlMultipart.setSize(size * 1.4f);
                     hohlMultipart.setIsTail(isTail);
+                    AttributeInstance instance = hohlMultipart.getAttribute(Attributes.MAX_HEALTH);
+                    if (instance != null && hostInstance != null && instance.getValue() != hostInstance.getValue()){
+                        instance.setBaseValue(hostInstance.getBaseValue());
+                    }
                 }
             }
 
