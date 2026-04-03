@@ -62,7 +62,13 @@ public class Specter extends UtilityEntity implements Enemy, ArmorPersentageBypa
         this.moveControl = new InfectedWallMovementControl(this);
         this.navigation = new HybridPathNavigation(this,this.level());
     }
-
+    @Override
+    protected boolean canRide(Entity entity) {
+        if (entity instanceof UtilityEntity){
+            return super.canRide(entity);
+        }
+        return false;
+    }
     @Override
     public List<? extends String> getDropList() {
         return SConfig.DATAGEN.specter_loot.get();

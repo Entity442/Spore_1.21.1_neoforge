@@ -65,6 +65,13 @@ public class Reaper extends UtilityEntity implements Enemy, ArmorPersentageBypas
         this.moveControl = new InfectedWallMovementControl(this);
         this.navigation = new HybridPathNavigation(this,this.level());
     }
+    @Override
+    protected boolean canRide(Entity entity) {
+        if (entity instanceof UtilityEntity){
+            return super.canRide(entity);
+        }
+        return false;
+    }
     public void travel(Vec3 vec) {
         if (this.isEffectiveAi() && this.isInFluidType()) {
             this.moveRelative(0.1F, vec);
