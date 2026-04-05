@@ -43,9 +43,6 @@ public class GenericFoliageBlock extends FlowerBlock implements SimpleWaterlogge
         return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
     }
 
-    public boolean isPathfindable(BlockState p_153469_, BlockGetter p_153470_, BlockPos p_153471_, PathComputationType p_153472_) {
-        return true;
-    }
 
 
     @Override
