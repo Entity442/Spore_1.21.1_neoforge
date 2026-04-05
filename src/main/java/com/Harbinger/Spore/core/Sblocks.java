@@ -3,6 +3,8 @@ package com.Harbinger.Spore.core;
 
 import com.Harbinger.Spore.Sblocks.*;
 import com.Harbinger.Spore.Spore;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.BlockSetType;
@@ -13,7 +15,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 public class Sblocks {
     public static final DeferredRegister.Blocks BLOCKS =
             DeferredRegister.createBlocks(Spore.MODID);
-    private static final BlockSetType LAB_TYPE = new BlockSetType("lab");
+    private static final BlockSetType LAB_TYPE = new BlockSetType("lab",false,false,true, BlockSetType.PressurePlateSensitivity.EVERYTHING,SoundType.METAL, SoundEvents.IRON_DOOR_CLOSE,SoundEvents.IRON_DOOR_OPEN, SoundEvents.IRON_DOOR_CLOSE, SoundEvents.IRON_DOOR_CLOSE, SoundEvents.IRON_DOOR_CLOSE, SoundEvents.IRON_DOOR_CLOSE, SoundEvents.IRON_DOOR_CLOSE, SoundEvents.IRON_DOOR_CLOSE);
     public static void register(IEventBus eventBus) {
         BLOCKS.register(eventBus);
     }
@@ -32,7 +34,7 @@ public class Sblocks {
     public static final DeferredBlock<Block> IRON_LADDER = BLOCKS.register("iron_ladder", () -> new IronLadderBlock(BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(2f, 4f).noOcclusion().sound(SoundType.METAL)));
     public static final DeferredBlock<Block> VENT_PLATE = BLOCKS.register("vent_plate", () -> new VentPlateBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK).noOcclusion().noCollission()));
     public static final DeferredBlock<Block> RUSTED_VENT_PLATE = BLOCKS.register("rusted_vent_plate", () -> new VentPlateBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK).noOcclusion().noCollission()));
-    public static final DeferredBlock<Block> VENT_DOOR = BLOCKS.register("vent_door",() -> new TrapDoorBlock(LAB_TYPE,BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(2f, 4f).noOcclusion().sound(SoundType.METAL)));
+    public static final DeferredBlock<Block> VENT_DOOR = BLOCKS.register("vent_door",() -> new TrapDoorBlock(new BlockSetType("vent_type"),BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(2f, 4f).noOcclusion().sound(SoundType.METAL)));
     public static final DeferredBlock<Block> CDU = BLOCKS.register("cdu", () -> new CDUBlock(CDUBlock.defaultProperties));
     public static final DeferredBlock<Block> ZOAHOLIC = BLOCKS.register("zoaholic", () -> new ZoaholicBlock(ZoaholicBlock.defaultProperties));
     public static final DeferredBlock<Block> INCUBATOR = BLOCKS.register("incubator", () -> new IncubatorBlock(IncubatorBlock.defaultProperties));
