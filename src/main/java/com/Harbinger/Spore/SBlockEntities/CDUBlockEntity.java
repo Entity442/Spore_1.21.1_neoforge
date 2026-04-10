@@ -221,7 +221,7 @@ public class CDUBlockEntity extends BlockEntity implements MenuProvider,Animated
         AttributeInstance instance = target.getAttribute(Attributes.ARMOR_TOUGHNESS);
         double toughness = instance == null ? 0 : instance.getValue();
         float f = 2.0F + (float)toughness / 4.0F;
-        float armorFactor = Math.min(20.0F, (float)armor);
+        float armorFactor = Math.min(10.0F, (float)armor);
 
         return damage * (1.0F - armorFactor / (armorFactor + f));
     }

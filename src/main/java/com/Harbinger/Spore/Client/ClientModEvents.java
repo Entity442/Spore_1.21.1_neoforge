@@ -213,6 +213,8 @@ public class ClientModEvents {
         event.registerLayerDefinition(ForlornHowlerModel.LAYER_LOCATION, ForlornHowlerModel::createBodyLayer);
         event.registerLayerDefinition(SwarmerHowlerModel.LAYER_LOCATION, SwarmerHowlerModel::createBodyLayer);
         event.registerLayerDefinition(ringerVigilModel.LAYER_LOCATION, ringerVigilModel::createBodyLayer);
+        event.registerLayerDefinition(ScrewerSlasherModel.LAYER_LOCATION, ScrewerSlasherModel::createBodyLayer);
+
     }
     @SubscribeEvent
     public static void registerRenderers(final EntityRenderersEvent.RegisterRenderers event) {

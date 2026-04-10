@@ -2,6 +2,7 @@ package com.Harbinger.Spore.Client.Renderers;
 
 
 import com.Harbinger.Spore.Client.Models.GrabberSlasherModel;
+import com.Harbinger.Spore.Client.Models.ScrewerSlasherModel;
 import com.Harbinger.Spore.Client.Models.SlasherModel;
 import com.Harbinger.Spore.Client.Models.SmasherSlasherModel;
 import com.Harbinger.Spore.Client.Special.BaseInfectedRenderer;
@@ -22,6 +23,7 @@ public class SlasherRenderer <Type extends Slasher> extends BaseInfectedRenderer
     private final EntityModel<Type> defaultModel = this.model;
     private final EntityModel<Type> smasher;
     private final GrabberSlasherModel<Type> grabber;
+    private final ScrewerSlasherModel<Type> screwer;
     public static final Map<SlasherVariants, ResourceLocation> TEXTURE =
             Util.make(Maps.newEnumMap(SlasherVariants.class), (p_114874_) -> {
                 p_114874_.put(SlasherVariants.DEFAULT,
@@ -31,7 +33,7 @@ public class SlasherRenderer <Type extends Slasher> extends BaseInfectedRenderer
                 p_114874_.put(SlasherVariants.SMASHER,
                          ResourceLocation.fromNamespaceAndPath(Spore.MODID, "textures/entity/smasher_slasher.png"));
                 p_114874_.put(SlasherVariants.GRABBER,
-                         ResourceLocation.fromNamespaceAndPath(Spore.MODID, "textures/entity/grabber.png"));
+                         ResourceLocation.fromNamespaceAndPath(Spore.MODID, "textures/entity/screwer.png"));
             });
     private static final ResourceLocation EYES_TEXTURE =  ResourceLocation.fromNamespaceAndPath(Spore.MODID,
             "textures/entity/eyes/slasher.png");
@@ -40,11 +42,13 @@ public class SlasherRenderer <Type extends Slasher> extends BaseInfectedRenderer
         super(context, new SlasherModel<>(context.bakeLayer(SlasherModel.LAYER_LOCATION)), 0.5f);
         smasher = new SmasherSlasherModel<>(context.bakeLayer(SmasherSlasherModel.LAYER_LOCATION));
         grabber = new GrabberSlasherModel<>(context.bakeLayer(GrabberSlasherModel.LAYER_LOCATION));
+        screwer = new ScrewerSlasherModel<>(context.bakeLayer(ScrewerSlasherModel.LAYER_LOCATION));
     }
     private EntityModel<Type> getDefaultModel(int i){
         return switch (i) {
             case 2 -> smasher;
             case 3 -> grabber;
+            case 4 -> screwer;
             default -> defaultModel;
         };
     }
