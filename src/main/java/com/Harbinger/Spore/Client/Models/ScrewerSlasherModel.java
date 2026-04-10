@@ -223,8 +223,8 @@ public class ScrewerSlasherModel<T extends Slasher> extends EntityModel<T> imple
 	public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 		float val1 = Mth.sin(ageInTicks/8)/10;
 		float val2 = Mth.sin(ageInTicks/6)/8;
-		if (entity.attackAnim > 0) {
-			float f1 = -1.0F + Mth.abs(10 - 2 * entity.attackAnim) / 6.5F;
+		if (entity.getAttackAnimationTick() > 0) {
+			float f1 = 1.0F - 0.5F * Mth.abs(20 -  entity.getAttackAnimationTick()) / 6.5F;
 			animateTentacleX(left_MARM,Mth.sin(f1) * 2.0F);
 			animateTentacleX(left_foreMARM,-Mth.sin(f1) *3.0F);
 			animateTentacleX(right_MARM,Mth.sin(f1) * 2.0F);
@@ -259,7 +259,7 @@ public class ScrewerSlasherModel<T extends Slasher> extends EntityModel<T> imple
 		this.right_leg.xRot = Mth.cos(limbSwing * 0.8F) * -0.8F * limbSwingAmount;
 		this.left_foot.xRot = left_leg.xRot < 0 ? -left_leg.xRot : 0;
 		this.right_foot.xRot = right_leg.xRot < 0 ? -right_leg.xRot : 0;
-		this.jaw.xRot = Mth.sin(ageInTicks/8)/10;
+		animateTentacleX(jaw,-Mth.sin(ageInTicks/8)/10);
 		animateSpike(entity,spike,ageInTicks,6);
 		animateSpike(entity,spike2,-ageInTicks,7);
 		animateSpike(entity,spike3,ageInTicks,8);

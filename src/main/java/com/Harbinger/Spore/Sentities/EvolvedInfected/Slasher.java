@@ -46,6 +46,8 @@ import java.util.WeakHashMap;
 public class Slasher extends EvolvedInfected implements ArmorPersentageBypass, VariantKeeper {
     private static final EntityDataAccessor<Integer> DATA_ID_TYPE_VARIANT = SynchedEntityData.defineId(Slasher.class, EntityDataSerializers.INT);
     private final WeakHashMap<LivingEntity,Double> screwMap = new WeakHashMap<>();
+    private int attackAnimationTick;
+
     public Slasher(EntityType<? extends Infected> type, Level level) {
         super(type, level);
     }
@@ -102,6 +104,7 @@ public class Slasher extends EvolvedInfected implements ArmorPersentageBypass, V
             public void start() {
                 super.start();
                 mob.playSound(Ssounds.SLASHER_PULL.value());
+                mob.level().broadcastEntityEvent(mob, (byte)4);
             }
         });
         this.goalSelector.addGoal(3, new RandomStrollGoal(this, 0.8));
@@ -151,7 +154,24 @@ public class Slasher extends EvolvedInfected implements ArmorPersentageBypass, V
             }
         }
         this.playSound(Ssounds.SLASHER_STAB.value());
+        attackAnimationTick = 10;
+        this.level().broadcastEntityEvent(this, (byte)4);
         return super.doHurtTarget(entity);
+    }
+    public void handleEntityEvent(byte value) {
+        if (value == 4) {
+            this.attackAnimationTick = 10;
+        } else {
+            super.handleEntityEvent(value);
+        }
+    }
+    public int getAttackAnimationTick(){return attackAnimationTick;}
+    @Override
+    public void aiStep() {
+        super.aiStep();
+        if (this.attackAnimationTick > 0) {
+            --this.attackAnimationTick;
+        }
     }
     private void dropItems(LivingEntity living,InteractionHand hand,BlockPos pos){
         ItemStack stack = living.getItemInHand(hand);

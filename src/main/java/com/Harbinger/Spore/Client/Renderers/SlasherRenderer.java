@@ -33,7 +33,9 @@ public class SlasherRenderer <Type extends Slasher> extends BaseInfectedRenderer
                 p_114874_.put(SlasherVariants.SMASHER,
                          ResourceLocation.fromNamespaceAndPath(Spore.MODID, "textures/entity/smasher_slasher.png"));
                 p_114874_.put(SlasherVariants.GRABBER,
-                         ResourceLocation.fromNamespaceAndPath(Spore.MODID, "textures/entity/screwer.png"));
+                         ResourceLocation.fromNamespaceAndPath(Spore.MODID, "textures/entity/grabber.png"));
+                p_114874_.put(SlasherVariants.SCREW,
+                        ResourceLocation.fromNamespaceAndPath(Spore.MODID, "textures/entity/screwer.png"));
             });
     private static final ResourceLocation EYES_TEXTURE =  ResourceLocation.fromNamespaceAndPath(Spore.MODID,
             "textures/entity/eyes/slasher.png");
