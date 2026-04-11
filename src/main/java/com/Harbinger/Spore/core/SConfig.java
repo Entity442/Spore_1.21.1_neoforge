@@ -1470,8 +1470,8 @@ public class SConfig {
             this.mob_cap = builder.comment("Default 40").define("MobCap",40);
             this.dimension_parameters = builder.comment("Default minecraft:is_overworld").defineList("Dictates in what biome the infected spawn",
                     Lists.newArrayList("minecraft:is_overworld") , o -> o instanceof String);
-            this.dimension_blacklist = builder.comment("Default forge:is_cold,minecraft:deep_dark").defineList("Dictates in what biome the infected will NOT spawn",
-                    Lists.newArrayList("forge:is_cold","minecraft:deep_dark") , o -> o instanceof String);
+            this.dimension_blacklist = builder.comment("Default c:is_cold,minecraft:deep_dark").defineList("Dictates in what biome the infected will NOT spawn",
+                    Lists.newArrayList("c:is_cold","minecraft:deep_dark") , o -> o instanceof String);
             this.spawns = builder.defineList("mob|weight|minimum|maximum",
                     Lists.newArrayList("spore:inf_human|80|2|5","spore:inf_drowned|10|1|2","spore:inf_pillager|40|1|3","spore:inf_villager|70|1|3","spore:inf_player|20|1|2"
                             ,"spore:inf_wanderer|25|1|2","spore:inf_witch|25|1|2","spore:inf_diseased_villager|10|1|2") , o -> o instanceof String);
