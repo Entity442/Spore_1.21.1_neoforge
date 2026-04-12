@@ -193,7 +193,7 @@ public class BusserModel<T extends Busser> extends EntityModel<T> {
 		setupHeadAnimations(headPitch, ageInTicks);
 		setupTailClawAnimations(ageInTicks);
 
-		if (entity.isInFluidType()) {
+		if (!entity.getBlockStateOn().isAir()) {
 			handleSwimmingAnimations(entity, limbSwing, limbSwingAmount, ageInTicks);
 		} else {
 			handleLandAnimations(entity, limbSwing, limbSwingAmount, ageInTicks);

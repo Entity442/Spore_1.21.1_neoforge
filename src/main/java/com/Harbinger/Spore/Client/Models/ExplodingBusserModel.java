@@ -225,7 +225,7 @@ public class ExplodingBusserModel<T extends Busser> extends EntityModel<T> {
 		setupTailClawAnimations(ageInTicks);
 		setupTumorAnimations(ageInTicks);
 
-		if (entity.onGround() || entity.isInFluidType()) {
+		if (!entity.getBlockStateOn().isAir()) {
 			handleGroundOrSwimmingAnimations(entity, limbSwing, limbSwingAmount, ageInTicks);
 		} else {
 			handleAirborneAnimations(entity, limbSwing, limbSwingAmount, ageInTicks);
