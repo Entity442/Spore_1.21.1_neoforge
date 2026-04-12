@@ -214,6 +214,7 @@ public class ClientModEvents {
         event.registerLayerDefinition(SwarmerHowlerModel.LAYER_LOCATION, SwarmerHowlerModel::createBodyLayer);
         event.registerLayerDefinition(ringerVigilModel.LAYER_LOCATION, ringerVigilModel::createBodyLayer);
         event.registerLayerDefinition(ScrewerSlasherModel.LAYER_LOCATION, ScrewerSlasherModel::createBodyLayer);
+        event.registerLayerDefinition(TransporterPhayresModel.LAYER_LOCATION, TransporterPhayresModel::createBodyLayer);
 
     }
     @SubscribeEvent
