@@ -3,6 +3,7 @@ package com.Harbinger.Spore.Sentities.BaseEntities;
 import com.Harbinger.Spore.Sentities.Organoids.HiveTumor;
 import com.Harbinger.Spore.Sentities.Organoids.Mound;
 import com.Harbinger.Spore.Sentities.Organoids.Proto;
+import com.Harbinger.Spore.Sentities.Organoids.Womb;
 import com.Harbinger.Spore.Sentities.Projectile.AcidBall;
 import com.Harbinger.Spore.Sentities.Projectile.Vomit;
 import com.Harbinger.Spore.core.Ssounds;
@@ -67,6 +68,9 @@ public class Organoid extends UtilityEntity implements Enemy {
         return Ssounds.ORGANOID_DAMAGE.value();
     }
     public void despawnIfHardFloor(){
+        if (this instanceof Proto || this instanceof HiveTumor || this instanceof Womb){
+            return;
+        }
         BlockPos pos = this.getOnPos();
         BlockState state = level().getBlockState(pos);
         if (state.getDestroySpeed(level(),pos) > 4 || state.getDestroySpeed(level(),pos) < 0){

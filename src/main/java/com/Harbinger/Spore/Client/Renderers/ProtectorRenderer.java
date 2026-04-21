@@ -57,7 +57,7 @@ public class ProtectorRenderer<Type extends Protector> extends BaseInfectedRende
                 p_114874_.put(ProtectorVariants.MOSS,
                         ResourceLocation.fromNamespaceAndPath(Spore.MODID, "textures/entity/moss_protector.png"));
                 p_114874_.put(ProtectorVariants.BULK,
-                        ResourceLocation.fromNamespaceAndPath(Spore.MODID, "textures/entity/protector.png"));
+                        ResourceLocation.fromNamespaceAndPath(Spore.MODID, "textures/entity/bulka_protector.png"));
             });
     private static final ResourceLocation EYES_TEXTURE =  ResourceLocation.fromNamespaceAndPath(Spore.MODID,
             "textures/entity/eyes/protector.png");
