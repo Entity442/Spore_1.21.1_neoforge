@@ -6,10 +6,13 @@ import com.Harbinger.Spore.Sentities.ArmedInfected;
 import com.Harbinger.Spore.Sentities.BaseEntities.EvolvedInfected;
 import com.Harbinger.Spore.Sentities.BaseEntities.Infected;
 import com.Harbinger.Spore.Sentities.BasicInfected.InfectedPlayer;
+import com.Harbinger.Spore.Sentities.VariantKeeper;
+import com.Harbinger.Spore.Sentities.Variants.ProtectorVariants;
 import com.Harbinger.Spore.core.SConfig;
 import com.Harbinger.Spore.core.SdamageTypes;
 import com.Harbinger.Spore.core.Seffects;
 import com.Harbinger.Spore.core.Ssounds;
+import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -43,9 +46,10 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class Protector extends EvolvedInfected implements ArmedInfected,HasUsableSlot, RangedAttackMob {
+public class Protector extends EvolvedInfected implements ArmedInfected,HasUsableSlot, RangedAttackMob, VariantKeeper {
     public static final EntityDataAccessor<Boolean> SHIELDED = SynchedEntityData.defineId(Protector.class, EntityDataSerializers.BOOLEAN);
     public static final EntityDataAccessor<Integer> PEARLS = SynchedEntityData.defineId(Protector.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Integer> DATA_ID_TYPE_VARIANT = SynchedEntityData.defineId(Protector.class, EntityDataSerializers.INT);
     public int ticksUnShielded;
     public Protector(EntityType<? extends Infected> p_33002_, Level p_33003_) {
         super(p_33002_, p_33003_);
@@ -91,6 +95,7 @@ public class Protector extends EvolvedInfected implements ArmedInfected,HasUsabl
         super.defineSynchedData(builder);
         builder.define(SHIELDED,false);
         builder.define(PEARLS,1);
+        builder.define(DATA_ID_TYPE_VARIANT, 0);
     }
 
     @Override
@@ -104,6 +109,7 @@ public class Protector extends EvolvedInfected implements ArmedInfected,HasUsabl
         super.readAdditionalSaveData(tag);
         setShielded(tag.getBoolean("shield"));
         setPearls(tag.getInt("pearls"));
+        this.entityData.set(DATA_ID_TYPE_VARIANT, tag.getInt("Variant"));
     }
 
     @Override
@@ -111,6 +117,7 @@ public class Protector extends EvolvedInfected implements ArmedInfected,HasUsabl
         super.addAdditionalSaveData(tag);
         tag.putBoolean("shield",getShielded());
         tag.putInt("pearls",getPearls());
+        tag.putInt("Variant", this.getTypeVariant());
     }
     protected SoundEvent getAmbientSound() {
         return Ssounds.ADVENTURER_AMBIENT.value();
@@ -175,7 +182,32 @@ public class Protector extends EvolvedInfected implements ArmedInfected,HasUsabl
         }
         return super.hurt(source, amount);
     }
+    public ProtectorVariants getVariant() {
+        return ProtectorVariants.byId(this.getTypeVariant() & 255);
+    }
 
+    public int getTypeVariant() {
+        return this.entityData.get(DATA_ID_TYPE_VARIANT);
+    }
+
+    @Override
+    public void setVariant(int i) {
+        this.entityData.set(DATA_ID_TYPE_VARIANT,
+                (i >= 0 && i < ProtectorVariants.values().length) ? i : 0);
+    }
+
+    @Override
+    public int amountOfMutations() {
+        return ProtectorVariants.values().length;
+    }
+
+    private void setVariant(ProtectorVariants variant) {
+        this.entityData.set(DATA_ID_TYPE_VARIANT, variant.getId() & 255);
+    }
+    @Override
+    public String getMutation() {
+        return getTypeVariant() != 0 ? this.getVariant().getName() : super.getMutation();
+    }
     @Override
     public void onSyncedDataUpdated(List<SynchedEntityData.DataValue<?>> values) {
         super.onSyncedDataUpdated(values);
@@ -213,6 +245,7 @@ public class Protector extends EvolvedInfected implements ArmedInfected,HasUsabl
     public @Nullable SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType spawnType, @Nullable SpawnGroupData spawnGroupData) {
         ((GroundPathNavigation)this.getNavigation()).setCanOpenDoors(true);
         this.populateDefaultEquipmentSlots(this.random, difficulty);
+        setVariant(Util.getRandom(ProtectorVariants.values(), random));
         return super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData);
     }
 
@@ -274,4 +307,6 @@ public class Protector extends EvolvedInfected implements ArmedInfected,HasUsabl
             }
         }
     }
+
+
 }

@@ -1,12 +1,17 @@
 package com.Harbinger.Spore.Client.Renderers;
 
-import com.Harbinger.Spore.Client.Models.ProtectorModel;
+import com.Harbinger.Spore.Client.Models.*;
 import com.Harbinger.Spore.Client.Special.BaseInfectedRenderer;
+import com.Harbinger.Spore.Client.Special.ProtectorBits;
 import com.Harbinger.Spore.Sentities.EvolvedInfected.Protector;
+import com.Harbinger.Spore.Sentities.Variants.ProtectorVariants;
 import com.Harbinger.Spore.Spore;
+import com.google.common.collect.Maps;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
+import net.minecraft.Util;
+import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.ItemInHandRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -30,24 +35,70 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.client.ClientHooks;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @OnlyIn(Dist.CLIENT)
-public class ProtectorRenderer<Type extends Protector> extends BaseInfectedRenderer<Type , ProtectorModel<Type>> {
+public class ProtectorRenderer<Type extends Protector> extends BaseInfectedRenderer<Type , EntityModel<Type>> {
+    private final EntityModel<Type> defaultModel = this.getModel();
+    private final EntityModel<Type> studded;
+    private final EntityModel<Type> collector;
+    private final EntityModel<Type> moss;
+    private final EntityModel<Type> bulk;
     private static final ResourceLocation EMPTY = ResourceLocation.parse("spore:textures/entity/empty.png");
-    private static final ResourceLocation TEXTURE =  ResourceLocation.fromNamespaceAndPath(Spore.MODID,
-            "textures/entity/protector.png");
+    public static final Map<ProtectorVariants, ResourceLocation> TEXTURE =
+            Util.make(Maps.newEnumMap(ProtectorVariants.class), (p_114874_) -> {
+                p_114874_.put(ProtectorVariants.DEFAULT,
+                        ResourceLocation.fromNamespaceAndPath(Spore.MODID, "textures/entity/protector.png"));
+                p_114874_.put(ProtectorVariants.STUBBED,
+                        ResourceLocation.fromNamespaceAndPath(Spore.MODID, "textures/entity/studded_protector.png"));
+                p_114874_.put(ProtectorVariants.COLLECTOR,
+                        ResourceLocation.fromNamespaceAndPath(Spore.MODID, "textures/entity/collector_protector.png"));
+                p_114874_.put(ProtectorVariants.MOSS,
+                        ResourceLocation.fromNamespaceAndPath(Spore.MODID, "textures/entity/moss_protector.png"));
+                p_114874_.put(ProtectorVariants.BULK,
+                        ResourceLocation.fromNamespaceAndPath(Spore.MODID, "textures/entity/protector.png"));
+            });
     private static final ResourceLocation EYES_TEXTURE =  ResourceLocation.fromNamespaceAndPath(Spore.MODID,
             "textures/entity/eyes/protector.png");
     public ProtectorRenderer(EntityRendererProvider.Context context) {
         super(context, new ProtectorModel<>(context.bakeLayer(ProtectorModel.LAYER_LOCATION),false), 0.5f);
         this.addLayer(new ProtectorArmorRenderer<>(this,context.getModelManager()));
         this.addLayer(new PearlsLayer<>(this,context.getItemInHandRenderer()));
+        studded = new StuddedProtectorModel<>(context.bakeLayer(StuddedProtectorModel.LAYER_LOCATION),false);
+        collector = new CollectorProtectorModel<>(context.bakeLayer(CollectorProtectorModel.LAYER_LOCATION),false);
+        moss = new MossProtectorModel<>(context.bakeLayer(MossProtectorModel.LAYER_LOCATION),false);
+        bulk = new BulwarkProtectorModel<>(context.bakeLayer(BulwarkProtectorModel.LAYER_LOCATION),false);
     }
     @Override
     public ResourceLocation getTextureLocation(Type entity) {
-        return TEXTURE;
+        return TEXTURE.get(entity.getVariant());
+    }
+    public EntityModel<Type> getVariantModel(ProtectorVariants protectorVariants){
+        switch (protectorVariants){
+            case BULK -> {
+                return bulk;
+            }
+            case STUBBED -> {
+                return studded;
+            }
+            case COLLECTOR -> {
+                return collector;
+            }
+            case MOSS -> {
+                return moss;
+            }
+            case DEFAULT -> {
+                return defaultModel;
+            }
+        }
+        return defaultModel;
+    }
+
+    @Override
+    public void render(Type type, float value1, float value2, PoseStack stack, MultiBufferSource bufferSource, int light) {
+        model = getVariantModel(type.getVariant());
+        super.render(type, value1, value2, stack, bufferSource, light);
     }
 
     @Override
@@ -55,21 +106,21 @@ public class ProtectorRenderer<Type extends Protector> extends BaseInfectedRende
         return EYES_TEXTURE;
     }
 
-    private static class PearlsLayer <T extends Protector, M extends ProtectorModel<T>> extends RenderLayer<T, M>{
+    private static class PearlsLayer <T extends Protector, M extends EntityModel<T>> extends RenderLayer<T, M>{
         private final ItemInHandRenderer itemInHandRenderer;
-        private final ProtectorModel<T> model;
         public PearlsLayer(RenderLayerParent<T, M> parent, ItemInHandRenderer itemInHandRenderer) {
             super(parent);
             this.itemInHandRenderer = itemInHandRenderer;
-            this.model = this.getParentModel();
         }
 
         @Override
         public void render(PoseStack poseStack, MultiBufferSource multiBufferSource, int i, T t, float v, float v1, float v2, float v3, float v4, float v5) {
-            if (t.getPearls() > 0){
+            if (t.getPearls() > 0 && getParentModel() instanceof ProtectorBits bits){
                 ItemStack stack = new ItemStack(Items.ENDER_PEARL);
                 poseStack.pushPose();
-                this.model.LeftArm.translateAndRotate(poseStack);
+                for(ModelPart part : bits.EnderPearlArm()){
+                    part.translateAndRotate(poseStack);
+                }
                 poseStack.translate(0,0.75,0);
                 poseStack.scale(0.5F, 0.5F, 0.5F);
                 poseStack.mulPose(Axis.XP.rotationDegrees(-90.0F));
@@ -79,45 +130,43 @@ public class ProtectorRenderer<Type extends Protector> extends BaseInfectedRende
             }
         }
     }
-    private static class ProtectorArmorRenderer <T extends Protector> extends RenderLayer<T, ProtectorModel<T>> {
-        public final List<ModelPart> helmetModels = new ArrayList<>();
-        public final List<ModelPart> bootsModels = new ArrayList<>();
+    private static class ProtectorArmorRenderer <T extends Protector> extends RenderLayer<T, EntityModel<T>> {
         private final TextureAtlas armorTrimAtlas;
         private static final ResourceLocation BLOOD_LAYER1 = ResourceLocation.fromNamespaceAndPath(Spore.MODID,
                 "textures/overlay/blood_overlay.png");
-        public ProtectorArmorRenderer(RenderLayerParent<T, ProtectorModel<T>> modelRenderLayerParent, ModelManager manager) {
+        public ProtectorArmorRenderer(RenderLayerParent<T, EntityModel<T>> modelRenderLayerParent, ModelManager manager) {
             super(modelRenderLayerParent);
             armorTrimAtlas = manager.getAtlas(Sheets.ARMOR_TRIMS_SHEET);
-            this.helmetModels.add(this.getParentModel().headWear);
-            this.bootsModels.add(this.getParentModel().RightBoot);
-            this.bootsModels.add(this.getParentModel().LeftBoot);
         }
 
         @Override
         public void render(PoseStack poseStack, MultiBufferSource multiBufferSource, int i, T t, float v, float v1, float v2, float v3, float v4, float v5) {
-            renderArmorPart(t,EquipmentSlot.HEAD, helmetModels,poseStack,multiBufferSource, i);
-            renderArmorPart(t,EquipmentSlot.FEET, bootsModels,poseStack,multiBufferSource, i);
+            if (getParentModel() instanceof ProtectorBits bits){
+                renderArmorPart(t,bits,EquipmentSlot.HEAD, bits.Helmet(),poseStack,multiBufferSource, i);
+                renderArmorPart(t,bits,EquipmentSlot.FEET, bits.Feet(),poseStack,multiBufferSource, i);
+            }
         }
-        private void renderArmorPart(T entity, EquipmentSlot slot , List<ModelPart> parts, PoseStack stack, MultiBufferSource bufferSource, int packedLight){
+        private void renderArmorPart(T entity,ProtectorBits bits, EquipmentSlot slot , List<ModelPart> parts, PoseStack stack, MultiBufferSource bufferSource, int packedLight){
             ItemStack itemStack = entity.getItemBySlot(slot);
             boolean flag = itemStack.hasFoil();
             if (itemStack.getItem() instanceof ArmorItem armorItem){
                 ArmorMaterial armormaterial = armorItem.getMaterial().value();
-                renderArmor(parts,stack,bufferSource,packedLight,OverlayTexture.NO_OVERLAY,-1,this.getArmorResource(entity, itemStack,armormaterial, slot),flag);
+                renderArmor(parts,bits,stack,bufferSource,packedLight,OverlayTexture.NO_OVERLAY,-1,this.getArmorResource(entity, itemStack,armormaterial, slot),flag);
                 ArmorTrim armortrim = (ArmorTrim)itemStack.get(DataComponents.TRIM);
                 if (armortrim != null) {
-                    this.renderTrim(armorItem.getMaterial(), stack, bufferSource, packedLight, armortrim, parts);
+                    this.renderTrim(armorItem.getMaterial(), bits, stack, bufferSource, packedLight, armortrim, parts);
                 }
             }
         }
-        private void renderArmor(List<ModelPart> parts, PoseStack stack, MultiBufferSource bufferSource, int packedLight, int packedOverlay, int alpha,ResourceLocation location,boolean glint){
+        private void renderArmor(List<ModelPart> parts,ProtectorBits bits, PoseStack stack, MultiBufferSource bufferSource, int packedLight, int packedOverlay, int alpha,ResourceLocation location,boolean glint){
             VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityCutoutNoCull(location));
-            this.getParentModel().Protector.getAllParts().forEach(modelPart -> {setInvisible(modelPart,parts);});
-            this.getParentModel().Protector.render(stack, consumer, packedLight, packedOverlay,  alpha);
+            ModelPart root = bits.root();
+            root.getAllParts().forEach(modelPart -> {setInvisible(modelPart,parts);});
+            root.render(stack, consumer, packedLight, packedOverlay,  alpha);
             if (glint){
-                this.getParentModel().Protector.render(stack, bufferSource.getBuffer(RenderType.entityGlint()), packedLight, packedOverlay,  alpha);
+                root.render(stack, bufferSource.getBuffer(RenderType.entityGlint()), packedLight, packedOverlay,  alpha);
             }
-            renderBloodLayer(this.getParentModel().Protector,stack,bufferSource,packedLight);
+            renderBloodLayer(root,stack,bufferSource,packedLight);
         }
 
         private void setInvisible(ModelPart part,List<ModelPart> parts){
@@ -125,11 +174,12 @@ public class ProtectorRenderer<Type extends Protector> extends BaseInfectedRende
         }
 
 
-        private void renderTrim(Holder<ArmorMaterial> armorMaterialHolder, PoseStack stack, MultiBufferSource source, int light, ArmorTrim armorTrim, List<ModelPart> parts) {
+        private void renderTrim(Holder<ArmorMaterial> armorMaterialHolder,ProtectorBits bits, PoseStack stack, MultiBufferSource source, int light, ArmorTrim armorTrim, List<ModelPart> parts) {
             TextureAtlasSprite textureatlassprite = this.armorTrimAtlas.getSprite(armorTrim.outerTexture(armorMaterialHolder));
             VertexConsumer vertexconsumer = textureatlassprite.wrap(source.getBuffer(Sheets.armorTrimsSheet(armorTrim.pattern().value().decal())));
-            this.getParentModel().Protector.getAllParts().forEach(modelPart -> {setInvisible(modelPart,parts);});
-            this.getParentModel().Protector.render(stack, vertexconsumer, light, OverlayTexture.NO_OVERLAY, -1);
+            ModelPart root = bits.root();
+            root.getAllParts().forEach(modelPart -> {setInvisible(modelPart,parts);});
+            root.render(stack, vertexconsumer, light, OverlayTexture.NO_OVERLAY, -1);
         }
         public ResourceLocation getArmorResource(Entity entity, ItemStack stack,ArmorMaterial material, EquipmentSlot slot) {
             if (material.layers().isEmpty()){

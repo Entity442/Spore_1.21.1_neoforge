@@ -59,9 +59,19 @@ public class Organoid extends UtilityEntity implements Enemy {
             regulateSpawns();
         }
         spawnEmergingParticles();
+        if (tickCount % 10 == 0){
+            despawnIfHardFloor();
+        }
     }
     protected SoundEvent getHurtSound(DamageSource p_34327_) {
         return Ssounds.ORGANOID_DAMAGE.value();
+    }
+    public void despawnIfHardFloor(){
+        BlockPos pos = this.getOnPos();
+        BlockState state = level().getBlockState(pos);
+        if (state.getDestroySpeed(level(),pos) > 4 || state.getDestroySpeed(level(),pos) < 0){
+            discard();
+        }
     }
 
     @Override
