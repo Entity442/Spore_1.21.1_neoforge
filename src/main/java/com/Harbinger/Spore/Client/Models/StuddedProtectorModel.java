@@ -104,7 +104,7 @@ public class StuddedProtectorModel<T extends Protector> extends EntityModel<T> i
 		PartDefinition LeftLegLower = LeftLeg.addOrReplaceChild("LeftLegLower", CubeListBuilder.create().texOffs(0, 80).addBox(-1.6F, 0.5F, -2.0F, 4.0F, 6.0F, 4.0F, new CubeDeformation(0.4F))
 				.texOffs(16, 111).addBox(-1.6F, 0.5F, -2.0F, 4.0F, 6.0F, 4.0F, new CubeDeformation(0.5F)), PartPose.offset(0.2F, 4.2F, 2.4F));
 
-		PartDefinition LeftBoot = LeftLegLower.addOrReplaceChild("LeftBoot", CubeListBuilder.create().texOffs(0, 88).addBox(-7.5F, 1.5F, -8.5F, 16.0F, 16.0F, 16.0F, new CubeDeformation(-5.2F)), PartPose.offset(-0.5F, -5.0F, 0.5F));
+		PartDefinition LeftBoot = LeftLegLower.addOrReplaceChild("LeftBoot", CubeListBuilder.create().texOffs(0, 88).addBox(-7.5F, 1.5F, -8.6F, 16.0F, 16.0F, 16.0F, new CubeDeformation(-5.2F)), PartPose.offset(-0.5F, -5.0F, 0.5F));
 
 		PartDefinition RightArm = Limbs.addOrReplaceChild("RightArm", CubeListBuilder.create(), PartPose.offset(-4.9F, -24.0F, -0.2F));
 
