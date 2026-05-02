@@ -96,6 +96,13 @@ public class ProtectorRenderer<Type extends Protector> extends BaseInfectedRende
     }
 
     @Override
+    protected void scale(Type livingEntity, PoseStack poseStack, float partialTickTime) {
+        float type = livingEntity.getVariant() == ProtectorVariants.BULK ? 1.2f : 1;
+        poseStack.scale(type,type,type);
+        super.scale(livingEntity, poseStack, partialTickTime);
+    }
+
+    @Override
     public void render(Type type, float value1, float value2, PoseStack stack, MultiBufferSource bufferSource, int light) {
         model = getVariantModel(type.getVariant());
         super.render(type, value1, value2, stack, bufferSource, light);

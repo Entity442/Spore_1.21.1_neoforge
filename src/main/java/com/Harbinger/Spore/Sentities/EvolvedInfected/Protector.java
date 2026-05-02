@@ -25,7 +25,9 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -82,6 +84,7 @@ public class Protector extends EvolvedInfected implements ArmedInfected,HasUsabl
                 .add(Attributes.ATTACK_DAMAGE, SConfig.SERVER.protector_damage.get() * SConfig.SERVER.global_damage.get())
                 .add(Attributes.ARMOR, SConfig.SERVER.protector_armor.get() * SConfig.SERVER.global_armor.get())
                 .add(Attributes.FOLLOW_RANGE, 48)
+                .add(Attributes.KNOCKBACK_RESISTANCE, 0)
                 .add(Attributes.ATTACK_KNOCKBACK, 1);
 
     }
@@ -170,6 +173,13 @@ public class Protector extends EvolvedInfected implements ArmedInfected,HasUsabl
             }
             if (getShielded()) {
                 if (isLookingAtMe(livingEntity)){
+                    if (getVariant() == ProtectorVariants.STUBBED && !source.is(DamageTypes.THORNS) && livingEntity.distanceToSqr(this)<100D){
+                        livingEntity.hurt(level().damageSources().thorns(this),amount * 0.1f);
+                    }
+                    if (getVariant() == ProtectorVariants.MOSS){
+                        livingEntity.addEffect(new MobEffectInstance(MobEffects.WEAKNESS,200,0));
+                        livingEntity.addEffect(new MobEffectInstance(MobEffects.POISON,200,0));
+                    }
                     this.playSound(SoundEvents.SHIELD_BLOCK);
                     return false;
                 }
@@ -208,19 +218,39 @@ public class Protector extends EvolvedInfected implements ArmedInfected,HasUsabl
     public String getMutation() {
         return getTypeVariant() != 0 ? this.getVariant().getName() : super.getMutation();
     }
+
     @Override
-    public void onSyncedDataUpdated(List<SynchedEntityData.DataValue<?>> values) {
-        super.onSyncedDataUpdated(values);
-        for (SynchedEntityData.DataValue<?> value : values) {
-            if (value.value().equals(SHIELDED)) {
-                AttributeInstance attributes = this.getAttribute(Attributes.MOVEMENT_SPEED);
-                if (attributes != null) {
-                    attributes.setBaseValue(this.getShielded() ? 0.1 : 0.2);
-                }
-                break;
+    public void onSyncedDataUpdated(EntityDataAccessor<?> dataAccessor) {
+        if (dataAccessor.equals(SHIELDED)) {
+            AttributeInstance attributes = this.getAttribute(Attributes.MOVEMENT_SPEED);
+            if (attributes != null) {
+                attributes.setBaseValue(this.getShielded() ? 0.1 : 0.2);
             }
         }
+        if (dataAccessor.equals(DATA_ID_TYPE_VARIANT)){
+            double prot;
+            double knock;
+            if (getVariant() == ProtectorVariants.BULK){
+                AttributeInstance protection = this.getAttribute(Attributes.ARMOR);
+                AttributeInstance knockbackResistence = this.getAttribute(Attributes.KNOCKBACK_RESISTANCE);
+                prot = 1.3;
+                knock = 1;
+                if (protection != null && knockbackResistence != null) {
+                    protection.setBaseValue(SConfig.SERVER.protector_armor.get() * prot);
+                    knockbackResistence.setBaseValue(knock);
+                }
+            }
+            this.refreshDimensions();
+        }
+        super.onSyncedDataUpdated(dataAccessor);
     }
+    @Override
+    protected EntityDimensions getDefaultDimensions(Pose pose) {
+        EntityDimensions baseDimensions = super.getDefaultDimensions(pose);
+        float val = getVariant() == ProtectorVariants.BULK ? 1.2f : 1;
+        return baseDimensions.scale(val);
+    }
+
     boolean isLookingAtMe(LivingEntity entity) {
         Vec3 lookVec = entity.getViewVector(1.0F).normalize();
         Vec3 toThis = new Vec3(this.getX() - entity.getX(), this.getEyeY() - entity.getEyeY(), this.getZ() - entity.getZ()).normalize();
@@ -298,8 +328,13 @@ public class Protector extends EvolvedInfected implements ArmedInfected,HasUsabl
                         if (entity instanceof Mob mob1){
                             mob1.setTarget(mob);
                         }
+                        boolean stud = protector.getVariant() == ProtectorVariants.STUBBED;
                         entity.addEffect(new MobEffectInstance(Seffects.MYCELIUM,100,0));
-                        entity.knockback(1.2F, Mth.sin(mob.getYRot() * ((float) Math.PI / 180F)), (-Mth.cos(mob.getYRot() * ((float) Math.PI / 180F))));
+                        entity.knockback(stud ? 2.4 : 1.2F, Mth.sin(mob.getYRot() * ((float) Math.PI / 180F)), (-Mth.cos(mob.getYRot() * ((float) Math.PI / 180F))));
+                        if (stud){
+                            protector.doHurtTarget(entity);
+                            protector.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN,100,1));
+                        }
                     }
                 }else {
                     super.checkAndPerformAttack(entity, at);
