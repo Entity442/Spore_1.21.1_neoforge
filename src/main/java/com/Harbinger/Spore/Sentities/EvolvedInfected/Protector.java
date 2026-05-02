@@ -22,6 +22,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.Container;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
@@ -32,27 +33,42 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
 import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
 import net.minecraft.world.entity.monster.EnderMan;
 import net.minecraft.world.entity.monster.RangedAttackMob;
 import net.minecraft.world.entity.projectile.ThrownEnderpearl;
+import net.minecraft.world.food.FoodProperties;
+import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TieredItem;
+import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.EnumSet;
 import java.util.List;
 
 public class Protector extends EvolvedInfected implements ArmedInfected,HasUsableSlot, RangedAttackMob, VariantKeeper {
     public static final EntityDataAccessor<Boolean> SHIELDED = SynchedEntityData.defineId(Protector.class, EntityDataSerializers.BOOLEAN);
     public static final EntityDataAccessor<Integer> PEARLS = SynchedEntityData.defineId(Protector.class, EntityDataSerializers.INT);
+    public static final EntityDataAccessor<Integer> DAMAGE_POINTS = SynchedEntityData.defineId(Protector.class, EntityDataSerializers.INT);
+    public static final EntityDataAccessor<Integer> RESISTANCE_POINTS = SynchedEntityData.defineId(Protector.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> DATA_ID_TYPE_VARIANT = SynchedEntityData.defineId(Protector.class, EntityDataSerializers.INT);
     public int ticksUnShielded;
+    @Nullable
+    private BlockPos Targetpos;
     public Protector(EntityType<? extends Infected> p_33002_, Level p_33003_) {
         super(p_33002_, p_33003_);
     }
@@ -60,6 +76,7 @@ public class Protector extends EvolvedInfected implements ArmedInfected,HasUsabl
     @Override
     protected void addRegularGoals() {
         super.addRegularGoals();
+        this.goalSelector.addGoal(2,new SearchAroundGoal(this));
         this.goalSelector.addGoal(3, new ProtectorMeleeGoal(this, (float) (SConfig.SERVER.protector_damage.get() * SConfig.SERVER.global_damage.get())));
         this.goalSelector.addGoal(4, new RandomStrollGoal(this, 0.8));
         this.goalSelector.addGoal(5, new RandomLookAroundGoal(this));
@@ -93,11 +110,19 @@ public class Protector extends EvolvedInfected implements ArmedInfected,HasUsabl
 
     public int getPearls(){return entityData.get(PEARLS);}
     public void setPearls(int e){this.entityData.set(PEARLS,e);}
+
+    public int getDamagePoints(){return entityData.get(DAMAGE_POINTS);}
+    public void setDamagePoints(int e){this.entityData.set(DAMAGE_POINTS,e);}
+
+    public int getResistancePoints(){return entityData.get(RESISTANCE_POINTS);}
+    public void setResistancePoints(int e){this.entityData.set(RESISTANCE_POINTS,e);}
     @Override
     protected void defineSynchedData(SynchedEntityData.@NotNull Builder builder) {
         super.defineSynchedData(builder);
         builder.define(SHIELDED,false);
         builder.define(PEARLS,1);
+        builder.define(DAMAGE_POINTS,0);
+        builder.define(RESISTANCE_POINTS,0);
         builder.define(DATA_ID_TYPE_VARIANT, 0);
     }
 
@@ -112,6 +137,8 @@ public class Protector extends EvolvedInfected implements ArmedInfected,HasUsabl
         super.readAdditionalSaveData(tag);
         setShielded(tag.getBoolean("shield"));
         setPearls(tag.getInt("pearls"));
+        setDamagePoints(tag.getInt("damage_points"));
+        setResistancePoints(tag.getInt("resistance_points"));
         this.entityData.set(DATA_ID_TYPE_VARIANT, tag.getInt("Variant"));
     }
 
@@ -120,6 +147,8 @@ public class Protector extends EvolvedInfected implements ArmedInfected,HasUsabl
         super.addAdditionalSaveData(tag);
         tag.putBoolean("shield",getShielded());
         tag.putInt("pearls",getPearls());
+        tag.putInt("damage_points",getDamagePoints());
+        tag.putInt("resistance_points",getResistancePoints());
         tag.putInt("Variant", this.getTypeVariant());
     }
     protected SoundEvent getAmbientSound() {
@@ -155,6 +184,10 @@ public class Protector extends EvolvedInfected implements ArmedInfected,HasUsabl
                     this.performRangedAttack(entity, 0);
                 }
             }
+        }
+        if (tickCount % 200 == 0 && this.getVariant() == ProtectorVariants.COLLECTOR){
+            searchBlocks();
+            spreadEffects();
         }
     }
 
@@ -333,7 +366,7 @@ public class Protector extends EvolvedInfected implements ArmedInfected,HasUsabl
                         entity.knockback(stud ? 2.4 : 1.2F, Mth.sin(mob.getYRot() * ((float) Math.PI / 180F)), (-Mth.cos(mob.getYRot() * ((float) Math.PI / 180F))));
                         if (stud){
                             protector.doHurtTarget(entity);
-                            protector.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN,100,1));
+                            entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN,100,1));
                         }
                     }
                 }else {
@@ -344,4 +377,157 @@ public class Protector extends EvolvedInfected implements ArmedInfected,HasUsabl
     }
 
 
+    @Nullable
+    public BlockPos getTargetPos() {
+        return Targetpos;
+    }
+    public void setTargetPos(@Nullable BlockPos pos) {
+        this.Targetpos = pos;
+    }
+    public boolean hasLineOfSightBlocks(BlockPos pos) {
+        BlockHitResult raytraceresult = this.level().clip(new ClipContext(this.getEyePosition(1.0F), new Vec3(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
+        BlockPos position = raytraceresult.getBlockPos();
+        return pos.equals(position) || this.level().isEmptyBlock(pos) || this.level().getBlockEntity(pos) == this.level().getBlockEntity(position);
+    }
+    public void searchBlocks(){
+        AABB aabb = this.getBoundingBox().inflate(32,4,32);
+        for(BlockPos blockpos : BlockPos.betweenClosed(Mth.floor(aabb.minX), Mth.floor(aabb.minY), Mth.floor(aabb.minZ), Mth.floor(aabb.maxX), Mth.floor(aabb.maxY), Mth.floor(aabb.maxZ))) {
+            BlockEntity block = level().getBlockEntity(blockpos);
+            if (block instanceof Container container && items(container)){
+                if (hasLineOfSightBlocks(blockpos) && this.random.nextFloat() < 0.5f){
+                    setTargetPos(blockpos);
+                    break;
+                }
+            }
+        }
+    }
+
+    private boolean items(Container container){
+        for (int i = 0; i<container.getContainerSize(); i++){
+            ItemStack stack = container.getItem(i);
+            Item item = stack.getItem();
+            if (item.getFoodProperties(stack,this) != null){
+                return true;
+            }
+            if (item instanceof TieredItem){
+                return true;
+            }
+            if (item instanceof ArmorItem){
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    public static class SearchAroundGoal extends Goal {
+        private final Protector protector;
+        public int tryTicks;
+
+        public SearchAroundGoal(Protector protector){
+            this.protector = protector;
+            this.setFlags(EnumSet.of(Flag.MOVE));
+        }
+
+        @Override
+        public boolean canUse() {
+            if (protector.getVariant() != ProtectorVariants.COLLECTOR){
+                return false;
+            }
+            return protector.getTargetPos() != null && this.protector.getTarget() == null;
+        }
+
+        protected void moveToBlock(BlockPos pos){
+            if (pos != null)
+                protector.navigation.moveTo(pos.getX()+0.5D,pos.getY()+1D,pos.getZ()+0.5D,1);
+        }
+        @Override
+        public void start() {
+            this.moveToBlock(protector.getTargetPos());
+            this.tryTicks = 0;
+            super.start();
+        }
+
+
+        @Override
+        public boolean canContinueToUse() {
+            return protector.getTarget() == null;
+        }
+
+        public boolean shouldRecalculatePath() {
+            return this.tryTicks % 40 == 0;
+        }
+
+
+        @Override
+        public boolean requiresUpdateEveryTick() {
+            return true;
+        }
+
+        @Override
+        public void tick() {
+            super.tick();
+            ++this.tryTicks;
+            BlockPos pos = protector.getTargetPos();
+            if (pos != null && shouldRecalculatePath()){
+                moveToBlock(pos);
+            }
+            if (pos != null && pos.closerToCenterThan(this.protector.position(),3.5f)){
+                protector.interactWithBlock(pos);
+                openChest(pos);
+                protector.setTargetPos((BlockPos) null);
+                protector.searchBlocks();
+            }
+        }
+        public void openChest(BlockPos pos) {
+            BlockEntity entity = this.protector.level().getBlockEntity(pos);
+            if (entity instanceof ChestBlockEntity chestBlock) {
+                this.protector.playSound(SoundEvents.CHEST_OPEN);
+                this.protector.level().blockEvent(pos, chestBlock.getBlockState().getBlock(), 1, 1);
+                this.protector.level().updateNeighborsAt(pos, chestBlock.getBlockState().getBlock());
+                this.protector.level().updateNeighborsAt(pos.below(), chestBlock.getBlockState().getBlock());
+            }
+        }
+    }
+
+    public void interactWithBlock(BlockPos pos){
+        if (level().getBlockEntity(pos) instanceof Container container && items(container)){
+            int food = 0;
+            int damage = 0;
+            int armor = 0;
+            for (int i = 0; i < container.getContainerSize();i++){
+                ItemStack stack = container.getItem(i);
+                FoodProperties properties = stack.getFoodProperties(this);
+                Item item = stack.getItem();
+                if (properties != null){
+                    food = (int) (properties.nutrition() + properties.saturation());
+                }
+                if (item instanceof TieredItem tieredItem){
+                    damage = tieredItem.getDamage(stack);
+                }
+                if (item instanceof ArmorItem tieredItem){
+                    armor = tieredItem.getDefense();
+                }
+            }
+            setKills(getKills()+(food/5));
+            setDamagePoints(getDamagePoints() + damage);
+            setResistancePoints(getResistancePoints() + armor);
+        }
+    }
+    public void spreadEffects(){
+        AABB aabb = this.getBoundingBox().inflate(16);
+        List<Entity> entities = level().getEntities(this,aabb);
+        for (Entity entity : entities){
+            if (entity instanceof Infected infected){
+                if (!infected.hasEffect(MobEffects.DAMAGE_RESISTANCE)){
+                    infected.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE,36000,0));
+                    setResistancePoints(getResistancePoints()-1);
+                }
+                if (!infected.hasEffect(MobEffects.DAMAGE_BOOST)){
+                    infected.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST,36000,0));
+                    setDamagePoints(getDamagePoints()-1);
+                }
+            }
+        }
+    }
 }

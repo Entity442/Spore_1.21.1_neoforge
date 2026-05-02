@@ -475,6 +475,11 @@
   "spore.entity.variant.ringer" : "Ringer Mutation",
   "spore.entity.variant.screw" : "Boring Mutation",
   "spore.entity.variant.transporter" : "Payload Mutation",
+  "spore.entity.variant.stubbed" : "Studded  Mutation",
+  "spore.entity.variant.collector" : "Collector Mutation",
+  "spore.entity.variant.moss" : "Thornbloom Mutation",
+  "spore.entity.variant.bulk" : "Bulwark Mutation",
+
   "spore.scanner.danger.calamity" : "RUN",
   "spore.scanner.danger.hyper" : "Very High",
   "spore.scanner.danger.evolved" : "Medium-High",
