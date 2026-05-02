@@ -500,8 +500,12 @@ public class Protector extends EvolvedInfected implements ArmedInfected,HasUsabl
                 FoodProperties properties = stack.getFoodProperties(this);
                 Item item = stack.getItem();
                 if (properties != null){
-                    food = (int) (properties.nutrition() + properties.saturation());
-                    stack.shrink(1);
+                    int foodCalculation = 0;
+                    for (int e = 0; e<stack.getCount();e++){
+                        foodCalculation =  (int) (properties.nutrition() + properties.saturation());
+                    }
+                    food = foodCalculation;
+                    stack.shrink(stack.getCount());
                 }
                 if (item instanceof TieredItem tieredItem){
                     damage = tieredItem.getDamage(stack);
