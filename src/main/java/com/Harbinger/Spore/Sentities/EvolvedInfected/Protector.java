@@ -261,17 +261,17 @@ public class Protector extends EvolvedInfected implements ArmedInfected,HasUsabl
             }
         }
         if (dataAccessor.equals(DATA_ID_TYPE_VARIANT)){
-            double prot;
-            double knock;
+            double prot = 1;
+            double knock = 0;
+            AttributeInstance protection = this.getAttribute(Attributes.ARMOR);
+            AttributeInstance knockbackResistence = this.getAttribute(Attributes.KNOCKBACK_RESISTANCE);
             if (getVariant() == ProtectorVariants.BULK){
-                AttributeInstance protection = this.getAttribute(Attributes.ARMOR);
-                AttributeInstance knockbackResistence = this.getAttribute(Attributes.KNOCKBACK_RESISTANCE);
                 prot = 1.3;
                 knock = 1;
-                if (protection != null && knockbackResistence != null) {
-                    protection.setBaseValue(SConfig.SERVER.protector_armor.get() * prot);
-                    knockbackResistence.setBaseValue(knock);
-                }
+            }
+            if (protection != null && knockbackResistence != null) {
+                protection.setBaseValue(SConfig.SERVER.protector_armor.get() * prot);
+                knockbackResistence.setBaseValue(knock);
             }
             this.refreshDimensions();
         }
@@ -501,12 +501,15 @@ public class Protector extends EvolvedInfected implements ArmedInfected,HasUsabl
                 Item item = stack.getItem();
                 if (properties != null){
                     food = (int) (properties.nutrition() + properties.saturation());
+                    stack.shrink(1);
                 }
                 if (item instanceof TieredItem tieredItem){
                     damage = tieredItem.getDamage(stack);
+                    stack.shrink(1);
                 }
                 if (item instanceof ArmorItem tieredItem){
                     armor = tieredItem.getDefense();
+                    stack.shrink(1);
                 }
             }
             setKills(getKills()+(food/5));
@@ -519,11 +522,11 @@ public class Protector extends EvolvedInfected implements ArmedInfected,HasUsabl
         List<Entity> entities = level().getEntities(this,aabb);
         for (Entity entity : entities){
             if (entity instanceof Infected infected){
-                if (!infected.hasEffect(MobEffects.DAMAGE_RESISTANCE)){
+                if (!infected.hasEffect(MobEffects.DAMAGE_RESISTANCE) && getResistancePoints() > 0){
                     infected.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE,36000,0));
                     setResistancePoints(getResistancePoints()-1);
                 }
-                if (!infected.hasEffect(MobEffects.DAMAGE_BOOST)){
+                if (!infected.hasEffect(MobEffects.DAMAGE_BOOST) && getDamagePoints() > 0){
                     infected.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST,36000,0));
                     setDamagePoints(getDamagePoints()-1);
                 }
