@@ -4,6 +4,7 @@ package com.Harbinger.Spore.Sentities.Utility;
 import com.Harbinger.Spore.ExtremelySusThings.Utilities;
 import com.Harbinger.Spore.Sentities.BaseEntities.Infected;
 import com.Harbinger.Spore.Sentities.BaseEntities.UtilityEntity;
+import com.Harbinger.Spore.Sentities.Organoids.Womb;
 import com.Harbinger.Spore.core.SConfig;
 import com.Harbinger.Spore.core.Sparticles;
 import net.minecraft.core.BlockPos;
@@ -64,12 +65,24 @@ public class ScentEntity extends UtilityEntity {
                 setSummon(getSummon()+1);
                 if (getSummon() >= SConfig.SERVER.scent_summon_cooldown.get()) {
                     if (!this.level().isClientSide && (getOvercharged() || checkForNonInfected(this))){
+                        Womb womb = getNearbyWombs();
+                        if (womb != null){
+                            womb.setBiomass(womb.getBiomass() + SConfig.SERVER.reconstructor_assimilation.get());
+                        }
                         this.Summon(this);
                         setSummon(0);
                     }
                 }}
         }
         super.tick();
+    }
+    private Womb getNearbyWombs(){
+        List<Womb> wombs = level().getEntitiesOfClass(Womb.class,this.getBoundingBox().inflate(16));
+        if (wombs.isEmpty()){
+            return  null;
+        }else {
+            return wombs.get(random.nextInt(wombs.size()));
+        }
     }
 
     boolean checkForNonInfected(Entity entity){
