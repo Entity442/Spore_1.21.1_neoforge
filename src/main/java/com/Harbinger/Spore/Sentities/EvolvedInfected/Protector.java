@@ -257,7 +257,7 @@ public class Protector extends EvolvedInfected implements ArmedInfected,HasUsabl
         if (dataAccessor.equals(SHIELDED)) {
             AttributeInstance attributes = this.getAttribute(Attributes.MOVEMENT_SPEED);
             if (attributes != null) {
-                attributes.setBaseValue(this.getShielded() ? 0.1 : 0.2);
+                attributes.setBaseValue(this.getShielded() ? 0.15 : 0.2);
             }
         }
         if (dataAccessor.equals(DATA_ID_TYPE_VARIANT)){
@@ -508,7 +508,7 @@ public class Protector extends EvolvedInfected implements ArmedInfected,HasUsabl
                     stack.shrink(stack.getCount());
                 }
                 if (item instanceof TieredItem tieredItem){
-                    damage = tieredItem.getDamage(stack);
+                    damage = (int) tieredItem.getTier().getAttackDamageBonus();
                     stack.shrink(1);
                 }
                 if (item instanceof ArmorItem tieredItem){
