@@ -60,14 +60,12 @@ public class CorrosiveDrownedLump extends GenericFoliageBlock{
 
     @Override
     public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
-        if (Math.random() < 0.1){
-            AABB aabb = new AABB(pos.getX()-3,pos.getY(),pos.getZ()-3,pos.getX()+3,pos.getY()+3.,pos.getZ()+3);
-            List<Entity> entityList = level.getEntities(null,aabb);
-            for (Entity entity : entityList){
-                if (entity instanceof LivingEntity living && Utilities.TARGET_SELECTOR.Test(living) && living.isInWater()){
-                    living.addEffect(new MobEffectInstance(Seffects.CORROSION,100,1));
-                    living.addEffect(new MobEffectInstance(MobEffects.POISON,100,1));
-                }
+        AABB aabb = new AABB(pos.getX()-3,pos.getY(),pos.getZ()-3,pos.getX()+3,pos.getY()+3.,pos.getZ()+3);
+        List<Entity> entityList = level.getEntities(null,aabb);
+        for (Entity entity : entityList){
+            if (entity instanceof LivingEntity living && Utilities.TARGET_SELECTOR.Test(living) && living.isInWater()){
+                living.addEffect(new MobEffectInstance(Seffects.CORROSION,100,1));
+                living.addEffect(new MobEffectInstance(MobEffects.POISON,100,1));
             }
         }
     }

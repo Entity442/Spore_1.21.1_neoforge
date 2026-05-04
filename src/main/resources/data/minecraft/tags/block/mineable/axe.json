@@ -31,7 +31,9 @@
     "spore:lungs",
     "spore:vocals",
     "spore:fang_lump",
-    "spore:bile_lump"
+    "spore:bile_lump",
+    "spore:exploding_lump",
+    "spore:poisoning_lump"
 
   ]
 }
