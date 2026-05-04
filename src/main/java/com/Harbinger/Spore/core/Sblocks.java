@@ -3,7 +3,6 @@ package com.Harbinger.Spore.core;
 
 import com.Harbinger.Spore.Sblocks.*;
 import com.Harbinger.Spore.Spore;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -118,6 +117,8 @@ public class Sblocks {
     public static final DeferredBlock<Block> DROWNED_LUMP = BLOCKS.register("drowned_lump", DrownedLump::new);
     public static final DeferredBlock<Block> BILE_LUMP = BLOCKS.register("bile_lump", BileLump::new);
     public static final DeferredBlock<Block> FANG_LUMP = BLOCKS.register("fang_lump", FangLump::new);
+    public static final DeferredBlock<Block> EXPLODING_LUMP = BLOCKS.register("exploding_lump", ExplodingLump::new);
+    public static final DeferredBlock<Block> POISONING_LUMP = BLOCKS.register("poisoning_lump", CorrosiveDrownedLump::new);
 
     public static final DeferredBlock<Block> ROTTEN_LOG = BLOCKS.register("rotten_log", () -> new FlamableRotatingBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_LOG).sound(SoundType.WOOD)));
     public static final DeferredBlock<Block> ROTTEN_PLANKS = BLOCKS.register("rotten_planks", () -> new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS).sound(SoundType.WOOD).ignitedByLava()));

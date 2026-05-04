@@ -27,6 +27,11 @@
     "spore:vocals",
     "spore:fang_lump",
     "spore:lungs",
-    "spore:acidic_sack"
+    "spore:acidic_sack",
+    "spore:exploding_lump",
+    "spore:poisoning_lump",
+    "spore:rotten_grass",
+    "spore:rotten_fern",
+    "spore:rotten_bush"
   ]
 }

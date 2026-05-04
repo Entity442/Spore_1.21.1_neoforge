@@ -662,6 +662,8 @@ public class Sitems {
     public static final DeferredItem<Item> DROWNED_LUMP = block(Sblocks.DROWNED_LUMP);
     public static final DeferredItem<Item> BILE_LUMP = block(Sblocks.BILE_LUMP);
     public static final DeferredItem<Item> FANG_LUMP = block(Sblocks.FANG_LUMP);
+    public static final DeferredItem<Item> EXPLODING_LUMP = block(Sblocks.EXPLODING_LUMP);
+    public static final DeferredItem<Item> POISONING_LUMP = block(Sblocks.POISONING_LUMP);
     public static final DeferredItem<Item> VOCALS = block(Sblocks.VOCALS);
     public static final DeferredItem<Item> LUNGS = block(Sblocks.LUNGS);
     public static final DeferredItem<Item> ACIDIC_SACK = block(Sblocks.ACIDIC_SACK);
