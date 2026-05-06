@@ -14,6 +14,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
@@ -34,6 +35,21 @@ public class CorrosiveDrownedLump extends GenericFoliageBlock{
     }
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> stateBuilder) {
         stateBuilder.add(WATERLOGGED);
+    }
+
+    @Override
+    public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
+        super.animateTick(state, level, pos, random);
+        double wow1 = pos.getX() + 0.5D + (random.nextDouble() - 0.5D);
+        double wow2 = pos.getX() + 0.5D + (random.nextDouble() - 0.5D);
+        double centerX = pos.getX() + 0.5D;
+        double centerY = pos.getY() + 0.5D;
+        double centerZ = pos.getZ() + 0.5D;
+        level.addParticle(
+                Sparticles.SPORE_PARTICLE.get(),
+                centerX+wow1, centerY, centerZ+wow2,
+                0, 0.1, 0
+        );
     }
 
     @Override
