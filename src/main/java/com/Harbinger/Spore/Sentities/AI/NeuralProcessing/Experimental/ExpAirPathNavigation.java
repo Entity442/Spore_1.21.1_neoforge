@@ -1,140 +1,28 @@
-package com.Harbinger.Spore.Sentities.AI;
-
-import com.Harbinger.Spore.Sentities.AI.NeuralProcessing.Experimental.ExpPathFinder;
-import com.Harbinger.Spore.Sentities.BaseEntities.Calamity;
-import com.Harbinger.Spore.Sentities.FlyingInfected;
-import com.Harbinger.Spore.Sentities.WaterInfected;
+package com.Harbinger.Spore.Sentities.AI.NeuralProcessing.Experimental;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
+import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.pathfinder.*;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.event.EventHooks;
+import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nullable;
 import java.util.Objects;
+public class ExpAirPathNavigation extends FlyingPathNavigation {
 
-public class CalamityPathNavigation extends GroundPathNavigation {
     static final float EPSILON = 1.0E-8F;
-    @Nullable
-    private BlockPos pathToPosition;
-    public CalamityPathNavigation(Calamity calamity, Level level) {
-        super(calamity, level);
-    }
 
-    public Path createPath(BlockPos pos, int value) {
-        this.pathToPosition = pos;
-        return super.createPath(pos, value);
-    }
-
-    public Path createPath(Entity entity, int value) {
-        this.pathToPosition = entity.blockPosition();
-        return super.createPath(entity, value);
-    }
-
-    public boolean moveTo(Entity entity, double value) {
-        Path path = this.createPath(entity, 0);
-        if (path != null) {
-            return this.moveTo(path, value);
-        } else {
-            this.pathToPosition = entity.blockPosition();
-            this.speedModifier = value;
-            return true;
-        }
-    }
-
-    protected boolean canMoveDirectly(Vec3 vec3, Vec3 vec31) {
-        return isClearForMovementBetween(this.mob, vec3, vec31, true);
-    }
-
-    public void tick() {
-        if (!this.isDone()) {
-            super.tick();
-            BlockPos vec3 = this.getTargetPos();
-            if (vec3 != null){
-                this.mob.getLookControl()
-                        .setLookAt(vec3.getX(), vec3.getY(), vec3.getZ());
-            }
-        } else {
-            if (this.pathToPosition != null) {
-                if (!this.pathToPosition.closerToCenterThan(this.mob.position(), Math.max(this.mob.getBbWidth(), 1.0D)) && (!(this.mob.getY() > (double)this.pathToPosition.getY()) || !(new BlockPos(this.pathToPosition.getX(),(int) this.mob.getY(), this.pathToPosition.getZ())).closerToCenterThan(this.mob.position(), Math.max(this.mob.getBbWidth(), 1.0D)))) {
-                    this.mob.getMoveControl().setWantedPosition(this.pathToPosition.getX(), this.pathToPosition.getY(), this.pathToPosition.getZ(), this.speedModifier);
-                } else {
-                    this.pathToPosition = null;
-                }
-            }
-
-        }
-    }
-    protected static boolean canGrief(Mob mob) {
-        return mob != null && EventHooks.canEntityGrief(mob.level(), mob);
+    public ExpAirPathNavigation(Mob entity, Level world) {
+        super(entity, world);
     }
 
     @Override
-    protected PathFinder createPathFinder(int value) {
-        if (this.mob instanceof WaterInfected){
-            this.nodeEvaluator = new WaterCalamityNodeEvaluator();
-            this.nodeEvaluator.setCanPassDoors(true);
-            return new ExpPathFinder(this.nodeEvaluator,value);
-        }else if (this.mob instanceof FlyingInfected){
-            this.nodeEvaluator = new AirCalamityNodeEvaluator();
-            this.nodeEvaluator.setCanPassDoors(true);
-            return new ExpPathFinder(this.nodeEvaluator,value) {
-                protected float distance(Node node, Node node1) {
-                    return node.distanceManhattan(node1);
-                }
-            };
-        }else{
-            this.nodeEvaluator = new CalamityNodeEvaluator();
-            this.nodeEvaluator.setCanPassDoors(true);
-            this.nodeEvaluator.canFloat();
-            return new ExpPathFinder(this.nodeEvaluator, value) {
-                protected float distance(Node node, Node node1) {
-                    return node.distanceManhattan(node1);
-                }
-            };
-        }
-    }
-
-
-    protected static class CalamityNodeEvaluator extends WalkNodeEvaluator{
-        @Override
-        public PathType getPathType(PathfindingContext context, int x, int y, int z) {
-            if (canGrief(mob)){
-                return PathType.OPEN;
-            }
-            return super.getPathType(context, x, y, z);
-        }
-    }
-
-    protected static class AirCalamityNodeEvaluator extends FlyNodeEvaluator{
-        @Override
-        public PathType getPathType(PathfindingContext context, int x, int y, int z) {
-            if (canGrief(mob)){
-                return PathType.OPEN;
-            }
-            return super.getPathType(context, x, y, z);
-        }
-    }
-
-    protected static class WaterCalamityNodeEvaluator extends SwimNodeEvaluator{
-        public WaterCalamityNodeEvaluator() {
-            super(true);
-        }
-        @Override
-        public PathType getPathType(PathfindingContext context, int x, int y, int z) {
-            if (context.getPathTypeFromState(x,y,z).equals(PathType.WATER)){
-                return PathType.WATER;
-            }
-            if (canGrief(mob)){
-                return PathType.OPEN;
-            }
-            return super.getPathType(context, x, y, z);
-        }
+    protected @NotNull PathFinder createPathFinder(int maxVisitedNodes) {
+        this.nodeEvaluator = new FlyNodeEvaluator();
+        this.nodeEvaluator.setCanPassDoors(true);
+        return new ExpPathFinder(this.nodeEvaluator, maxVisitedNodes);
     }
     @Deprecated
     public void hardStop() {
@@ -165,10 +53,13 @@ public class CalamityPathNavigation extends GroundPathNavigation {
         }
         this.doStuckDetection(entityPos);
     }
+
     @Override
-    public boolean isStuck() {
-        this.recomputePath();
-        return super.isStuck();
+    public void tick() {
+        super.tick();
+        if (this.getTargetPos() != null)
+            this.mob.getLookControl()
+                    .setLookAt(this.getTargetPos().getX(), this.getTargetPos().getY(), this.getTargetPos().getZ());
     }
 
     private boolean isAt(Path path, float threshold) {
@@ -255,9 +146,19 @@ public class CalamityPathNavigation extends GroundPathNavigation {
                         if (!block.isPathfindable(PathComputationType.AIR))
                             return false;
                     }
+                    PathType below = this.nodeEvaluator.getPathType(
+                            new PathfindingContext(mob.level(), mob),
+                            x,
+                            y0 - 1,
+                            z
+                    );
+                    if (below == PathType.WATER || below == PathType.LAVA || below == PathType.OPEN)
+                        return false;
                     PathType in = this.nodeEvaluator.getPathType(new PathfindingContext(mob.level(), mob), x, y0, z);
                     float priority = this.mob.getPathfindingMalus(in);
                     if (priority < 0.0F || priority >= 8.0F)
+                        return false;
+                    if (in == PathType.DAMAGE_FIRE || in == PathType.DANGER_FIRE || in == PathType.DAMAGE_OTHER)
                         return false;
                 }
             }

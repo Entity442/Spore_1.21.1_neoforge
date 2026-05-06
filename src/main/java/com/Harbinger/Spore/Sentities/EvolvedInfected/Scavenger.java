@@ -2,6 +2,7 @@ package com.Harbinger.Spore.Sentities.EvolvedInfected;
 
 import com.Harbinger.Spore.ExtremelySusThings.Utilities;
 import com.Harbinger.Spore.Sentities.AI.CustomMeleeAttackGoal;
+import com.Harbinger.Spore.Sentities.AI.NeuralProcessing.Experimental.ExpAirPathNavigation;
 import com.Harbinger.Spore.Sentities.BaseEntities.EvolvedInfected;
 import com.Harbinger.Spore.Sentities.BaseEntities.Infected;
 import com.Harbinger.Spore.Sentities.BaseEntities.UtilityEntity;
@@ -31,7 +32,7 @@ public class Scavenger extends EvolvedInfected implements FlyingInfected {
     public Scavenger(EntityType<? extends Infected> type, Level level) {
         super(type, level);
         this.moveControl = new InfectedArialMovementControl(this , 20,false);
-        this.navigation = new FlyingPathNavigation(this,level);
+        this.navigation = new ExpAirPathNavigation(this,level);
     }
 
     public static AttributeSupplier.Builder createAttributes() {
