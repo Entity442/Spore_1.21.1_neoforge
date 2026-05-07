@@ -7,12 +7,14 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
+
+import java.util.List;
+
 @OnlyIn(Dist.CLIENT)
 public class SpecialEffects {
     private static Ring buildRing(
@@ -100,6 +102,55 @@ public class SpecialEffects {
             previousRing = currentRing;
         }
     }
+    public static void renderFunnel(
+            PoseStack stack,
+            int light,
+            MultiBufferSource buffer,
+            List<Vec3> segments,
+            float partial, int packedColor, float sizeA, float sizeB, ResourceLocation location
+    ) {
+        if (segments == null || segments.size() < 2) return;
+
+        Ring previousRing = null;
+        VertexConsumer consumer = buffer.getBuffer(RenderType.entityTranslucent(location));
+
+
+        for (int i = 1; i < segments.size(); i++) {
+            Vec3 from = segments.get(i - 1);
+            Vec3 to   = segments.get(i);
+            Vec3 dir  = to.subtract(from).normalize();
+            float size = calculateSize(i, segments.size(),sizeA,sizeA,sizeB);
+
+            float segmentProgress = (float)i / segments.size();
+            float rotation = partial + (segmentProgress * 4f);
+            float alpha = calculateAlpha(segmentProgress);
+
+            int colorWithAlpha = modifyAlpha(packedColor, alpha);
+            Ring currentRing = buildRing(to, dir, size, rotation);
+
+            if (previousRing != null) {
+                stitchRings(
+                        previousRing,
+                        currentRing,
+                        consumer,
+                        stack,
+                        colorWithAlpha,
+                        light,
+                        OverlayTexture.NO_OVERLAY
+                );
+            }
+
+            previousRing = currentRing;
+        }
+    }
+    private static int modifyAlpha(int packedColor, float alpha) {
+        int alphaValue = (int)(alpha * 255);
+        // Preserve RGB components, replace alpha
+        return (alphaValue << 24) | (packedColor & 0x00FFFFFF);
+    }
+    private static float calculateAlpha(float progress) {
+        return 1.0f - (progress * 0.9f);
+    }
     public static class Ring {
         Vector3f[] vertices = new Vector3f[8];
         Vector3f[] normals = new Vector3f[8];
@@ -162,6 +213,16 @@ public class SpecialEffects {
         float endSize = 3f;
 
         return (startSize + (endSize - startSize) * progress
+                + 0.3f * Mth.sin(progress * Mth.PI)) * inflation;
+    }
+    private static float calculateSize(int segmentIndex, int totalSegments,float inflation,float minInflation,float maxInflation) {
+        float progress = Mth.clamp(
+                (float) segmentIndex / (totalSegments - 1),
+                0.0f, 1.0f
+        );
+
+
+        return (minInflation + (maxInflation - minInflation) * progress
                 + 0.3f * Mth.sin(progress * Mth.PI)) * inflation;
     }
 }

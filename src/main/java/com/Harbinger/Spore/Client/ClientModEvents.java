@@ -55,7 +55,6 @@ import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsE
 
 import java.util.List;
 
-import static org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_LEFT;
 
 @Mod(value = Spore.MODID, dist = Dist.CLIENT)
 @EventBusSubscriber(modid = Spore.MODID, value = Dist.CLIENT)
@@ -219,6 +218,7 @@ public class ClientModEvents {
         event.registerLayerDefinition(MossProtectorModel.LAYER_LOCATION, MossProtectorModel::createBodyLayer);
         event.registerLayerDefinition(BulwarkProtectorModel.LAYER_LOCATION, BulwarkProtectorModel::createBodyLayer);
         event.registerLayerDefinition(StuddedProtectorModel.LAYER_LOCATION, StuddedProtectorModel::createBodyLayer);
+        event.registerLayerDefinition(gorgonModel.LAYER_LOCATION, gorgonModel::createBodyLayer);
 
     }
     @SubscribeEvent
@@ -312,6 +312,7 @@ public class ClientModEvents {
         event.registerEntityRenderer(Sentities.CONDUCTOR.get(), ConductorRenderer::new);
         event.registerEntityRenderer(Sentities.GARGOYLE.get(), GargoyleRenderer::new);
         event.registerEntityRenderer(Sentities.REAPER.get(), ReaperRenderer::new);
+        event.registerEntityRenderer(Sentities.GORGON.get(), GorgonRenderer::new);
     }
     public static void renderBlockEntities(EntityRenderersEvent.RegisterRenderers event){
         event.registerBlockEntityRenderer(SblockEntities.OVERGROWN_SPAWNER.get(), new OvergrownSpawnerRenderer());
