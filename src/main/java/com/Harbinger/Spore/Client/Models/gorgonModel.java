@@ -405,6 +405,14 @@ public class gorgonModel<T extends Gorgon> extends EntityModel<T> implements Ten
 			animateTentacleY(tentacle6,-val2);
 			animateTentacleY(tentaclemiddle7,-val2);
 		}
+		float val = 1 + (entity.getSpores() * 0.1f);
+		tumor(uppersack,val);
+		tumor(lowersack,val);
+	}
+	public void tumor(ModelPart part,float val){
+		part.xScale = val;
+		part.yScale = val;
+		part.zScale = val;
 	}
 
 	@Override

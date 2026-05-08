@@ -3,6 +3,7 @@ package com.Harbinger.Spore.Sentities.EvolvedInfected;
 import com.Harbinger.Spore.Sentities.AI.CustomMeleeAttackGoal;
 import com.Harbinger.Spore.Sentities.BaseEntities.EvolvedInfected;
 import com.Harbinger.Spore.core.SConfig;
+import com.Harbinger.Spore.core.Seffects;
 import com.Harbinger.Spore.core.Ssounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -10,61 +11,56 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
 public class Gorgon extends EvolvedInfected {
     private static final EntityDataAccessor<Integer> TARGET = SynchedEntityData.defineId(Gorgon.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Float> SPORES = SynchedEntityData.defineId(Gorgon.class, EntityDataSerializers.FLOAT);
     private int attackAnimationTick;
     private int mouthAnimationTick;
     private int mouthAnimationTimer;
     public Gorgon(EntityType<? extends EvolvedInfected> type, Level level) {
         super(type, level);
     }
-    @Override
-    protected void registerGoals() {
 
+    @Override
+    protected void addRegularGoals() {
+        super.addRegularGoals();
+        this.goalSelector.addGoal(3,new GorgonSporeSpewGoal(this));
         this.goalSelector.addGoal(3, new CustomMeleeAttackGoal(this, 1.1, false) {
             @Override
             protected double getAttackReachSqr(LivingEntity entity) {
-                return 6.0 + entity.getBbWidth() * entity.getBbWidth();}
-
-
-            @Override
-            public void tick() {
-                super.tick();
-                mob.level().broadcastEntityEvent(mob, (byte)5);
-                Gorgon.this.activateMouth();
-            }
+                return 4.0 + entity.getBbWidth() * entity.getBbWidth();}
         });
-
         this.goalSelector.addGoal(4, new RandomStrollGoal(this, 0.8));
         this.goalSelector.addGoal(5, new RandomLookAroundGoal(this));
-
-        super.registerGoals();
     }
+
     @Override
     public List<? extends String> getDropList() {
         return SConfig.DATAGEN.inf_knight_loot.get();
     }
     public static AttributeSupplier.Builder createAttributes() {
         return Mob.createMobAttributes()
-                .add(Attributes.MAX_HEALTH, SConfig.SERVER.knight_hp.get() * SConfig.SERVER.global_health.get())
+                .add(Attributes.MAX_HEALTH, SConfig.SERVER.gorgon_hp.get() * SConfig.SERVER.global_health.get())
                 .add(Attributes.MOVEMENT_SPEED, 0.2)
-                .add(Attributes.ATTACK_DAMAGE, SConfig.SERVER.knight_damage.get() * SConfig.SERVER.global_damage.get())
-                .add(Attributes.ARMOR, SConfig.SERVER.knight_armor.get() * SConfig.SERVER.global_armor.get())
+                .add(Attributes.ATTACK_DAMAGE, SConfig.SERVER.gorgon_damage.get() * SConfig.SERVER.global_damage.get())
+                .add(Attributes.ARMOR, SConfig.SERVER.gorgon_armor.get() * SConfig.SERVER.global_armor.get())
                 .add(Attributes.FOLLOW_RANGE, 32)
                 .add(Attributes.ATTACK_KNOCKBACK, 1);
 
@@ -73,6 +69,7 @@ public class Gorgon extends EvolvedInfected {
     protected void defineSynchedData(SynchedEntityData.@NotNull Builder builder) {
         super.defineSynchedData(builder);
         builder.define(TARGET, -1);
+        builder.define(SPORES, 0f);
     }
 
     public void setTargetId(int e){
@@ -82,14 +79,11 @@ public class Gorgon extends EvolvedInfected {
         return entityData.get(TARGET);
     }
 
-    @Override
-    public void setTarget(@Nullable LivingEntity target) {
-        super.setTarget(target);
-        if (target == null){
-            setTargetId(-1);
-        }else {
-            setTargetId(target.getId());
-        }
+    public void setSpores(float spores){
+        entityData.set(SPORES,spores);
+    }
+    public float getSpores(){
+        return entityData.get(SPORES);
     }
 
     protected SoundEvent getAmbientSound() {
@@ -114,6 +108,14 @@ public class Gorgon extends EvolvedInfected {
             this.mouthAnimationTimer = 10;
         } else {
             super.handleEntityEvent(value);
+        }
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        if (tickCount % 40 == 0 && getSpores() <= 10){
+            setSpores(getSpores()+1);
         }
     }
 
@@ -150,5 +152,60 @@ public class Gorgon extends EvolvedInfected {
     }
     public void activateMouth(){
         mouthAnimationTimer = 10;
+    }
+
+    private static class GorgonSporeSpewGoal extends Goal{
+        private final Gorgon gorgon;
+        private final LivingEntity target;
+
+        private GorgonSporeSpewGoal(Gorgon gorgon) {
+            this.gorgon = gorgon;
+            target = gorgon.getTarget();
+        }
+
+        @Override
+        public boolean canUse() {
+            return gorgon.tickCount % 20 == 0 && gorgon.getSpores() > 60 && target != null;
+        }
+
+        @Override
+        public boolean canContinueToUse() {
+            return gorgon.getSpores() > 0 && canAttack();
+        }
+
+        boolean canAttack(){
+            return target != null && gorgon.hasLineOfSight(target) && !target.isBlocking();
+        }
+
+        @Override
+        public void start() {
+            super.start();
+            if (canAttack()){
+                gorgon.setTargetId(target.getId());
+            }else {
+                gorgon.setTargetId(-1);
+            }
+        }
+
+
+        @Override
+        public void tick() {
+            super.tick();
+            gorgon.level().broadcastEntityEvent(gorgon, (byte)5);
+            gorgon.activateMouth();
+            if (canAttack()){
+                gorgon.setSpores(gorgon.getSpores()-0.1f);
+                if (gorgon.tickCount % 30 == 0){
+                    target.hurt(gorgon.level().damageSources().mobAttack(gorgon),(float)(SConfig.SERVER.gorgon_ranged_damage.get() * 1f));
+                    target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN,60,2));
+                    target.addEffect(new MobEffectInstance(Seffects.MYCELIUM,60,1));
+                }
+            }
+        }
+
+        @Override
+        public boolean requiresUpdateEveryTick() {
+            return true;
+        }
     }
 }

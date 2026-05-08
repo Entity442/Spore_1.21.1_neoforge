@@ -215,6 +215,11 @@ public class SConfig {
         public final ModConfigSpec.ConfigValue<Double> knight_damage;
         public final ModConfigSpec.ConfigValue<Double> knight_armor;
 
+        public final ModConfigSpec.ConfigValue<Double> gorgon_hp;
+        public final ModConfigSpec.ConfigValue<Double> gorgon_damage;
+        public final ModConfigSpec.ConfigValue<Double> gorgon_ranged_damage;
+        public final ModConfigSpec.ConfigValue<Double> gorgon_armor;
+
         public final ModConfigSpec.ConfigValue<Double> naiad_hp;
         public final ModConfigSpec.ConfigValue<Double> naiad_damage;
         public final ModConfigSpec.ConfigValue<Double> naiad_armor;
@@ -1319,6 +1324,13 @@ public class SConfig {
             this.knight_hp = builder.comment("Default 25").defineInRange("Sets Knight Max health", 25, 1, Double.MAX_VALUE);
             this.knight_damage = builder.comment("Default 7").defineInRange("Sets Knight Damage", 7, 1, Double.MAX_VALUE);
             this.knight_armor = builder.comment("Default 7").defineInRange("Sets Knight Armor", 7, 1, Double.MAX_VALUE);
+            builder.pop();
+
+            builder.push("Gorgon");
+            this.gorgon_hp = builder.comment("Default 50 ").defineInRange("Sets Gorgon Max health", 50 , 1, Double.MAX_VALUE);
+            this.gorgon_damage = builder.comment("Default 8").defineInRange("Sets Gorgon Damage", 8, 1, Double.MAX_VALUE);
+            this.gorgon_armor = builder.comment("Default 10").defineInRange("Sets Gorgon Armor", 10, 1, Double.MAX_VALUE);
+            this.gorgon_ranged_damage = builder.comment("Default 2").defineInRange("Sets Gorgon Ranged Damage", 2, 1, Double.MAX_VALUE);
             builder.pop();
 
             builder.push("Naiad");
