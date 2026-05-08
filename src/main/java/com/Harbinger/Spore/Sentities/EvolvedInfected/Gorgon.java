@@ -156,37 +156,43 @@ public class Gorgon extends EvolvedInfected {
 
     private static class GorgonSporeSpewGoal extends Goal{
         private final Gorgon gorgon;
-        private final LivingEntity target;
 
         private GorgonSporeSpewGoal(Gorgon gorgon) {
             this.gorgon = gorgon;
-            target = gorgon.getTarget();
         }
 
         @Override
         public boolean canUse() {
+            LivingEntity target = gorgon.getTarget();
             return gorgon.tickCount % 20 == 0 && gorgon.getSpores() > 6 && target != null;
         }
 
         @Override
         public boolean canContinueToUse() {
-            return gorgon.getSpores() > 0 && canAttack();
+            LivingEntity target = gorgon.getTarget();
+            return gorgon.getSpores() > 0 && canAttack(target);
         }
 
-        boolean canAttack(){
+        boolean canAttack(LivingEntity target){
             return target != null && gorgon.hasLineOfSight(target) && !target.isBlocking();
         }
 
+        @Override
+        public void stop() {
+            super.stop();
+            gorgon.setTargetId(-1);
+        }
 
         @Override
         public void tick() {
             super.tick();
             gorgon.level().broadcastEntityEvent(gorgon, (byte)5);
             gorgon.activateMouth();
-            if (canAttack()){
-                gorgon.setTargetId(target.getId());
+            LivingEntity target = gorgon.getTarget();
+            if (canAttack(target)){
                 gorgon.setSpores(gorgon.getSpores()-0.1f);
-                if (gorgon.tickCount % 30 == 0){
+                if (gorgon.tickCount % 40 == 0){
+                    gorgon.setTargetId(target.getId());
                     target.hurt(gorgon.level().damageSources().mobAttack(gorgon),(float)(SConfig.SERVER.gorgon_ranged_damage.get() * 1f));
                     target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN,60,2));
                     target.addEffect(new MobEffectInstance(Seffects.MYCELIUM,60,1));
