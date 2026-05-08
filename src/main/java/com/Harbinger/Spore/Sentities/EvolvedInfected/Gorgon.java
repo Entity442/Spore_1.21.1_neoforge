@@ -165,7 +165,7 @@ public class Gorgon extends EvolvedInfected {
 
         @Override
         public boolean canUse() {
-            return gorgon.tickCount % 20 == 0 && gorgon.getSpores() > 60 && target != null;
+            return gorgon.tickCount % 20 == 0 && gorgon.getSpores() > 6 && target != null;
         }
 
         @Override
@@ -177,16 +177,6 @@ public class Gorgon extends EvolvedInfected {
             return target != null && gorgon.hasLineOfSight(target) && !target.isBlocking();
         }
 
-        @Override
-        public void start() {
-            super.start();
-            if (canAttack()){
-                gorgon.setTargetId(target.getId());
-            }else {
-                gorgon.setTargetId(-1);
-            }
-        }
-
 
         @Override
         public void tick() {
@@ -194,12 +184,15 @@ public class Gorgon extends EvolvedInfected {
             gorgon.level().broadcastEntityEvent(gorgon, (byte)5);
             gorgon.activateMouth();
             if (canAttack()){
+                gorgon.setTargetId(target.getId());
                 gorgon.setSpores(gorgon.getSpores()-0.1f);
                 if (gorgon.tickCount % 30 == 0){
                     target.hurt(gorgon.level().damageSources().mobAttack(gorgon),(float)(SConfig.SERVER.gorgon_ranged_damage.get() * 1f));
                     target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN,60,2));
                     target.addEffect(new MobEffectInstance(Seffects.MYCELIUM,60,1));
                 }
+            }else {
+                gorgon.setTargetId(-1);
             }
         }
 
