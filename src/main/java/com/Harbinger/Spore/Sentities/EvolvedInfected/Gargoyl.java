@@ -9,9 +9,16 @@ import com.Harbinger.Spore.Sentities.BaseEntities.Infected;
 import com.Harbinger.Spore.Sentities.BasicInfected.InfectedPlayer;
 import com.Harbinger.Spore.Sentities.FlyingInfected;
 import com.Harbinger.Spore.Sentities.MovementControls.InfectedArialMovementControl;
+import com.Harbinger.Spore.Sentities.VariantKeeper;
+import com.Harbinger.Spore.Sentities.Variants.GargoyleVariants;
 import com.Harbinger.Spore.core.SConfig;
 import com.Harbinger.Spore.core.Ssounds;
+import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
@@ -26,7 +33,6 @@ import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
-import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
 import net.minecraft.world.entity.item.FallingBlockEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -34,11 +40,13 @@ import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class Gargoyl extends EvolvedInfected implements FlyingInfected, ArmedInfected,HasUsableSlot {
+public class Gargoyl extends EvolvedInfected implements FlyingInfected, ArmedInfected,HasUsableSlot , VariantKeeper {
+    private static final EntityDataAccessor<Integer> DATA_ID_TYPE_VARIANT = SynchedEntityData.defineId(Gargoyl.class, EntityDataSerializers.INT);
     public Gargoyl(EntityType<? extends Infected> type, Level level) {
         super(type, level);
         this.moveControl = new InfectedArialMovementControl(this , 20,false);
@@ -69,6 +77,7 @@ public class Gargoyl extends EvolvedInfected implements FlyingInfected, ArmedInf
     @Override
     public @Nullable SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType spawnType, @Nullable SpawnGroupData spawnGroupData) {
         this.populateDefaultEquipmentSlots(this.random, difficulty);
+        setVariant(Util.getRandom(GargoyleVariants.values(), random));
         return super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData);
     }
 
@@ -152,7 +161,22 @@ public class Gargoyl extends EvolvedInfected implements FlyingInfected, ArmedInf
         });
 
     }
+    @Override
+    protected void defineSynchedData(SynchedEntityData.@NotNull Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(DATA_ID_TYPE_VARIANT, 0);
+    }
+    @Override
+    public void readAdditionalSaveData(CompoundTag tag) {
+        super.readAdditionalSaveData(tag);
+        this.entityData.set(DATA_ID_TYPE_VARIANT, tag.getInt("Variant"));
+    }
 
+    @Override
+    public void addAdditionalSaveData(CompoundTag tag) {
+        super.addAdditionalSaveData(tag);
+        tag.putInt("Variant", this.getTypeVariant());
+    }
     @Override
     protected void registerGoals() {
         this.goalSelector.addGoal(1, new GargoyleDiveGoal(this));
@@ -172,6 +196,33 @@ public class Gargoyl extends EvolvedInfected implements FlyingInfected, ArmedInf
     @Override
     public boolean hasUsableSlot(EquipmentSlot slot) {
         return slot == EquipmentSlot.HEAD;
+    }
+
+    public GargoyleVariants getVariant() {
+        return GargoyleVariants.byId(this.getTypeVariant() & 255);
+    }
+
+    public int getTypeVariant() {
+        return this.entityData.get(DATA_ID_TYPE_VARIANT);
+    }
+
+    @Override
+    public void setVariant(int i) {
+        this.entityData.set(DATA_ID_TYPE_VARIANT,
+                (i >= 0 && i < GargoyleVariants.values().length) ? i : 0);
+    }
+
+    @Override
+    public int amountOfMutations() {
+        return GargoyleVariants.values().length;
+    }
+
+    private void setVariant(GargoyleVariants variant) {
+        this.entityData.set(DATA_ID_TYPE_VARIANT, variant.getId() & 255);
+    }
+    @Override
+    public String getMutation() {
+        return getTypeVariant() != 0 ? this.getVariant().getName() : super.getMutation();
     }
 
     public static class GargoyleDiveGoal extends Goal {

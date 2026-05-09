@@ -1,7 +1,7 @@
-package com.Harbinger.Spore.Client.Models;// Made with Blockbench 5.0.7
+package com.Harbinger.Spore.Client.Models;// Made with Blockbench 5.1.4
 // Exported for Minecraft version 1.17 or later with Mojang mappings
 // Paste this class into your mod and generate all required imports
-
+import com.Harbinger.Spore.Client.Models.TentacledModel;
 import com.Harbinger.Spore.Client.Special.GargoyleBits;
 import com.Harbinger.Spore.Sentities.EvolvedInfected.Gargoyl;
 import com.Harbinger.Spore.Spore;
@@ -17,10 +17,10 @@ import net.minecraft.util.Mth;
 
 import java.util.List;
 
-public class gargoyleModel<T extends Gargoyl> extends EntityModel<T> implements TentacledModel, GargoyleBits {
+public class bomberGargoyleModel<T extends Gargoyl> extends EntityModel<T> implements TentacledModel, GargoyleBits{
 	// This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
-	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "gargoylemodel"), "main");
-	public final ModelPart Gargoyle;
+	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "bombergargoylemodel"), "main");
+	private final ModelPart Gargoyle;
 	private final ModelPart Torso;
 	private final ModelPart Chest;
 	private final ModelPart Tumor;
@@ -36,7 +36,8 @@ public class gargoyleModel<T extends Gargoyl> extends EntityModel<T> implements 
 	private final ModelPart HeadFoliageCrown;
 	private final ModelPart TumorCluster1;
 	private final ModelPart TumorCluster2;
-	public final ModelPart headWear;
+	private final ModelPart TumorCluster9;
+	private final ModelPart headWear;
 	private final ModelPart LeftArm;
 	private final ModelPart TopArmBase;
 	private final ModelPart BottomArmBase;
@@ -60,7 +61,7 @@ public class gargoyleModel<T extends Gargoyl> extends EntityModel<T> implements 
 	private final boolean armor;
 	private int angle;
 
-	public gargoyleModel(ModelPart root, boolean armor) {
+	public bomberGargoyleModel(ModelPart root, boolean armor) {
 		this.Gargoyle = root.getChild("Gargoyle");
         this.armor = armor;
         this.Torso = this.Gargoyle.getChild("Torso");
@@ -78,6 +79,7 @@ public class gargoyleModel<T extends Gargoyl> extends EntityModel<T> implements 
 		this.HeadFoliageCrown = this.Head.getChild("HeadFoliageCrown");
 		this.TumorCluster1 = this.Head.getChild("TumorCluster1");
 		this.TumorCluster2 = this.Head.getChild("TumorCluster2");
+		this.TumorCluster9 = this.Head.getChild("TumorCluster9");
 		this.headWear = this.Head.getChild("headWear");
 		this.LeftArm = this.Gargoyle.getChild("LeftArm");
 		this.TopArmBase = this.LeftArm.getChild("TopArmBase");
@@ -122,14 +124,29 @@ public class gargoyleModel<T extends Gargoyl> extends EntityModel<T> implements 
 		PartDefinition SpineParts_r1 = Chest.addOrReplaceChild("SpineParts_r1", CubeListBuilder.create().texOffs(92, -7).addBox(0.5F, -1.0F, -5.0F, 0.0F, 1.0F, 8.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -12.0F, 3.0F, -1.0036F, 0.0F, 0.0F));
 
 		PartDefinition ChestArmor_r1 = Chest.addOrReplaceChild("ChestArmor_r1", CubeListBuilder.create().texOffs(69, 49).addBox(-4.5F, -6.0F, -2.5F, 10.0F, 8.0F, 8.0F, new CubeDeformation(0.2F))
-				.texOffs(94, 8).addBox(-0.5F, -6.0F, 5.5F, 2.0F, 8.0F, 1.0F, new CubeDeformation(0.0F))
-				.texOffs(0, 17).addBox(-4.5F, -6.0F, -2.5F, 10.0F, 8.0F, 8.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -8.0F, -2.0F, 0.5236F, 0.0F, 0.0F));
+		.texOffs(94, 8).addBox(-0.5F, -6.0F, 5.5F, 2.0F, 8.0F, 1.0F, new CubeDeformation(0.0F))
+		.texOffs(0, 17).addBox(-4.5F, -6.0F, -2.5F, 10.0F, 8.0F, 8.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -8.0F, -2.0F, 0.5236F, 0.0F, 0.0F));
 
 		PartDefinition Tumor = Torso.addOrReplaceChild("Tumor", CubeListBuilder.create(), PartPose.offset(2.3656F, -10.7959F, 2.2801F));
 
 		PartDefinition Tumor_r1 = Tumor.addOrReplaceChild("Tumor_r1", CubeListBuilder.create().texOffs(52, 70).addBox(-1.0F, -1.0F, -1.0F, 2.0F, 2.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 1.8588F, 0.103F, 0.2768F));
 
 		PartDefinition Stomach = Torso.addOrReplaceChild("Stomach", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
+
+		PartDefinition cube_r1 = Stomach.addOrReplaceChild("cube_r1", CubeListBuilder.create().texOffs(51, 106).addBox(-2.5F, 0.5F, 0.0F, 2.0F, 3.0F, 1.0F, new CubeDeformation(0.0F))
+		.texOffs(51, 108).addBox(-3.5F, -0.5F, 0.0F, 3.0F, 2.0F, 1.0F, new CubeDeformation(0.0F))
+		.texOffs(61, 86).addBox(-2.5F, -1.5F, -1.0F, 3.0F, 1.0F, 2.0F, new CubeDeformation(0.0F))
+		.texOffs(52, 107).addBox(-2.5F, 0.5F, 0.0F, 3.0F, 2.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(2.5807F, -4.7075F, -5.411F, 0.1896F, -0.2409F, 0.8933F));
+
+		PartDefinition cube_r2 = Stomach.addOrReplaceChild("cube_r2", CubeListBuilder.create().texOffs(59, 86).addBox(-2.5F, -0.5F, -1.0F, 3.0F, 1.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(1.8434F, -4.0631F, -5.2078F, -0.2284F, -0.2046F, 2.4234F));
+
+		PartDefinition cube_r3 = Stomach.addOrReplaceChild("cube_r3", CubeListBuilder.create().texOffs(59, 86).addBox(-1.0F, -2.5F, -1.0F, 4.0F, 1.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.5F, -3.5507F, -5.0463F, 0.1074F, 0.2865F, -1.2062F));
+
+		PartDefinition cube_r4 = Stomach.addOrReplaceChild("cube_r4", CubeListBuilder.create().texOffs(59, 86).addBox(-2.5F, -0.5F, 0.0F, 4.0F, 1.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(1.0F, -3.25F, -6.0F, 0.3054F, 0.0F, 0.0F));
+
+		PartDefinition cube_r5 = Stomach.addOrReplaceChild("cube_r5", CubeListBuilder.create().texOffs(59, 86).addBox(-1.5F, -0.5F, -1.0F, 3.0F, 1.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(1.0F, -7.25F, -6.0F, 0.0F, 0.0F, -0.2618F));
+
+		PartDefinition cube_r6 = Stomach.addOrReplaceChild("cube_r6", CubeListBuilder.create().texOffs(0, 75).addBox(-0.5F, -2.0F, 0.5F, 6.0F, 4.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.7819F, -4.1422F, -6.8056F, 0.0F, 0.0F, 1.5708F));
 
 		PartDefinition Foliage_r4 = Stomach.addOrReplaceChild("Foliage_r4", CubeListBuilder.create().texOffs(-6, 113).addBox(-5.0F, 0.0F, -2.0F, 6.0F, 0.0F, 6.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-5.2789F, -2.9986F, 5.0F, 3.0183F, -0.7131F, -3.0625F));
 
@@ -146,7 +163,7 @@ public class gargoyleModel<T extends Gargoyl> extends EntityModel<T> implements 
 		PartDefinition Spine_r1 = Stomach.addOrReplaceChild("Spine_r1", CubeListBuilder.create().texOffs(103, 9).addBox(-1.5F, -2.0F, 0.25F, 2.0F, 7.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(1.0F, -7.0F, 4.0F, 0.2618F, 0.0F, 0.0F));
 
 		PartDefinition StomachArmor_r1 = Stomach.addOrReplaceChild("StomachArmor_r1", CubeListBuilder.create().texOffs(73, 19).addBox(-5.0F, -8.0F, -3.0F, 11.0F, 8.0F, 9.0F, new CubeDeformation(0.2F))
-				.texOffs(0, 0).addBox(-5.0F, -8.0F, -3.0F, 11.0F, 8.0F, 9.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.2618F, 0.0F, 0.0F));
+		.texOffs(0, 0).addBox(-5.0F, -8.0F, -3.0F, 11.0F, 8.0F, 9.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.2618F, 0.0F, 0.0F));
 
 		PartDefinition TumorCluster7 = Stomach.addOrReplaceChild("TumorCluster7", CubeListBuilder.create(), PartPose.offset(2.666F, -1.9303F, -2.8599F));
 
@@ -171,7 +188,7 @@ public class gargoyleModel<T extends Gargoyl> extends EntityModel<T> implements 
 		PartDefinition Foliage1_r1 = Head.addOrReplaceChild("Foliage1_r1", CubeListBuilder.create().texOffs(-6, 113).addBox(-3.0F, 0.0F, -3.0F, 6.0F, 0.0F, 6.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-2.6624F, -1.9673F, -0.0211F, -0.312F, -0.5845F, 0.0447F));
 
 		PartDefinition Jaw = Head.addOrReplaceChild("Jaw", CubeListBuilder.create().texOffs(52, 39).addBox(-3.8333F, -1.3216F, 1.6614F, 8.0F, 2.0F, 2.0F, new CubeDeformation(0.0F))
-				.texOffs(0, 66).addBox(-3.8333F, -1.3216F, -4.3386F, 8.0F, 1.0F, 6.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0427F, 0.3718F, -3.0018F));
+		.texOffs(0, 66).addBox(-3.8333F, -1.3216F, -4.3386F, 8.0F, 1.0F, 6.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0427F, 0.3718F, -3.0018F));
 
 		PartDefinition MouthTendril1 = Jaw.addOrReplaceChild("MouthTendril1", CubeListBuilder.create(), PartPose.offsetAndRotation(-2.2333F, -1.4216F, 1.3614F, 2.5307F, 0.0F, 0.0F));
 
@@ -205,17 +222,23 @@ public class gargoyleModel<T extends Gargoyl> extends EntityModel<T> implements 
 
 		PartDefinition TumorCluster1 = Head.addOrReplaceChild("TumorCluster1", CubeListBuilder.create(), PartPose.offset(-2.1501F, -6.3123F, -1.3051F));
 
-		PartDefinition Tumor3_r1 = TumorCluster1.addOrReplaceChild("Tumor3_r1", CubeListBuilder.create().texOffs(37, 69).addBox(-1.0F, -3.0F, -1.0F, 2.0F, 2.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-0.1405F, -0.6375F, 1.9648F, 2.0849F, 0.0772F, 0.7449F));
+		PartDefinition Tumor3_r1 = TumorCluster1.addOrReplaceChild("Tumor3_r1", CubeListBuilder.create().texOffs(48, 89).addBox(-3.0F, -4.0F, -2.0F, 5.0F, 5.0F, 5.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.6095F, 0.1125F, 1.9648F, 2.0849F, 0.0772F, 0.7449F));
 
-		PartDefinition Tumor2_r1 = TumorCluster1.addOrReplaceChild("Tumor2_r1", CubeListBuilder.create().texOffs(37, 69).addBox(-1.0F, -3.0F, -1.0F, 2.0F, 2.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-2.1405F, -0.6375F, -0.0352F, 2.1662F, -0.9149F, -0.4927F));
+		PartDefinition Tumor2_r1 = TumorCluster1.addOrReplaceChild("Tumor2_r1", CubeListBuilder.create().texOffs(39, 92).addBox(-1.0F, -5.0F, -1.0F, 4.0F, 4.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-2.1405F, -0.6375F, -0.0352F, 2.1662F, -0.9149F, -0.4927F));
 
-		PartDefinition Tumor1_r1 = TumorCluster1.addOrReplaceChild("Tumor1_r1", CubeListBuilder.create().texOffs(35, 68).addBox(-2.0F, -3.0F, -1.0F, 3.0F, 3.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(1.8595F, 1.3625F, 1.9648F, 1.1345F, 0.0F, 0.0F));
+		PartDefinition Tumor1_r1 = TumorCluster1.addOrReplaceChild("Tumor1_r1", CubeListBuilder.create().texOffs(41, 82).addBox(-2.0F, -5.0F, -1.0F, 5.0F, 5.0F, 8.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(1.8595F, 1.3625F, 1.9648F, 1.1345F, 0.0F, 0.0F));
 
-		PartDefinition TumorCluster2 = Head.addOrReplaceChild("TumorCluster2", CubeListBuilder.create(), PartPose.offset(3.36F, -3.1982F, -0.322F));
+		PartDefinition TumorCluster2 = Head.addOrReplaceChild("TumorCluster2", CubeListBuilder.create(), PartPose.offset(3.36F, -6.1982F, -6.322F));
 
-		PartDefinition Tumor5_r1 = TumorCluster2.addOrReplaceChild("Tumor5_r1", CubeListBuilder.create().texOffs(37, 69).addBox(-1.0F, -3.0F, -1.5F, 2.0F, 2.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(1.3494F, 1.2483F, -2.0184F, -2.2837F, -0.2769F, 1.4428F));
+		PartDefinition Tumor5_r1 = TumorCluster2.addOrReplaceChild("Tumor5_r1", CubeListBuilder.create().texOffs(47, 86).addBox(-3.0F, -5.0F, -2.5F, 4.0F, 4.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(1.3494F, 1.2483F, -2.0184F, -2.2837F, -0.2769F, 1.4428F));
 
-		PartDefinition Tumor4_r1 = TumorCluster2.addOrReplaceChild("Tumor4_r1", CubeListBuilder.create().texOffs(37, 69).addBox(-1.0F, -3.0F, -1.5F, 2.0F, 2.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(1.3494F, -1.7517F, 0.9816F, 2.5196F, 0.2613F, 0.9926F));
+		PartDefinition Tumor4_r1 = TumorCluster2.addOrReplaceChild("Tumor4_r1", CubeListBuilder.create().texOffs(43, 88).addBox(-3.0F, -3.0F, -5.5F, 4.0F, 4.0F, 6.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(1.3494F, -1.7517F, 0.9816F, 2.5196F, 0.2613F, 0.9926F));
+
+		PartDefinition TumorCluster9 = Head.addOrReplaceChild("TumorCluster9", CubeListBuilder.create(), PartPose.offset(-2.9412F, -4.1982F, -7.322F));
+
+		PartDefinition Tumor6_r1 = TumorCluster9.addOrReplaceChild("Tumor6_r1", CubeListBuilder.create().texOffs(46, 86).mirror().addBox(-1.0F, -6.0F, -2.5F, 5.0F, 5.0F, 5.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offsetAndRotation(-1.3494F, 1.2483F, -2.0184F, -2.2837F, 0.2769F, -1.4428F));
+
+		PartDefinition Tumor5_r2 = TumorCluster9.addOrReplaceChild("Tumor5_r2", CubeListBuilder.create().texOffs(45, 85).mirror().addBox(-2.0F, -3.0F, -5.5F, 6.0F, 5.0F, 7.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offsetAndRotation(-1.3494F, -1.7517F, 0.9816F, 2.5196F, -0.2613F, -0.9926F));
 
 		PartDefinition headWear = Head.addOrReplaceChild("headWear", CubeListBuilder.create().texOffs(0, 0).addBox(-16.0F, -19.0F, -18.0F, 32.0F, 32.0F, 32.0F, new CubeDeformation(-11.5F)), PartPose.offset(0.2094F, -0.1998F, -1.2904F));
 
@@ -228,14 +251,14 @@ public class gargoyleModel<T extends Gargoyl> extends EntityModel<T> implements 
 		PartDefinition Foliage_r10 = TopArmBase.addOrReplaceChild("Foliage_r10", CubeListBuilder.create().texOffs(-6, 113).addBox(-5.0F, 0.0F, -2.0F, 6.0F, 0.0F, 6.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(6.7211F, -7.9986F, 0.0F, 2.6259F, -1.1793F, -2.7677F));
 
 		PartDefinition Armor_r1 = TopArmBase.addOrReplaceChild("Armor_r1", CubeListBuilder.create().texOffs(74, 9).addBox(-1.0F, -3.75F, -3.0F, 4.0F, 4.0F, 4.0F, new CubeDeformation(0.2F))
-				.texOffs(18, 50).addBox(-1.0F, -3.75F, -3.0F, 4.0F, 8.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(6.0F, -9.0F, -3.0F, 0.0869F, -0.0076F, -0.0876F));
+		.texOffs(18, 50).addBox(-1.0F, -3.75F, -3.0F, 4.0F, 8.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(6.0F, -9.0F, -3.0F, 0.0869F, -0.0076F, -0.0876F));
 
 		PartDefinition BottomArmBase = LeftArm.addOrReplaceChild("BottomArmBase", CubeListBuilder.create(), PartPose.offset(-5.0F, 11.0F, 4.0F));
 
 		PartDefinition Foliage_r11 = BottomArmBase.addOrReplaceChild("Foliage_r11", CubeListBuilder.create().texOffs(-7, 107).addBox(-5.0F, 0.0F, -3.0F, 6.0F, 0.0F, 7.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(9.7211F, -2.9986F, -3.0F, 0.8173F, -0.9118F, -0.9529F));
 
 		PartDefinition Claw_r1 = BottomArmBase.addOrReplaceChild("Claw_r1", CubeListBuilder.create().texOffs(22, 93).addBox(-3.2834F, -3.091F, 1.5F, 5.0F, 7.0F, 0.0F, new CubeDeformation(0.0F))
-				.texOffs(22, 93).addBox(-3.2834F, -3.091F, 0.0F, 5.0F, 7.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(8.0F, 4.0F, -2.0F, 3.1416F, 0.0F, 3.0543F));
+		.texOffs(22, 93).addBox(-3.2834F, -3.091F, 0.0F, 5.0F, 7.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(8.0F, 4.0F, -2.0F, 3.1416F, 0.0F, 3.0543F));
 
 		PartDefinition Claw_r2 = BottomArmBase.addOrReplaceChild("Claw_r2", CubeListBuilder.create().texOffs(22, 93).addBox(-3.2834F, -3.091F, 0.0F, 5.0F, 7.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(8.0F, 4.0F, -5.0F, 3.1416F, 0.0F, 3.0543F));
 
@@ -258,7 +281,7 @@ public class gargoyleModel<T extends Gargoyl> extends EntityModel<T> implements 
 		PartDefinition Foliage_r13 = TopArmBase2.addOrReplaceChild("Foliage_r13", CubeListBuilder.create().texOffs(-7, 107).addBox(-5.0F, 0.0F, -3.0F, 6.0F, 0.0F, 7.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(8.0F, -7.0F, -6.0F, 0.2427F, 0.0992F, -0.3806F));
 
 		PartDefinition Armor_r2 = TopArmBase2.addOrReplaceChild("Armor_r2", CubeListBuilder.create().texOffs(73, 1).addBox(-1.0F, -3.75F, -3.0F, 4.0F, 4.0F, 4.0F, new CubeDeformation(0.2F))
-				.texOffs(34, 50).addBox(-1.0F, -3.75F, -3.0F, 4.0F, 8.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(6.0F, -9.0F, -3.0F, 0.0869F, -0.0076F, -0.0876F));
+		.texOffs(34, 50).addBox(-1.0F, -3.75F, -3.0F, 4.0F, 8.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(6.0F, -9.0F, -3.0F, 0.0869F, -0.0076F, -0.0876F));
 
 		PartDefinition TumorCluster5 = TopArmBase2.addOrReplaceChild("TumorCluster5", CubeListBuilder.create().texOffs(35, 68).addBox(-1.061F, -2.1221F, -1.3505F, 3.0F, 3.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offset(6.061F, -7.8779F, -3.1495F));
 
@@ -267,14 +290,22 @@ public class gargoyleModel<T extends Gargoyl> extends EntityModel<T> implements 
 		PartDefinition BottomArmBase2 = RightArm.addOrReplaceChild("BottomArmBase2", CubeListBuilder.create(), PartPose.offset(-8.6092F, 11.2197F, 4.0F));
 
 		PartDefinition claw3_r1 = BottomArmBase2.addOrReplaceChild("claw3_r1", CubeListBuilder.create().texOffs(22, 93).addBox(-1.7F, -4.0F, 1.5F, 5.0F, 7.0F, 0.0F, new CubeDeformation(0.0F))
-				.texOffs(22, 93).addBox(-1.7F, -4.0F, 3.0F, 5.0F, 7.0F, 0.0F, new CubeDeformation(0.0F))
-				.texOffs(22, 93).addBox(-1.7F, -4.0F, 0.0F, 5.0F, 7.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(7.0F, 5.0F, -5.0F, 0.0F, 0.0F, -0.0873F));
+		.texOffs(22, 93).addBox(-1.7F, -4.0F, 3.0F, 5.0F, 7.0F, 0.0F, new CubeDeformation(0.0F))
+		.texOffs(22, 93).addBox(-1.7F, -4.0F, 0.0F, 5.0F, 7.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(7.0F, 5.0F, -5.0F, 0.0F, 0.0F, -0.0873F));
 
 		PartDefinition BottomArm_r2 = BottomArmBase2.addOrReplaceChild("BottomArm_r2", CubeListBuilder.create().texOffs(40, 0).addBox(-1.7F, -4.0F, -4.0F, 5.0F, 6.0F, 5.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(7.0F, -1.0F, -2.0F, 0.0F, 0.0F, -0.0873F));
 
 		PartDefinition LeftLeg = Gargoyle.addOrReplaceChild("LeftLeg", CubeListBuilder.create().texOffs(0, 47).addBox(-2.0208F, -0.5755F, -2.4932F, 4.0F, 6.0F, 5.0F, new CubeDeformation(0.0F)), PartPose.offset(3.0208F, -0.4245F, 1.4932F));
 
 		PartDefinition foliage_r14 = LeftLeg.addOrReplaceChild("foliage_r14", CubeListBuilder.create().texOffs(-6, 113).addBox(-1.0F, 0.0F, -1.0F, 6.0F, 0.0F, 6.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-1.0208F, 0.4245F, -0.4932F, -0.3491F, 0.0F, 0.0F));
+
+		PartDefinition Leg_r1 = LeftLeg.addOrReplaceChild("Leg_r1", CubeListBuilder.create().texOffs(49, 101).addBox(-2.5F, -3.5F, -2.5F, 5.0F, 7.0F, 5.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-2.5208F, 0.9245F, 2.0068F, -0.0172F, 0.1298F, -0.132F));
+
+		PartDefinition Leg_r2 = LeftLeg.addOrReplaceChild("Leg_r2", CubeListBuilder.create().texOffs(49, 101).addBox(-2.5F, -3.5F, -2.5F, 5.0F, 7.0F, 5.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(1.4792F, -1.0755F, 1.0068F, -0.0172F, 0.1298F, -0.132F));
+
+		PartDefinition Leg_r3 = LeftLeg.addOrReplaceChild("Leg_r3", CubeListBuilder.create().texOffs(58, 101).addBox(-3.5F, -3.5F, -3.0F, 7.0F, 7.0F, 6.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-1.5208F, 1.9245F, -2.4932F, 0.1771F, 0.3484F, 0.0081F));
+
+		PartDefinition Leg_r4 = LeftLeg.addOrReplaceChild("Leg_r4", CubeListBuilder.create().texOffs(58, 101).addBox(-3.5F, -3.5F, -3.0F, 7.0F, 7.0F, 6.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(1.4792F, 2.9245F, 2.5068F, 0.0F, 0.3054F, 0.0F));
 
 		PartDefinition HangingFlesh1 = LeftLeg.addOrReplaceChild("HangingFlesh1", CubeListBuilder.create(), PartPose.offset(-3.0208F, 0.4245F, -1.4932F));
 
@@ -292,6 +323,10 @@ public class gargoyleModel<T extends Gargoyl> extends EntityModel<T> implements 
 
 		PartDefinition RightLeg = Gargoyle.addOrReplaceChild("RightLeg", CubeListBuilder.create().texOffs(36, 23).addBox(-2.028F, -0.5755F, -2.4932F, 4.0F, 4.0F, 5.0F, new CubeDeformation(0.0F)), PartPose.offset(-1.972F, -0.4245F, 1.4932F));
 
+		PartDefinition Leg_r5 = RightLeg.addOrReplaceChild("Leg_r5", CubeListBuilder.create().texOffs(53, 98).addBox(2.0F, -2.0F, 2.0F, 5.0F, 7.0F, 5.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-3.028F, -2.5755F, -2.4932F, 0.0F, -0.1745F, 0.2618F));
+
+		PartDefinition Leg_r6 = RightLeg.addOrReplaceChild("Leg_r6", CubeListBuilder.create().texOffs(70, 110).mirror().addBox(-3.5F, -3.5F, -3.0F, 7.0F, 7.0F, 6.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offsetAndRotation(-1.528F, 2.9245F, 2.5068F, 0.0F, -0.3054F, 0.0F));
+
 		PartDefinition HangingFlesh2 = RightLeg.addOrReplaceChild("HangingFlesh2", CubeListBuilder.create(), PartPose.offsetAndRotation(-0.028F, 5.4245F, 0.0068F, 0.0F, 3.0543F, 0.0F));
 
 		PartDefinition HF3_r1 = HangingFlesh2.addOrReplaceChild("HF3_r1", CubeListBuilder.create().texOffs(10, 76).addBox(0.0F, -1.0F, -2.5F, 0.0F, 7.0F, 5.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -1.0F, 0.0F, 0.0F, -0.6109F, 0.0F));
@@ -300,17 +335,17 @@ public class gargoyleModel<T extends Gargoyl> extends EntityModel<T> implements 
 
 		PartDefinition TumorCluster4 = RightLeg.addOrReplaceChild("TumorCluster4", CubeListBuilder.create(), PartPose.offset(-0.8441F, 2.0465F, -1.1534F));
 
-		PartDefinition Tumor6_r1 = TumorCluster4.addOrReplaceChild("Tumor6_r1", CubeListBuilder.create().texOffs(37, 69).addBox(-1.0F, -2.0F, -1.5F, 2.0F, 2.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.8161F, -0.622F, -0.3398F, 0.9189F, -0.7218F, -0.4978F));
+		PartDefinition Tumor6_r2 = TumorCluster4.addOrReplaceChild("Tumor6_r2", CubeListBuilder.create().texOffs(37, 69).addBox(-1.0F, -2.0F, -1.5F, 2.0F, 2.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.8161F, -0.622F, -0.3398F, 0.9189F, -0.7218F, -0.4978F));
 
-		PartDefinition Tumor5_r2 = TumorCluster4.addOrReplaceChild("Tumor5_r2", CubeListBuilder.create().texOffs(37, 69).addBox(-1.0F, -2.0F, -1.5F, 2.0F, 2.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-1.1839F, 0.378F, 0.6602F, 0.7432F, -0.3243F, 1.3099F));
+		PartDefinition Tumor5_r3 = TumorCluster4.addOrReplaceChild("Tumor5_r3", CubeListBuilder.create().texOffs(37, 69).addBox(-1.0F, -2.0F, -1.5F, 2.0F, 2.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-1.1839F, 0.378F, 0.6602F, 0.7432F, -0.3243F, 1.3099F));
 
 		PartDefinition Tumor4_r2 = TumorCluster4.addOrReplaceChild("Tumor4_r2", CubeListBuilder.create().texOffs(37, 69).addBox(-1.0F, -2.0F, -1.0F, 2.0F, 2.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-1.1839F, 1.378F, 1.6602F, 0.5138F, -1.2265F, 0.0955F));
 
 		PartDefinition TopWings = Gargoyle.addOrReplaceChild("TopWings", CubeListBuilder.create(), PartPose.offset(-3.5F, 9.75F, -5.5F));
 
 		PartDefinition LeftWing = TopWings.addOrReplaceChild("LeftWing", CubeListBuilder.create().texOffs(60, 7).addBox(-1.0F, -4.0F, -1.0F, 2.0F, 5.0F, 2.0F, new CubeDeformation(0.0F))
-				.texOffs(50, 59).addBox(-1.5F, -6.0F, -1.5F, 3.0F, 3.0F, 3.0F, new CubeDeformation(0.0F))
-				.texOffs(98, 38).addBox(-16.0F, -5.0F, 0.0F, 15.0F, 8.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(8.0F, -20.0F, 8.0F, 0.0F, 2.0944F, 0.0F));
+		.texOffs(50, 59).addBox(-1.5F, -6.0F, -1.5F, 3.0F, 3.0F, 3.0F, new CubeDeformation(0.0F))
+		.texOffs(98, 38).addBox(-16.0F, -5.0F, 0.0F, 15.0F, 8.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(8.0F, -20.0F, 8.0F, 0.0F, 2.0944F, 0.0F));
 
 		PartDefinition Foliage_r15 = LeftWing.addOrReplaceChild("Foliage_r15", CubeListBuilder.create().texOffs(-6, 101).addBox(-5.0F, 0.0F, -2.0F, 6.0F, 0.0F, 6.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-0.7789F, -4.7486F, 1.5F, 3.0183F, -0.7131F, -3.0625F));
 
@@ -321,8 +356,8 @@ public class gargoyleModel<T extends Gargoyl> extends EntityModel<T> implements 
 		PartDefinition WingFrame1_r1 = LeftWing.addOrReplaceChild("WingFrame1_r1", CubeListBuilder.create().texOffs(54, 27).addBox(-6.0F, -2.5F, -1.0F, 7.0F, 2.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-1.0F, -3.0F, 0.0F, 0.0F, 0.0F, 0.3054F));
 
 		PartDefinition RightWing = TopWings.addOrReplaceChild("RightWing", CubeListBuilder.create().texOffs(60, 0).addBox(-1.0F, -4.0F, -1.0F, 2.0F, 5.0F, 2.0F, new CubeDeformation(0.0F))
-				.texOffs(0, 58).addBox(-1.5F, -6.0F, -1.5F, 3.0F, 3.0F, 3.0F, new CubeDeformation(0.0F))
-				.texOffs(98, 38).addBox(-16.0F, -5.0F, 0.0F, 15.0F, 8.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -20.0F, 8.0F, 0.0F, 1.0472F, 0.0F));
+		.texOffs(0, 58).addBox(-1.5F, -6.0F, -1.5F, 3.0F, 3.0F, 3.0F, new CubeDeformation(0.0F))
+		.texOffs(98, 38).addBox(-16.0F, -5.0F, 0.0F, 15.0F, 8.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -20.0F, 8.0F, 0.0F, 1.0472F, 0.0F));
 
 		PartDefinition WingFrame3_r2 = RightWing.addOrReplaceChild("WingFrame3_r2", CubeListBuilder.create().texOffs(18, 47).addBox(-5.0F, -1.0F, 0.5F, 6.0F, 1.0F, 1.0F, new CubeDeformation(0.05F)), PartPose.offsetAndRotation(-12.0F, -3.0F, -1.0F, 0.0F, 0.0F, -0.5672F));
 
@@ -333,8 +368,8 @@ public class gargoyleModel<T extends Gargoyl> extends EntityModel<T> implements 
 		PartDefinition BottomWings = Gargoyle.addOrReplaceChild("BottomWings", CubeListBuilder.create(), PartPose.offset(-3.5F, 12.75F, 5.5F));
 
 		PartDefinition RightWing2 = BottomWings.addOrReplaceChild("RightWing2", CubeListBuilder.create().texOffs(62, 35).addBox(-0.5F, -1.0F, -0.5F, 1.0F, 2.0F, 1.0F, new CubeDeformation(0.1F))
-				.texOffs(12, 62).addBox(-1.0F, -3.0F, -1.0F, 2.0F, 2.0F, 2.0F, new CubeDeformation(0.0F))
-				.texOffs(41, 17).addBox(-10.0F, -3.0F, 0.0F, 10.0F, 5.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(2.0F, -18.0F, -1.0F, 0.0F, 0.7418F, 0.0F));
+		.texOffs(12, 62).addBox(-1.0F, -3.0F, -1.0F, 2.0F, 2.0F, 2.0F, new CubeDeformation(0.0F))
+		.texOffs(41, 17).addBox(-10.0F, -3.0F, 0.0F, 10.0F, 5.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(2.0F, -18.0F, -1.0F, 0.0F, 0.7418F, 0.0F));
 
 		PartDefinition WingFrame3_r3 = RightWing2.addOrReplaceChild("WingFrame3_r3", CubeListBuilder.create().texOffs(12, 58).addBox(-1.0F, -1.7F, -0.5F, 2.0F, 1.0F, 1.0F, new CubeDeformation(-0.15F)), PartPose.offsetAndRotation(-9.0F, 0.0F, 0.0F, 0.0F, 0.0F, -0.5672F));
 
@@ -343,8 +378,8 @@ public class gargoyleModel<T extends Gargoyl> extends EntityModel<T> implements 
 		PartDefinition WingFrame1_r3 = RightWing2.addOrReplaceChild("WingFrame1_r3", CubeListBuilder.create().texOffs(20, 62).addBox(-3.0F, -1.5F, -0.5F, 4.0F, 1.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-2.0F, -1.0F, 0.0F, 0.0F, 0.0F, 0.2182F));
 
 		PartDefinition leftwing2 = BottomWings.addOrReplaceChild("leftwing2", CubeListBuilder.create().texOffs(38, 62).addBox(-0.5F, -1.0F, -0.5F, 1.0F, 2.0F, 1.0F, new CubeDeformation(0.1F))
-				.texOffs(30, 62).addBox(-1.0F, -3.0F, -1.0F, 2.0F, 2.0F, 2.0F, new CubeDeformation(0.0F))
-				.texOffs(41, 17).addBox(-10.0F, -3.0F, 0.0F, 10.0F, 5.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(6.0F, -18.0F, -1.0F, 0.0F, 2.3998F, 0.0F));
+		.texOffs(30, 62).addBox(-1.0F, -3.0F, -1.0F, 2.0F, 2.0F, 2.0F, new CubeDeformation(0.0F))
+		.texOffs(41, 17).addBox(-10.0F, -3.0F, 0.0F, 10.0F, 5.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(6.0F, -18.0F, -1.0F, 0.0F, 2.3998F, 0.0F));
 
 		PartDefinition WingFrame3_r4 = leftwing2.addOrReplaceChild("WingFrame3_r4", CubeListBuilder.create().texOffs(12, 60).addBox(-1.0F, -1.7F, -0.5F, 2.0F, 1.0F, 1.0F, new CubeDeformation(-0.15F)), PartPose.offsetAndRotation(-9.0F, 0.0F, 0.0F, 0.0F, 0.0F, -0.5672F));
 
@@ -354,6 +389,7 @@ public class gargoyleModel<T extends Gargoyl> extends EntityModel<T> implements 
 
 		return LayerDefinition.create(meshdefinition, 256, 128);
 	}
+
 	@Override
 	public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 		float moveValue = Mth.cos(limbSwing * 0.2F) * 0.2F * limbSwingAmount;
@@ -398,6 +434,7 @@ public class gargoyleModel<T extends Gargoyl> extends EntityModel<T> implements 
 		animateTumor(TumorCluster6,-defValT2);
 		animateTumor(TumorCluster7,-defValT3);
 		animateTumor(TumorCluster8,-defValT4);
+		animateTumor(TumorCluster9,-defValT3);
 		Gargoyle.y = Gargoyle.getInitialPose().y+upAndDown;
 		HangingFlesh1.y = HangingFlesh1.getInitialPose().y+upAndDown * 1.15f;
 		HangingFlesh2.y = HangingFlesh2.getInitialPose().y+upAndDown * 1.25f;

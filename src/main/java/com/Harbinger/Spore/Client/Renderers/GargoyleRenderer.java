@@ -1,11 +1,17 @@
 package com.Harbinger.Spore.Client.Renderers;
 
-import com.Harbinger.Spore.Client.Models.gargoyleModel;
+import com.Harbinger.Spore.Client.Models.*;
 import com.Harbinger.Spore.Client.Special.BaseInfectedRenderer;
+import com.Harbinger.Spore.Client.Special.GargoyleBits;
 import com.Harbinger.Spore.Sentities.EvolvedInfected.Gargoyl;
+import com.Harbinger.Spore.Sentities.Variants.GargoyleVariants;
+import com.Harbinger.Spore.Sentities.Variants.ProtectorVariants;
 import com.Harbinger.Spore.Spore;
+import com.google.common.collect.Maps;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.Util;
+import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -28,72 +34,131 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.client.ClientHooks;
 
+import java.util.List;
+import java.util.Map;
+
 @OnlyIn(Dist.CLIENT)
-public class GargoyleRenderer<Type extends Gargoyl> extends BaseInfectedRenderer<Type , gargoyleModel<Type>> {
+public class GargoyleRenderer<Type extends Gargoyl> extends BaseInfectedRenderer<Type , EntityModel<Type>> {
     private static final ResourceLocation EMPTY = ResourceLocation.parse("spore:textures/entity/empty.png");
-    private static final ResourceLocation TEXTURE =  ResourceLocation.fromNamespaceAndPath(Spore.MODID,
-            "textures/entity/gargoyle.png");
     private static final ResourceLocation EYES_TEXTURE =  ResourceLocation.fromNamespaceAndPath(Spore.MODID,
             "textures/entity/eyes/gargoyle.png");
+    public static final Map<GargoyleVariants, ResourceLocation> TEXTURE =
+            Util.make(Maps.newEnumMap(GargoyleVariants.class), (p_114874_) -> {
+                p_114874_.put(GargoyleVariants.DEFAULT,
+                        ResourceLocation.fromNamespaceAndPath(Spore.MODID, "textures/entity/bile_gargoyle.png"));
+                p_114874_.put(GargoyleVariants.ICHOR,
+                        ResourceLocation.fromNamespaceAndPath(Spore.MODID, "textures/entity/studded_protector.png"));
+                p_114874_.put(GargoyleVariants.BLOOMING,
+                        ResourceLocation.fromNamespaceAndPath(Spore.MODID, "textures/entity/blooming_gargoyle.png"));
+                p_114874_.put(GargoyleVariants.BOMBER,
+                        ResourceLocation.fromNamespaceAndPath(Spore.MODID, "textures/entity/bomber_gargoyle.png"));
+                p_114874_.put(GargoyleVariants.VALKYRIE,
+                        ResourceLocation.fromNamespaceAndPath(Spore.MODID, "textures/entity/valk_gargoyle.png"));
+            });
+    private final EntityModel<Type> defaultModel = this.getModel();
+    private final EntityModel<Type> ichor;
+    private final EntityModel<Type> blooming;
+    private final EntityModel<Type> bomber;
+    private final EntityModel<Type> valk;
     public GargoyleRenderer(EntityRendererProvider.Context context) {
         super(context, new gargoyleModel<>(context.bakeLayer(gargoyleModel.LAYER_LOCATION),false), 0.5f);
+        ichor = new IchorGargoyleModel<>(context.bakeLayer(IchorGargoyleModel.LAYER_LOCATION),false);
+        blooming = new bloomingGargoyleModel<>(context.bakeLayer(bloomingGargoyleModel.LAYER_LOCATION),false);
+        bomber = new bomberGargoyleModel<>(context.bakeLayer(bomberGargoyleModel.LAYER_LOCATION),false);
+        valk = new valkyrieGargoyleModel<>(context.bakeLayer(valkyrieGargoyleModel.LAYER_LOCATION),false);
         this.addLayer(new ProtectorArmorRenderer<>(this,context.getModelManager()));
     }
     @Override
     public ResourceLocation getTextureLocation(Type entity) {
-        return TEXTURE;
+        return TEXTURE.get(entity.getVariant());
     }
-
     @Override
     public ResourceLocation eyeLayerTexture() {
         return EYES_TEXTURE;
     }
 
-    private static class ProtectorArmorRenderer <T extends Gargoyl> extends RenderLayer<T, gargoyleModel<T>> {
+    @Override
+    protected void scale(Type livingEntity, PoseStack poseStack, float partialTickTime) {
+        float val = livingEntity.getVariant() == GargoyleVariants.VALKYRIE ? 1.2f : 1;
+        poseStack.scale(val,val,val);
+        super.scale(livingEntity, poseStack, partialTickTime);
+    }
+    public EntityModel<Type> getVariantModel(GargoyleVariants gargoyleVariants){
+        switch (gargoyleVariants){
+            case ICHOR -> {
+                return ichor;
+            }
+            case BLOOMING -> {
+                return blooming;
+            }
+            case BOMBER -> {
+                return bomber;
+            }
+            case VALKYRIE -> {
+                return valk;
+            }
+            case DEFAULT -> {
+                return defaultModel;
+            }
+        }
+        return defaultModel;
+    }
+
+    @Override
+    public void render(Type type, float value1, float value2, PoseStack stack, MultiBufferSource bufferSource, int light) {
+        this.model = getVariantModel(type.getVariant());
+        super.render(type, value1, value2, stack, bufferSource, light);
+    }
+
+    private static class ProtectorArmorRenderer <T extends Gargoyl> extends RenderLayer<T, EntityModel<T>> {
         private final TextureAtlas armorTrimAtlas;
         private static final ResourceLocation BLOOD_LAYER1 = ResourceLocation.fromNamespaceAndPath(Spore.MODID,
                 "textures/overlay/blood_overlay.png");
-        public ProtectorArmorRenderer(RenderLayerParent<T, gargoyleModel<T>> modelRenderLayerParent, ModelManager manager) {
+        public ProtectorArmorRenderer(RenderLayerParent<T, EntityModel<T>> modelRenderLayerParent, ModelManager manager) {
             super(modelRenderLayerParent);
             armorTrimAtlas = manager.getAtlas(Sheets.ARMOR_TRIMS_SHEET);
         }
 
         @Override
         public void render(PoseStack poseStack, MultiBufferSource multiBufferSource, int i, T t, float v, float v1, float v2, float v3, float v4, float v5) {
-            renderArmorPart(t,EquipmentSlot.HEAD, getParentModel().headWear,poseStack,multiBufferSource, i);
+            if (getParentModel() instanceof GargoyleBits gargoyleBits){
+                renderArmorPart(t,gargoyleBits,EquipmentSlot.HEAD, gargoyleBits.Helmet(),poseStack,multiBufferSource, i);
+            }
         }
-        private void renderArmorPart(T entity, EquipmentSlot slot , ModelPart arm, PoseStack stack, MultiBufferSource bufferSource, int packedLight){
+        private void renderArmorPart(T entity, GargoyleBits bits, EquipmentSlot slot , List<ModelPart> parts, PoseStack stack, MultiBufferSource bufferSource, int packedLight){
             ItemStack itemStack = entity.getItemBySlot(slot);
             boolean flag = itemStack.hasFoil();
             if (itemStack.getItem() instanceof ArmorItem armorItem){
                 ArmorMaterial armormaterial = armorItem.getMaterial().value();
-                renderArmor(arm,stack,bufferSource,packedLight,OverlayTexture.NO_OVERLAY,-1,this.getArmorResource(entity, itemStack,armormaterial, slot),flag);
+                renderArmor(parts,bits,stack,bufferSource,packedLight,OverlayTexture.NO_OVERLAY,-1,this.getArmorResource(entity, itemStack,armormaterial, slot),flag);
                 ArmorTrim armortrim = (ArmorTrim)itemStack.get(DataComponents.TRIM);
                 if (armortrim != null) {
-                    this.renderTrim(armorItem.getMaterial(), stack, bufferSource, packedLight, armortrim, arm);
+                    this.renderTrim(armorItem.getMaterial(), bits, stack, bufferSource, packedLight, armortrim, parts);
                 }
             }
         }
-        private void renderArmor(ModelPart parts, PoseStack stack, MultiBufferSource bufferSource, int packedLight, int packedOverlay, int alpha,ResourceLocation location,boolean glint){
+        private void renderArmor(List<ModelPart> parts,GargoyleBits bits, PoseStack stack, MultiBufferSource bufferSource, int packedLight, int packedOverlay, int alpha,ResourceLocation location,boolean glint){
             VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityCutoutNoCull(location));
-            this.getParentModel().Gargoyle.getAllParts().forEach(modelPart -> {setInvisible(modelPart,parts);});
-            this.getParentModel().Gargoyle.render(stack, consumer, packedLight, packedOverlay,  alpha);
+            ModelPart root = bits.root();
+            root.getAllParts().forEach(modelPart -> {setInvisible(modelPart,parts);});
+            root.render(stack, consumer, packedLight, packedOverlay,  alpha);
             if (glint){
-                this.getParentModel().Gargoyle.render(stack, bufferSource.getBuffer(RenderType.entityGlint()), packedLight, packedOverlay,  alpha);
+                root.render(stack, bufferSource.getBuffer(RenderType.entityGlint()), packedLight, packedOverlay,  alpha);
             }
-            renderBloodLayer(this.getParentModel().Gargoyle,stack,bufferSource,packedLight);
+            renderBloodLayer(root,stack,bufferSource,packedLight);
         }
 
-        private void setInvisible(ModelPart part,ModelPart parts){
-            part.skipDraw = !parts.equals(part);
+        private void setInvisible(ModelPart part,List<ModelPart> parts){
+            part.skipDraw = !parts.contains(part);
         }
 
 
-        private void renderTrim(Holder<ArmorMaterial> armorMaterialHolder, PoseStack stack, MultiBufferSource source, int light, ArmorTrim armorTrim, ModelPart parts) {
+        private void renderTrim(Holder<ArmorMaterial> armorMaterialHolder,GargoyleBits bits, PoseStack stack, MultiBufferSource source, int light, ArmorTrim armorTrim, List<ModelPart> parts) {
             TextureAtlasSprite textureatlassprite = this.armorTrimAtlas.getSprite(armorTrim.outerTexture(armorMaterialHolder));
             VertexConsumer vertexconsumer = textureatlassprite.wrap(source.getBuffer(Sheets.armorTrimsSheet(armorTrim.pattern().value().decal())));
-            this.getParentModel().Gargoyle.getAllParts().forEach(modelPart -> {setInvisible(modelPart,parts);});
-            this.getParentModel().Gargoyle.render(stack, vertexconsumer, light, OverlayTexture.NO_OVERLAY, -1);
+            ModelPart root = bits.root();
+            root.getAllParts().forEach(modelPart -> {setInvisible(modelPart,parts);});
+            root.render(stack, vertexconsumer, light, OverlayTexture.NO_OVERLAY, -1);
         }
         public ResourceLocation getArmorResource(Entity entity, ItemStack stack,ArmorMaterial material, EquipmentSlot slot) {
             if (material.layers().isEmpty()){
