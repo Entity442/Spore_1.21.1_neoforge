@@ -1,6 +1,7 @@
 package com.Harbinger.Spore.Sentities.EvolvedInfected;
 
 import com.Harbinger.Spore.ExtremelySusThings.Utilities;
+import com.Harbinger.Spore.Sentities.AI.CustomMeleeAttackGoal;
 import com.Harbinger.Spore.Sentities.AI.HurtTargetGoal;
 import com.Harbinger.Spore.Sentities.AI.NeuralProcessing.Experimental.ExpAirPathNavigation;
 import com.Harbinger.Spore.Sentities.ArmedInfected;
@@ -47,6 +48,7 @@ import java.util.List;
 
 public class Gargoyl extends EvolvedInfected implements FlyingInfected, ArmedInfected,HasUsableSlot , VariantKeeper {
     private static final EntityDataAccessor<Integer> DATA_ID_TYPE_VARIANT = SynchedEntityData.defineId(Gargoyl.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Integer> ATTACK_TICKS = SynchedEntityData.defineId(Gargoyl.class, EntityDataSerializers.INT);
     public Gargoyl(EntityType<? extends Infected> type, Level level) {
         super(type, level);
         this.moveControl = new InfectedArialMovementControl(this , 20,false);
@@ -80,21 +82,34 @@ public class Gargoyl extends EvolvedInfected implements FlyingInfected, ArmedInf
         setVariant(Util.getRandom(GargoyleVariants.values(), random));
         return super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData);
     }
+    public boolean isBomb(){return getVariant() == GargoyleVariants.BOMBER && getHealth() <= getMaxHealth()/4;}
 
     public boolean causeFallDamage(float damage_val, float protection_val, DamageSource source) {
         if (fallDistance < 3 || !isAlive()) return false;
-
+        boolean bomb = getVariant() == GargoyleVariants.BOMBER && getHealth() > getMaxHealth()/4;;
+        if (getVariant() == GargoyleVariants.VALKYRIE){
+            setAttackTicks(80);
+            this.playSound(Ssounds.LANDING.value(), 2.2f, 0.8f);
+            return false;
+        }
         float ratio = 0.1f;
         float attackMulti = 1f + (fallDistance * ratio);
 
         double smashRange = 2 + fallDistance * 0.25;
         double blockBreaking = 1 + fallDistance * 0.15;
         smashRange = smashRange > 16 ? 16 : smashRange;
+        attackMulti = attackMulti > 3 ? 3 : attackMulti;
 
-        this.DamageEntities(level(), smashRange, attackMulti > 3 ? 3 : attackMulti);
+        smashRange = bomb ? smashRange * 1.5f : smashRange;
+        attackMulti = bomb ? attackMulti * 1.5f : attackMulti;
+
+        this.DamageEntities(level(), smashRange, attackMulti);
         this.SmashStomp(level(), this.blockPosition(), smashRange, blockBreaking > 32 ? 32 : blockBreaking);
 
         this.playSound(Ssounds.LANDING.value(), 2f, 0.8f);
+        if (bomb){
+            level().explode(this,this.getBlockX(),this.getBlockY(),this.getBlockZ(),2, Level.ExplosionInteraction.NONE);
+        }
         return false;
     }
     protected void SmashStomp(Level level, BlockPos pos, double range,double breaking){
@@ -140,8 +155,27 @@ public class Gargoyl extends EvolvedInfected implements FlyingInfected, ArmedInf
         }
         this.setDeltaMovement(getDeltaMovement().add(0,-0.01,0));
     }
-
-
+    @Override
+    public void onSyncedDataUpdated(EntityDataAccessor<?> dataAccessor) {
+        if (dataAccessor.equals(DATA_ID_TYPE_VARIANT)){
+            double prot = 1;
+            AttributeInstance protection = this.getAttribute(Attributes.ARMOR);
+            if (getVariant() == GargoyleVariants.VALKYRIE){
+                prot = 2;
+            }
+            if (protection != null) {
+                protection.setBaseValue(SConfig.SERVER.gargoyle_armor.get() * prot);
+            }
+            this.refreshDimensions();
+        }
+        super.onSyncedDataUpdated(dataAccessor);
+    }
+    @Override
+    protected EntityDimensions getDefaultDimensions(Pose pose) {
+        EntityDimensions baseDimensions = super.getDefaultDimensions(pose);
+        float val = getVariant() == GargoyleVariants.VALKYRIE ? 1.2f : 1;
+        return baseDimensions.scale(val);
+    }
     @Override
     protected void addTargettingGoals() {
         this.goalSelector.addGoal(2, new HurtTargetGoal(this , livingEntity -> {return TARGET_SELECTOR.test(livingEntity);}, Infected.class).setAlertOthers(Infected.class));
@@ -161,10 +195,29 @@ public class Gargoyl extends EvolvedInfected implements FlyingInfected, ArmedInf
         });
 
     }
+
+    public void setAttackTicks(int value){
+        entityData.set(ATTACK_TICKS,value);
+    }
+    public int getAttackTicks(){
+        return entityData.get(ATTACK_TICKS);
+    }
+    public boolean canAttack(){
+        return getAttackTicks() > 0;
+    }
+    @Override
+    public void tick() {
+        super.tick();
+        if (canAttack()){
+            setAttackTicks(getAttackTicks()-1);
+        }
+    }
+
     @Override
     protected void defineSynchedData(SynchedEntityData.@NotNull Builder builder) {
         super.defineSynchedData(builder);
         builder.define(DATA_ID_TYPE_VARIANT, 0);
+        builder.define(ATTACK_TICKS, 0);
     }
     @Override
     public void readAdditionalSaveData(CompoundTag tag) {
@@ -179,6 +232,17 @@ public class Gargoyl extends EvolvedInfected implements FlyingInfected, ArmedInf
     }
     @Override
     protected void registerGoals() {
+        this.goalSelector.addGoal(1, new CustomMeleeAttackGoal(this, 1.5, false) {
+            @Override
+            protected double getAttackReachSqr(LivingEntity entity) {
+                return 3.0 + entity.getBbWidth() * entity.getBbWidth();
+            }
+
+            @Override
+            public boolean canUse() {
+                return super.canUse() && (canAttack() || isBomb());
+            }
+        });
         this.goalSelector.addGoal(1, new GargoyleDiveGoal(this));
         this.goalSelector.addGoal(3, new RandomStrollGoal(this, 1));
         this.goalSelector.addGoal(4, new RandomLookAroundGoal(this));
@@ -237,6 +301,9 @@ public class Gargoyl extends EvolvedInfected implements FlyingInfected, ArmedInf
 
         @Override
         public boolean canUse() {
+            if (gargoyle.canAttack()){
+                return false;
+            }
             target = gargoyle.getTarget();
             return target != null && target.isAlive() && gargoyle.distanceTo(target) < 32 && !target.isInWater();
         }
