@@ -114,9 +114,17 @@ public class Gorgon extends EvolvedInfected {
     @Override
     public void tick() {
         super.tick();
-        if (tickCount % 40 == 0 && getSpores() <= 10){
-            setSpores(getSpores()+1);
+        if (tickCount % 5 == 0 && getSpores() <= 10){
+            setSpores(getSpores()+0.1f);
         }
+    }
+
+    @Override
+    public boolean hasLineOfSight(Entity entity) {
+        if (entity.isInWater()){
+            return false;
+        }
+        return super.hasLineOfSight(entity);
     }
 
     @Override
