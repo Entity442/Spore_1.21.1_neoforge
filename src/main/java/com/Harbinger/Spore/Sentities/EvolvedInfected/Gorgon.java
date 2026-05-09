@@ -53,7 +53,7 @@ public class Gorgon extends EvolvedInfected {
 
     @Override
     public List<? extends String> getDropList() {
-        return SConfig.DATAGEN.inf_knight_loot.get();
+        return SConfig.DATAGEN.inf_gorgon_loot.get();
     }
     public static AttributeSupplier.Builder createAttributes() {
         return Mob.createMobAttributes()

@@ -780,7 +780,7 @@ public class SConfig {
                             "spore:brute") , o -> o instanceof String);
             this.wit_ev = builder.defineList("Infected Witch Evolutions",
                     Lists.newArrayList(
-                            "spore:volatile","spore:mephitic") , o -> o instanceof String);
+                            "spore:volatile","spore:mephitic","spore:gorgon") , o -> o instanceof String);
             this.husk_ev = builder.defineList("Infected Husk Evolutions",
                     Lists.newArrayList(
                             "spore:thorn",
@@ -971,13 +971,13 @@ public class SConfig {
 
             this.vigil_middle_wave = builder.comment("The mixed wave of infected a vigil can summon").defineList("Vigil mix wave",
                     Lists.newArrayList("spore:inf_human", "spore:inf_villager", "spore:inf_pillager", "spore:inf_wanderer",
-                            "spore:knight", "spore:griefer", "spore:gargoyle","spore:mephitic", "spore:thorn", "spore:nuclea", "spore:jagd", "spore:scavenger", "spore:bloater","spore:slasher", "spore:leaper", "spore:inf_evoker", "spore:spitter") , o -> o instanceof String);
+                            "spore:knight", "spore:griefer", "spore:gorgon", "spore:gargoyle","spore:mephitic", "spore:thorn", "spore:nuclea", "spore:jagd", "spore:scavenger", "spore:bloater","spore:slasher", "spore:leaper", "spore:inf_evoker", "spore:spitter") , o -> o instanceof String);
 
             this.vigil_max_wave = builder.comment("The max wave of infected a vigil can summon").defineList("Vigil max wave",
                     Lists.newArrayList("spore:inf_vindicator", "spore:busser", "spore:inf_witch", "spore:brute",
                             "spore:knight", "spore:griefer", "spore:thorn", "spore:jagd", "spore:leaper", "spore:inf_evoker", "spore:spitter", "spore:stalker",
                             "spore:howler", "spore:braiomil", "spore:wendigo","spore:hevoker", "spore:scavenger", "spore:bloater","spore:ogre","spore:slasher", "spore:inquisitor", "spore:brot"
-                            , "spore:volatile","spore:mephitic", "spore:gargoyle", "spore:hvindicator", "spore:grober") , o -> o instanceof String);
+                            , "spore:volatile","spore:mephitic", "spore:gorgon", "spore:gargoyle", "spore:hvindicator", "spore:grober") , o -> o instanceof String);
 
             builder.pop();
 
@@ -1725,6 +1725,7 @@ public class SConfig {
         public final ModConfigSpec.ConfigValue<List<? extends String>> inf_evoker_loot;
         public final ModConfigSpec.ConfigValue<List<? extends String>> inf_braio_loot;
         public final ModConfigSpec.ConfigValue<List<? extends String>> inf_knight_loot;
+        public final ModConfigSpec.ConfigValue<List<? extends String>> inf_gorgon_loot;
         public final ModConfigSpec.ConfigValue<List<? extends String>> inf_griefer_loot;
         public final ModConfigSpec.ConfigValue<List<? extends String>> inf_leap_loot;
         public final ModConfigSpec.ConfigValue<List<? extends String>> inf_spitter_loot;
@@ -1881,6 +1882,9 @@ public class SConfig {
                     Lists.newArrayList("spore:mutated_fiber|70|1|5","spore:armor_fragment|80|2|6","spore:mutated_heart|10|1|1","spore:claw_fragment|80|6|9","spore:innards|50|1|1","spore:tumor|100|2|4") , o -> o instanceof String);
             this.inf_mep_loot = builder.defineList("Mephetic",
                     Lists.newArrayList("spore:mutated_fiber|70|1|5","spore:armor_fragment|80|2|6","spore:mutated_heart|10|1|1","spore:claw_fragment|80|6|9","spore:innards|50|1|1","spore:tumor|100|2|4") , o -> o instanceof String);
+            this.inf_gorgon_loot = builder.defineList("Gorgon",
+                    Lists.newArrayList("spore:mutated_fiber|70|1|5","spore:armor_fragment|80|2|6","spore:mutated_heart|10|1|1","spore:claw_fragment|80|6|9","spore:innards|50|1|1","spore:tumor|100|2|4") , o -> o instanceof String);
+
             this.naiad_loot = builder.defineList("Naiad",
                     Lists.newArrayList("spore:mutated_fiber|70|1|5","minecraft:copper_ingot|15|1|1","spore:armor_fragment|80|1|3","spore:mutated_heart|10|1|1","spore:claw_fragment|80|6|9") , o -> o instanceof String);
 
