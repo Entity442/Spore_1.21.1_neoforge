@@ -302,7 +302,7 @@ public class Gargoyl extends EvolvedInfected implements FlyingInfected, ArmedInf
 
         @Override
         public boolean canUse() {
-            if (gargoyle.canAttack()){
+            if (gargoyle.canAttack() || gargoyle.isBomb()){
                 return false;
             }
             target = gargoyle.getTarget();
