@@ -33,6 +33,7 @@ import net.minecraft.world.item.armortrim.ArmorTrim;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.client.ClientHooks;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Map;
@@ -45,9 +46,9 @@ public class GargoyleRenderer<Type extends Gargoyl> extends BaseInfectedRenderer
     public static final Map<GargoyleVariants, ResourceLocation> TEXTURE =
             Util.make(Maps.newEnumMap(GargoyleVariants.class), (p_114874_) -> {
                 p_114874_.put(GargoyleVariants.DEFAULT,
-                        ResourceLocation.fromNamespaceAndPath(Spore.MODID, "textures/entity/bile_gargoyle.png"));
+                        ResourceLocation.fromNamespaceAndPath(Spore.MODID, "textures/entity/gargoyle.png"));
                 p_114874_.put(GargoyleVariants.ICHOR,
-                        ResourceLocation.fromNamespaceAndPath(Spore.MODID, "textures/entity/studded_protector.png"));
+                        ResourceLocation.fromNamespaceAndPath(Spore.MODID, "textures/entity/bile_gargoyle.png"));
                 p_114874_.put(GargoyleVariants.BLOOMING,
                         ResourceLocation.fromNamespaceAndPath(Spore.MODID, "textures/entity/blooming_gargoyle.png"));
                 p_114874_.put(GargoyleVariants.BOMBER,
@@ -75,6 +76,11 @@ public class GargoyleRenderer<Type extends Gargoyl> extends BaseInfectedRenderer
     @Override
     public ResourceLocation eyeLayerTexture() {
         return EYES_TEXTURE;
+    }
+
+    @Override
+    protected @Nullable RenderType getRenderType(Type livingEntity, boolean bodyVisible, boolean translucent, boolean glowing) {
+        return super.getRenderType(livingEntity, bodyVisible, livingEntity.getVariant() == GargoyleVariants.ICHOR, glowing);
     }
 
     @Override

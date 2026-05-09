@@ -103,6 +103,7 @@ public class IchorGargoyleModel<T extends Gargoyl> extends EntityModel<T> implem
 		this.leftwing2 = this.BottomWings.getChild("leftwing2");
 	}
 
+
 	public static LayerDefinition createBodyLayer() {
 		MeshDefinition meshdefinition = new MeshDefinition();
 		PartDefinition partdefinition = meshdefinition.getRoot();
