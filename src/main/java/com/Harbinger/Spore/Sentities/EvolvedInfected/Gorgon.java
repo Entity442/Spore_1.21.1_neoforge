@@ -207,7 +207,7 @@ public class Gorgon extends EvolvedInfected {
                     }
                     target.hurt(gorgon.level().damageSources().mobAttack(gorgon),(float)(SConfig.SERVER.gorgon_ranged_damage.get() * 1f));
                     tryToApply(target,MobEffects.MOVEMENT_SLOWDOWN,400,2);
-                    tryToApply(target,Seffects.MYCELIUM,200,1);
+                    tryToApply(target,Seffects.MYCELIUM,400,1);
                     tryToApply(target,MobEffects.BLINDNESS,80,0);
                 }
             }else {
