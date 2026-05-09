@@ -109,6 +109,7 @@ public class Gargoyl extends EvolvedInfected implements FlyingInfected, ArmedInf
         this.playSound(Ssounds.LANDING.value(), 2f, 0.8f);
         if (bomb){
             level().explode(this,this.getBlockX(),this.getBlockY(),this.getBlockZ(),2, Level.ExplosionInteraction.NONE);
+            this.hurt(level().damageSources().generic(),5);
         }
         return false;
     }

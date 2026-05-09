@@ -406,7 +406,7 @@ public class valkyrieGargoyleModel<T extends Gargoyl> extends EntityModel<T> imp
 			}
 		}
 		animateTentacleX(Gargoyle,bodyAngle);
-		float aggressive = entity.isAggressive() ? 90 : 0;
+		float aggressive = entity.isAggressive() ? -90 : 0;
 		animateTentacleX(RightArm,-bodyAngle + defVal+aggressive);
 		animateTentacleX(LeftArm,-bodyAngle + defVal+aggressive);
 		animateTentacleX(LeftLeg,-bodyAngle + moveValue);
