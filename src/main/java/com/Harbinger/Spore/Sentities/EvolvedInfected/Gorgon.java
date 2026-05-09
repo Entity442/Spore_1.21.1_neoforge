@@ -42,7 +42,7 @@ public class Gorgon extends EvolvedInfected {
     protected void addRegularGoals() {
         super.addRegularGoals();
         this.goalSelector.addGoal(3,new GorgonSporeSpewGoal(this));
-        this.goalSelector.addGoal(3, new CustomMeleeAttackGoal(this, 1.1, false) {
+        this.goalSelector.addGoal(4, new CustomMeleeAttackGoal(this, 1.1, false) {
             @Override
             protected double getAttackReachSqr(LivingEntity entity) {
                 return 4.0 + entity.getBbWidth() * entity.getBbWidth();}
