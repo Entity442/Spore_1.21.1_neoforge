@@ -455,7 +455,7 @@ public class Gargoyl extends EvolvedInfected implements FlyingInfected, ArmedInf
         @javax.annotation.Nullable
         private Vec3 findPos() {
             Vec3 vec32 = HoverRandomPos.getPos(gargoyl, 8, 7, gargoyl.getX(), gargoyl.getZ(), 1.5707964F, 3, 1);
-            return vec32 != null ? vec32 : AirAndWaterRandomPos.getPos(gargoyl, 8, 4, -2, gargoyl.getX(), gargoyl.getZ(), 1.5707963705062866);
+            return vec32 != null ? vec32 : AirAndWaterRandomPos.getPos(gargoyl, 12, 4, -2, gargoyl.getX(), gargoyl.getZ(), 1.5707963705062866);
         }
     }
 }
