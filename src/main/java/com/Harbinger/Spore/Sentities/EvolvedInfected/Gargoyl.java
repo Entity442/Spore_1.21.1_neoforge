@@ -274,7 +274,6 @@ public class Gargoyl extends EvolvedInfected implements FlyingInfected, ArmedInf
             }
         });
         this.goalSelector.addGoal(1, new GargoyleDiveGoal(this));
-        this.goalSelector.addGoal(3, new GargoyleWanderGoal(this));
         this.goalSelector.addGoal(4, new RandomLookAroundGoal(this));
         super.registerGoals();
     }
@@ -322,7 +321,6 @@ public class Gargoyl extends EvolvedInfected implements FlyingInfected, ArmedInf
     public static class GargoyleDiveGoal extends Goal {
 
         private final Gargoyl gargoyle;
-        private LivingEntity target;
         private int state = 0;
 
         public GargoyleDiveGoal(Gargoyl mob){
@@ -334,7 +332,7 @@ public class Gargoyl extends EvolvedInfected implements FlyingInfected, ArmedInf
             if (gargoyle.canAttack() || gargoyle.isBomb()){
                 return false;
             }
-            target = gargoyle.getTarget();
+            LivingEntity target = gargoyle.getTarget();
             return target != null && target.isAlive() && gargoyle.distanceTo(target) < 32 && !target.isInWater();
         }
 
@@ -345,7 +343,7 @@ public class Gargoyl extends EvolvedInfected implements FlyingInfected, ArmedInf
 
         @Override
         public void tick(){
-
+            LivingEntity target = gargoyle.getTarget();
             if(target == null) return;
 
             switch (state){
@@ -367,9 +365,7 @@ public class Gargoyl extends EvolvedInfected implements FlyingInfected, ArmedInf
                     }
                     if(gargoyle.distanceToSqr(pos) < 4){
                         if (gargoyle.getVariant() == GargoyleVariants.ICHOR){
-                            if (gargoyle.tickCount % 20 == 0){
-                                createHitBox();
-                            }
+                            createHitBox();
                         }else {
                             state = 1;
                         }
@@ -407,6 +403,7 @@ public class Gargoyl extends EvolvedInfected implements FlyingInfected, ArmedInf
 
         @Override
         public boolean canContinueToUse(){
+            LivingEntity target = gargoyle.getTarget();
             if (gargoyle.isBomb() || target == null){
                 return false;
             }
@@ -416,7 +413,6 @@ public class Gargoyl extends EvolvedInfected implements FlyingInfected, ArmedInf
         @Override
         public void stop(){
             state = 0;
-            target = null;
         }
     }
 
@@ -426,36 +422,5 @@ public class Gargoyl extends EvolvedInfected implements FlyingInfected, ArmedInf
             return false;
         }
         return super.hasLineOfSight(entity);
-    }
-
-    static class GargoyleWanderGoal extends Goal {
-        private final Gargoyl gargoyl;
-
-        GargoyleWanderGoal(Gargoyl gargoyl) {
-            this.gargoyl = gargoyl;
-            this.setFlags(EnumSet.of(Flag.MOVE));
-        }
-
-        public boolean canUse() {
-            return gargoyl.navigation.isDone() && gargoyl.random.nextInt(10) == 0;
-        }
-
-        public boolean canContinueToUse() {
-            return gargoyl.navigation.isInProgress();
-        }
-
-        public void start() {
-            Vec3 vec3 = this.findPos();
-            if (vec3 != null) {
-                gargoyl.navigation.moveTo(gargoyl.navigation.createPath(BlockPos.containing(vec3), 1), 1.0);
-            }
-
-        }
-
-        @javax.annotation.Nullable
-        private Vec3 findPos() {
-            Vec3 vec32 = HoverRandomPos.getPos(gargoyl, 8, 7, gargoyl.getX(), gargoyl.getZ(), 1.5707964F, 3, 1);
-            return vec32 != null ? vec32 : AirAndWaterRandomPos.getPos(gargoyl, 12, 4, -2, gargoyl.getX(), gargoyl.getZ(), 1.5707963705062866);
-        }
     }
 }
