@@ -230,7 +230,7 @@ public class Gargoyl extends EvolvedInfected implements FlyingInfected, ArmedInf
             }
         }
         if (getVariant() == GargoyleVariants.BLOOMING){
-            for (int i = 0;i<5;i++){
+            for (int i = 0;i<10;i++){
                 float randomX = (float) (position().x + (random.nextFloat() -random.nextFloat()) * 6);
                 float randomY = (float) (position().y + (random.nextFloat() -random.nextFloat()) * 6);
                 float randomZ = (float) (position().z + (random.nextFloat() -random.nextFloat()) * 6);
@@ -258,7 +258,7 @@ public class Gargoyl extends EvolvedInfected implements FlyingInfected, ArmedInf
     }
     @Override
     protected void registerGoals() {
-        this.goalSelector.addGoal(1, new CustomMeleeAttackGoal(this, 1.5, false) {
+        this.goalSelector.addGoal(2, new CustomMeleeAttackGoal(this, 1.5, false) {
             @Override
             protected double getAttackReachSqr(LivingEntity entity) {
                 return 3.0 + entity.getBbWidth() * entity.getBbWidth();
@@ -269,8 +269,8 @@ public class Gargoyl extends EvolvedInfected implements FlyingInfected, ArmedInf
                 return super.canUse() && (canAttack() || isBomb());
             }
         });
-        this.goalSelector.addGoal(1, new GargoyleDiveGoal(this));
-        this.goalSelector.addGoal(3, new RandomStrollGoal(this, 1));
+        this.goalSelector.addGoal(3, new GargoyleDiveGoal(this));
+        this.goalSelector.addGoal(2, new RandomStrollGoal(this, 1));
         this.goalSelector.addGoal(4, new RandomLookAroundGoal(this));
         super.registerGoals();
     }
