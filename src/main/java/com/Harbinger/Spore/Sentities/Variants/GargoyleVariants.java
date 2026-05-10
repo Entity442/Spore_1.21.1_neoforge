@@ -7,7 +7,7 @@ public enum GargoyleVariants {
     DEFAULT(0,"default"),
     BLOOMING(1,"spore.entity.variant.blooming"),
     VALKYRIE(2,"spore.entity.variant.valkyrie"),
-    BOMBER(3,"spore.entity.variant.bomber"),
+    BOMBER(3,"spore.entity.variant.madcap"),
     ICHOR(4,"spore.entity.variant.ichor");
 
     private static final GargoyleVariants[] BY_ID = Arrays.stream(values()).sorted(Comparator.
