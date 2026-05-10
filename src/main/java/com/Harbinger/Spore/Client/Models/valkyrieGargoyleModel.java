@@ -390,7 +390,7 @@ public class valkyrieGargoyleModel<T extends Gargoyl> extends EntityModel<T> imp
 		float defValT4 = Mth.sin(ageInTicks/5)/8;
 		float bodyAngle = angle * 0.025f;
 		this.Head.yRot = netHeadYaw / (180F / (float) Math.PI);
-		this.Head.xRot = headPitch /  ( 90F / (float) Math.PI) -bodyAngle;
+		this.Head.xRot = headPitch /  ( 90F / (float) Math.PI) -bodyAngle * 2f;
 		float wingRotation = Mth.sin(ageInTicks)/2;
 		animateTentacleY(LeftWing,wingRotation);
 		animateTentacleY(RightWing,-wingRotation);

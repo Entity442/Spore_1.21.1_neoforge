@@ -1,6 +1,7 @@
 package com.Harbinger.Spore.Sentities.EvolvedInfected;
 
 import com.Harbinger.Spore.ExtremelySusThings.Utilities;
+import com.Harbinger.Spore.Fluids.BileLiquid;
 import com.Harbinger.Spore.Sentities.AI.CustomMeleeAttackGoal;
 import com.Harbinger.Spore.Sentities.AI.HurtTargetGoal;
 import com.Harbinger.Spore.Sentities.AI.NeuralProcessing.Experimental.ExpAirPathNavigation;
@@ -13,9 +14,12 @@ import com.Harbinger.Spore.Sentities.MovementControls.InfectedArialMovementContr
 import com.Harbinger.Spore.Sentities.VariantKeeper;
 import com.Harbinger.Spore.Sentities.Variants.GargoyleVariants;
 import com.Harbinger.Spore.core.SConfig;
+import com.Harbinger.Spore.core.Seffects;
+import com.Harbinger.Spore.core.Sparticles;
 import com.Harbinger.Spore.core.Ssounds;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -26,6 +30,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -85,7 +90,7 @@ public class Gargoyl extends EvolvedInfected implements FlyingInfected, ArmedInf
     public boolean isBomb(){return getVariant() == GargoyleVariants.BOMBER && getHealth() <= getMaxHealth()/4;}
 
     public boolean causeFallDamage(float damage_val, float protection_val, DamageSource source) {
-        if (fallDistance < 3 || !isAlive()) return false;
+        if (fallDistance < 3 || !isAlive() || getVariant() == GargoyleVariants.ICHOR) return false;
         boolean bomb = getVariant() == GargoyleVariants.BOMBER && getHealth() > getMaxHealth()/4;;
         if (getVariant() == GargoyleVariants.VALKYRIE){
             setAttackTicks(80);
@@ -212,6 +217,14 @@ public class Gargoyl extends EvolvedInfected implements FlyingInfected, ArmedInf
         if (canAttack()){
             setAttackTicks(getAttackTicks()-1);
         }
+        if (getVariant() == GargoyleVariants.ICHOR){
+            for (int i = 0;i<5;i++){
+                float randomX = (float) (position().x + (random.nextFloat() -random.nextFloat()) * 1.2);
+                float randomY = (float) (position().y + (random.nextFloat() -random.nextFloat()) * 1.2);
+                float randomZ = (float) (position().z + (random.nextFloat() -random.nextFloat()) * 1.2);
+                this.level().addParticle(ParticleTypes.FALLING_HONEY,randomX,randomY,randomZ,0,-1,0);
+            }
+        }
     }
 
     @Override
@@ -324,7 +337,7 @@ public class Gargoyl extends EvolvedInfected implements FlyingInfected, ArmedInf
                 case 0 -> {
                     Vec3 pos = new Vec3(
                             target.getX(),
-                            target.getY() + 10,
+                            target.getY() + (gargoyle.getVariant() == GargoyleVariants.ICHOR ? 5 : 10),
                             target.getZ()
                     );
 
@@ -337,7 +350,13 @@ public class Gargoyl extends EvolvedInfected implements FlyingInfected, ArmedInf
                         );
                     }
                     if(gargoyle.distanceToSqr(pos) < 4){
-                        state = 1;
+                        if (gargoyle.getVariant() == GargoyleVariants.ICHOR){
+                            if (gargoyle.tickCount % 20 == 0){
+                                createHitBox();
+                            }
+                        }else {
+                            state = 1;
+                        }
                     }
                 }
 
@@ -346,7 +365,6 @@ public class Gargoyl extends EvolvedInfected implements FlyingInfected, ArmedInf
                             gargoyle.getDeltaMovement().add(0, -1.6, 0)
                     );
                     gargoyle.hurtMarked = true;
-
                     if(gargoyle.onGround()){
                         state = 2;
                     }
@@ -355,9 +373,27 @@ public class Gargoyl extends EvolvedInfected implements FlyingInfected, ArmedInf
                 case 2 -> stop();
             }
         }
+        public void createHitBox(){
+            AABB aabb = gargoyle.getBoundingBox().inflate(1,6,1).move(0,-4,0);
+            List<Entity> entities = gargoyle.level().getEntities(gargoyle,aabb);
+            for (Entity entity : entities){
+                if (entity instanceof LivingEntity living && Utilities.TARGET_SELECTOR.Test(living)){
+                    living.addEffect(new MobEffectInstance(Seffects.MYCELIUM,400,1),gargoyle);
+                    for (MobEffectInstance instance : BileLiquid.bileEffects()){
+                        living.addEffect(instance);
+                    }
+                }
+            }
+            if (entities.isEmpty()){
+                state = 1;
+            }
+        }
 
         @Override
         public boolean canContinueToUse(){
+            if (gargoyle.isBomb()){
+                return false;
+            }
             return state != 2 && gargoyle.isAlive();
         }
 
