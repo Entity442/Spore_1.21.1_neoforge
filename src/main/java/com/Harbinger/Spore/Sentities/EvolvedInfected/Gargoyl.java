@@ -158,7 +158,7 @@ public class Gargoyl extends EvolvedInfected implements FlyingInfected, ArmedInf
     public void travel(Vec3 vec) {
         if (this.isEffectiveAi() && !this.onGround()) {
             this.moveRelative(0.1F, vec);
-            this.move(MoverType.SELF, this.getDeltaMovement().scale(isInWater() ? 0.2 : 1f));
+            this.move(MoverType.SELF, this.getDeltaMovement().scale(isInWater() ? 0.2 : this.getVariant() == GargoyleVariants.BLOOMING ? 0.5 : 1f));
             this.setDeltaMovement(this.getDeltaMovement().scale(0.85D));
         } else {
             super.travel(vec);
@@ -234,7 +234,7 @@ public class Gargoyl extends EvolvedInfected implements FlyingInfected, ArmedInf
                 float randomX = (float) (position().x + (random.nextFloat() -random.nextFloat()) * 6);
                 float randomY = (float) (position().y + (random.nextFloat() -random.nextFloat()) * 6);
                 float randomZ = (float) (position().z + (random.nextFloat() -random.nextFloat()) * 6);
-                this.level().addParticle(ParticleTypes.FALLING_HONEY,randomX,randomY,randomZ,0,-1,0);
+                this.level().addParticle(ParticleTypes.SPORE_BLOSSOM_AIR,randomX,randomY,randomZ,0,0,0);
             }
         }
     }
@@ -320,11 +320,9 @@ public class Gargoyl extends EvolvedInfected implements FlyingInfected, ArmedInf
         private final Gargoyl gargoyle;
         private LivingEntity target;
         private int state = 0;
-        private final boolean bloom;
 
         public GargoyleDiveGoal(Gargoyl mob){
             this.gargoyle = mob;
-            bloom = mob.getVariant() == GargoyleVariants.BLOOMING;
         }
 
         @Override
@@ -356,7 +354,7 @@ public class Gargoyl extends EvolvedInfected implements FlyingInfected, ArmedInf
                     );
 
                     gargoyle.getMoveControl().setWantedPosition(
-                            pos.x, pos.y, pos.z, bloom ? 0.6 : 1.2
+                            pos.x, pos.y, pos.z, 1.2
                     );
                     if (pos.y > gargoyle.getY()){
                         gargoyle.setDeltaMovement(
