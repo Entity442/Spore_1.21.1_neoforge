@@ -15,7 +15,6 @@ import com.Harbinger.Spore.Sentities.VariantKeeper;
 import com.Harbinger.Spore.Sentities.Variants.GargoyleVariants;
 import com.Harbinger.Spore.core.SConfig;
 import com.Harbinger.Spore.core.Seffects;
-import com.Harbinger.Spore.core.Sparticles;
 import com.Harbinger.Spore.core.Ssounds;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
@@ -31,6 +30,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -143,10 +143,14 @@ public class Gargoyl extends EvolvedInfected implements FlyingInfected, ArmedInf
         }
         instance.setBaseValue(SConfig.SERVER.gargoyle_damage.get() * SConfig.SERVER.global_damage.get() * multiplier);
         AABB aabb = this.getBoundingBox().inflate(range);
+        boolean bloom = getVariant() == GargoyleVariants.BLOOMING;
         List<Entity> entities = level().getEntities(this,aabb);
         for (Entity entity : entities){
             if (entity instanceof LivingEntity living && Utilities.TARGET_SELECTOR.Test(living)){
                 this.doHurtTarget(living);
+                if (bloom){
+                    living.addEffect(new MobEffectInstance(MobEffects.POISON,400,1));
+                }
             }
         }
     }
@@ -222,6 +226,14 @@ public class Gargoyl extends EvolvedInfected implements FlyingInfected, ArmedInf
                 float randomX = (float) (position().x + (random.nextFloat() -random.nextFloat()) * 1.2);
                 float randomY = (float) (position().y + (random.nextFloat() -random.nextFloat()) * 1.2);
                 float randomZ = (float) (position().z + (random.nextFloat() -random.nextFloat()) * 1.2);
+                this.level().addParticle(ParticleTypes.FALLING_HONEY,randomX,randomY,randomZ,0,-1,0);
+            }
+        }
+        if (getVariant() == GargoyleVariants.BLOOMING){
+            for (int i = 0;i<5;i++){
+                float randomX = (float) (position().x + (random.nextFloat() -random.nextFloat()) * 6);
+                float randomY = (float) (position().y + (random.nextFloat() -random.nextFloat()) * 6);
+                float randomZ = (float) (position().z + (random.nextFloat() -random.nextFloat()) * 6);
                 this.level().addParticle(ParticleTypes.FALLING_HONEY,randomX,randomY,randomZ,0,-1,0);
             }
         }
@@ -308,9 +320,11 @@ public class Gargoyl extends EvolvedInfected implements FlyingInfected, ArmedInf
         private final Gargoyl gargoyle;
         private LivingEntity target;
         private int state = 0;
+        private final boolean bloom;
 
         public GargoyleDiveGoal(Gargoyl mob){
             this.gargoyle = mob;
+            bloom = mob.getVariant() == GargoyleVariants.BLOOMING;
         }
 
         @Override
@@ -342,7 +356,7 @@ public class Gargoyl extends EvolvedInfected implements FlyingInfected, ArmedInf
                     );
 
                     gargoyle.getMoveControl().setWantedPosition(
-                            pos.x, pos.y, pos.z, 1.2
+                            pos.x, pos.y, pos.z, bloom ? 0.6 : 1.2
                     );
                     if (pos.y > gargoyle.getY()){
                         gargoyle.setDeltaMovement(
@@ -391,7 +405,7 @@ public class Gargoyl extends EvolvedInfected implements FlyingInfected, ArmedInf
 
         @Override
         public boolean canContinueToUse(){
-            if (gargoyle.isBomb()){
+            if (gargoyle.isBomb() || target == null){
                 return false;
             }
             return state != 2 && gargoyle.isAlive();
