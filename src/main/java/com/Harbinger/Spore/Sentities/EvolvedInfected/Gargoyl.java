@@ -39,6 +39,9 @@ import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.ai.util.AirAndWaterRandomPos;
+import net.minecraft.world.entity.ai.util.HoverRandomPos;
+import net.minecraft.world.entity.animal.Bee;
 import net.minecraft.world.entity.item.FallingBlockEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -49,6 +52,7 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.EnumSet;
 import java.util.List;
 
 public class Gargoyl extends EvolvedInfected implements FlyingInfected, ArmedInfected,HasUsableSlot , VariantKeeper {
@@ -269,8 +273,8 @@ public class Gargoyl extends EvolvedInfected implements FlyingInfected, ArmedInf
                 return super.canUse() && (canAttack() || isBomb());
             }
         });
-        this.goalSelector.addGoal(3, new GargoyleDiveGoal(this));
-        this.goalSelector.addGoal(2, new RandomStrollGoal(this, 1));
+        this.goalSelector.addGoal(1, new GargoyleDiveGoal(this));
+        this.goalSelector.addGoal(3, new GargoyleWanderGoal(this));
         this.goalSelector.addGoal(4, new RandomLookAroundGoal(this));
         super.registerGoals();
     }
@@ -422,5 +426,36 @@ public class Gargoyl extends EvolvedInfected implements FlyingInfected, ArmedInf
             return false;
         }
         return super.hasLineOfSight(entity);
+    }
+
+    static class GargoyleWanderGoal extends Goal {
+        private final Gargoyl gargoyl;
+
+        GargoyleWanderGoal(Gargoyl gargoyl) {
+            this.gargoyl = gargoyl;
+            this.setFlags(EnumSet.of(Flag.MOVE));
+        }
+
+        public boolean canUse() {
+            return gargoyl.navigation.isDone() && gargoyl.random.nextInt(10) == 0;
+        }
+
+        public boolean canContinueToUse() {
+            return gargoyl.navigation.isInProgress();
+        }
+
+        public void start() {
+            Vec3 vec3 = this.findPos();
+            if (vec3 != null) {
+                gargoyl.navigation.moveTo(gargoyl.navigation.createPath(BlockPos.containing(vec3), 1), 1.0);
+            }
+
+        }
+
+        @javax.annotation.Nullable
+        private Vec3 findPos() {
+            Vec3 vec32 = HoverRandomPos.getPos(gargoyl, 8, 7, gargoyl.getX(), gargoyl.getZ(), 1.5707964F, 3, 1);
+            return vec32 != null ? vec32 : AirAndWaterRandomPos.getPos(gargoyl, 8, 4, -2, gargoyl.getX(), gargoyl.getZ(), 1.5707963705062866);
+        }
     }
 }
