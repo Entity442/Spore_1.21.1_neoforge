@@ -43,7 +43,7 @@ public class Gorgon extends EvolvedInfected {
     @Override
     protected void addRegularGoals() {
         super.addRegularGoals();
-        this.goalSelector.addGoal(2, new GorgonHybridAttackGoal(this, 1.3, false) {
+        this.goalSelector.addGoal(2, new GorgonHybridAttackGoal(this, 1.3, true) {
             @Override
             protected double getAttackReachSqr(LivingEntity entity) {
                 return 4.0 + entity.getBbWidth() * entity.getBbWidth();}
@@ -179,7 +179,7 @@ public class Gorgon extends EvolvedInfected {
         private long lastCanUseCheck;
         private static final long COOLDOWN_BETWEEN_CAN_USE_CHECKS = 20L;
         private int failedPathFindingPenalty = 0;
-        private boolean canPenalize = false;
+        private final boolean canPenalize = false;
         private static final double RANGED_ATTACK_RANGE = 25.0;
         private boolean canShoot;
 
