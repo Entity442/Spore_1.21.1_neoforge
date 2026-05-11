@@ -578,6 +578,7 @@ public class Naiad extends EvolvedInfected implements WaterInfected , VariantKee
         if (!isCharging() && getTridentCharge() < 200 && getVariant() == NaiadVariants.TRITON){
             tickCharge();
         }
+
         if (isInWater()){
             if (isCharging() && chargeTarget != null) {
                 performChargeMovement();
@@ -601,6 +602,10 @@ public class Naiad extends EvolvedInfected implements WaterInfected , VariantKee
 
                 this.yBodyRot = lerpRotation(this.yRotO, this.getYRot());
             }
+        }else {
+            if (isCharging()){
+                stopCharge();
+            }
         }
     }
 
@@ -617,12 +622,12 @@ public class Naiad extends EvolvedInfected implements WaterInfected , VariantKee
         return Mth.lerp(0.2F, currentRotation, targetRotation);
     }
     private void performChargeMovement() {
-        if (!(this.level() instanceof ServerLevel serverLevel)) return;
-
-        if (chargeTarget == null || !isCharging() || !this.isInWater()) {
+        if (chargeTarget == null || !isCharging()) {
             stopCharge();
             return;
         }
+
+        if (!(this.level() instanceof ServerLevel serverLevel)) return;
 
         Vec3 currentPos = this.position();
         Vec3 direction = chargeTarget.subtract(currentPos);
@@ -719,6 +724,7 @@ public class Naiad extends EvolvedInfected implements WaterInfected , VariantKee
                     && target != null
                     && target.isAlive()
                     && naiad.isInWater()
+                    && !naiad.isCharging()
                     && naiad.distanceToSqr(target) > 4.0
                     && naiad.distanceToSqr(target) < 256.0
                     && naiad.hasLineOfSight(target);
