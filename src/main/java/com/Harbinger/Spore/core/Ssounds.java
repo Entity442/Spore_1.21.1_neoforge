@@ -384,7 +384,7 @@ public class Ssounds {
 
     public static final Holder<SoundEvent> BIOGUN_HIT_PLAYER = soundRegistry("biogun_hit_player");
 
-
+    public static final Holder<SoundEvent> GORGON_SPEW = soundRegistry("gorgon_spew");
 
 
     ///SONGS///
