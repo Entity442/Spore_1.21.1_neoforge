@@ -5,7 +5,6 @@ import com.Harbinger.Spore.ExtremelySusThings.Utilities;
 import com.Harbinger.Spore.core.Seffects;
 import com.Harbinger.Spore.core.Sparticles;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -31,11 +30,6 @@ public class Acid extends Block {
         {
             return box(0, 0, 0, 16, 1, 16).move(offset.x, offset.y, offset.z);
         }
-    }
-    @Override
-    public void onPlace(BlockState blockstate, Level world, BlockPos pos, BlockState oldState, boolean moving) {
-        super.onPlace(blockstate, world, pos, oldState, moving);
-        world.scheduleTick(pos, this, 1);
     }
 
     @Override

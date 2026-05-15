@@ -2,6 +2,10 @@ package com.Harbinger.Spore.core;
 
 
 import com.Harbinger.Spore.Sblocks.*;
+import com.Harbinger.Spore.Sblocks.Lights.BrokenHalogenLight;
+import com.Harbinger.Spore.Sblocks.Lights.BrokenHalogenLightOn;
+import com.Harbinger.Spore.Sblocks.Lights.HalogenLight;
+import com.Harbinger.Spore.Sblocks.Lights.HalogenLightOn;
 import com.Harbinger.Spore.Spore;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.level.block.*;
@@ -135,6 +139,11 @@ public class Sblocks {
 
     public static final DeferredBlock<Block> LABORATORY_BED = BLOCKS.register("laboratory_bed", () -> new LabBedBlock(LabBedBlock.defaultProperties));
     public static final DeferredBlock<Block> ORGANITE = BLOCKS.register("organite", OrganiteBlock::new);
+
+    public static final DeferredBlock<Block> HALOGEN_LIGHT = BLOCKS.register("halogen_light", HalogenLight::new);
+    public static final DeferredBlock<Block> HALOGEN_LIGHT_ON = BLOCKS.register("halogen_light_on", HalogenLightOn::new);
+    public static final DeferredBlock<Block> BROKEN_HALOGEN_LIGHT = BLOCKS.register("broken_halogen_light", BrokenHalogenLight::new);
+    public static final DeferredBlock<Block> BROKEN_HALOGEN_LIGHT_ON = BLOCKS.register("broken_halogen_light_on", BrokenHalogenLightOn::new);
 
 
 }

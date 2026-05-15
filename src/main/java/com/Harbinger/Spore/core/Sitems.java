@@ -599,6 +599,8 @@ public class Sitems {
     public static final DeferredItem<Item> REINFORCED_DOOR = Techblock(Sblocks.REINFORCED_DOOR);
     public static final DeferredItem<Item> FROZEN_REINFORCED_DOOR = Techblock(Sblocks.FROZEN_REINFORCED_DOOR);
     public static final DeferredItem<Item> RUSTED_REINFORCED_DOOR = Techblock(Sblocks.RUSTED_REINFORCED_DOOR);
+    public static final DeferredItem<Item> HALOGEN_LIGHT = Techblock(Sblocks.HALOGEN_LIGHT);
+    public static final DeferredItem<Item> BROKEN_HALOGEN_LIGHT = Techblock(Sblocks.BROKEN_HALOGEN_LIGHT);
 
     public static final DeferredItem<Item> GROWTHS_BIG = block(Sblocks.GROWTHS_BIG);
     public static final DeferredItem<Item> GROWTHS_SMALL = block(Sblocks.GROWTHS_SMALL);
