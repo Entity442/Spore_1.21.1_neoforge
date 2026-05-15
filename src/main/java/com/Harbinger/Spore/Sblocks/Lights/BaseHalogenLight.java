@@ -51,16 +51,20 @@ public class BaseHalogenLight extends Block {
         else if (!hasSignal && isCurrentlyOn) {
             turnOff(level, pos);
         }
-        level.updateNeighborsAt(pos, this);
-        level.updateNeighborsAt(pos.below(), this);
     }
 
     private void turnOn(Level level, BlockPos startPos) {
-        level.setBlock(startPos,getOnBlock().defaultBlockState(),3);
+        Block block = getOnBlock();
+        level.updateNeighborsAt(startPos, block);
+        level.updateNeighborsAt(startPos.below(), block);
+        level.setBlock(startPos,block.defaultBlockState(),3);
     }
 
     private void turnOff(Level level, BlockPos startPos) {
-        level.setBlock(startPos,getOffBlock().defaultBlockState(),3);
+        Block block = getOffBlock();
+        level.updateNeighborsAt(startPos, block);
+        level.updateNeighborsAt(startPos.below(), block);
+        level.setBlock(startPos,block.defaultBlockState(),3);
     }
 
 }
