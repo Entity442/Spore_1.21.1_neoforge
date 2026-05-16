@@ -35,7 +35,7 @@ public class Reaver extends SwordItem implements LootModifierWeapon {
         }
         @Override
         public float getSpeed() {
-            return -1;
+            return -2;
         }
 
         @Override
@@ -59,7 +59,7 @@ public class Reaver extends SwordItem implements LootModifierWeapon {
         }
     };
     public Reaver() {
-        super(PCI_TIER, new Properties().attributes(SwordItem.createAttributes(PCI_TIER,0,-1)));
+        super(PCI_TIER, new Properties().attributes(SwordItem.createAttributes(PCI_TIER,0,-2)));
         Sitems.TECHNOLOGICAL_ITEMS.add(this);
         basicInfectedList = calculateMap(SConfig.SERVER.reaver_loot.get());
         evolvedList = calculateMap(SConfig.SERVER.reaver_loot1.get());
