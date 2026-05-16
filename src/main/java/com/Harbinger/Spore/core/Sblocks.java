@@ -136,6 +136,7 @@ public class Sblocks {
     public static final DeferredBlock<Block> ROTTEN_CROPS = BLOCKS.register("rotten_crops", FungalCrops::new);
     public static final DeferredBlock<Block> BIOMASS_LUMP = BLOCKS.register("biomass_lump", BiomassLump::new);
     public static final DeferredBlock<Block> HIVE_SPAWN = BLOCKS.register("hive_spawn", () -> new HiveSpawn(HiveSpawn.defaultProperties));
+    public static final DeferredBlock<Block> FUNGAL_CLAMP = BLOCKS.register("fungal_clamp", FungalClamp::new);
 
     public static final DeferredBlock<Block> LABORATORY_BED = BLOCKS.register("laboratory_bed", () -> new LabBedBlock(LabBedBlock.defaultProperties));
     public static final DeferredBlock<Block> ORGANITE = BLOCKS.register("organite", OrganiteBlock::new);
