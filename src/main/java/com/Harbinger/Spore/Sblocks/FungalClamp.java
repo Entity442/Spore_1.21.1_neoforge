@@ -41,20 +41,21 @@ public class FungalClamp extends GenericFoliageBlock{
     @Override
     protected void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
         super.entityInside(state, level, pos, entity);
-        if (entity instanceof LivingEntity living && Utilities.TARGET_SELECTOR.Test(living) && !level.isClientSide) {
+        if (entity instanceof LivingEntity living && Utilities.TARGET_SELECTOR.Test(living)) {
             if (state.getValue(OPEN)){
                 level.setBlock(pos, level.getBlockState(pos).setValue(OPEN, false), Block.UPDATE_ALL);
                 AABB aabb = new AABB(
                         pos.getX() - 1, pos.getY() - 1, pos.getZ() - 1,
                         pos.getX() + 2, pos.getY() + 2, pos.getZ() + 2
                 );
+                living.hurt(level.damageSources().cactus(),10);
                 spreadInfection(level,aabb);
             }else {
-                living.makeStuckInBlock(state, new Vec3((double)0.1F, 0.5D, (double)0.1F));
-                if (living.tickCount % 200 == 0){
+                if (living.tickCount % 200 == 0 && !level.isClientSide()){
                     injectSpores(living);
                 }
             }
+            entity.makeStuckInBlock(state, new Vec3((double)0.1F, 0.2D, (double)0.1F));
         }
     }
 
