@@ -9,6 +9,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
@@ -18,6 +19,8 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 import java.util.List;
 
@@ -26,7 +29,12 @@ public class FungalClamp extends GenericFoliageBlock{
     public FungalClamp() {
         super(Properties.of().sound(SoundType.CROP).strength(1f, 1f).randomTicks().noCollission().noOcclusion().sound(SoundType.CROP));
     }
-
+    @Override
+    public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
+        {
+            return box(2, 0, 2, 14, 12, 14);
+        }
+    }
     public boolean canSurvive(BlockState state, LevelReader levelReader, BlockPos pos) {
         BlockState blockState = levelReader.getBlockState(pos.below());
         return blockState.canOcclude();
