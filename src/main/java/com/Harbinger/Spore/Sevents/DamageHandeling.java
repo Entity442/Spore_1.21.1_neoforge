@@ -63,7 +63,7 @@ public class DamageHandeling {
                 int freezeDamage = charge >= targetHealth ? (int) targetHealth : charge;
                 boolean freeze = target.getType().is(EntityTypeTags.FREEZE_HURTS_EXTRA_TYPES);
                 modified = clampMin(modified, (float) (freeze ? freezeDamage * dmgMod : freezeDamage));
-                target.setTicksFrozen(600);
+                target.addEffect(new MobEffectInstance(Seffects.FROSTBITE,2400,4));
 
                 pci.setCharge(weapon, charge - freezeDamage);
 

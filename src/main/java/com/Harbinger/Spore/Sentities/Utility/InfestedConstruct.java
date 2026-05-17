@@ -7,6 +7,8 @@ import com.Harbinger.Spore.Sentities.AI.AOEMeleeAttackGoal;
 import com.Harbinger.Spore.Sentities.BaseEntities.Hyper;
 import com.Harbinger.Spore.Sentities.BaseEntities.Infected;
 import com.Harbinger.Spore.Sentities.BaseEntities.UtilityEntity;
+import com.Harbinger.Spore.Sentities.ColdEndurance;
+import com.Harbinger.Spore.Sentities.ColdWeakness;
 import com.Harbinger.Spore.Sentities.Projectile.ThrownBlockProjectile;
 import com.Harbinger.Spore.core.SConfig;
 import com.Harbinger.Spore.core.Sblocks;
@@ -54,7 +56,7 @@ import java.util.*;
 
 import static com.Harbinger.Spore.ExtremelySusThings.Utilities.biomass;
 
-public class InfestedConstruct extends UtilityEntity implements RangedAttackMob, Enemy {
+public class InfestedConstruct extends UtilityEntity implements RangedAttackMob, Enemy, ColdWeakness {
     public static final EntityDataAccessor<Boolean> ACTIVE = SynchedEntityData.defineId(InfestedConstruct.class, EntityDataSerializers.BOOLEAN);
     public static final EntityDataAccessor<Boolean> DISPENSER = SynchedEntityData.defineId(InfestedConstruct.class, EntityDataSerializers.BOOLEAN);
     public static final EntityDataAccessor<Float> MACHINE_HEALTH = SynchedEntityData.defineId(InfestedConstruct.class, EntityDataSerializers.FLOAT);
@@ -515,5 +517,10 @@ public class InfestedConstruct extends UtilityEntity implements RangedAttackMob,
     private void dropIron(){
         ItemEntity itemEntity = new ItemEntity(level(),this.getX(),this.getY(),this.getZ(),new ItemStack(Items.IRON_INGOT,random.nextInt(1,5)));
         level().addFreshEntity(itemEntity);
+    }
+
+    @Override
+    public ColdEndurance getEndurance() {
+        return ColdEndurance.ABNORMALS;
     }
 }

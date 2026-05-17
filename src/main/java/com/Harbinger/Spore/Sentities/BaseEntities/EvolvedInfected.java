@@ -2,6 +2,7 @@ package com.Harbinger.Spore.Sentities.BaseEntities;
 
 
 import com.Harbinger.Spore.ExtremelySusThings.Utilities;
+import com.Harbinger.Spore.Sentities.ColdEndurance;
 import com.Harbinger.Spore.core.SConfig;
 import com.Harbinger.Spore.core.Ssounds;
 import net.minecraft.core.BlockPos;
@@ -53,5 +54,9 @@ public class EvolvedInfected extends Infected {
     @Override
     public boolean removeWhenFarAway(double p_21542_) {
         return this.getLinked() && !(this instanceof com.Harbinger.Spore.Sentities.EvolvedInfected.Scamper);
+    }
+    @Override
+    public ColdEndurance getEndurance() {
+        return ColdEndurance.EVOLVED;
     }
 }

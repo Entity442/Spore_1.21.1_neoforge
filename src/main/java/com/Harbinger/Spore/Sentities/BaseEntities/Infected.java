@@ -7,6 +7,8 @@ import com.Harbinger.Spore.Sentities.AI.LocHiv.BufferAI;
 import com.Harbinger.Spore.Sentities.AI.LocHiv.FollowOthersGoal;
 import com.Harbinger.Spore.Sentities.AI.LocHiv.SearchAreaGoal;
 import com.Harbinger.Spore.Sentities.ArmedInfected;
+import com.Harbinger.Spore.Sentities.ColdEndurance;
+import com.Harbinger.Spore.Sentities.ColdWeakness;
 import com.Harbinger.Spore.Sentities.EvolvingInfected;
 import com.Harbinger.Spore.core.*;
 import com.Harbinger.Spore.Sentities.AI.FloatDiveGoal;
@@ -53,7 +55,7 @@ import java.util.function.Predicate;
 import static net.minecraft.world.entity.monster.Monster.isDarkEnoughToSpawn;
 
 
-public class Infected extends UtilityEntity implements Enemy {
+public class Infected extends UtilityEntity implements Enemy, ColdWeakness {
     public static final EntityDataAccessor<Integer> HUNGER = SynchedEntityData.defineId(Infected.class, EntityDataSerializers.INT);
     public static final EntityDataAccessor<Integer> KILLS = SynchedEntityData.defineId(Infected.class, EntityDataSerializers.INT);
     public static final EntityDataAccessor<Integer> EVOLUTION_POINTS = SynchedEntityData.defineId(Infected.class, EntityDataSerializers.INT);
@@ -205,8 +207,7 @@ public class Infected extends UtilityEntity implements Enemy {
         if (!SConfig.SERVER.weaktocold.get()) return;
         if (!isInPowderSnow && !isFreazing()) return;
 
-        addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 100, 1, false, false), this);
-        addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 100, 0, false, false), this);
+        addEffect(new MobEffectInstance(Seffects.FROSTBITE, 100, 0, false, false), this);
     }
     private boolean canGrief() {
         return EventHooks.canEntityGrief(level(), this);
@@ -496,4 +497,8 @@ public class Infected extends UtilityEntity implements Enemy {
         return super.hasLineOfSight(entity);
     }
 
+    @Override
+    public ColdEndurance getEndurance() {
+        return ColdEndurance.INFECTED;
+    }
 }

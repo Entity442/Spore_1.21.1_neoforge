@@ -7,6 +7,7 @@ import com.Harbinger.Spore.Sentities.AI.FloatDiveGoal;
 import com.Harbinger.Spore.Sentities.AI.LocHiv.BufferAI;
 import com.Harbinger.Spore.Sentities.AI.LocHiv.LocalTargettingGoal;
 import com.Harbinger.Spore.Sentities.AI.LocHiv.SearchAreaGoal;
+import com.Harbinger.Spore.Sentities.ColdEndurance;
 import com.Harbinger.Spore.core.SConfig;
 import com.Harbinger.Spore.core.Sblocks;
 import com.Harbinger.Spore.core.Ssounds;
@@ -48,7 +49,10 @@ public class Hyper extends Infected{
     protected int calculateFallDamage(float p_149389_, float p_149390_) {
         return super.calculateFallDamage(p_149389_, p_149390_) - 5;
     }
-
+    @Override
+    public ColdEndurance getEndurance() {
+        return ColdEndurance.HYPER;
+    }
     @Override
     protected void addRegularGoals() {
         this.goalSelector.addGoal(3,new LocalTargettingGoal(this));

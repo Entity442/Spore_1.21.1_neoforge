@@ -1,5 +1,6 @@
 package com.Harbinger.Spore.Sentities.BaseEntities;
 
+import com.Harbinger.Spore.Sentities.ColdEndurance;
 import com.Harbinger.Spore.core.SConfig;
 import com.Harbinger.Spore.Sentities.AI.LocHiv.BufferAI;
 import com.Harbinger.Spore.Sentities.AI.LocHiv.SearchAreaGoal;
@@ -98,5 +99,10 @@ public class Experiment extends Infected{
             setDormant(true);
         }
         return super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData);
+    }
+
+    @Override
+    public ColdEndurance getEndurance() {
+        return ColdEndurance.EVOLVED;
     }
 }

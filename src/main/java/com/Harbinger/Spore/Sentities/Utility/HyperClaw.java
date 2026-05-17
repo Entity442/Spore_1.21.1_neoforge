@@ -4,6 +4,8 @@ import com.Harbinger.Spore.Sentities.AI.CustomMeleeAttackGoal;
 import com.Harbinger.Spore.Sentities.AI.HybridPathNavigation;
 import com.Harbinger.Spore.Sentities.AI.LeapGoal;
 import com.Harbinger.Spore.Sentities.BaseEntities.UtilityEntity;
+import com.Harbinger.Spore.Sentities.ColdEndurance;
+import com.Harbinger.Spore.Sentities.ColdWeakness;
 import com.Harbinger.Spore.Sentities.MovementControls.InfectedWallMovementControl;
 import com.Harbinger.Spore.core.SConfig;
 import com.Harbinger.Spore.core.Seffects;
@@ -21,7 +23,7 @@ import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
 
-public class HyperClaw extends UtilityEntity {
+public class HyperClaw extends UtilityEntity implements ColdWeakness {
     public HyperClaw(EntityType<? extends PathfinderMob> type, Level level) {
         super(type, level);
         this.moveControl = new InfectedWallMovementControl(this);
@@ -94,5 +96,10 @@ public class HyperClaw extends UtilityEntity {
         super.positionRider(entity, callback);
         Vec3 vec3 = (new Vec3(-0.1D, 0.D, 0.0D)).yRot(-this.getYRot() * ((float)Math.PI / 180F) - ((float)Math.PI / 2F));
         entity.setPos(this.getX() + vec3.x, this.getY() + 0.6,this.getZ()+ vec3.z);
+    }
+
+    @Override
+    public ColdEndurance getEndurance() {
+        return ColdEndurance.EVOLVED;
     }
 }

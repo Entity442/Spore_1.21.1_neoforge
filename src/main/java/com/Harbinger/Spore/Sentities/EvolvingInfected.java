@@ -5,6 +5,7 @@ import com.Harbinger.Spore.Sentities.BaseEntities.Infected;
 import com.Harbinger.Spore.Sentities.EvolvedInfected.Scamper;
 import com.Harbinger.Spore.Sentities.Variants.ScamperVariants;
 import com.Harbinger.Spore.core.SConfig;
+import com.Harbinger.Spore.core.Seffects;
 import com.Harbinger.Spore.core.Sentities;
 import com.Harbinger.Spore.core.Ssounds;
 import net.minecraft.core.BlockPos;
@@ -16,7 +17,6 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -35,7 +35,7 @@ public interface EvolvingInfected {
                 if (infected.getEvolutionCoolDown() >= SConfig.SERVER.evolution_age_human.get()){
                     this.Evolve(infected,value,variants);
                 }else{
-                    if (!infected.hasEffect(MobEffects.WEAKNESS))
+                    if (!infected.hasEffect(Seffects.FROSTBITE))
                         infected.setEvolution(infected.getEvolutionCoolDown()+1);
                 }
             }
@@ -47,7 +47,7 @@ public interface EvolvingInfected {
                 if (infected.getEvolutionCoolDown() >= SConfig.SERVER.evolution_age_human.get()){
                     this.HyperEvolve(infected);
                 }else{
-                    if (!infected.hasEffect(MobEffects.WEAKNESS))
+                    if (!infected.hasEffect(Seffects.FROSTBITE))
                         infected.setEvolution(infected.getEvolutionCoolDown()+1);
                 }
             }

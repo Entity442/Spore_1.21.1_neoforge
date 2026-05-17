@@ -3,6 +3,8 @@ package com.Harbinger.Spore.Sentities.Utility;
 import com.Harbinger.Spore.Sentities.AI.CustomMeleeAttackGoal;
 import com.Harbinger.Spore.Sentities.AI.PullGoal;
 import com.Harbinger.Spore.Sentities.BaseEntities.UtilityEntity;
+import com.Harbinger.Spore.Sentities.ColdEndurance;
+import com.Harbinger.Spore.Sentities.ColdWeakness;
 import com.Harbinger.Spore.core.SConfig;
 import com.Harbinger.Spore.core.Seffects;
 import com.Harbinger.Spore.core.Ssounds;
@@ -19,7 +21,7 @@ import net.minecraft.world.level.Level;
 
 import java.util.List;
 
-public class InfEvoClaw extends UtilityEntity implements Enemy{
+public class InfEvoClaw extends UtilityEntity implements Enemy, ColdWeakness {
     public InfEvoClaw(EntityType<? extends PathfinderMob> type, Level level) {
         super(type, level);
     }
@@ -70,4 +72,8 @@ public class InfEvoClaw extends UtilityEntity implements Enemy{
         }
     }
 
+    @Override
+    public ColdEndurance getEndurance() {
+        return ColdEndurance.INFECTED;
+    }
 }

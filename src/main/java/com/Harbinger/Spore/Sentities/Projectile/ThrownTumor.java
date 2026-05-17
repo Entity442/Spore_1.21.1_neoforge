@@ -47,7 +47,7 @@ public class ThrownTumor extends ThrowableItemProjectile implements ItemSupplier
         super(Sentities.THROWN_TUMOR.get(), level);
     }
     public int getTumorType() {
-        return this.entityData == null ? 0 : this.entityData.get(TYPE);
+        return this.entityData.get(TYPE);
     }
     @Override
     protected @NotNull Item getDefaultItem() {
@@ -139,11 +139,9 @@ public class ThrownTumor extends ThrowableItemProjectile implements ItemSupplier
     public void damageTargets(List<Entity> entityList){
         for (Entity entity : entityList){
             if (entity instanceof LivingEntity livingEntity){
-                if (getOwner() instanceof LivingEntity living){
-                    livingEntity.hurtTime = 0;
-                    livingEntity.invulnerableTime = 0;
-                    livingEntity.hurt(level().damageSources().mobProjectile(this,living),10f);
-                }
+                MobEffectInstance instance = livingEntity.getEffect(Seffects.FROSTBITE);
+                int intensity = instance == null ? 0 : instance.getAmplifier()+1;
+                livingEntity.addEffect(new MobEffectInstance(Seffects.FROSTBITE,600,intensity));
             }
         }
     }

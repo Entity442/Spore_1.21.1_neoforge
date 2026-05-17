@@ -9,10 +9,7 @@ import com.Harbinger.Spore.Screens.CDUMenu;
 import com.Harbinger.Spore.Sentities.Utility.InfectionTendril;
 import com.Harbinger.Spore.Sentities.Utility.ScentEntity;
 import com.Harbinger.Spore.Spore;
-import com.Harbinger.Spore.core.SConfig;
-import com.Harbinger.Spore.core.SblockEntities;
-import com.Harbinger.Spore.core.Sblocks;
-import com.Harbinger.Spore.core.Ssounds;
+import com.Harbinger.Spore.core.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -22,10 +19,12 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.EntityTypeTags;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.MenuProvider;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
@@ -33,6 +32,8 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -51,6 +52,7 @@ import java.util.Map;
 
 public class CDUBlockEntity extends BlockEntity implements MenuProvider,AnimatedEntity {
     private static final TagKey<Block> foliage = TagKey.create(BuiltInRegistries.BLOCK.key(), ResourceLocation.parse("spore:removable_foliage"));
+    public static final TagKey<Item> fungalItems = ItemTags.create(ResourceLocation.parse("spore:weapons"));
     public final int maxFuel = SConfig.DATAGEN.cryo_time.get();
     public int fuel;
     private final List<StoreDouble> blockMap;
@@ -182,9 +184,23 @@ public class CDUBlockEntity extends BlockEntity implements MenuProvider,Animated
         for (Entity entity : entities){
             if (entity instanceof LivingEntity livingEntity &&
                     (livingEntity.getType().is(EntityTypeTags.FREEZE_HURTS_EXTRA_TYPES))){
-                livingEntity.setTicksFrozen(livingEntity.getTicksFrozen()+100);
-                float damage = getDamageAfterArmor((float) (SConfig.DATAGEN.cryo_damage.get() *1f),livingEntity);
-                livingEntity.hurt(livingEntity.damageSources().freeze(), damage);
+                MobEffectInstance instance = livingEntity.getEffect(Seffects.FROSTBITE);
+                int intensity = instance == null ? 0 : instance.getAmplifier()+1;
+                livingEntity.addEffect(new MobEffectInstance(Seffects.FROSTBITE,1200,intensity));
+            }
+            if (entity instanceof Player player){
+                boolean be = false;
+                for (ItemStack stack : player.getArmorSlots()){
+                    if (stack.is(fungalItems)){
+                        be = true;
+                        break;
+                    }
+                }
+                if (be){
+                    MobEffectInstance instance = player.getEffect(Seffects.FROSTBITE);
+                    int intensity = instance == null ? 0 : instance.getAmplifier()+1;
+                    player.addEffect(new MobEffectInstance(Seffects.FROSTBITE,600,intensity));
+                }
             }
             if (entity instanceof ScentEntity || entity instanceof InfectionTendril){
                 entity.discard();
@@ -230,7 +246,7 @@ public class CDUBlockEntity extends BlockEntity implements MenuProvider,Animated
         if (CDUBlock.isCDUUsable(blockPos,e.level)){
             if (e.getFuel() > 0 && !level.isClientSide){
                 e.fuel--;
-                if (e.getFuel() % 100 == 0){
+                if (e.getFuel() % 200 == 0){
                     e.cleanInfection(blockPos);
                 }
                 if (e.getFuel() % 80 == 0){

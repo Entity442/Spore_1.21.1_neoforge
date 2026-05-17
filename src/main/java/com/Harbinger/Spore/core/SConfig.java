@@ -1810,7 +1810,6 @@ public class SConfig {
 
         public final ModConfigSpec.ConfigValue<List<? extends String>> block_cleaning;
         public final ModConfigSpec.ConfigValue<Integer> cryo_range;
-        public final ModConfigSpec.ConfigValue<Double> cryo_damage;
         public final ModConfigSpec.ConfigValue<Integer> cryo_time;
         public final ModConfigSpec.ConfigValue<Boolean> cryo_snow;
         public final ModConfigSpec.ConfigValue<Integer> outpost_range;
@@ -2083,7 +2082,6 @@ public class SConfig {
                             ,"spore:infested_cobbled_deepslate|minecraft:cobbled_deepslate","spore:infested_laboratory_block|spore:lab_block","spore:infested_laboratory_block1|spore:lab_block1"
                             ,"spore:infested_laboratory_block2|spore:lab_block2","spore:infested_laboratory_block3|spore:lab_block3","spore:infested_stone_bricks|minecraft:stone_bricks","spore:infested_bricks|minecraft:bricks") , o -> o instanceof String);
             this.cryo_range = builder.comment("Default 20").defineInRange("Range", 20, 0, Integer.MAX_VALUE);
-            this.cryo_damage = builder.comment("Default 5").defineInRange("Damage", 5, 0, Double.MAX_VALUE);
             this.cryo_time = builder.comment("Default 12000").defineInRange("Ammo", 12000, 0, Integer.MAX_VALUE);
             this.cryo_snow = builder.comment("Default true").define("Should the CDU create snow?",true);
             builder.pop();

@@ -4,6 +4,8 @@ package com.Harbinger.Spore.Sentities.BaseEntities;
 import com.Harbinger.Spore.ExtremelySusThings.Utilities;
 import com.Harbinger.Spore.Sentities.Calamities.Hohlfresser;
 import com.Harbinger.Spore.Sentities.Calamities.Leviathan;
+import com.Harbinger.Spore.Sentities.ColdEndurance;
+import com.Harbinger.Spore.Sentities.ColdWeakness;
 import com.Harbinger.Spore.Sentities.TrueCalamity;
 import com.Harbinger.Spore.core.SConfig;
 import com.Harbinger.Spore.core.Ssounds;
@@ -36,7 +38,7 @@ import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Predicate;
 
-public class HohlMultipart extends LivingEntity implements TrueCalamity {
+public class HohlMultipart extends LivingEntity implements TrueCalamity, ColdWeakness {
     private double prevHeight = 0;
     private int headEntityId = -1;
     private static final EntityDataAccessor<Optional<UUID>> CHILD_UUID = SynchedEntityData.defineId(HohlMultipart.class, EntityDataSerializers.OPTIONAL_UUID);
@@ -405,6 +407,12 @@ public class HohlMultipart extends LivingEntity implements TrueCalamity {
     public SegmentVariants getSegmentVariant() {
         return SegmentVariants.byId(this.entityData.get(VARIANT) & 255);
     }
+
+    @Override
+    public ColdEndurance getEndurance() {
+        return ColdEndurance.CALAMITY;
+    }
+
     public enum SegmentVariants {
         DEFAULT(0),
         MELEE(1),
