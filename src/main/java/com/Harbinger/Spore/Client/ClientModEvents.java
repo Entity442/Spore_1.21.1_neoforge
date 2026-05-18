@@ -25,11 +25,15 @@ import com.Harbinger.Spore.Sitems.Guns.AbstractSporeGun;
 import com.Harbinger.Spore.Sitems.Guns.AcidicAssasin;
 import com.Harbinger.Spore.Spore;
 import com.Harbinger.Spore.core.*;
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.entity.ArmorStandRenderer;
 import net.minecraft.client.renderer.entity.HorseRenderer;
 import net.minecraft.client.renderer.entity.HumanoidMobRenderer;
@@ -40,6 +44,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -587,5 +592,56 @@ public class ClientModEvents {
                 event.setFOV(event.getFOV() * zoomMultiplier);
             }
         }
+    }
+
+    public static final ResourceLocation ASSASIN_SCOPE = ResourceLocation.fromNamespaceAndPath(Spore.MODID,"textures/gui/icons/assassin_scope.png");
+    public static final ResourceLocation BILE_OVERLAY = ResourceLocation.fromNamespaceAndPath(Spore.MODID,"textures/gui/icons/bile_overlay.png");
+    public static final ResourceLocation CORROSION_OVERLAY = ResourceLocation.fromNamespaceAndPath(Spore.MODID,"textures/gui/icons/corrosion_overlay.png");
+    public static final ResourceLocation MADNESS_OVERLAY = ResourceLocation.fromNamespaceAndPath(Spore.MODID,"textures/gui/icons/madness_overlay.png");
+    public static final ResourceLocation MYCELIUM_INFECTION_OVERLAY = ResourceLocation.fromNamespaceAndPath(Spore.MODID,"textures/gui/icons/mycelium_infection_overlay.png");
+    @SubscribeEvent
+    public static void onRenderOverlay(RenderGuiEvent.Pre event) {
+        Minecraft mc = Minecraft.getInstance();
+        LocalPlayer player = mc.player;
+        if (player == null){
+            return;
+        }
+        GuiGraphics guiGraphics = event.getGuiGraphics();
+        int screenWidth = event.getGuiGraphics().guiWidth();
+        int screenHeight = event.getGuiGraphics().guiHeight();
+
+        ItemStack stack = player.getMainHandItem();
+        if (stack.getItem() instanceof AcidicAssasin) {
+            if (player.isShiftKeyDown()) {
+                renderOverlay(event,screenWidth,screenHeight,ASSASIN_SCOPE);
+            }
+        }
+        if (player.hasEffect(Seffects.BILED)){
+            renderOverlay(event,screenWidth,screenHeight,BILE_OVERLAY);
+        }
+        if (player.hasEffect(Seffects.CORROSION)){
+            renderOverlay(event,screenWidth,screenHeight,CORROSION_OVERLAY);
+        }
+        if (player.hasEffect(Seffects.MADNESS)){
+            renderOverlay(event,screenWidth,screenHeight,MADNESS_OVERLAY);
+        }
+        if (player.hasEffect(Seffects.MYCELIUM)){
+            renderOverlay(event,screenWidth,screenHeight,MYCELIUM_INFECTION_OVERLAY);
+        }
+    }
+
+    protected static void renderOverlay(RenderGuiEvent.Pre event,int w,int h,ResourceLocation location){
+        RenderSystem.disableDepthTest();
+        RenderSystem.depthMask(false);
+        RenderSystem.enableBlend();
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+        RenderSystem.setShaderColor(1, 1, 1, 1);
+        event.getGuiGraphics().blit(location, 0, 0, 0, 0, w, h, w, h);
+        RenderSystem.depthMask(true);
+        RenderSystem.defaultBlendFunc();
+        RenderSystem.enableDepthTest();
+        RenderSystem.disableBlend();
+        RenderSystem.setShaderColor(1, 1, 1, 1);
     }
 }

@@ -45,6 +45,13 @@ public class Seffects {
             () -> new FrostBite().addAttributeModifier(Attributes.MOVEMENT_SPEED,
                     ResourceLocation.fromNamespaceAndPath(Spore.MODID, "corrosion_armor"),-0.1f ,AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
 
+    public static final Holder<MobEffect> BILED = MOB_EFFECTS.register("biled",
+            () -> new Biled().addAttributeModifier(Attributes.MOVEMENT_SPEED,
+                    ResourceLocation.fromNamespaceAndPath(Spore.MODID, "biled_movement"),-0.2f ,AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL).addAttributeModifier(Attributes.ATTACK_SPEED,
+                    ResourceLocation.fromNamespaceAndPath(Spore.MODID, "biled_attack"),-0.2f ,AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL).addAttributeModifier(Attributes.ATTACK_DAMAGE,
+                    ResourceLocation.fromNamespaceAndPath(Spore.MODID, "biled_damage"),-0.2f ,AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
+
+
     public static final Holder<MobEffect> SYMBIOSIS = MOB_EFFECTS.register("symbiosis",
             () -> new Symbiosis().addAttributeModifier(Attributes.MOVEMENT_SPEED,
                             ResourceLocation.fromNamespaceAndPath(Spore.MODID, "symbiosis_movement_speed"), 0.2F, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)

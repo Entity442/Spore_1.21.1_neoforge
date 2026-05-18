@@ -47,7 +47,7 @@ public class ThrownTumor extends ThrowableItemProjectile implements ItemSupplier
         super(Sentities.THROWN_TUMOR.get(), level);
     }
     public int getTumorType() {
-        return this.entityData.get(TYPE);
+        return this.entityData == null ? 0 : this.entityData.get(TYPE);
     }
     @Override
     protected @NotNull Item getDefaultItem() {
