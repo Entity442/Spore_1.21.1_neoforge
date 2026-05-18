@@ -93,6 +93,8 @@ public class Sitems {
             () -> new BaseItem(new Item.Properties()));
     public  static final DeferredItem<Item> R_WING = ITEMS.register("r_wing",
             () -> new BaseItem( new Item.Properties()));
+    public  static final DeferredItem<Item> FUNGAL_BONEMEAL = ITEMS.register("fungal_bonemeal",
+            FungalBonemeal::new);
 
     public  static final DeferredItem<Item> TUMOR = ITEMS.register("tumor",
             () -> new Tumor(Tumor.TumorType.REGULAR));
