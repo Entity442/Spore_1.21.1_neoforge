@@ -1,6 +1,7 @@
 package com.Harbinger.Spore.Client.Renderers;
 
 import com.Harbinger.Spore.Client.Layers.SporeRenderTypes;
+import com.Harbinger.Spore.Client.Models.GorgonSpookyModel;
 import com.Harbinger.Spore.Client.Models.gorgonModel;
 import com.Harbinger.Spore.Client.Special.BaseInfectedRenderer;
 import com.Harbinger.Spore.Client.SpecialEffects;
@@ -10,6 +11,7 @@ import com.Harbinger.Spore.core.Sparticles;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -28,9 +30,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
-public class GorgonRenderer<Type extends Gorgon> extends BaseInfectedRenderer<Type , gorgonModel<Type>> {
+public class GorgonRenderer<Type extends Gorgon> extends BaseInfectedRenderer<Type , EntityModel<Type>> {
+    private final EntityModel<Type> def = this.getModel();
+    private final EntityModel<Type> spooky;
     private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Spore.MODID,
             "textures/entity/gorgon.png");
+    private static final ResourceLocation TEXTURE_SPOOK = ResourceLocation.fromNamespaceAndPath(Spore.MODID,
+            "textures/entity/spooky_gorgon.png");
     private static final ResourceLocation EYES_TEXTURE = ResourceLocation.fromNamespaceAndPath(Spore.MODID,
             "textures/entity/eyes/gorgon.png");
     protected List<Vec3> entities = new ArrayList<>();
@@ -40,11 +46,12 @@ public class GorgonRenderer<Type extends Gorgon> extends BaseInfectedRenderer<Ty
     private int particleTimer = 0;
     public GorgonRenderer(EntityRendererProvider.Context context) {
         super(context, new gorgonModel<>(context.bakeLayer(gorgonModel.LAYER_LOCATION)), 0.5f);
+        spooky = new GorgonSpookyModel<>(context.bakeLayer(GorgonSpookyModel.LAYER_LOCATION));
         this.addLayer(new VolatileGlowingLayers<>(this));
     }
     @Override
     public ResourceLocation getTextureLocation(Type entity) {
-        return TEXTURE;
+        return entity.spooky() ? TEXTURE_SPOOK : TEXTURE;
     }
 
     @Override
@@ -56,6 +63,7 @@ public class GorgonRenderer<Type extends Gorgon> extends BaseInfectedRenderer<Ty
     @Override
     public void render(Type type, float value1, float value2, PoseStack stack, MultiBufferSource bufferSource, int light) {
         super.render(type, value1, value2, stack, bufferSource, light);
+        model = type.spooky() ? spooky : def;
         Entity instance = type.level().getEntity(type.getTargetId());
         if (instance == null){
             return;
@@ -74,9 +82,11 @@ public class GorgonRenderer<Type extends Gorgon> extends BaseInfectedRenderer<Ty
         stack.popPose();
     }
 
-    static class VolatileGlowingLayers <T extends Gorgon,M extends gorgonModel<T>> extends RenderLayer<T, M> {
+    static class VolatileGlowingLayers <T extends Gorgon,M extends EntityModel<T>> extends RenderLayer<T, M> {
         private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Spore.MODID,
                 "textures/entity/gorgon_light.png");
+        private static final ResourceLocation TEXTURE_SPOOKY = ResourceLocation.fromNamespaceAndPath(Spore.MODID,
+                "textures/entity/gorgon_light_spooky.png");
         public VolatileGlowingLayers(RenderLayerParent<T, M> p_117346_) {
             super(p_117346_);
         }
@@ -85,7 +95,7 @@ public class GorgonRenderer<Type extends Gorgon> extends BaseInfectedRenderer<Ty
         public void render(PoseStack matrixStack, MultiBufferSource buffer, int packedLight, T entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
             float alpha = 0.5F + 0.5F * Mth.sin(ageInTicks * 0.1F);
             int color = (int)(alpha * 255) << 24 | 0xFFFFFF;
-            VertexConsumer vertexConsumer = buffer.getBuffer(SporeRenderTypes.glowingTranslucent(TEXTURE));
+            VertexConsumer vertexConsumer = buffer.getBuffer(SporeRenderTypes.glowingTranslucent(entity.spooky() ? TEXTURE_SPOOKY : TEXTURE));
             getParentModel().renderToBuffer(matrixStack, vertexConsumer, packedLight, OverlayTexture.NO_OVERLAY, color);
         }
     }

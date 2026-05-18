@@ -6,11 +6,13 @@ import com.Harbinger.Spore.core.Seffects;
 import com.Harbinger.Spore.core.Ssounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -23,10 +25,14 @@ import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.pathfinder.Path;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoField;
 import java.util.EnumSet;
 import java.util.List;
 
@@ -89,6 +95,19 @@ public class Gorgon extends EvolvedInfected {
 
     protected SoundEvent getAmbientSound() {
         return Ssounds.WITCH_AMBIENT.value();
+    }
+    public boolean spooky(){
+        return this.getName().equals(Component.literal("Spooky"));
+    }
+
+    @Override
+    public @Nullable SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType spawnType, @Nullable SpawnGroupData spawnGroupData) {
+        LocalDate localdate = LocalDate.now();
+        int j = localdate.get(ChronoField.MONTH_OF_YEAR);
+        if (j == 10 && Math.random() < 0.5){
+            setCustomName(Component.literal("Spooky"));
+        }
+        return super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData);
     }
 
     protected SoundEvent getDeathSound() {
