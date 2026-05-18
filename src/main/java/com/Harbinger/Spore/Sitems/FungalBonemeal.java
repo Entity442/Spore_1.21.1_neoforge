@@ -31,6 +31,6 @@ public class FungalBonemeal extends BaseItem implements FoliageSpread {
             SpreadInfection(level,7,pos);
         }
         stack.shrink(1);
-        return super.useOn(context);
+        return InteractionResult.SUCCESS;
     }
 }
