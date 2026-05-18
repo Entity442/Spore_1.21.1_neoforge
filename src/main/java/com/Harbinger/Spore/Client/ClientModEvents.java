@@ -44,6 +44,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -607,41 +608,49 @@ public class ClientModEvents {
             return;
         }
         GuiGraphics guiGraphics = event.getGuiGraphics();
-        int screenWidth = event.getGuiGraphics().guiWidth();
-        int screenHeight = event.getGuiGraphics().guiHeight();
+        int screenWidth = guiGraphics.guiWidth();
+        int screenHeight = guiGraphics.guiHeight();
 
         ItemStack stack = player.getMainHandItem();
         if (stack.getItem() instanceof AcidicAssasin) {
             if (player.isShiftKeyDown()) {
-                renderOverlay(event,screenWidth,screenHeight,ASSASIN_SCOPE);
+                renderOverlay(event,screenWidth,screenHeight,ASSASIN_SCOPE,false,0);
             }
         }
-        if (player.hasEffect(Seffects.BILED)){
-            renderOverlay(event,screenWidth,screenHeight,BILE_OVERLAY);
+        MobEffectInstance biled = player.getEffect(Seffects.BILED);
+        MobEffectInstance corroded = player.getEffect(Seffects.CORROSION);
+        MobEffectInstance madness = player.getEffect(Seffects.MADNESS);
+        MobEffectInstance mycelium = player.getEffect(Seffects.MYCELIUM);
+        if (biled != null){
+            renderOverlay(event,screenWidth,screenHeight,BILE_OVERLAY,true,biled.getDuration());
         }
-        if (player.hasEffect(Seffects.CORROSION)){
-            renderOverlay(event,screenWidth,screenHeight,CORROSION_OVERLAY);
+        if (corroded != null){
+            renderOverlay(event,screenWidth,screenHeight,CORROSION_OVERLAY,true,corroded.getDuration());
         }
-        if (player.hasEffect(Seffects.MADNESS)){
-            renderOverlay(event,screenWidth,screenHeight,MADNESS_OVERLAY);
+        if (madness != null){
+            renderOverlay(event,screenWidth,screenHeight,MADNESS_OVERLAY,true,madness.getDuration());
         }
-        if (player.hasEffect(Seffects.MYCELIUM)){
-            renderOverlay(event,screenWidth,screenHeight,MYCELIUM_INFECTION_OVERLAY);
+        if (mycelium != null){
+            renderOverlay(event,screenWidth,screenHeight,MYCELIUM_INFECTION_OVERLAY,true,mycelium.getDuration());
         }
     }
 
-    protected static void renderOverlay(RenderGuiEvent.Pre event,int w,int h,ResourceLocation location){
+    protected static void renderOverlay(RenderGuiEvent.Pre event,int w,int h,ResourceLocation location,boolean fade,int i){
+        float alpha = 1;
+        if (fade && i <= 100){
+            alpha = i * 0.01f;
+        }
         RenderSystem.disableDepthTest();
         RenderSystem.depthMask(false);
         RenderSystem.enableBlend();
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-        RenderSystem.setShaderColor(1, 1, 1, 1);
+        RenderSystem.setShaderColor(1, 1, 1, alpha);
         event.getGuiGraphics().blit(location, 0, 0, 0, 0, w, h, w, h);
         RenderSystem.depthMask(true);
         RenderSystem.defaultBlendFunc();
         RenderSystem.enableDepthTest();
         RenderSystem.disableBlend();
-        RenderSystem.setShaderColor(1, 1, 1, 1);
+        RenderSystem.setShaderColor(1, 1, 1, alpha);
     }
 }

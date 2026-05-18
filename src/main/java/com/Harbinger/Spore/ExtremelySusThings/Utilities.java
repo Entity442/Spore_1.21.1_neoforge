@@ -258,7 +258,7 @@ public class Utilities {
         AttributeInstance toxic = attacker.getAttribute(SAttributes.TOXICITY);
         if (toxic != null && toxic.getValue() >= 1) {
             int level = (int) toxic.getValue() - 1;
-            victim.addEffect(new MobEffectInstance(Holder.direct(MobEffects.POISON.value()), 400, level), attacker);
+            victim.addEffect(new MobEffectInstance(MobEffects.POISON, 400, level), attacker);
         }
 
         AttributeInstance local = attacker.getAttribute(SAttributes.LOCALIZATION);
