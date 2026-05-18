@@ -259,7 +259,7 @@ public class Infected extends UtilityEntity implements Enemy, ColdWeakness {
         int k = Mth.floor(this.getZ());
         BlockPos blockpos = new BlockPos(i, j, k);
         Biome biome = this.level().getBiome(blockpos).value();
-        return (SConfig.SERVER.weaktocold.get() && this.random.nextInt(20) == 0  && biome.getBaseTemperature() <= 0.2);
+        return (SConfig.SERVER.weaktocold.get()  && biome.getBaseTemperature() <= 0.2);
     }
 
     @Override
