@@ -53,6 +53,7 @@ public class Organoid extends UtilityEntity implements Enemy, ColdWeakness {
         }
         if (!level().isClientSide){
             if (this.isEmerging()){
+                despawnIfHardFloor();
                 this.tickEmerging();
             } else if (this.isBurrowing()){
                 this.tickBurrowing();
@@ -62,9 +63,6 @@ public class Organoid extends UtilityEntity implements Enemy, ColdWeakness {
             regulateSpawns();
         }
         spawnEmergingParticles();
-        if (tickCount % 10 == 0){
-            despawnIfHardFloor();
-        }
     }
     protected SoundEvent getHurtSound(DamageSource p_34327_) {
         return Ssounds.ORGANOID_DAMAGE.value();
