@@ -26,6 +26,8 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.EntityTypeTags;
+import net.minecraft.world.damagesource.DamageSources;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
@@ -185,7 +187,7 @@ public class DamageHandeling {
                 }
 
             }
-            if (thornLevel > 0) {
+            if (thornLevel > 0 && !event.getSource().typeHolder().is(DamageTypes.THORNS)) {
                 handleSpikes(thornLevel,living);
             }
             if (mutagenic > 0) {

@@ -130,9 +130,9 @@ public class ThrownTumor extends ThrowableItemProjectile implements ItemSupplier
     public void freezeTargets(List<Entity> entityList){
         for (Entity entity : entityList){
             if (entity instanceof LivingEntity livingEntity){
-                livingEntity.invulnerableTime = 0;
-                livingEntity.hurt(level().damageSources().freeze(),5);
-                livingEntity.setTicksFrozen(getTicksFrozen()+200);
+                MobEffectInstance instance = livingEntity.getEffect(Seffects.FROSTBITE);
+                int intensity = instance == null ? 0 : instance.getAmplifier()+1;
+                livingEntity.addEffect(new MobEffectInstance(Seffects.FROSTBITE,600,intensity));
             }
         }
     }
