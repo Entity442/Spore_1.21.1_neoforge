@@ -206,8 +206,11 @@ public class Infected extends UtilityEntity implements Enemy, ColdWeakness {
     private void applyColdWeaknessEffects() {
         if (!SConfig.SERVER.weaktocold.get()) return;
         if (!isInPowderSnow && !isFreazing()) return;
-
-        addEffect(new MobEffectInstance(Seffects.FROSTBITE, 100, 0, false, false), this);
+        if (hasEffect(Seffects.FROSTBITE)){
+            return;
+        }else {
+            addEffect(new MobEffectInstance(Seffects.FROSTBITE, 100, 0, true, true));
+        }
     }
     private boolean canGrief() {
         return EventHooks.canEntityGrief(level(), this);

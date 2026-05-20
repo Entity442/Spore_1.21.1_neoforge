@@ -73,6 +73,9 @@ public class Organoid extends UtilityEntity implements Enemy, ColdWeakness {
         }
         BlockPos pos = this.getOnPos();
         BlockState state = level().getBlockState(pos);
+        if (!state.isSolidRender(level(),pos)){
+            return;
+        }
         if (state.getDestroySpeed(level(),pos) > 4 || state.getDestroySpeed(level(),pos) < 0){
             discard();
         }

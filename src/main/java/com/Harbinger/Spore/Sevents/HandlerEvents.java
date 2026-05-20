@@ -64,6 +64,7 @@ public class HandlerEvents {
         ChunkLoaderHelper.tick();
         int i = 20 * 60 * SConfig.SERVER.time_song_trigger.get();
         val++;
+        i = Math.max(i, 20);
         if (val % i == 0){
             if (!SConfig.SERVER.ambient_song.get() || SConfig.SERVER.disable_system.get()){
                 val = 0;
