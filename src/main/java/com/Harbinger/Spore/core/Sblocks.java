@@ -23,6 +23,7 @@ public class Sblocks {
         BLOCKS.register(eventBus);
     }
     public static final DeferredBlock<Block> ACID = BLOCKS.register("acid", Acid::new);
+    public static final DeferredBlock<Block> TAR = BLOCKS.register("tar", Tar::new);
     public static final DeferredBlock<Block> CONTAINER = BLOCKS.register("container", () -> new Container(Container.defaultProperties));
     public static final DeferredBlock<Block> LAB_BLOCK = BLOCKS.register("lab_block", () -> new Block(BlockBehaviour.Properties.of().sound(SoundType.STONE).strength(6f, 20f)));
     public static final DeferredBlock<Block> LAB_BLOCK1 = BLOCKS.register("lab_block1", () -> new Block(BlockBehaviour.Properties.of().sound(SoundType.STONE).strength(6f, 20f)));

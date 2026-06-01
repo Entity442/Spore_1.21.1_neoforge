@@ -1,6 +1,7 @@
 package com.Harbinger.Spore.Sentities;
 
 import com.Harbinger.Spore.core.Sitems;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.Arrays;
@@ -58,7 +59,12 @@ public enum HitboxesForParts {
     HOHL_ADA_SEG1(48,3,3,CALAMITY_TYPE.GROUND),
     HOHL_ADA_SEG2(49,3,3,CALAMITY_TYPE.GROUND),
     HOHL_ADA_SEG3(50,3,3,CALAMITY_TYPE.GROUND),
-    HOHL_ADA_TAIL(51,3,3,CALAMITY_TYPE.GROUND);
+    HOHL_ADA_TAIL(51,3,3,CALAMITY_TYPE.GROUND),
+    VERFALL_BODY(52,4,4,CALAMITY_TYPE.AIR),
+    VERFALL_RIGHT_WING(53,3,3,CALAMITY_TYPE.AIR),
+    VERFALL_LEFT_WING(54,3,3,CALAMITY_TYPE.AIR),
+    VERFALL_RIGHT_LEG(55,2,2,CALAMITY_TYPE.AIR),
+    VERFALL_LEFT_LEG(56,2,2,CALAMITY_TYPE.AIR);
 
     private final int ID;
     private final float width;
@@ -89,14 +95,14 @@ public enum HitboxesForParts {
     }
 
     public enum CALAMITY_TYPE{
-        GROUND(new ItemStack(Sitems.REFORGED_BIOMASS_T.get())),
-        WATER(new ItemStack(Sitems.REFORGED_BIOMASS_W.get())),
-        AIR(new ItemStack(Sitems.REFORGED_BIOMASS_A.get()));
-        private final ItemStack stack;
-        CALAMITY_TYPE(ItemStack stack) {
+        GROUND(Sitems.REFORGED_BIOMASS_T.get()),
+        WATER(Sitems.REFORGED_BIOMASS_W.get()),
+        AIR(Sitems.REFORGED_BIOMASS_A.get());
+        private final Item stack;
+        CALAMITY_TYPE(Item stack) {
             this.stack = stack;
         }
-        public ItemStack getStack() {
+        public Item getStack() {
             return stack;
         }
     }

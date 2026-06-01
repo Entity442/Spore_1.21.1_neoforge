@@ -117,7 +117,7 @@ public class CorpseEntity extends Entity {
     @Override
     public InteractionResult interactAt(Player player, Vec3 hitVec, InteractionHand hand) {
         if (!level().isClientSide && player.getItemInHand(hand).getItem() instanceof Reaver && Math.random() < 0.3f){
-            summonItem(HitboxesForParts.byId(getCorpseType()).getCalamityType().getStack());
+            summonItem(new ItemStack(HitboxesForParts.byId(getCorpseType()).getCalamityType().getStack()));
             this.playSound(Ssounds.REAVER_REAVE.value());
         }
         createLoot();
@@ -141,7 +141,7 @@ public class CorpseEntity extends Entity {
                 }
             }
             if (inventory.isEmpty()) {
-                summonItem(HitboxesForParts.byId(getCorpseType()).getCalamityType().getStack());
+                summonItem(new ItemStack(HitboxesForParts.byId(getCorpseType()).getCalamityType().getStack()));
                 this.discard();
             }
         }

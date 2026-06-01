@@ -45,7 +45,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -324,6 +323,8 @@ public class ClientModEvents {
         event.registerEntityRenderer(Sentities.GARGOYLE.get(), GargoyleRenderer::new);
         event.registerEntityRenderer(Sentities.REAPER.get(), ReaperRenderer::new);
         event.registerEntityRenderer(Sentities.GORGON.get(), GorgonRenderer::new);
+        event.registerEntityRenderer(Sentities.VERFALL.get(), DrakeRenderer::new);
+        event.registerEntityRenderer(Sentities.VERFALL_HEAD.get(), VerfallHeadRenderer::new);
     }
     public static void renderBlockEntities(EntityRenderersEvent.RegisterRenderers event){
         event.registerBlockEntityRenderer(SblockEntities.OVERGROWN_SPAWNER.get(), new OvergrownSpawnerRenderer());
@@ -366,6 +367,7 @@ public class ClientModEvents {
         event.registerEntityRenderer(Sentities.GORE_BULLET.get(), GoreBulletRenderer::new);
         event.registerEntityRenderer(Sentities.ASSASSIN_BULLET.get(), AcidBulletRenderer::new);
         event.registerEntityRenderer(Sentities.BILE_BULLET.get(), BileBulletRenderer::new);
+        event.registerEntityRenderer(Sentities.TAR_BALL.get(), TarRenderer::new);
     }
 
 
@@ -422,6 +424,8 @@ public class ClientModEvents {
         Minecraft.getInstance().particleEngine.register(Sparticles.VOMIT_BONE.get(),
                 VomitParticle.Provider::new);
         Minecraft.getInstance().particleEngine.register(Sparticles.VOMIT_ORES.get(),
+                VomitParticle.Provider::new);
+        Minecraft.getInstance().particleEngine.register(Sparticles.TAR.get(),
                 VomitParticle.Provider::new);
         Minecraft.getInstance().particleEngine.register(Sparticles.ACID_BULLET.get(),
                 AcidBulletParticle.Provider::new);

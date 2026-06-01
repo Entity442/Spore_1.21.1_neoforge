@@ -1,5 +1,6 @@
 package com.Harbinger.Spore.Sevents;
 
+import com.Harbinger.Spore.Effect.Ignitable;
 import com.Harbinger.Spore.ExtremelySusThings.SporeSavedData;
 import com.Harbinger.Spore.ExtremelySusThings.Utilities;
 import com.Harbinger.Spore.Fluids.BileLiquid;
@@ -74,7 +75,24 @@ public class DamageHandeling {
                 pci.playSound(player);
             }
         }
-
+        /* --------------------------------------------------------
+         *  IGNITE LOGIC
+         * -------------------------------------------------------- */
+        if (event.getEntity().hasEffect(Seffects.IGNITABLE)){
+            LivingEntity victim = event.getEntity();
+            float chance = 0.01f;
+            for (Ignitable.SetAblazeChances chances : Ignitable.SetAblazeChances.values()){
+                if (event.getSource().is(chances.getDamageType())){
+                    chance = chances.getChance();
+                    break;
+                }
+            }
+            MobEffectInstance instance = victim.getEffect(Seffects.IGNITABLE);
+            if (instance != null && Math.random() < chance){
+                victim.setRemainingFireTicks(victim.getRemainingFireTicks()+instance.getDuration());
+                victim.removeEffect(Seffects.IGNITABLE);
+            }
+        }
         /* --------------------------------------------------------
          *  PROTECTOR LOGIC
          * -------------------------------------------------------- */

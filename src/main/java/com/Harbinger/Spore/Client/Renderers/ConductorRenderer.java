@@ -1,16 +1,14 @@
 package com.Harbinger.Spore.Client.Renderers;
 
 import com.Harbinger.Spore.Client.Models.ConductorModel;
-import com.Harbinger.Spore.Client.Models.KrakenTentacles.ChainModel;
 import com.Harbinger.Spore.Client.Special.BaseInfectedRenderer;
 import com.Harbinger.Spore.ExtremelySusThings.Utilities;
+import com.Harbinger.Spore.Sentities.AmbientSparks;
 import com.Harbinger.Spore.Sentities.EvolvedInfected.Conductor;
-import com.Harbinger.Spore.Sentities.Projectile.HarpoonProjectile;
 import com.Harbinger.Spore.Spore;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.model.geom.ModelLayerLocation;
@@ -24,14 +22,11 @@ import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import org.joml.Matrix4f;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @OnlyIn(Dist.CLIENT)
@@ -41,7 +36,7 @@ public class ConductorRenderer<Type extends Conductor> extends BaseInfectedRende
     private static final ResourceLocation EYES_TEXTURE = ResourceLocation.fromNamespaceAndPath(Spore.MODID,
             "textures/entity/eyes/conductor.png");
     private final EntityModel<Type> chains = new BoltBit<>();
-    private Conductor.AmbientSparks attackSpark = null;
+    private AmbientSparks attackSpark = null;
     public ConductorRenderer(EntityRendererProvider.Context context) {
         super(context, new ConductorModel<>(context.bakeLayer(ConductorModel.LAYER_LOCATION)), 0.5f);
         addLayer(new ElectricalOverlayLayer<>(this,context.getModelSet()));
@@ -92,14 +87,14 @@ public class ConductorRenderer<Type extends Conductor> extends BaseInfectedRende
         stack.pushPose();
         {
             stack.translate(-entityPos.x, -entityPos.y, -entityPos.z);
-            for (Conductor.AmbientSparks  sparks : type.getSparks()){
+            for (AmbientSparks sparks : type.getSparks()){
                 renderChain(sparks.getConnections(),stack,light,bufferSource,false);
             }
             int targetId = type.getAttackedId();
             Entity e = type.level().getEntity(targetId);
             if(e != null && type.getBeamTicks() >= 19){
                 Vec3 vec3 = Utilities.generatePositionAway(type.getPosition(partial),4);
-                attackSpark = new Conductor.AmbientSparks(vec3, e, type,20);
+                attackSpark = new AmbientSparks(vec3, e, type,20);
             }
             if (attackSpark != null && attackSpark.life < attackSpark.maxLife){
                 attackSpark.TickSpark();
@@ -152,7 +147,7 @@ public class ConductorRenderer<Type extends Conductor> extends BaseInfectedRende
         chains.renderToBuffer(stack,consumer,light, OverlayTexture.NO_OVERLAY, -1);
     }
 
-    private static class BoltBit<T extends Entity> extends EntityModel<T> {
+    public static class BoltBit<T extends Entity> extends EntityModel<T> {
         // This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
         public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "boltbit"), "main");
         private final ModelPart bone;

@@ -33,6 +33,9 @@ public class Seffects {
     public static final Holder<MobEffect> UNEASY = MOB_EFFECTS.register("uneasy",
             Uneasy::new);
 
+    public static final Holder<MobEffect> IGNITABLE = MOB_EFFECTS.register("ignitable",
+            Ignitable::new);
+
     public static final Holder<MobEffect> MARKER = MOB_EFFECTS.register("marker",
             () -> new Marker().addAttributeModifier(Attributes.FOLLOW_RANGE,
                     ResourceLocation.fromNamespaceAndPath(Spore.MODID, "marker_follow_range"), 0.5F, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));

@@ -9,10 +9,7 @@ import com.Harbinger.Spore.Sentities.Experiments.Biobloob;
 import com.Harbinger.Spore.Sentities.Experiments.Lacerator;
 import com.Harbinger.Spore.Sentities.Experiments.Plagued;
 import com.Harbinger.Spore.Sentities.Experiments.Saugling;
-import com.Harbinger.Spore.Sentities.FallenMultipart.HowitzerArm;
-import com.Harbinger.Spore.Sentities.FallenMultipart.Licker;
-import com.Harbinger.Spore.Sentities.FallenMultipart.SiegerTail;
-import com.Harbinger.Spore.Sentities.FallenMultipart.StalhArm;
+import com.Harbinger.Spore.Sentities.FallenMultipart.*;
 import com.Harbinger.Spore.Sentities.Hyper.*;
 import com.Harbinger.Spore.Sentities.Organoids.*;
 import com.Harbinger.Spore.Sentities.Projectile.*;
@@ -311,6 +308,11 @@ public class Sentities {
             EntityType.Builder.of(GoreBullet::new, MobCategory.MISC)
                     .setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(1).sized(0.5f, 0.5f));
 
+
+    public static final Supplier<EntityType<TarBall>> TAR_BALL = register("tar_ball",
+            EntityType.Builder.<TarBall>of(TarBall::new, MobCategory.MISC)
+                    .setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(1).sized(0.5f, 0.5f));
+
     public static final Supplier<EntityType<BileBullet>> BILE_BULLET = register("bile_bullet",
             EntityType.Builder.of(BileBullet::new, MobCategory.MISC)
                     .setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(1).sized(0.5f, 0.5f));
@@ -471,6 +473,12 @@ public class Sentities {
     public static final Supplier<EntityType<Howitzer>> HOWITZER = SPORE_ENTITIES.register("howitzer",
             () -> EntityType.Builder.of(Howitzer::new, INFECTED).sized(5f, 5f)
                     .build(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "howitzer").toString()));
+    public static final Supplier<EntityType<Verfalldrachen>> VERFALL = SPORE_ENTITIES.register("verfall",
+            () -> EntityType.Builder.of(Verfalldrachen::new, INFECTED).sized(4f, 5f)
+                    .build( ResourceLocation.fromNamespaceAndPath(Spore.MODID, "verfall").toString()));
+    public static final Supplier<EntityType<DragonHead>> VERFALL_HEAD = SPORE_ENTITIES.register("verfall_head",
+            () -> EntityType.Builder.of(DragonHead::new, INFECTED).sized(1.5f, 1.5f)
+                    .build( ResourceLocation.fromNamespaceAndPath(Spore.MODID, "verfall_head").toString()));
 
     public static final Supplier<EntityType<Hohlfresser>> HOHLFRESSER = SPORE_ENTITIES.register("hohlfresser",
             () -> EntityType.Builder.of(Hohlfresser::new, INFECTED).sized(3.5f, 3.5f)

@@ -394,6 +394,9 @@ public class Sitems {
     public  static final DeferredItem<Item> LEVIATHAN_SPAWNEGG = ITEMS.register("levi_spawnegg",
             () -> new SporeSpawnEgg(Sentities.LEVIATHAN,24420845,SpawnEggType.CALAMITY));
 
+    public  static final DeferredItem<Item> VERFALL_SPAWNEGG = ITEMS.register("verfall_spawnegg",
+            () -> new SporeSpawnEgg(Sentities.VERFALL,345346642,SpawnEggType.CALAMITY));
+
     public  static final DeferredItem<Item> SABER = ITEMS.register("saber",
             InfectedSaber::new);
     public  static final DeferredItem<Item> GREATSWORD = ITEMS.register("greatsword",

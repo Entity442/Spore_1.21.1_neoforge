@@ -426,6 +426,16 @@ public class SConfig {
         public final ModConfigSpec.ConfigValue<List<? extends String>> proto_sapient_target;
         public final ModConfigSpec.ConfigValue<List<? extends String>> proto_summonable_troops;
 
+        public final ModConfigSpec.ConfigValue<Double> verfa_hp;
+        public final ModConfigSpec.ConfigValue<Double> verfa_damage;
+        public final ModConfigSpec.ConfigValue<Double> verfa_armor;
+        public final ModConfigSpec.ConfigValue<Double> verfa_dpsr;
+        public final ModConfigSpec.ConfigValue<Double> verfa_elec_damage;
+        public final ModConfigSpec.ConfigValue<Double> verfa_sound_damage;
+        public final ModConfigSpec.ConfigValue<Double> verfa_tar_damage;
+        public final ModConfigSpec.ConfigValue<List<? extends String>> verfa_buffs;
+        public final ModConfigSpec.ConfigValue<List<? extends String>> verfa_debuffs;
+
         public final ModConfigSpec.ConfigValue<Double> htumor_hp;
         public final ModConfigSpec.ConfigValue<Double> htumor_armor;
         public final ModConfigSpec.ConfigValue<Double> htumor_damage;
@@ -1098,7 +1108,20 @@ public class SConfig {
                     Lists.newArrayList("spore:inf_vindicator", "spore:busser", "spore:brute",
                             "spore:knight", "spore:griefer", "spore:leaper", "spore:naiad", "spore:inf_evoker","spore:mephitic", "spore:spitter", "spore:stalker", "spore:scavenger", "spore:bloater", "spore:braiomil") , o -> o instanceof String);
             builder.pop();
+            builder.push("Verfalldrache");
+            this.verfa_hp = builder.comment("Default 300").defineInRange("Sets Verfalldrache Max health", 300, 1, Double.MAX_VALUE);
+            this.verfa_damage = builder.comment("Default 10").defineInRange("Sets Verfalldrache Damage", 10, 1, Double.MAX_VALUE);
+            this.verfa_elec_damage = builder.comment("Default 15").defineInRange("Sets Verfalldrache Electrical Damage", 15, 1, Double.MAX_VALUE);
+            this.verfa_sound_damage = builder.comment("Default 5").defineInRange("Sets Verfalldrache Sonic Damage", 5, 1, Double.MAX_VALUE);
+            this.verfa_tar_damage = builder.comment("Default 5").defineInRange("Sets Verfalldrache Tar Damage", 5, 1, Double.MAX_VALUE);
+            this.verfa_armor = builder.comment("Default 15").defineInRange("Sets Verfalldrache Armor", 15, 1, Double.MAX_VALUE);
+            this.verfa_dpsr = builder.comment("Default 50").defineInRange("Sets Verfalldrache Damage Cap , set to 0 to disable", 50, 0, Double.MAX_VALUE);
+            this.verfa_buffs = builder.comment("Default values: minecraft:speed|600|0 ,minecraft:strength|600|0 ,minecraft:resistance|600|1").defineList("Verfalldrache buffs",
+                    Lists.newArrayList("minecraft:speed|600|0" , "minecraft:strength|600|0","minecraft:resistance|600|1") , o -> o instanceof String);
 
+            this.verfa_debuffs = builder.comment("Default values: minecraft:weakness|600|1 ,spore:mycelium|600|1 ,minecraft:slowness|600|1").defineList("Verfalldrache debuffs",
+                    Lists.newArrayList("minecraft:weakness|600|1" , "spore:mycelium_ef|600|1","minecraft:slowness|600|1") , o -> o instanceof String);
+            builder.pop();
             builder.push("Brute");
             this.brute_hp = builder.comment("Default 70").defineInRange("Sets Brute Max health", 70, 1, Double.MAX_VALUE);
             this.brute_damage = builder.comment("Default 7").defineInRange("Sets Brute Damage", 7, 1, Double.MAX_VALUE);
@@ -1185,7 +1208,7 @@ public class SConfig {
             this.reconstructor_terrain = builder.defineList("Mobs that are summoned for ground support",
                     Lists.newArrayList("spore:sieger","spore:howitzer","spore:stahl" ) , o -> o instanceof String);
             this.reconstructor_air = builder.defineList("Mobs that are summoned for air support",
-                    Lists.newArrayList("spore:hindenburg" ) , o -> o instanceof String);
+                    Lists.newArrayList("spore:hindenburg","spore:verfall" ) , o -> o instanceof String);
             this.reconstructor_water = builder.defineList("Mobs that are summoned for water support",
                     Lists.newArrayList("spore:gazenbreacher","spore:kraken","spore:leviathan") , o -> o instanceof String);
             this.reconstructor_underground = builder.defineList("Mobs that are summoned for underground support",
@@ -1744,6 +1767,7 @@ public class SConfig {
         public final ModConfigSpec.ConfigValue<List<? extends String>> vanguard_loot;
         public final ModConfigSpec.ConfigValue<List<? extends String>> sca_loot;
         public final ModConfigSpec.ConfigValue<List<? extends String>> sieger_loot;
+        public final ModConfigSpec.ConfigValue<List<? extends String>> verfall_loot;
         public final ModConfigSpec.ConfigValue<List<? extends String>> gazen_loot;
         public final ModConfigSpec.ConfigValue<List<? extends String>> leviathan_loot;
         public final ModConfigSpec.ConfigValue<List<? extends String>> graken_loot;
@@ -1751,6 +1775,7 @@ public class SConfig {
         public final ModConfigSpec.ConfigValue<List<? extends String>> hindie_loot;
         public final ModConfigSpec.ConfigValue<List<? extends String>> howit_loot;
         public final ModConfigSpec.ConfigValue<List<? extends String>> hohl_loot;
+        public final ModConfigSpec.ConfigValue<List<? extends String>> verfa_head_loot;
         public final ModConfigSpec.ConfigValue<List<? extends String>> howit_foot_loot;
         public final ModConfigSpec.ConfigValue<List<? extends String>> sieger_tail_loot;
         public final ModConfigSpec.ConfigValue<List<? extends String>> gazen_tongue_loot;
@@ -1957,6 +1982,10 @@ public class SConfig {
             this.hindie_loot = builder.defineList("Hindenburg",
                     Lists.newArrayList("spore:mutated_fiber|100|33|75","spore:amalgamated_heart|100|1|1","spore:armor_fragment|100|1|4","spore:mutated_heart|70|3|7","spore:cerebrum|70|1|4","spore:spine_fragment|56|7|15","spore:tumor|100|7|22", "spore:wing_membrane|100|3|11") , o -> o instanceof String);
 
+            this.verfall_loot = builder.defineList("Verfalldrache",
+                    Lists.newArrayList("spore:mutated_fiber|100|33|75","spore:amalgamated_heart|50|1|1","spore:armor_fragment|100|5|20","spore:mutated_heart|70|3|7","spore:tumor|100|2|5","spore:cerebrum|70|2|7","spore:spine_fragment|56|8|17","spore:wing_membrane|100|12|35") , o -> o instanceof String);
+
+
             this.sieger_tail_loot = builder.defineList("Sieger Tail",
                     Lists.newArrayList("spore:mutated_fiber|100|10|25","spore:armor_fragment|100|3|10","spore:tumor|100|7|22") , o -> o instanceof String);
 
@@ -1969,6 +1998,8 @@ public class SConfig {
             this.sta_blade_loot = builder.defineList("Stahlmorder Blade loot",
                     Lists.newArrayList("spore:mutated_fiber|100|5|15","spore:armor_fragment|100|3|14","spore:tumor|100|1|4","spore:tendons|70|6|12","spore:claw|100|3|12","spore:claw_fragment|100|15|45") , o -> o instanceof String);
 
+            this.verfa_head_loot = builder.defineList("Verfalldrache Head loot",
+                    Lists.newArrayList("spore:mutated_fiber|100|5|15","spore:armor_fragment|100|3|14","spore:tendons|70|6|12","spore:fang|100|3|12") , o -> o instanceof String);
 
             this.proto_loot = builder.defineList("Proto Hivemind",
                     Lists.newArrayList("spore:mutated_fiber|100|10|20","spore:armor_fragment|80|4|14","spore:organoid_membrane|80|4|8","spore:mutated_heart|80|1|6","spore:cerebrum|100|2|11","spore:spine_fragment|80|2|8") , o -> o instanceof String);
