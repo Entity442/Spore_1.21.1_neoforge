@@ -29,6 +29,7 @@ import java.util.List;
 
 public class Inquisitor extends Hyper {
    public static final EntityDataAccessor<Integer> DAMAGE_BONUS = SynchedEntityData.defineId(Inquisitor.class, EntityDataSerializers.INT);
+   private static final double inquisitorMaxDamage = SConfig.SERVER.inquisitor_damage.get()*2*SConfig.SERVER.global_damage.get();
     public Inquisitor(EntityType<? extends PathfinderMob> type, Level level) {
         super(type, level);
     }
@@ -58,7 +59,7 @@ public class Inquisitor extends Hyper {
     public void setBonusDamage(int value){
         entityData.set(DAMAGE_BONUS,value);
         AttributeInstance damage = this.getAttribute(Attributes.ATTACK_DAMAGE);
-        if (damage != null && damage.getValue() < SConfig.SERVER.inquisitor_damage.get()*2*SConfig.SERVER.global_damage.get()){
+        if (damage != null){
             double new_damage = (SConfig.SERVER.inquisitor_damage.get()*SConfig.SERVER.global_damage.get()) + (this.getBonusDamage()*0.5);
             damage.setBaseValue(new_damage);
         }
@@ -70,7 +71,10 @@ public class Inquisitor extends Hyper {
     @Override
     public void awardKillScore(Entity entity, int i, DamageSource damageSource) {
         super.awardKillScore(entity, i, damageSource);
-        this.setBonusDamage(this.getBonusDamage()+1);
+        AttributeInstance damage = this.getAttribute(Attributes.ATTACK_DAMAGE);
+        if (damage != null && damage.getValue() < inquisitorMaxDamage){
+            this.setBonusDamage(this.getBonusDamage()+1);
+        }
     }
     @Override
     protected void addRegularGoals() {
