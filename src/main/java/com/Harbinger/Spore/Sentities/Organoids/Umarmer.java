@@ -4,6 +4,7 @@ package com.Harbinger.Spore.Sentities.Organoids;
 import com.Harbinger.Spore.Sentities.AI.AOEMeleeAttackGoal;
 import com.Harbinger.Spore.Sentities.AI.CustomMeleeAttackGoal;
 import com.Harbinger.Spore.Sentities.BaseEntities.Organoid;
+import com.Harbinger.Spore.Sentities.ColdEndurance;
 import com.Harbinger.Spore.Sentities.Utility.WaveEntity;
 import com.Harbinger.Spore.Sentities.VariantKeeper;
 import com.Harbinger.Spore.Sentities.Variants.UmarmerVariants;
@@ -681,5 +682,10 @@ public class Umarmer extends Organoid implements VariantKeeper {
     @Override
     public boolean isCloseCombatant() {
         return true;
+    }
+
+    @Override
+    public ColdEndurance getEndurance() {
+        return getVariant() == UmarmerVariants.CHARRED ? ColdEndurance.HYPER : super.getEndurance();
     }
 }
