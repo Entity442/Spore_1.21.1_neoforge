@@ -4,6 +4,8 @@ import com.Harbinger.Spore.core.Seffects;
 import com.Harbinger.Spore.ExtremelySusThings.Utilities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -18,7 +20,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class Tar extends Block {
     public Tar() {
-        super(Properties.of().noOcclusion().sound(SoundType.SLIME_BLOCK));
+        super(Properties.of().noOcclusion().sound(SoundType.SLIME_BLOCK).randomTicks());
     }
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
@@ -26,6 +28,12 @@ public class Tar extends Block {
         {
             return box(0, 0, 0, 16, 1, 16).move(offset.x, offset.y, offset.z);
         }
+    }
+
+    @Override
+    protected void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+        super.randomTick(state, level, pos, random);
+        level.removeBlock(pos,false);
     }
 
     @Override
