@@ -386,6 +386,7 @@ public class Ssounds {
 
     public static final Holder<SoundEvent> GORGON_SPEW = soundRegistry("gorgon_spew");
 
+    public static final Holder<SoundEvent> FIRE_EXPLOSION = soundRegistry("fire_explosion");
 
     ///SONGS///
 

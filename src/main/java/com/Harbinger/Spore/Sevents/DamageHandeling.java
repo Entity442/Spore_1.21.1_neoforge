@@ -17,11 +17,8 @@ import com.Harbinger.Spore.Sitems.BaseWeapons.DamagePiercingModifier;
 import com.Harbinger.Spore.Sitems.BaseWeapons.SporeArmorMutations;
 import com.Harbinger.Spore.Sitems.BaseWeapons.SporeBaseArmor;
 import com.Harbinger.Spore.Sitems.PCI;
-import com.Harbinger.Spore.core.SConfig;
-import com.Harbinger.Spore.core.Seffects;
+import com.Harbinger.Spore.core.*;
 
-import com.Harbinger.Spore.core.Senchantments;
-import com.Harbinger.Spore.core.Sentities;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -37,6 +34,7 @@ import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
+import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 
 import java.util.ArrayList;
@@ -91,6 +89,21 @@ public class DamageHandeling {
             if (instance != null && Math.random() < chance){
                 victim.setRemainingFireTicks(victim.getRemainingFireTicks()+instance.getDuration());
                 victim.removeEffect(Seffects.IGNITABLE);
+                victim.playSound(Ssounds.FIRE_EXPLOSION.value());
+                AABB aabb = victim.getBoundingBox().inflate(3);
+                List<Entity> fireList = victim.level().getEntities(victim,aabb);
+                boolean isInfected = victim.getType().is(EntityTypeTags.FREEZE_HURTS_EXTRA_TYPES);
+                for(Entity entity : fireList){
+                    if (entity instanceof LivingEntity livingEntity){
+                        if (isInfected && !(livingEntity instanceof Player)){
+                            livingEntity.setRemainingFireTicks(livingEntity.getRemainingFireTicks()+instance.getDuration());
+                        }else {
+                            if (Utilities.TARGET_SELECTOR.Test(livingEntity)){
+                                livingEntity.setRemainingFireTicks(livingEntity.getRemainingFireTicks()+(instance.getDuration()/2));
+                            }
+                        }
+                    }
+                }
             }
         }
         /* --------------------------------------------------------
