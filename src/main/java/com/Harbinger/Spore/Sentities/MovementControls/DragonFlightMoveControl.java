@@ -1,6 +1,7 @@
 package com.Harbinger.Spore.Sentities.MovementControls;
 
 import com.Harbinger.Spore.Sentities.Calamities.Verfalldrachen;
+import com.Harbinger.Spore.core.Ssounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
@@ -182,7 +183,7 @@ public class DragonFlightMoveControl extends MoveControl {
     }
 
     protected void onFlap() {
-        mob.playSound(SoundEvents.ENDER_DRAGON_FLAP, 1.0F,
+        mob.playSound(Ssounds.VERFALL_FLAP.value(), 1.0F,
                 0.8F + mob.getRandom().nextFloat() * 0.4F);
         mob.triggerFlap();
         mob.level().broadcastEntityEvent(mob, (byte)6);

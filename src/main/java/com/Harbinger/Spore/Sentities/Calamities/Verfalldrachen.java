@@ -580,19 +580,6 @@ public class Verfalldrachen extends Calamity implements TrueCalamity, RangedAtta
         return SConfig.DATAGEN.verfall_loot.get();
     }
 
-    @Override
-    public void playAmbientSound() {
-        if (getTarHead() > 0 && getTarHeadSegment() == TAR_HEAD_SEGMENT && Math.random() < 0.5){
-            playSound(Ssounds.SIEGER_AMBIENT.value());
-        }
-        if (getSonicHead() > 0 && getSonicHeadSegment() == SONIC_HEAD_SEGMENT && Math.random() < 0.5){
-            playSound(Ssounds.SIEGER_AMBIENT.value());
-        }
-        if (getElectricalHead() > 0 && getElectricalHeadSegment() == ELECTRICAL_SEGMENT && Math.random() < 0.5){
-            playSound(Ssounds.SIEGER_AMBIENT.value());
-        }
-        playSound(Ssounds.SIEGER_AMBIENT.value());
-    }
 
     protected SoundEvent getStepSound() {
         return SoundEvents.RAVAGER_STEP;
@@ -778,7 +765,7 @@ public class Verfalldrachen extends Calamity implements TrueCalamity, RangedAtta
         spawnLightningEffect(target);
         beamTicks = 40;
         setCharge(getCharge() - 10);
-        playSound(Ssounds.ELECTRIC_DISCHARGE.value());
+        playSound(Ssounds.VERFALL_ELECTRICITY_ATTACK.value());
         setElectricalTargetId(-1);
     }
 
@@ -793,6 +780,19 @@ public class Verfalldrachen extends Calamity implements TrueCalamity, RangedAtta
         applySonicKnockback(target);
         setSonicCharge(getSonicCharge() - 5);
         setSonicTargetId(-1);
+    }
+    @Override
+    public void playAmbientSound() {
+        if (getTarHead() > 0 && getTarHeadSegment() == TAR_HEAD_SEGMENT && Math.random() < 0.5){
+            this.tarHead.playSound(Ssounds.VERFALL_TAR_HEAD_AMBIENT.value());
+        }
+        if (getSonicHead() > 0 && getSonicHeadSegment() == SONIC_HEAD_SEGMENT && Math.random() < 0.5){
+            this.soundHead.playSound(Ssounds.VERFALL_SONIC_HEAD_AMBIENT.value());
+        }
+        if (getElectricalHead() > 0 && getElectricalHeadSegment() == ELECTRICAL_SEGMENT && Math.random() < 0.5){
+            this.lightningHead.playSound(Ssounds.ELECTRIC.value());
+        }
+        playSound(Ssounds.VERFALL_AMBIENT.value());
     }
 
 // ==================== VALIDATION METHODS ====================
