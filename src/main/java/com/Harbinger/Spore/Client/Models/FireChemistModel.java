@@ -13,9 +13,10 @@ import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
-public class ChemistModel<T extends Chemist> extends EntityModel<T> implements TentacledModel{
+
+public class FireChemistModel<T extends Chemist> extends EntityModel<T> implements TentacledModel{
 	// This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
-	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "chemistmodel"), "main");
+	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "firechemistmodel"), "main");
 	private final ModelPart ChemistFull;
 	private final ModelPart Chemist;
 	private final ModelPart Torso;
@@ -68,7 +69,7 @@ public class ChemistModel<T extends Chemist> extends EntityModel<T> implements T
 	private final ModelPart LeftLeg;
 	private final ModelPart LeftForLeg;
 
-	public ChemistModel(ModelPart root) {
+	public FireChemistModel(ModelPart root) {
 		this.ChemistFull = root.getChild("ChemistFull");
 		this.Chemist = this.ChemistFull.getChild("Chemist");
 		this.Torso = this.Chemist.getChild("Torso");
@@ -162,8 +163,6 @@ public class ChemistModel<T extends Chemist> extends EntityModel<T> implements T
 
 		PartDefinition Filter2 = Filters.addOrReplaceChild("Filter2", CubeListBuilder.create(), PartPose.offsetAndRotation(4.4196F, 0.45F, -3.3483F, 0.8203F, 0.0F, 0.0F));
 
-		PartDefinition Blood_r1 = Filter2.addOrReplaceChild("Blood_r1", CubeListBuilder.create().texOffs(70, 36).addBox(-3.0F, -1.0F, 0.0F, 4.0F, 5.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(1.2305F, 0.35F, -3.2375F, -0.841F, -0.3333F, 0.3397F));
-
 		PartDefinition Filter2Cap_r1 = Filter2.addOrReplaceChild("Filter2Cap_r1", CubeListBuilder.create().texOffs(24, 76).addBox(-0.6981F, 0.8819F, -1.9782F, 3.0F, 3.0F, 1.0F, new CubeDeformation(0.0F))
 		.texOffs(66, 73).addBox(-0.1981F, 1.3819F, -0.9782F, 2.0F, 2.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-1.0195F, -2.8995F, -1.5659F, 0.0F, -0.3927F, 0.0F));
 
@@ -187,81 +186,81 @@ public class ChemistModel<T extends Chemist> extends EntityModel<T> implements T
 
 		PartDefinition Glass_r4 = Glass.addOrReplaceChild("Glass_r4", CubeListBuilder.create().texOffs(28, 35).addBox(-0.5F, -1.0F, 0.0F, 1.0F, 2.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-2.25F, -1.0F, 0.0F, -0.1309F, 0.0F, 0.0F));
 
-		PartDefinition IntakeTubeRight = Head.addOrReplaceChild("IntakeTubeRight", CubeListBuilder.create(), PartPose.offsetAndRotation(-5.1808F, -3.0987F, 1.5556F, -0.0436F, 0.2531F, 0.0F));
+		PartDefinition IntakeTubeRight = Head.addOrReplaceChild("IntakeTubeRight", CubeListBuilder.create(), PartPose.offsetAndRotation(-5.1808F, -3.0987F, 1.5556F, 0.0F, 0.2094F, 0.0F));
 
-		PartDefinition Vein8_r1 = IntakeTubeRight.addOrReplaceChild("Vein8_r1", CubeListBuilder.create().texOffs(48, 80).addBox(1.0F, -1.0F, -1.0F, 0.0F, 1.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.6816F, 1.7831F, -4.7401F, -0.2834F, 0.0313F, -1.3245F));
+		PartDefinition Vein8_r1 = IntakeTubeRight.addOrReplaceChild("Vein8_r1", CubeListBuilder.create().texOffs(48, 80).addBox(1.0F, -1.0F, -1.0F, 0.0F, 1.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.5967F, 1.6987F, -4.7619F, -0.2834F, 0.0313F, -1.3245F));
 
-		PartDefinition Vein7_r1 = IntakeTubeRight.addOrReplaceChild("Vein7_r1", CubeListBuilder.create().texOffs(28, 80).addBox(1.0F, -1.0F, -1.0F, 0.0F, 1.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.8816F, 0.9831F, -4.7401F, -0.2834F, 0.0313F, -1.3245F));
+		PartDefinition Vein7_r1 = IntakeTubeRight.addOrReplaceChild("Vein7_r1", CubeListBuilder.create().texOffs(28, 80).addBox(1.0F, -1.0F, -1.0F, 0.0F, 1.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.7967F, 0.8987F, -4.7619F, -0.2834F, 0.0313F, -1.3245F));
 
-		PartDefinition Vein6_r1 = IntakeTubeRight.addOrReplaceChild("Vein6_r1", CubeListBuilder.create().texOffs(44, 79).addBox(0.0F, -0.5F, -1.0F, 0.0F, 1.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-0.1572F, 0.991F, -4.3257F, -0.0026F, 0.2484F, 0.2542F));
+		PartDefinition Vein6_r1 = IntakeTubeRight.addOrReplaceChild("Vein6_r1", CubeListBuilder.create().texOffs(44, 79).addBox(0.0F, -0.5F, -1.0F, 0.0F, 1.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-0.2422F, 0.9066F, -4.3475F, -0.0026F, 0.2484F, 0.2542F));
 
-		PartDefinition Vein5_r1 = IntakeTubeRight.addOrReplaceChild("Vein5_r1", CubeListBuilder.create().texOffs(24, 80).addBox(0.0F, -0.5F, -1.0F, 0.0F, 1.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-0.9572F, 0.891F, -4.3257F, -0.0725F, 0.2484F, 0.2542F));
+		PartDefinition Vein5_r1 = IntakeTubeRight.addOrReplaceChild("Vein5_r1", CubeListBuilder.create().texOffs(24, 80).addBox(0.0F, -0.5F, -1.0F, 0.0F, 1.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-1.0422F, 0.8066F, -4.3475F, -0.0725F, 0.2484F, 0.2542F));
 
-		PartDefinition Vein4_r1 = IntakeTubeRight.addOrReplaceChild("Vein4_r1", CubeListBuilder.create().texOffs(16, 79).addBox(0.0F, -0.5F, -1.0F, 0.0F, 1.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.2428F, -0.709F, -4.3257F, 0.0323F, 0.2484F, 0.2542F));
+		PartDefinition Vein4_r1 = IntakeTubeRight.addOrReplaceChild("Vein4_r1", CubeListBuilder.create().texOffs(16, 79).addBox(0.0F, -0.5F, -1.0F, 0.0F, 1.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.1578F, -0.7934F, -4.3475F, 0.0323F, 0.2484F, 0.2542F));
 
-		PartDefinition Vein3_r1 = IntakeTubeRight.addOrReplaceChild("Vein3_r1", CubeListBuilder.create().texOffs(12, 79).addBox(0.0F, -0.5F, -1.0F, 0.0F, 1.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-0.5572F, -0.909F, -4.3257F, 0.0323F, 0.2484F, 0.2542F));
+		PartDefinition Vein3_r1 = IntakeTubeRight.addOrReplaceChild("Vein3_r1", CubeListBuilder.create().texOffs(12, 79).addBox(0.0F, -0.5F, -1.0F, 0.0F, 1.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-0.6422F, -0.9934F, -4.3475F, 0.0323F, 0.2484F, 0.2542F));
 
-		PartDefinition Vein2_r1 = IntakeTubeRight.addOrReplaceChild("Vein2_r1", CubeListBuilder.create().texOffs(8, 79).addBox(1.0F, -1.0F, -1.0F, 0.0F, 1.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-1.1184F, 0.4831F, -4.2401F, -0.0915F, 0.0313F, -1.3245F));
+		PartDefinition Vein2_r1 = IntakeTubeRight.addOrReplaceChild("Vein2_r1", CubeListBuilder.create().texOffs(8, 79).addBox(1.0F, -1.0F, -1.0F, 0.0F, 1.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-1.2033F, 0.3987F, -4.2619F, -0.0915F, 0.0313F, -1.3245F));
 
-		PartDefinition Vein1_r1 = IntakeTubeRight.addOrReplaceChild("Vein1_r1", CubeListBuilder.create().texOffs(66, 36).addBox(1.0F, -1.0F, -1.0F, 0.0F, 1.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-1.3184F, 1.2831F, -4.2401F, -0.0915F, 0.0313F, -1.3245F));
+		PartDefinition Vein1_r1 = IntakeTubeRight.addOrReplaceChild("Vein1_r1", CubeListBuilder.create().texOffs(66, 36).addBox(1.0F, -1.0F, -1.0F, 0.0F, 1.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-1.4033F, 1.1987F, -4.2619F, -0.0915F, 0.0313F, -1.3245F));
 
-		PartDefinition Fang_r1 = IntakeTubeRight.addOrReplaceChild("Fang_r1", CubeListBuilder.create().texOffs(30, 62).addBox(0.0F, -1.5F, -2.5F, 0.0F, 3.0F, 5.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-2.8163F, 0.3488F, -0.9882F, -0.5415F, 0.3724F, -1.8113F));
+		PartDefinition Fang_r1 = IntakeTubeRight.addOrReplaceChild("Fang_r1", CubeListBuilder.create().texOffs(30, 62).addBox(0.0F, -1.5F, -2.5F, 0.0F, 3.0F, 5.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-2.9012F, 0.2643F, -1.01F, -0.5415F, 0.3724F, -1.8113F));
 
-		PartDefinition IntakeTube_r1 = IntakeTubeRight.addOrReplaceChild("IntakeTube_r1", CubeListBuilder.create().texOffs(68, 54).addBox(-2.0F, -1.0F, -1.0F, 3.0F, 2.0F, 2.0F, new CubeDeformation(-0.1F)), PartPose.offsetAndRotation(0.0816F, 0.0831F, -2.54F, 1.6509F, -1.3258F, 0.146F));
+		PartDefinition IntakeTube_r1 = IntakeTubeRight.addOrReplaceChild("IntakeTube_r1", CubeListBuilder.create().texOffs(68, 54).addBox(-2.0F, -1.0F, -1.0F, 3.0F, 2.0F, 2.0F, new CubeDeformation(-0.1F)), PartPose.offsetAndRotation(-0.0033F, -0.0013F, -2.5619F, 1.6509F, -1.3258F, 0.146F));
 
-		PartDefinition ConnectingTumorBase7_r1 = IntakeTubeRight.addOrReplaceChild("ConnectingTumorBase7_r1", CubeListBuilder.create().texOffs(70, 41).addBox(-1.0F, -2.0F, -1.0F, 2.0F, 3.0F, 2.0F, new CubeDeformation(-0.4F)), PartPose.offsetAndRotation(-0.8184F, -0.2169F, 0.2599F, 1.5331F, 0.1788F, 0.3017F));
+		PartDefinition ConnectingTumorBase7_r1 = IntakeTubeRight.addOrReplaceChild("ConnectingTumorBase7_r1", CubeListBuilder.create().texOffs(70, 41).addBox(-1.0F, -2.0F, -1.0F, 2.0F, 3.0F, 2.0F, new CubeDeformation(-0.4F)), PartPose.offsetAndRotation(-0.9033F, -0.3013F, 0.2381F, 1.5331F, 0.1788F, 0.3017F));
 
-		PartDefinition ConnectingTumorBase6_r1 = IntakeTubeRight.addOrReplaceChild("ConnectingTumorBase6_r1", CubeListBuilder.create().texOffs(74, 77).addBox(-1.0F, -1.0F, -1.0F, 2.0F, 2.0F, 2.0F, new CubeDeformation(-0.5F)), PartPose.offsetAndRotation(-0.6184F, -0.0169F, -2.2401F, 1.4729F, 0.4394F, 0.2759F));
+		PartDefinition ConnectingTumorBase6_r1 = IntakeTubeRight.addOrReplaceChild("ConnectingTumorBase6_r1", CubeListBuilder.create().texOffs(74, 77).addBox(-1.0F, -1.0F, -1.0F, 2.0F, 2.0F, 2.0F, new CubeDeformation(-0.5F)), PartPose.offsetAndRotation(-0.7033F, -0.1013F, -2.2619F, 1.4729F, 0.4394F, 0.2759F));
 
-		PartDefinition ConnectingTumorBase5_r1 = IntakeTubeRight.addOrReplaceChild("ConnectingTumorBase5_r1", CubeListBuilder.create().texOffs(66, 77).addBox(-1.0F, -1.0F, -1.0F, 2.0F, 2.0F, 2.0F, new CubeDeformation(-0.5F)), PartPose.offsetAndRotation(0.1816F, -0.8169F, -2.2401F, 1.8388F, 0.5328F, -0.0222F));
+		PartDefinition ConnectingTumorBase5_r1 = IntakeTubeRight.addOrReplaceChild("ConnectingTumorBase5_r1", CubeListBuilder.create().texOffs(66, 77).addBox(-1.0F, -1.0F, -1.0F, 2.0F, 2.0F, 2.0F, new CubeDeformation(-0.5F)), PartPose.offsetAndRotation(0.0967F, -0.9013F, -2.2619F, 1.8388F, 0.5328F, -0.0222F));
 
-		PartDefinition ConnectingTumorBase4_r1 = IntakeTubeRight.addOrReplaceChild("ConnectingTumorBase4_r1", CubeListBuilder.create().texOffs(58, 77).addBox(-1.0F, -1.0F, -1.0F, 2.0F, 2.0F, 2.0F, new CubeDeformation(-0.3F)), PartPose.offsetAndRotation(0.8816F, -1.1169F, -0.8401F, 1.2242F, 0.4966F, 0.1119F));
+		PartDefinition ConnectingTumorBase4_r1 = IntakeTubeRight.addOrReplaceChild("ConnectingTumorBase4_r1", CubeListBuilder.create().texOffs(58, 77).addBox(-1.0F, -1.0F, -1.0F, 2.0F, 2.0F, 2.0F, new CubeDeformation(-0.3F)), PartPose.offsetAndRotation(0.7967F, -1.2013F, -0.8619F, 1.2242F, 0.4966F, 0.1119F));
 
-		PartDefinition ConnectingTumorBase3_r1 = IntakeTubeRight.addOrReplaceChild("ConnectingTumorBase3_r1", CubeListBuilder.create().texOffs(78, 24).addBox(-1.0F, -1.0F, -1.0F, 2.0F, 2.0F, 2.0F, new CubeDeformation(-0.3F)), PartPose.offsetAndRotation(0.5816F, 0.1831F, 0.3599F, 0.8557F, -0.0278F, -0.5932F));
+		PartDefinition ConnectingTumorBase3_r1 = IntakeTubeRight.addOrReplaceChild("ConnectingTumorBase3_r1", CubeListBuilder.create().texOffs(78, 24).addBox(-1.0F, -1.0F, -1.0F, 2.0F, 2.0F, 2.0F, new CubeDeformation(-0.3F)), PartPose.offsetAndRotation(0.4967F, 0.0987F, 0.3381F, 0.8557F, -0.0278F, -0.5932F));
 
-		PartDefinition ConnectingTumorBase2_r1 = IntakeTubeRight.addOrReplaceChild("ConnectingTumorBase2_r1", CubeListBuilder.create().texOffs(76, 50).addBox(-1.0F, -1.0F, -1.0F, 2.0F, 2.0F, 2.0F, new CubeDeformation(-0.2F)), PartPose.offsetAndRotation(0.4816F, 0.9831F, 0.0599F, 0.4371F, -0.6952F, 0.1247F));
+		PartDefinition ConnectingTumorBase2_r1 = IntakeTubeRight.addOrReplaceChild("ConnectingTumorBase2_r1", CubeListBuilder.create().texOffs(76, 50).addBox(-1.0F, -1.0F, -1.0F, 2.0F, 2.0F, 2.0F, new CubeDeformation(-0.2F)), PartPose.offsetAndRotation(0.3967F, 0.8987F, 0.0381F, 0.4371F, -0.6952F, 0.1247F));
 
-		PartDefinition ConnectingTumorBase1_r1 = IntakeTubeRight.addOrReplaceChild("ConnectingTumorBase1_r1", CubeListBuilder.create().texOffs(50, 76).addBox(-1.0F, -1.0F, -1.0F, 2.0F, 2.0F, 2.0F, new CubeDeformation(-0.4F)), PartPose.offsetAndRotation(0.6816F, 1.6831F, -0.8401F, -0.3269F, -1.0581F, 0.6593F));
+		PartDefinition ConnectingTumorBase1_r1 = IntakeTubeRight.addOrReplaceChild("ConnectingTumorBase1_r1", CubeListBuilder.create().texOffs(50, 76).addBox(-1.0F, -1.0F, -1.0F, 2.0F, 2.0F, 2.0F, new CubeDeformation(-0.4F)), PartPose.offsetAndRotation(0.5967F, 1.5987F, -0.8619F, -0.3269F, -1.0581F, 0.6593F));
 
-		PartDefinition IntakeTubeTumorBase_r1 = IntakeTubeRight.addOrReplaceChild("IntakeTubeTumorBase_r1", CubeListBuilder.create().texOffs(60, 58).addBox(-1.0F, -1.0F, -1.0F, 3.0F, 3.0F, 3.0F, new CubeDeformation(-0.2F)), PartPose.offsetAndRotation(0.5816F, 0.6831F, -1.4401F, 1.6509F, -1.3258F, 0.146F));
+		PartDefinition IntakeTubeTumorBase_r1 = IntakeTubeRight.addOrReplaceChild("IntakeTubeTumorBase_r1", CubeListBuilder.create().texOffs(60, 58).addBox(-1.0F, -1.0F, -1.0F, 3.0F, 3.0F, 3.0F, new CubeDeformation(-0.2F)), PartPose.offsetAndRotation(0.4967F, 0.5987F, -1.4619F, 1.6509F, -1.3258F, 0.146F));
 
-		PartDefinition IntakeTubeLeft = Head.addOrReplaceChild("IntakeTubeLeft", CubeListBuilder.create(), PartPose.offsetAndRotation(6.0192F, -3.1987F, 2.1556F, 0.2475F, -0.5451F, -0.4535F));
+		PartDefinition IntakeTubeLeft = Head.addOrReplaceChild("IntakeTubeLeft", CubeListBuilder.create(), PartPose.offsetAndRotation(5.0192F, -3.1987F, 1.1556F, 0.2475F, -0.5451F, -0.4535F));
 
-		PartDefinition Vein9_r1 = IntakeTubeLeft.addOrReplaceChild("Vein9_r1", CubeListBuilder.create().texOffs(76, 81).addBox(1.0F, -1.0F, -1.0F, 0.0F, 1.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-0.8561F, 1.2797F, -4.4637F, -0.2834F, 0.0313F, -1.3245F));
+		PartDefinition Vein9_r1 = IntakeTubeLeft.addOrReplaceChild("Vein9_r1", CubeListBuilder.create().texOffs(76, 81).addBox(1.0F, -1.0F, -1.0F, 0.0F, 1.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.431F, 1.7998F, -4.1938F, -0.2834F, 0.0313F, -1.3245F));
 
-		PartDefinition Vein8_r2 = IntakeTubeLeft.addOrReplaceChild("Vein8_r2", CubeListBuilder.create().texOffs(72, 81).addBox(1.0F, -1.0F, -1.0F, 0.0F, 1.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-0.6561F, 0.4797F, -4.4637F, -0.2834F, 0.0313F, -1.3245F));
+		PartDefinition Vein8_r2 = IntakeTubeLeft.addOrReplaceChild("Vein8_r2", CubeListBuilder.create().texOffs(72, 81).addBox(1.0F, -1.0F, -1.0F, 0.0F, 1.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.631F, 0.9998F, -4.1938F, -0.2834F, 0.0313F, -1.3245F));
 
-		PartDefinition Vein7_r2 = IntakeTubeLeft.addOrReplaceChild("Vein7_r2", CubeListBuilder.create().texOffs(68, 81).addBox(0.0F, -0.5F, -1.0F, 0.0F, 1.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-1.6949F, 0.4876F, -4.0493F, -0.0026F, 0.2484F, 0.2542F));
+		PartDefinition Vein7_r2 = IntakeTubeLeft.addOrReplaceChild("Vein7_r2", CubeListBuilder.create().texOffs(68, 81).addBox(0.0F, -0.5F, -1.0F, 0.0F, 1.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-0.4078F, 1.0076F, -3.7795F, -0.0026F, 0.2484F, 0.2542F));
 
-		PartDefinition Vein6_r2 = IntakeTubeLeft.addOrReplaceChild("Vein6_r2", CubeListBuilder.create().texOffs(64, 81).addBox(0.0F, -0.5F, -1.0F, 0.0F, 1.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-2.4949F, 0.3876F, -4.0493F, -0.0725F, 0.2484F, 0.2542F));
+		PartDefinition Vein6_r2 = IntakeTubeLeft.addOrReplaceChild("Vein6_r2", CubeListBuilder.create().texOffs(64, 81).addBox(0.0F, -0.5F, -1.0F, 0.0F, 1.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-1.2078F, 0.9076F, -3.7795F, -0.0725F, 0.2484F, 0.2542F));
 
-		PartDefinition Vein5_r2 = IntakeTubeLeft.addOrReplaceChild("Vein5_r2", CubeListBuilder.create().texOffs(60, 81).addBox(0.0F, -0.5F, -1.0F, 0.0F, 1.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-1.2949F, -1.2124F, -4.0493F, 0.0323F, 0.2484F, 0.2542F));
+		PartDefinition Vein5_r2 = IntakeTubeLeft.addOrReplaceChild("Vein5_r2", CubeListBuilder.create().texOffs(60, 81).addBox(0.0F, -0.5F, -1.0F, 0.0F, 1.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-0.0078F, -0.6924F, -3.7795F, 0.0323F, 0.2484F, 0.2542F));
 
-		PartDefinition Vein4_r2 = IntakeTubeLeft.addOrReplaceChild("Vein4_r2", CubeListBuilder.create().texOffs(56, 81).addBox(0.0F, -0.5F, -1.0F, 0.0F, 1.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-2.0949F, -1.4124F, -4.0493F, 0.0323F, 0.2484F, 0.2542F));
+		PartDefinition Vein4_r2 = IntakeTubeLeft.addOrReplaceChild("Vein4_r2", CubeListBuilder.create().texOffs(56, 81).addBox(0.0F, -0.5F, -1.0F, 0.0F, 1.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-0.8078F, -0.8924F, -3.7795F, 0.0323F, 0.2484F, 0.2542F));
 
-		PartDefinition Vein3_r2 = IntakeTubeLeft.addOrReplaceChild("Vein3_r2", CubeListBuilder.create().texOffs(80, 57).addBox(1.0F, -1.0F, -1.0F, 0.0F, 1.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-2.6561F, -0.0203F, -3.9637F, -0.0915F, 0.0313F, -1.3245F));
+		PartDefinition Vein3_r2 = IntakeTubeLeft.addOrReplaceChild("Vein3_r2", CubeListBuilder.create().texOffs(80, 57).addBox(1.0F, -1.0F, -1.0F, 0.0F, 1.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-1.369F, 0.4998F, -3.6938F, -0.0915F, 0.0313F, -1.3245F));
 
-		PartDefinition Vein2_r2 = IntakeTubeLeft.addOrReplaceChild("Vein2_r2", CubeListBuilder.create().texOffs(52, 80).addBox(1.0F, -1.0F, -1.0F, 0.0F, 1.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-2.8561F, 0.7797F, -3.9637F, -0.0915F, 0.0313F, -1.3245F));
+		PartDefinition Vein2_r2 = IntakeTubeLeft.addOrReplaceChild("Vein2_r2", CubeListBuilder.create().texOffs(52, 80).addBox(1.0F, -1.0F, -1.0F, 0.0F, 1.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-1.569F, 1.2998F, -3.6938F, -0.0915F, 0.0313F, -1.3245F));
 
-		PartDefinition Fang_r2 = IntakeTubeLeft.addOrReplaceChild("Fang_r2", CubeListBuilder.create().texOffs(52, 64).addBox(1.0F, -3.0F, -4.0F, 0.0F, 3.0F, 5.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(2.4439F, 2.0797F, -0.2637F, 0.0245F, 0.5502F, -1.0503F));
+		PartDefinition Fang_r2 = IntakeTubeLeft.addOrReplaceChild("Fang_r2", CubeListBuilder.create().texOffs(52, 64).addBox(1.0F, -3.0F, -4.0F, 0.0F, 3.0F, 5.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(3.731F, 2.5998F, 0.0062F, 0.0245F, 0.5502F, -1.0503F));
 
-		PartDefinition IntakeTube_r2 = IntakeTubeLeft.addOrReplaceChild("IntakeTube_r2", CubeListBuilder.create().texOffs(36, 70).addBox(-2.0F, -1.0F, -1.0F, 3.0F, 2.0F, 2.0F, new CubeDeformation(-0.1F)), PartPose.offsetAndRotation(-1.4561F, -0.4203F, -2.2637F, 1.6509F, -1.3258F, 0.146F));
+		PartDefinition IntakeTube_r2 = IntakeTubeLeft.addOrReplaceChild("IntakeTube_r2", CubeListBuilder.create().texOffs(36, 70).addBox(-2.0F, -1.0F, -1.0F, 3.0F, 2.0F, 2.0F, new CubeDeformation(-0.1F)), PartPose.offsetAndRotation(-0.169F, 0.0998F, -1.9938F, 1.6509F, -1.3258F, 0.146F));
 
-		PartDefinition ConnectingTumorBase7_r2 = IntakeTubeLeft.addOrReplaceChild("ConnectingTumorBase7_r2", CubeListBuilder.create().texOffs(78, 20).addBox(-1.0F, -1.0F, -1.0F, 2.0F, 2.0F, 2.0F, new CubeDeformation(-0.5F)), PartPose.offsetAndRotation(-2.0561F, 0.3797F, -1.8637F, 0.0492F, -0.9842F, 0.7483F));
+		PartDefinition ConnectingTumorBase7_r2 = IntakeTubeLeft.addOrReplaceChild("ConnectingTumorBase7_r2", CubeListBuilder.create().texOffs(78, 20).addBox(-1.0F, -1.0F, -1.0F, 2.0F, 2.0F, 2.0F, new CubeDeformation(-0.5F)), PartPose.offsetAndRotation(-0.769F, 0.8998F, -1.5938F, 0.0492F, -0.9842F, 0.7483F));
 
-		PartDefinition ConnectingTumorBase6_r2 = IntakeTubeLeft.addOrReplaceChild("ConnectingTumorBase6_r2", CubeListBuilder.create().texOffs(78, 16).addBox(-1.0F, -1.0F, -1.0F, 2.0F, 2.0F, 2.0F, new CubeDeformation(-0.4F)), PartPose.offsetAndRotation(-0.5561F, -0.9203F, -1.9637F, 0.8511F, -0.7888F, -0.7261F));
+		PartDefinition ConnectingTumorBase6_r2 = IntakeTubeLeft.addOrReplaceChild("ConnectingTumorBase6_r2", CubeListBuilder.create().texOffs(78, 16).addBox(-1.0F, -1.0F, -1.0F, 2.0F, 2.0F, 2.0F, new CubeDeformation(-0.4F)), PartPose.offsetAndRotation(0.731F, -0.4002F, -1.6938F, 0.8511F, -0.7888F, -0.7261F));
 
-		PartDefinition ConnectingTumorBase5_r2 = IntakeTubeLeft.addOrReplaceChild("ConnectingTumorBase5_r2", CubeListBuilder.create().texOffs(70, 64).addBox(-1.0F, -2.0F, -1.0F, 2.0F, 3.0F, 2.0F, new CubeDeformation(-0.4F)), PartPose.offsetAndRotation(0.5439F, 0.0797F, -0.1637F, 1.5987F, 0.2389F, 0.2807F));
+		PartDefinition ConnectingTumorBase5_r2 = IntakeTubeLeft.addOrReplaceChild("ConnectingTumorBase5_r2", CubeListBuilder.create().texOffs(70, 64).addBox(-1.0F, -2.0F, -1.0F, 2.0F, 3.0F, 2.0F, new CubeDeformation(-0.4F)), PartPose.offsetAndRotation(1.831F, 0.5998F, 0.1062F, 1.5987F, 0.2389F, 0.2807F));
 
-		PartDefinition ConnectingTumorBase4_r2 = IntakeTubeLeft.addOrReplaceChild("ConnectingTumorBase4_r2", CubeListBuilder.create().texOffs(78, 12).addBox(-1.0F, -1.0F, -1.0F, 2.0F, 2.0F, 2.0F, new CubeDeformation(-0.3F)), PartPose.offsetAndRotation(-1.7561F, -1.6203F, -1.1637F, -1.7761F, 0.4018F, 2.8042F));
+		PartDefinition ConnectingTumorBase4_r2 = IntakeTubeLeft.addOrReplaceChild("ConnectingTumorBase4_r2", CubeListBuilder.create().texOffs(78, 12).addBox(-1.0F, -1.0F, -1.0F, 2.0F, 2.0F, 2.0F, new CubeDeformation(-0.3F)), PartPose.offsetAndRotation(-0.469F, -1.1002F, -0.8938F, -1.7761F, 0.4018F, 2.8042F));
 
-		PartDefinition ConnectingTumorBase3_r2 = IntakeTubeLeft.addOrReplaceChild("ConnectingTumorBase3_r2", CubeListBuilder.create().texOffs(78, 8).addBox(-1.0F, -1.0F, -1.0F, 2.0F, 2.0F, 2.0F, new CubeDeformation(-0.2F)), PartPose.offsetAndRotation(-0.9561F, -1.7203F, 1.0363F, 0.8421F, -0.0522F, -0.1866F));
+		PartDefinition ConnectingTumorBase3_r2 = IntakeTubeLeft.addOrReplaceChild("ConnectingTumorBase3_r2", CubeListBuilder.create().texOffs(78, 8).addBox(-1.0F, -1.0F, -1.0F, 2.0F, 2.0F, 2.0F, new CubeDeformation(-0.2F)), PartPose.offsetAndRotation(0.331F, -1.2002F, 1.3062F, 0.8421F, -0.0522F, -0.1866F));
 
-		PartDefinition ConnectingTumorBase2_r2 = IntakeTubeLeft.addOrReplaceChild("ConnectingTumorBase2_r2", CubeListBuilder.create().texOffs(78, 4).addBox(-1.0F, -1.0F, -1.0F, 2.0F, 2.0F, 2.0F, new CubeDeformation(-0.1F)), PartPose.offsetAndRotation(-1.1561F, -0.1203F, 0.9363F, -0.2924F, -0.0522F, -0.1866F));
+		PartDefinition ConnectingTumorBase2_r2 = IntakeTubeLeft.addOrReplaceChild("ConnectingTumorBase2_r2", CubeListBuilder.create().texOffs(78, 4).addBox(-1.0F, -1.0F, -1.0F, 2.0F, 2.0F, 2.0F, new CubeDeformation(-0.1F)), PartPose.offsetAndRotation(0.131F, 0.3998F, 1.2062F, -0.2924F, -0.0522F, -0.1866F));
 
-		PartDefinition ConnectingTumorBase1_r2 = IntakeTubeLeft.addOrReplaceChild("ConnectingTumorBase1_r2", CubeListBuilder.create().texOffs(78, 0).addBox(-1.0F, -1.0F, -1.0F, 2.0F, 2.0F, 2.0F, new CubeDeformation(-0.4F)), PartPose.offsetAndRotation(-2.0561F, 0.8797F, -0.1637F, 0.8511F, -0.7888F, -0.7261F));
+		PartDefinition ConnectingTumorBase1_r2 = IntakeTubeLeft.addOrReplaceChild("ConnectingTumorBase1_r2", CubeListBuilder.create().texOffs(78, 0).addBox(-1.0F, -1.0F, -1.0F, 2.0F, 2.0F, 2.0F, new CubeDeformation(-0.4F)), PartPose.offsetAndRotation(-0.769F, 1.3998F, 0.1062F, 0.8511F, -0.7888F, -0.7261F));
 
-		PartDefinition IntakeTubeTumorBase_r2 = IntakeTubeLeft.addOrReplaceChild("IntakeTubeTumorBase_r2", CubeListBuilder.create().texOffs(40, 64).addBox(-1.0F, -1.0F, -1.0F, 3.0F, 3.0F, 3.0F, new CubeDeformation(-0.2F)), PartPose.offsetAndRotation(-0.9561F, 0.1797F, -1.1637F, 1.6509F, -1.3258F, 0.146F));
+		PartDefinition IntakeTubeTumorBase_r2 = IntakeTubeLeft.addOrReplaceChild("IntakeTubeTumorBase_r2", CubeListBuilder.create().texOffs(40, 64).addBox(-1.0F, -1.0F, -1.0F, 3.0F, 3.0F, 3.0F, new CubeDeformation(-0.2F)), PartPose.offsetAndRotation(0.331F, 0.6998F, -0.8938F, 1.6509F, -1.3258F, 0.146F));
 
 		PartDefinition HeadTendrils = Head.addOrReplaceChild("HeadTendrils", CubeListBuilder.create(), PartPose.offset(0.0F, 22.0F, 0.25F));
 
@@ -311,48 +310,48 @@ public class ChemistModel<T extends Chemist> extends EntityModel<T> implements T
 
 		PartDefinition Tumor1_r1 = HeadTumors1.addOrReplaceChild("Tumor1_r1", CubeListBuilder.create().texOffs(0, 83).addBox(-1.0F, -2.0F, -3.0F, 4.0F, 4.0F, 4.0F, new CubeDeformation(-0.6F)), PartPose.offsetAndRotation(-0.4276F, -1.2424F, 1.5284F, 0.9163F, 0.5236F, 0.0F));
 
-		PartDefinition HeadTumors2 = Head.addOrReplaceChild("HeadTumors2", CubeListBuilder.create(), PartPose.offsetAndRotation(3.9447F, -6.5507F, 2.657F, -0.3054F, -0.6981F, 0.0F));
+		PartDefinition HeadTumors2 = Head.addOrReplaceChild("HeadTumors2", CubeListBuilder.create(), PartPose.offsetAndRotation(3.9447F, -7.5507F, 3.657F, -0.3054F, -0.6981F, 0.0F));
 
-		PartDefinition Tumor5_r1 = HeadTumors2.addOrReplaceChild("Tumor5_r1", CubeListBuilder.create().texOffs(2, 84).addBox(-1.75F, -1.5F, -1.0F, 3.0F, 3.0F, 3.0F, new CubeDeformation(-0.6F)), PartPose.offsetAndRotation(-0.7069F, 0.7227F, -0.9334F, 1.1651F, -0.2569F, 1.1594F));
+		PartDefinition Tumor5_r1 = HeadTumors2.addOrReplaceChild("Tumor5_r1", CubeListBuilder.create().texOffs(2, 84).addBox(-1.75F, -1.5F, -1.0F, 3.0F, 3.0F, 3.0F, new CubeDeformation(-0.6F)), PartPose.offsetAndRotation(-1.3497F, 1.9068F, -1.3633F, 1.1651F, -0.2569F, 1.1594F));
 
-		PartDefinition Tumor4_r1 = HeadTumors2.addOrReplaceChild("Tumor4_r1", CubeListBuilder.create().texOffs(0, 83).addBox(-1.0F, -2.0F, -3.0F, 4.0F, 4.0F, 4.0F, new CubeDeformation(-0.8F)), PartPose.offsetAndRotation(-0.3527F, -0.3399F, 0.9322F, 0.0982F, 0.0574F, -0.7634F));
+		PartDefinition Tumor4_r1 = HeadTumors2.addOrReplaceChild("Tumor4_r1", CubeListBuilder.create().texOffs(0, 83).addBox(-1.0F, -2.0F, -3.0F, 4.0F, 4.0F, 4.0F, new CubeDeformation(-0.8F)), PartPose.offsetAndRotation(-0.9955F, 0.8442F, 0.5023F, 0.0982F, 0.0574F, -0.7634F));
 
-		PartDefinition Arms = Torso.addOrReplaceChild("Arms", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, -21.0F, 0.0F, -3.1416F, 0.0F, 3.1416F));
+		PartDefinition Arms = Torso.addOrReplaceChild("Arms", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, -3.1416F, 0.0F, 3.1416F));
 
-		PartDefinition RightArm = Arms.addOrReplaceChild("RightArm", CubeListBuilder.create().texOffs(0, 50).addBox(-1.0F, -2.0F, -2.1F, 4.0F, 5.0F, 4.0F, new CubeDeformation(0.0F))
-		.texOffs(112, 17).addBox(-1.0F, -2.0F, -2.1F, 4.0F, 5.0F, 4.0F, new CubeDeformation(-0.2F))
-		.texOffs(52, 49).addBox(-1.0F, 4.0F, -2.1F, 4.0F, 5.0F, 4.0F, new CubeDeformation(0.0F))
-		.texOffs(66, 24).addBox(-0.5F, 3.0F, -1.6F, 3.0F, 1.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offset(5.0F, 2.0F, 1.0F));
+		PartDefinition RightArm = Arms.addOrReplaceChild("RightArm", CubeListBuilder.create().texOffs(0, 50).addBox(-1.0F, -2.0F, -1.1F, 4.0F, 5.0F, 4.0F, new CubeDeformation(0.0F))
+		.texOffs(112, 17).addBox(-1.0F, -2.0F, -1.1F, 4.0F, 5.0F, 4.0F, new CubeDeformation(-0.2F))
+		.texOffs(52, 49).addBox(-1.0F, 4.0F, -1.1F, 4.0F, 5.0F, 4.0F, new CubeDeformation(0.0F))
+		.texOffs(66, 24).addBox(-0.5F, 3.0F, -0.6F, 3.0F, 1.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offset(5.0F, -19.0F, 0.0F));
 
-		PartDefinition Foliage1_r1 = RightArm.addOrReplaceChild("Foliage1_r1", CubeListBuilder.create().texOffs(-7, 99).addBox(-6.0F, 0.0F, -1.0F, 7.0F, 0.0F, 7.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(4.8F, 0.6F, -0.9F, -0.3142F, 0.0F, 0.3142F));
+		PartDefinition Foliage1_r1 = RightArm.addOrReplaceChild("Foliage1_r1", CubeListBuilder.create().texOffs(-7, 99).addBox(-6.0F, 0.0F, -1.0F, 7.0F, 0.0F, 7.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(4.8F, 0.6F, 0.1F, -0.3142F, 0.0F, 0.3142F));
 
-		PartDefinition LeftArm = Arms.addOrReplaceChild("LeftArm", CubeListBuilder.create().texOffs(54, 0).addBox(-2.0F, -1.5F, -2.0F, 4.0F, 5.0F, 4.0F, new CubeDeformation(0.0F))
-		.texOffs(96, 17).addBox(-2.0F, -1.5F, -2.0F, 4.0F, 5.0F, 4.0F, new CubeDeformation(-0.2F))
-		.texOffs(54, 9).addBox(-2.0F, 4.5F, -2.0F, 4.0F, 3.0F, 4.0F, new CubeDeformation(0.0F))
-		.texOffs(66, 28).addBox(-1.5F, 3.5F, -1.5F, 3.0F, 1.0F, 3.0F, new CubeDeformation(0.0F))
-		.texOffs(32, 57).addBox(-2.0F, 7.4F, -2.0F, 4.0F, 1.0F, 4.0F, new CubeDeformation(-0.1F)), PartPose.offset(-6.0F, 1.5F, 0.9F));
+		PartDefinition LeftArm = Arms.addOrReplaceChild("LeftArm", CubeListBuilder.create().texOffs(54, 0).addBox(-3.0F, -1.5F, -2.0F, 4.0F, 5.0F, 4.0F, new CubeDeformation(0.0F))
+		.texOffs(96, 17).addBox(-3.0F, -1.5F, -2.0F, 4.0F, 5.0F, 4.0F, new CubeDeformation(-0.2F))
+		.texOffs(54, 9).addBox(-3.0F, 4.5F, -2.0F, 4.0F, 3.0F, 4.0F, new CubeDeformation(0.0F))
+		.texOffs(66, 28).addBox(-2.5F, 3.5F, -1.5F, 3.0F, 1.0F, 3.0F, new CubeDeformation(0.0F))
+		.texOffs(32, 57).addBox(-3.0F, 7.4F, -2.0F, 4.0F, 1.0F, 4.0F, new CubeDeformation(-0.1F)), PartPose.offset(-5.0F, -19.5F, 0.9F));
 
-		PartDefinition Foliage3_r1 = LeftArm.addOrReplaceChild("Foliage3_r1", CubeListBuilder.create().texOffs(-7, 99).addBox(-6.0F, 0.0F, -1.0F, 7.0F, 0.0F, 7.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.8F, 4.1F, -2.3F, 0.1571F, 0.0698F, -0.2967F));
+		PartDefinition Foliage3_r1 = LeftArm.addOrReplaceChild("Foliage3_r1", CubeListBuilder.create().texOffs(-7, 99).addBox(-6.0F, 0.0F, -1.0F, 7.0F, 0.0F, 7.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-0.2F, 4.1F, -2.3F, 0.1571F, 0.0698F, -0.2967F));
 
-		PartDefinition Tendrils = LeftArm.addOrReplaceChild("Tendrils", CubeListBuilder.create(), PartPose.offset(0.0F, 8.0F, 0.0F));
+		PartDefinition Tendrils = LeftArm.addOrReplaceChild("Tendrils", CubeListBuilder.create(), PartPose.offset(-1.0F, 4.0F, 0.0F));
 
-		PartDefinition Tendril1 = Tendrils.addOrReplaceChild("Tendril1", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 1.0F));
+		PartDefinition Tendril1 = Tendrils.addOrReplaceChild("Tendril1", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
 
-		PartDefinition HandTendrilEnd_r1 = Tendril1.addOrReplaceChild("HandTendrilEnd_r1", CubeListBuilder.create().texOffs(40, 78).addBox(0.0F, -4.5F, -1.0F, 1.0F, 6.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-1.1F, 8.5F, 0.5F, -0.2337F, 0.0278F, 0.1369F));
+		PartDefinition HandTendrilEnd_r1 = Tendril1.addOrReplaceChild("HandTendrilEnd_r1", CubeListBuilder.create().texOffs(40, 78).addBox(0.0F, -4.5F, -1.0F, 1.0F, 6.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-1.1F, 12.5F, 1.5F, -0.2337F, 0.0278F, 0.1369F));
 
-		PartDefinition HandTendrilBase_r1 = Tendril1.addOrReplaceChild("HandTendrilBase_r1", CubeListBuilder.create().texOffs(68, 47).addBox(-1.0F, -2.5F, -1.0F, 2.0F, 5.0F, 2.0F, new CubeDeformation(-0.2F)), PartPose.offsetAndRotation(0.0F, 2.2F, 0.6F, 0.1745F, 0.0F, 0.0F));
+		PartDefinition HandTendrilBase_r1 = Tendril1.addOrReplaceChild("HandTendrilBase_r1", CubeListBuilder.create().texOffs(68, 47).addBox(-1.0F, -2.5F, -1.0F, 2.0F, 5.0F, 2.0F, new CubeDeformation(-0.2F)), PartPose.offsetAndRotation(0.0F, 6.2F, 1.6F, 0.1745F, 0.0F, 0.0F));
 
-		PartDefinition Tendril2 = Tendrils.addOrReplaceChild("Tendril2", CubeListBuilder.create(), PartPose.offsetAndRotation(-0.6317F, -0.1556F, 0.1157F, 0.0F, -1.0821F, 0.0F));
+		PartDefinition Tendril2 = Tendrils.addOrReplaceChild("Tendril2", CubeListBuilder.create(), PartPose.offsetAndRotation(-1.6317F, 8.8444F, 0.1157F, 0.0F, -1.0821F, 0.0F));
 
-		PartDefinition HandTendrilEnd_r2 = Tendril2.addOrReplaceChild("HandTendrilEnd_r2", CubeListBuilder.create().texOffs(40, 78).addBox(0.0F, -4.5F, -1.0F, 1.0F, 6.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-2.2378F, 8.2556F, -0.1328F, -0.4432F, 0.0278F, 0.1369F));
+		PartDefinition HandTendrilEnd_r2 = Tendril2.addOrReplaceChild("HandTendrilEnd_r2", CubeListBuilder.create().texOffs(40, 78).addBox(0.0F, -4.5F, -1.0F, 1.0F, 6.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-1.7683F, 3.2556F, -1.0157F, -0.4432F, 0.0278F, 0.1369F));
 
-		PartDefinition HandTendrilBase_r2 = Tendril2.addOrReplaceChild("HandTendrilBase_r2", CubeListBuilder.create().texOffs(68, 47).addBox(-1.0F, -2.5F, -1.0F, 2.0F, 5.0F, 2.0F, new CubeDeformation(-0.2F)), PartPose.offsetAndRotation(-0.6378F, 2.3556F, 0.7672F, 0.1671F, -0.0508F, 0.2925F));
+		PartDefinition HandTendrilBase_r2 = Tendril2.addOrReplaceChild("HandTendrilBase_r2", CubeListBuilder.create().texOffs(68, 47).addBox(-1.0F, -2.5F, -1.0F, 2.0F, 5.0F, 2.0F, new CubeDeformation(-0.2F)), PartPose.offsetAndRotation(-0.1683F, -2.6444F, -0.1157F, 0.1671F, -0.0508F, 0.2925F));
 
-		PartDefinition Tendril3 = Tendrils.addOrReplaceChild("Tendril3", CubeListBuilder.create(), PartPose.offsetAndRotation(1.1683F, -0.1556F, -1.6843F, 3.1235F, -0.0674F, -2.8792F));
+		PartDefinition Tendril3 = Tendrils.addOrReplaceChild("Tendril3", CubeListBuilder.create(), PartPose.offsetAndRotation(0.1683F, 8.8444F, -1.6843F, 3.1235F, -0.0674F, -2.8792F));
 
-		PartDefinition HandTendrilEnd_r3 = Tendril3.addOrReplaceChild("HandTendrilEnd_r3", CubeListBuilder.create().texOffs(40, 78).addBox(0.0F, -4.5F, -1.0F, 1.0F, 6.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-2.4989F, 8.3434F, -0.746F, -0.3444F, -0.3557F, 0.299F));
+		PartDefinition HandTendrilEnd_r3 = Tendril3.addOrReplaceChild("HandTendrilEnd_r3", CubeListBuilder.create().texOffs(40, 78).addBox(0.0F, -4.5F, -1.0F, 1.0F, 6.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-2.1683F, 3.2556F, -0.8157F, -0.3444F, -0.3557F, 0.299F));
 
-		PartDefinition HandTendrilBase_r3 = Tendril3.addOrReplaceChild("HandTendrilBase_r3", CubeListBuilder.create().texOffs(68, 47).addBox(-1.0F, -2.5F, -1.0F, 2.0F, 5.0F, 2.0F, new CubeDeformation(-0.2F)), PartPose.offsetAndRotation(-0.4989F, 2.4434F, -0.0459F, 0.1671F, -0.0508F, 0.2925F));
+		PartDefinition HandTendrilBase_r3 = Tendril3.addOrReplaceChild("HandTendrilBase_r3", CubeListBuilder.create().texOffs(68, 47).addBox(-1.0F, -2.5F, -1.0F, 2.0F, 5.0F, 2.0F, new CubeDeformation(-0.2F)), PartPose.offsetAndRotation(-0.1683F, -2.6444F, -0.1157F, 0.1671F, -0.0508F, 0.2925F));
 
 		PartDefinition ActualTorso = Torso.addOrReplaceChild("ActualTorso", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, -3.1416F, 0.0F, 3.1416F));
 
@@ -389,9 +388,9 @@ public class ChemistModel<T extends Chemist> extends EntityModel<T> implements T
 
 		PartDefinition TankTop_r1 = Tank.addOrReplaceChild("TankTop_r1", CubeListBuilder.create().texOffs(66, 32).addBox(-1.5F, -0.5F, -1.5F, 3.0F, 1.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -8.5F, 1.5F, 0.0F, 3.1416F, 0.0F));
 
-		PartDefinition BackTendril1 = Torso.addOrReplaceChild("BackTendril1", CubeListBuilder.create().texOffs(12, 67).addBox(-1.0069F, -0.0183F, -0.9928F, 2.0F, 6.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(4.2831F, -17.3699F, 6.7538F, -1.5703F, -0.2271F, 3.0092F));
+		PartDefinition BackTendril1 = Torso.addOrReplaceChild("BackTendril1", CubeListBuilder.create().texOffs(12, 67).addBox(-0.622F, -6.0875F, -1.122F, 2.0F, 6.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(3.2831F, -17.3699F, 0.7538F, -1.5703F, -0.2271F, 3.0092F));
 
-		PartDefinition r3seg2 = BackTendril1.addOrReplaceChild("r3seg2", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0069F, -2.9817F, -0.0072F, 0.0F, 0.0F, 0.8727F));
+		PartDefinition r3seg2 = BackTendril1.addOrReplaceChild("r3seg2", CubeListBuilder.create(), PartPose.offsetAndRotation(0.3917F, -9.0509F, -0.1365F, 0.0F, 0.0F, 0.8727F));
 
 		PartDefinition Seg4_r1 = r3seg2.addOrReplaceChild("Seg4_r1", CubeListBuilder.create().texOffs(58, 28).addBox(-1.0F, -7.0F, -1.0F, 2.0F, 9.0F, 2.0F, new CubeDeformation(-0.2F)), PartPose.offsetAndRotation(2.9F, 0.8F, 0.0F, 0.0F, 0.0F, 0.5236F));
 
@@ -399,11 +398,11 @@ public class ChemistModel<T extends Chemist> extends EntityModel<T> implements T
 
 		PartDefinition Seg5_r1 = r3seg3.addOrReplaceChild("Seg5_r1", CubeListBuilder.create().texOffs(46, 70).addBox(0.0F, -6.0F, 0.0F, 1.0F, 8.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(7.7F, -3.15F, -1.1F, 0.4014F, 0.0F, 1.4835F));
 
-		PartDefinition BackTendril2 = Torso.addOrReplaceChild("BackTendril2", CubeListBuilder.create(), PartPose.offsetAndRotation(-1.9169F, -17.9699F, 7.3538F, -1.3898F, 0.1378F, 0.7964F));
+		PartDefinition BackTendril2 = Torso.addOrReplaceChild("BackTendril2", CubeListBuilder.create(), PartPose.offsetAndRotation(-2.1669F, -17.4699F, 1.3538F, -1.3898F, 0.1378F, 0.7964F));
 
-		PartDefinition Seg4_r2 = BackTendril2.addOrReplaceChild("Seg4_r2", CubeListBuilder.create().texOffs(62, 64).addBox(-1.0F, -4.0F, -1.0F, 2.0F, 7.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.2931F, 4.1817F, -0.4928F, 0.0693F, 0.0529F, -0.482F));
+		PartDefinition Seg4_r2 = BackTendril2.addOrReplaceChild("Seg4_r2", CubeListBuilder.create().texOffs(62, 64).addBox(-1.0F, -4.0F, -1.0F, 2.0F, 7.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-0.7121F, -1.7347F, 0.0529F, 0.0693F, 0.0529F, -0.482F));
 
-		PartDefinition r3seg4 = BackTendril2.addOrReplaceChild("r3seg4", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0069F, -2.9817F, -0.0073F, 0.0F, 0.0F, 0.8727F));
+		PartDefinition r3seg4 = BackTendril2.addOrReplaceChild("r3seg4", CubeListBuilder.create(), PartPose.offsetAndRotation(-0.9984F, -8.8981F, 0.5384F, 0.0F, 0.0F, 0.8727F));
 
 		PartDefinition Seg5_r2 = r3seg4.addOrReplaceChild("Seg5_r2", CubeListBuilder.create().texOffs(58, 16).addBox(-1.0F, -7.0F, -1.0F, 2.0F, 10.0F, 2.0F, new CubeDeformation(-0.2F)), PartPose.offsetAndRotation(2.8F, 1.4F, 0.3F, -0.4887F, 0.0F, 0.5236F));
 
@@ -421,14 +420,14 @@ public class ChemistModel<T extends Chemist> extends EntityModel<T> implements T
 
 		PartDefinition Foliag4_r1 = RightForLeg.addOrReplaceChild("Foliag4_r1", CubeListBuilder.create().texOffs(-7, 92).addBox(-6.0F, 0.0F, -1.0F, 7.0F, 0.0F, 7.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(1.0F, 1.5F, -1.9F, -0.2269F, 0.1047F, -0.6545F));
 
-		PartDefinition LeftLeg = Legs.addOrReplaceChild("LeftLeg", CubeListBuilder.create().texOffs(112, 37).addBox(-2.0F, 6.0F, -2.0F, 4.0F, 6.0F, 4.0F, new CubeDeformation(-0.2F))
-		.texOffs(16, 49).addBox(-2.0F, -0.5F, -2.0F, 4.0F, 6.0F, 4.0F, new CubeDeformation(0.0F))
-		.texOffs(112, 37).addBox(-2.0F, -0.5F, -2.0F, 4.0F, 6.0F, 4.0F, new CubeDeformation(-0.2F)), PartPose.offset(2.0F, -12.0F, 0.0F));
+		PartDefinition LeftLeg = Legs.addOrReplaceChild("LeftLeg", CubeListBuilder.create().texOffs(16, 49).addBox(-2.0F, -0.5F, -2.0F, 4.0F, 6.0F, 4.0F, new CubeDeformation(0.0F))
+		.texOffs(112, 37).addBox(-2.0F, -0.5F, -2.0F, 4.0F, 6.0F, 4.0F, new CubeDeformation(-0.2F))
+		.texOffs(66, 20).addBox(-1.5F, 5.0F, -1.5F, 3.0F, 1.0F, 3.0F, new CubeDeformation(0.2F)), PartPose.offset(2.0F, -12.0F, 0.0F));
 
 		PartDefinition Foliage2_r1 = LeftLeg.addOrReplaceChild("Foliage2_r1", CubeListBuilder.create().texOffs(-7, 99).addBox(-3.5F, 0.0F, -3.5F, 7.0F, 0.0F, 7.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(1.1F, 3.1F, -1.3F, 0.558F, 0.0121F, 0.2452F));
 
-		PartDefinition LeftForLeg = LeftLeg.addOrReplaceChild("LeftForLeg", CubeListBuilder.create().texOffs(0, 40).addBox(-2.0F, 1.0F, -2.0F, 4.0F, 6.0F, 4.0F, new CubeDeformation(0.0F))
-		.texOffs(66, 20).addBox(-1.5F, 0.0F, -1.5F, 3.0F, 1.0F, 3.0F, new CubeDeformation(0.2F)), PartPose.offset(0.0F, 5.0F, 0.0F));
+		PartDefinition LeftForLeg = LeftLeg.addOrReplaceChild("LeftForLeg", CubeListBuilder.create().texOffs(112, 37).addBox(-2.0F, 0.0F, -2.0F, 4.0F, 6.0F, 4.0F, new CubeDeformation(-0.2F))
+		.texOffs(0, 40).addBox(-2.0F, 0.0F, -2.0F, 4.0F, 6.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 6.0F, 0.0F));
 
 		return LayerDefinition.create(meshdefinition, 128, 128);
 	}
@@ -438,7 +437,6 @@ public class ChemistModel<T extends Chemist> extends EntityModel<T> implements T
 		part.yScale = 1 + v2;
 		part.zScale = 1 + v2;
 	}
-
 	@Override
 	public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 		float v1 = Mth.sin(ageInTicks/4)/7;
@@ -473,16 +471,8 @@ public class ChemistModel<T extends Chemist> extends EntityModel<T> implements T
 	}
 
 	@Override
-	public void prepareMobModel(T entity, float value1, float value2, float value3) {
-		super.prepareMobModel(entity, value1, value2, value3);
-		int attackAnimationTick = entity.getAttackAnimationTick();
-		if (attackAnimationTick > 0) {
-			this.LeftArm.yRot = -1.5F + 3F * Mth.triangleWave((float)attackAnimationTick - value3, 20.0F);
-			this.RightArm.yRot = 1.5F - 3F * Mth.triangleWave((float)attackAnimationTick - value3, 20.0F);
-		}
-	}
-	@Override
 	public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int alpha) {
-		ChemistFull.render(poseStack, vertexConsumer, packedLight, packedOverlay, alpha);
+		ChemistFull.render(poseStack, vertexConsumer, packedLight, packedOverlay,
+				alpha);
 	}
 }

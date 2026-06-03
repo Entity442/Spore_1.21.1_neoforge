@@ -229,7 +229,10 @@ public class ClientModEvents {
         event.registerLayerDefinition(IchorGargoyleModel.LAYER_LOCATION, IchorGargoyleModel::createBodyLayer);
         event.registerLayerDefinition(valkyrieGargoyleModel.LAYER_LOCATION, valkyrieGargoyleModel::createBodyLayer);
         event.registerLayerDefinition(GorgonSpookyModel.LAYER_LOCATION, GorgonSpookyModel::createBodyLayer);
-
+        event.registerLayerDefinition(PyroChemistModel.LAYER_LOCATION, PyroChemistModel::createBodyLayer);
+        event.registerLayerDefinition(MechanicChemistModel.LAYER_LOCATION, MechanicChemistModel::createBodyLayer);
+        event.registerLayerDefinition(SpreaderChemistModel.LAYER_LOCATION, SpreaderChemistModel::createBodyLayer);
+        event.registerLayerDefinition(FireChemistModel.LAYER_LOCATION, FireChemistModel::createBodyLayer);
     }
     @SubscribeEvent
     public static void registerRenderers(final EntityRenderersEvent.RegisterRenderers event) {
