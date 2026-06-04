@@ -89,7 +89,11 @@ public class DamageHandeling {
             if (instance != null && Math.random() < chance){
                 victim.setRemainingFireTicks(victim.getRemainingFireTicks()+instance.getDuration());
                 victim.removeEffect(Seffects.IGNITABLE);
-                victim.playSound(Ssounds.FIRE_EXPLOSION.value());
+                if (victim instanceof Player player){
+                    player.playNotifySound(Ssounds.FIRE_EXPLOSION.value(),SoundSource.PLAYERS,1f,1f);
+                }else {
+                    victim.playSound(Ssounds.FIRE_EXPLOSION.value());
+                }
                 AABB aabb = victim.getBoundingBox().inflate(3);
                 List<Entity> fireList = victim.level().getEntities(victim,aabb);
                 boolean isInfected = victim.getType().is(EntityTypeTags.FREEZE_HURTS_EXTRA_TYPES);
