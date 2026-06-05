@@ -25,6 +25,7 @@ import java.util.function.Predicate;
 public class TarBall extends AbstractArrow {
     private static final EntityDataAccessor<Boolean> IGNITED = SynchedEntityData.defineId(TarBall.class, EntityDataSerializers.BOOLEAN);
     private Predicate<LivingEntity> target = livingEntity -> {return true;};
+    private int range = 2;
     public TarBall(Level level) {
         super(Sentities.TAR_BALL.get(),level);
     }
@@ -42,6 +43,13 @@ public class TarBall extends AbstractArrow {
         super(Sentities.TAR_BALL.get(),world);
         this.setOwner(entity);
         this.target = predicate;
+        this.setBaseDamage(damage);
+    }
+    public TarBall(LivingEntity entity, Level world, Predicate<LivingEntity> predicate, float damage,int range) {
+        super(Sentities.TAR_BALL.get(),world);
+        this.setOwner(entity);
+        this.target = predicate;
+        this.range = range;
         this.setBaseDamage(damage);
     }
 
@@ -68,6 +76,9 @@ public class TarBall extends AbstractArrow {
     }
 
     public void spreadTar(BlockPos blockPos,int range){
+        if (level().isClientSide() || range == 0){
+            return;
+        }
         boolean fire = entityData.get(IGNITED);
         for (int x = -range;x<range;x++){
             for (int y = -range;y<range;y++){
@@ -85,7 +96,7 @@ public class TarBall extends AbstractArrow {
     }
 
     protected void onHitBlock(BlockHitResult blockHitResult) {
-        spreadTar(blockHitResult.getBlockPos(),2);
+        spreadTar(blockHitResult.getBlockPos(),range);
         discard();
     }
 
@@ -102,7 +113,7 @@ public class TarBall extends AbstractArrow {
     @Override
     protected void onHitEntity(EntityHitResult hitResult) {
         if (hitResult.getEntity() instanceof LivingEntity living && target.test(living)){
-            spreadTar(living.blockPosition(),2);
+            spreadTar(living.blockPosition(),range);
             living.addEffect(new MobEffectInstance(Seffects.IGNITABLE,200,0));
             super.onHitEntity(hitResult);
         }

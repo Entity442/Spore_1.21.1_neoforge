@@ -188,7 +188,6 @@ public class Busser extends EvolvedInfected implements Carrier, FlyingInfected, 
         if (!this.level().isClientSide) {
             Level.ExplosionInteraction explosion$blockinteraction = EventHooks.canEntityGrief(this.level(), this) ? Level.ExplosionInteraction.MOB : Level.ExplosionInteraction.NONE;
             this.level().explode(this, this.getX(), this.getY(), this.getZ(), SConfig.SERVER.kami_busser_explosion.get(), explosion$blockinteraction);
-            discard();
             for(int i = 0;i<3;i++){
                 int x = this.random.nextInt(-2,2);
                 int z = this.random.nextInt(-2,2);
@@ -202,7 +201,7 @@ public class Busser extends EvolvedInfected implements Carrier, FlyingInfected, 
                 areaeffectcloud.setRadiusPerTick(-areaeffectcloud.getRadius() / (float) areaeffectcloud.getDuration());
                 this.level().addFreshEntity(areaeffectcloud);
             }
-
+            discard();
         }
     }
     public BlockState selectBlock(){
@@ -217,8 +216,9 @@ public class Busser extends EvolvedInfected implements Carrier, FlyingInfected, 
         return null;
     }
     public void ThrowBlock(LivingEntity livingEntity){
-        if(!level().isClientSide && this.getCarriedBlock() != null) {
-            ThrownBlockProjectile thrownBlockProjectile = new ThrownBlockProjectile(level(),this,10f,getCarriedBlock(),TARGET_SELECTOR);
+        BlockState state = this.getCarriedBlock();
+        if(!level().isClientSide && state != null) {
+            ThrownBlockProjectile thrownBlockProjectile = new ThrownBlockProjectile(level(),this,10f,state,TARGET_SELECTOR);
             double dx = livingEntity.getX() - this.getX();
             double dy = livingEntity.getY() + livingEntity.getEyeHeight() - 1;
             double dz = livingEntity.getZ() - this.getZ();

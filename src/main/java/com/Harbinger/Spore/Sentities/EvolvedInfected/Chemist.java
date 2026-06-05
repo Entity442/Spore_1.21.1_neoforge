@@ -3,14 +3,19 @@ package com.Harbinger.Spore.Sentities.EvolvedInfected;
 import com.Harbinger.Spore.ExtremelySusThings.Utilities;
 import com.Harbinger.Spore.Sentities.AI.CustomMeleeAttackGoal;
 import com.Harbinger.Spore.Sentities.BaseEntities.EvolvedInfected;
+import com.Harbinger.Spore.Sentities.BaseEntities.IkUtil.IkDragonHead;
+import com.Harbinger.Spore.Sentities.Projectile.TarBall;
 import com.Harbinger.Spore.Sentities.VariantKeeper;
 import com.Harbinger.Spore.Sentities.Variants.ChemistVariants;
 import com.Harbinger.Spore.core.SConfig;
 import com.Harbinger.Spore.core.SdamageTypes;
+import com.Harbinger.Spore.core.Sparticles;
 import com.Harbinger.Spore.core.Ssounds;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -84,9 +89,10 @@ public class Chemist extends EvolvedInfected implements VariantKeeper {
                 double px = this.getX() + forward.x;
                 double py = this.getEyeY()-0.25;
                 double pz = this.getZ() + forward.z;
+                SimpleParticleType type = getVariant() == ChemistVariants.MECHANIC ? Sparticles.TAR.get() : ParticleTypes.FLAME;
                 for (int i = 0; i < 8; i++) {
                     level().addParticle(
-                            ParticleTypes.FLAME,
+                            type,
                             px+random.nextDouble() - random.nextDouble(),
                             py,
                             pz+random.nextDouble() - random.nextDouble(),
@@ -100,6 +106,8 @@ public class Chemist extends EvolvedInfected implements VariantKeeper {
             super.handleEntityEvent(value);
         }
     }
+
+
 
     @Override
     protected void defineSynchedData(SynchedEntityData.@NotNull Builder builder) {
@@ -123,8 +131,15 @@ public class Chemist extends EvolvedInfected implements VariantKeeper {
     public boolean doHurtTarget(Entity entity) {
         this.attackAnimationTick = 10;
         this.level().broadcastEntityEvent(this, (byte)4);
-        entity.setRemainingFireTicks(200);
-        this.playSound(SoundEvents.FLINTANDSTEEL_USE);
+        if (getVariant() != ChemistVariants.MECHANIC){
+            if (Math.random() > 0.3){
+                entity.setRemainingFireTicks(100);
+                this.playSound(SoundEvents.FLINTANDSTEEL_USE);
+            }
+        }else {
+            entity.setRemainingFireTicks(200);
+            this.playSound(SoundEvents.FLINTANDSTEEL_USE);
+        }
         return super.doHurtTarget(entity);
     }
     @Override
@@ -137,6 +152,21 @@ public class Chemist extends EvolvedInfected implements VariantKeeper {
         if (getBlowTime() > 60){
             explodeChemist();
         }
+        if (tickCount % 20 == 0){
+            LivingEntity living = getTarget();
+            if (this.getVariant() == ChemistVariants.MECHANIC && living != null && this.hasLineOfSight(living)){
+                shootTar(living);
+            }
+        }
+    }
+    public void shootTar(LivingEntity livingEntity){
+        TarBall projectile = new TarBall(this, level(), TARGET_SELECTOR,1f,1);
+        double dx = livingEntity.getX() - this.getX();
+        double dy = livingEntity.getY() + livingEntity.getEyeHeight() - 1;
+        double dz = livingEntity.getZ() - this.getZ();
+        projectile.moveTo(this.getX(),this.getY()+1.5,this.getZ());
+        projectile.shoot(dx, dy - projectile.getY() + Math.hypot(dx, dz) * 0.05F, dz, 1f * 2, 12.0F);
+        level().addFreshEntity(projectile);
     }
     @Override
     public void aiStep() {
