@@ -130,7 +130,7 @@ public class PyroChemistModel<T extends Chemist> extends EntityModel<T> implemen
 		PartDefinition Torso = Chemist.addOrReplaceChild("Torso", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
 
 		PartDefinition Head = Torso.addOrReplaceChild("Head", CubeListBuilder.create().texOffs(0, 17).addBox(-4.0F, -8.0F, -2.75F, 8.0F, 8.0F, 7.0F, new CubeDeformation(0.0F))
-		.texOffs(94, 0).addBox(-4.5F, -8.5F, -2.74F, 9.0F, 9.0F, 8.0F, new CubeDeformation(-0.2F)), PartPose.offset(0.0F, -21.5F, -2.75F));
+				.texOffs(94, 0).addBox(-4.5F, -8.5F, -2.74F, 9.0F, 9.0F, 8.0F, new CubeDeformation(-0.2F)), PartPose.offset(0.0F, -21.5F, -2.75F));
 
 		PartDefinition Foliage7_r1 = Head.addOrReplaceChild("Foliage7_r1", CubeListBuilder.create().texOffs(-7, 92).addBox(-6.0F, 0.0F, -1.0F, 7.0F, 0.0F, 7.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(1.5F, -2.0F, 7.25F, -2.6472F, -0.3392F, 2.8684F));
 
@@ -145,7 +145,7 @@ public class PyroChemistModel<T extends Chemist> extends EntityModel<T> implemen
 		PartDefinition FilterRightSmoothTop_r1 = FilterBaseRight.addOrReplaceChild("FilterRightSmoothTop_r1", CubeListBuilder.create().texOffs(78, 43).addBox(-1.45F, -0.75F, 0.0F, 2.9F, 1.5F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-3.45F, -24.0F, -1.5F, -0.7854F, 0.0F, 0.0F));
 
 		PartDefinition FilterBaseLeft = FilterBase.addOrReplaceChild("FilterBaseLeft", CubeListBuilder.create().texOffs(16, 46).addBox(-6.0F, -9.0F, 3.0F, 3.0F, 2.0F, 1.0F, new CubeDeformation(0.0F))
-		.texOffs(28, 70).addBox(-4.0F, -10.0F, 4.0F, 1.0F, 3.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 0.0F, 0.0F));
+				.texOffs(28, 70).addBox(-4.0F, -10.0F, 4.0F, 1.0F, 3.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 0.0F, 0.0F));
 
 		PartDefinition Filters = GasMask.addOrReplaceChild("Filters", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
 
@@ -162,14 +162,14 @@ public class PyroChemistModel<T extends Chemist> extends EntityModel<T> implemen
 		PartDefinition FumeLeak_r1 = Filter2.addOrReplaceChild("FumeLeak_r1", CubeListBuilder.create().texOffs(70, 36).addBox(-3.0F, -1.0F, 0.0F, 4.0F, 5.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(1.2305F, 0.35F, -3.2375F, -0.841F, -0.3333F, 0.3397F));
 
 		PartDefinition Filter2Cap_r1 = Filter2.addOrReplaceChild("Filter2Cap_r1", CubeListBuilder.create().texOffs(24, 76).addBox(-0.6981F, 0.8819F, -1.9782F, 3.0F, 3.0F, 1.0F, new CubeDeformation(0.0F))
-		.texOffs(66, 73).addBox(-0.1981F, 1.3819F, -0.9782F, 2.0F, 2.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-1.0195F, -2.8995F, -1.5659F, 0.0F, -0.3927F, 0.0F));
+				.texOffs(66, 73).addBox(-0.1981F, 1.3819F, -0.9782F, 2.0F, 2.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-1.0195F, -2.8995F, -1.5659F, 0.0F, -0.3927F, 0.0F));
 
 		PartDefinition Helmet = Head.addOrReplaceChild("Helmet", CubeListBuilder.create(), PartPose.offset(-0.5F, 24.5F, 0.25F));
 
 		PartDefinition HelmetBase = Helmet.addOrReplaceChild("HelmetBase", CubeListBuilder.create().texOffs(0, 0).addBox(-11.0F, -31.0F, 5.01F, 9.0F, 5.0F, 8.0F, new CubeDeformation(0.0F))
-		.texOffs(32, 55).addBox(-11.0F, -27.0F, 4.01F, 9.0F, 1.0F, 1.0F, new CubeDeformation(0.0F))
-		.texOffs(8, 71).addBox(-11.0F, -31.0F, 4.01F, 1.0F, 4.0F, 1.0F, new CubeDeformation(0.0F))
-		.texOffs(20, 74).addBox(-3.0F, -30.0F, 4.01F, 1.0F, 3.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offset(7.0F, 2.0F, -8.0F));
+				.texOffs(32, 55).addBox(-11.0F, -27.0F, 4.01F, 9.0F, 1.0F, 1.0F, new CubeDeformation(0.0F))
+				.texOffs(8, 71).addBox(-11.0F, -31.0F, 4.01F, 1.0F, 4.0F, 1.0F, new CubeDeformation(0.0F))
+				.texOffs(20, 74).addBox(-3.0F, -30.0F, 4.01F, 1.0F, 3.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offset(7.0F, 2.0F, -8.0F));
 
 		PartDefinition Glass = Helmet.addOrReplaceChild("Glass", CubeListBuilder.create().texOffs(36, 78).addBox(-4.75F, 1.5F, 0.0F, 2.0F, 4.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offset(1.75F, -30.5F, -3.74F));
 
@@ -195,7 +195,7 @@ public class PyroChemistModel<T extends Chemist> extends EntityModel<T> implemen
 
 		PartDefinition Vein1_r1 = IntakeTubeRight.addOrReplaceChild("Vein1_r1", CubeListBuilder.create().texOffs(66, 36).addBox(1.0F, -1.0F, -1.0F, 0.0F, 1.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-1.4033F, 1.1987F, -4.2619F, -0.0915F, 0.0313F, -1.3245F));
 
-		PartDefinition Fang_r1 = IntakeTubeRight.addOrReplaceChild("Fang_r1", CubeListBuilder.create().texOffs(30, 62).addBox(0.0F, -1.5F, -2.5F, 0.0F, 3.0F, 5.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-2.9012F, 0.2643F, -1.01F, -0.5415F, 0.3724F, -1.8113F));
+		PartDefinition Fang_r1 = IntakeTubeRight.addOrReplaceChild("Fang_r1", CubeListBuilder.create().texOffs(30, 62).addBox(0.0F, -1.5F, -2.5F, 0.0F, 3.0F, 5.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-2.9013F, 0.2643F, -1.01F, -0.5415F, 0.3724F, -1.8113F));
 
 		PartDefinition IntakeTube_r1 = IntakeTubeRight.addOrReplaceChild("IntakeTube_r1", CubeListBuilder.create().texOffs(68, 54).addBox(-2.0F, -1.0F, -1.0F, 3.0F, 2.0F, 2.0F, new CubeDeformation(-0.1F)), PartPose.offsetAndRotation(-0.0033F, -0.0013F, -2.5619F, 1.6509F, -1.3258F, 0.146F));
 
@@ -310,20 +310,20 @@ public class PyroChemistModel<T extends Chemist> extends EntityModel<T> implemen
 		PartDefinition Arms = Torso.addOrReplaceChild("Arms", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, -3.1416F, 0.0F, 3.1416F));
 
 		PartDefinition RightArm = Arms.addOrReplaceChild("RightArm", CubeListBuilder.create().texOffs(0, 50).addBox(-1.0F, -1.0F, -1.1F, 4.0F, 5.0F, 4.0F, new CubeDeformation(0.0F))
-		.texOffs(112, 17).addBox(-1.0F, -1.0F, -1.1F, 4.0F, 5.0F, 4.0F, new CubeDeformation(-0.2F))
-		.texOffs(52, 49).addBox(-1.0F, 5.0F, -1.1F, 4.0F, 5.0F, 4.0F, new CubeDeformation(0.0F))
-		.texOffs(66, 24).addBox(-0.5F, 4.0F, -0.6F, 3.0F, 1.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offset(5.0F, -20.0F, 0.0F));
+				.texOffs(112, 17).addBox(-1.0F, -1.0F, -1.1F, 4.0F, 5.0F, 4.0F, new CubeDeformation(-0.2F))
+				.texOffs(52, 49).addBox(-1.0F, 5.0F, -1.1F, 4.0F, 5.0F, 4.0F, new CubeDeformation(0.0F))
+				.texOffs(66, 24).addBox(-0.5F, 4.0F, -0.6F, 3.0F, 1.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offset(5.0F, -20.0F, 0.0F));
 
 		PartDefinition Foliage1_r1 = RightArm.addOrReplaceChild("Foliage1_r1", CubeListBuilder.create().texOffs(-7, 99).addBox(-6.0F, 0.0F, -1.0F, 7.0F, 0.0F, 7.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(4.8F, 1.6F, 0.1F, -0.3142F, 0.0F, 0.3142F));
 
 		PartDefinition LeftArm = Arms.addOrReplaceChild("LeftArm", CubeListBuilder.create().texOffs(54, 0).addBox(-3.0F, -1.5F, -2.0F, 4.0F, 5.0F, 4.0F, new CubeDeformation(0.0F))
-		.texOffs(96, 17).addBox(-3.0F, -1.5F, -2.0F, 4.0F, 5.0F, 4.0F, new CubeDeformation(-0.2F))
-		.texOffs(54, 9).addBox(-3.0F, 4.5F, -2.0F, 4.0F, 3.0F, 4.0F, new CubeDeformation(0.0F))
-		.texOffs(66, 28).addBox(-2.5F, 3.5F, -1.5F, 3.0F, 1.0F, 3.0F, new CubeDeformation(0.0F))
-		.texOffs(32, 57).addBox(-3.0F, 7.4F, -2.0F, 4.0F, 1.0F, 4.0F, new CubeDeformation(-0.1F))
-		.texOffs(120, 84).addBox(-2.0F, 6.4F, -1.0F, 2.0F, 4.0F, 2.0F, new CubeDeformation(-0.2F))
-		.texOffs(120, 84).addBox(-2.0F, 6.4F, -1.0F, 2.0F, 3.0F, 2.0F, new CubeDeformation(0.03F))
-		.texOffs(108, 100).addBox(-3.5F, 9.1F, -2.5F, 5.0F, 7.0F, 5.0F, new CubeDeformation(-1.15F)), PartPose.offset(-5.0F, -19.5F, 0.9F));
+				.texOffs(96, 17).addBox(-3.0F, -1.5F, -2.0F, 4.0F, 5.0F, 4.0F, new CubeDeformation(-0.2F))
+				.texOffs(54, 9).addBox(-3.0F, 4.5F, -2.0F, 4.0F, 3.0F, 4.0F, new CubeDeformation(0.0F))
+				.texOffs(66, 28).addBox(-2.5F, 3.5F, -1.5F, 3.0F, 1.0F, 3.0F, new CubeDeformation(0.0F))
+				.texOffs(32, 57).addBox(-3.0F, 7.4F, -2.0F, 4.0F, 1.0F, 4.0F, new CubeDeformation(-0.1F))
+				.texOffs(120, 84).addBox(-2.0F, 6.4F, -1.0F, 2.0F, 4.0F, 2.0F, new CubeDeformation(-0.2F))
+				.texOffs(120, 84).addBox(-2.0F, 6.4F, -1.0F, 2.0F, 3.0F, 2.0F, new CubeDeformation(0.03F))
+				.texOffs(108, 100).addBox(-3.5F, 9.1F, -2.5F, 5.0F, 7.0F, 5.0F, new CubeDeformation(-1.15F)), PartPose.offsetAndRotation(-5.0F, -19.5F, 0.9F, 1.4399F, 0.0F, 0.0F));
 
 		PartDefinition Foliage3_r1 = LeftArm.addOrReplaceChild("Foliage3_r1", CubeListBuilder.create().texOffs(-7, 99).addBox(-6.0F, 0.0F, -1.0F, 7.0F, 0.0F, 7.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-0.2F, 4.1F, -2.3F, 0.1571F, 0.0698F, -0.2967F));
 
@@ -340,7 +340,7 @@ public class PyroChemistModel<T extends Chemist> extends EntityModel<T> implemen
 		PartDefinition HazmatSkeletonTorso_r1 = ActualTorso.addOrReplaceChild("HazmatSkeletonTorso_r1", CubeListBuilder.create().texOffs(0, 32).addBox(-4.0F, -1.0F, -3.0F, 8.0F, 2.0F, 6.0F, new CubeDeformation(-0.4F)), PartPose.offsetAndRotation(0.0F, -16.5812F, 0.7592F, -0.2007F, 0.0F, 0.0F));
 
 		PartDefinition TorsoTopInterior_r1 = ActualTorso.addOrReplaceChild("TorsoTopInterior_r1", CubeListBuilder.create().texOffs(100, 26).addBox(-7.0F, -5.0F, -1.0F, 8.0F, 5.0F, 6.0F, new CubeDeformation(-0.2F))
-		.texOffs(30, 28).addBox(-7.0F, -5.0F, -1.0F, 8.0F, 5.0F, 6.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(3.0F, -17.2F, -1.2F, -0.3054F, 0.0F, 0.0F));
+				.texOffs(30, 28).addBox(-7.0F, -5.0F, -1.0F, 8.0F, 5.0F, 6.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(3.0F, -17.2F, -1.2F, -0.3054F, 0.0F, 0.0F));
 
 		PartDefinition LeakingGuts = ActualTorso.addOrReplaceChild("LeakingGuts", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
 
@@ -361,8 +361,8 @@ public class PyroChemistModel<T extends Chemist> extends EntityModel<T> implemen
 		PartDefinition StomachTumor1_r1 = StomachTumors.addOrReplaceChild("StomachTumor1_r1", CubeListBuilder.create().texOffs(70, 69).addBox(-1.0F, -1.0F, -1.0F, 2.0F, 2.0F, 2.0F, new CubeDeformation(-0.3F)), PartPose.offsetAndRotation(1.8F, -14.8F, 3.4F, 0.3049F, 0.079F, -0.2993F));
 
 		PartDefinition Tank = ActualTorso.addOrReplaceChild("Tank", CubeListBuilder.create().texOffs(34, 0).addBox(-2.5F, -8.0F, -1.0F, 5.0F, 10.0F, 5.0F, new CubeDeformation(0.0F))
-		.texOffs(124, 55).addBox(-2.5F, -6.0F, -2.0F, 1.0F, 6.0F, 1.0F, new CubeDeformation(0.0F))
-		.texOffs(120, 66).addBox(-1.5F, -1.0F, -2.0F, 3.0F, 1.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -13.5F, -6.0F, -0.1309F, 0.0F, 0.0F));
+				.texOffs(124, 55).addBox(-2.5F, -6.0F, -2.0F, 1.0F, 6.0F, 1.0F, new CubeDeformation(0.0F))
+				.texOffs(120, 66).addBox(-1.5F, -1.0F, -2.0F, 3.0F, 1.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -13.5F, -6.0F, -0.1309F, 0.0F, 0.0F));
 
 		PartDefinition Foliage8_r1 = Tank.addOrReplaceChild("Foliage8_r1", CubeListBuilder.create().texOffs(-7, 99).addBox(-3.5F, 0.0F, -3.5F, 7.0F, 0.0F, 7.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-1.3F, -6.3F, 0.0F, 0.192F, 0.0F, -0.192F));
 
@@ -398,28 +398,28 @@ public class PyroChemistModel<T extends Chemist> extends EntityModel<T> implemen
 
 		PartDefinition Seg5_r2 = r3seg4.addOrReplaceChild("Seg5_r2", CubeListBuilder.create().texOffs(58, 16).addBox(-1.0F, -7.0F, -1.0F, 2.0F, 10.0F, 2.0F, new CubeDeformation(-0.2F)), PartPose.offsetAndRotation(2.8F, 1.4F, 0.3F, -0.4887F, 0.0F, 0.5236F));
 
-		PartDefinition r3seg5 = r3seg4.addOrReplaceChild("r3seg5", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0816F, -8.3197F, -0.0142F, -0.0421F, 0.0113F, 0.9161F));
+		PartDefinition r3seg5 = r3seg4.addOrReplaceChild("r3seg5", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0815F, -8.3197F, -0.0142F, -0.0421F, 0.0113F, 0.9161F));
 
 		PartDefinition Seg6_r1 = r3seg5.addOrReplaceChild("Seg6_r1", CubeListBuilder.create().texOffs(78, 36).addBox(0.0F, -4.0F, 0.0F, 1.0F, 6.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(8.5F, -2.95F, 3.5F, 0.0F, 0.6109F, 1.4835F));
 
 		PartDefinition Legs = Chemist.addOrReplaceChild("Legs", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, -3.1416F, 0.0F, 3.1416F));
 
 		PartDefinition RightLeg = Legs.addOrReplaceChild("RightLeg", CubeListBuilder.create().texOffs(44, 39).addBox(-2.0F, -0.5F, -2.0F, 4.0F, 6.0F, 4.0F, new CubeDeformation(0.0F))
-		.texOffs(96, 37).addBox(-2.0F, -0.5F, -2.0F, 4.0F, 6.0F, 4.0F, new CubeDeformation(-0.2F))
-		.texOffs(66, 16).addBox(-1.5F, 5.0F, -1.5F, 3.0F, 1.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offset(-2.0F, -12.0F, 0.0F));
+				.texOffs(96, 37).addBox(-2.0F, -0.5F, -2.0F, 4.0F, 6.0F, 4.0F, new CubeDeformation(-0.2F))
+				.texOffs(66, 16).addBox(-1.5F, 5.0F, -1.5F, 3.0F, 1.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offset(-2.0F, -12.0F, 0.0F));
 
 		PartDefinition RightForLeg = RightLeg.addOrReplaceChild("RightForLeg", CubeListBuilder.create().texOffs(28, 39).addBox(-2.0F, 0.0F, -2.0F, 4.0F, 6.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 6.0F, 0.0F));
 
 		PartDefinition Foliag4_r1 = RightForLeg.addOrReplaceChild("Foliag4_r1", CubeListBuilder.create().texOffs(-7, 92).addBox(-6.0F, 0.0F, -1.0F, 7.0F, 0.0F, 7.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(1.0F, 1.5F, -1.9F, -0.2269F, 0.1047F, -0.6545F));
 
 		PartDefinition LeftLeg = Legs.addOrReplaceChild("LeftLeg", CubeListBuilder.create().texOffs(16, 49).addBox(-2.0F, 0.5F, -2.0F, 4.0F, 6.0F, 4.0F, new CubeDeformation(0.0F))
-		.texOffs(112, 37).addBox(-2.0F, 0.5F, -2.0F, 4.0F, 6.0F, 4.0F, new CubeDeformation(-0.2F))
-		.texOffs(66, 20).addBox(-1.5F, 6.0F, -1.5F, 3.0F, 1.0F, 3.0F, new CubeDeformation(0.2F)), PartPose.offset(2.0F, -13.0F, 0.0F));
+				.texOffs(112, 37).addBox(-2.0F, 0.5F, -2.0F, 4.0F, 6.0F, 4.0F, new CubeDeformation(-0.2F))
+				.texOffs(66, 20).addBox(-1.5F, 6.0F, -1.5F, 3.0F, 1.0F, 3.0F, new CubeDeformation(0.2F)), PartPose.offset(2.0F, -13.0F, 0.0F));
 
 		PartDefinition Foliage2_r1 = LeftLeg.addOrReplaceChild("Foliage2_r1", CubeListBuilder.create().texOffs(-7, 99).addBox(-3.5F, 0.0F, -3.5F, 7.0F, 0.0F, 7.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(1.1F, 4.1F, -1.3F, 0.558F, 0.0121F, 0.2452F));
 
 		PartDefinition LeftForLeg = LeftLeg.addOrReplaceChild("LeftForLeg", CubeListBuilder.create().texOffs(0, 40).addBox(-2.0F, 0.0F, -2.0F, 4.0F, 6.0F, 4.0F, new CubeDeformation(0.0F))
-		.texOffs(112, 37).addBox(-2.0F, 0.0F, -2.0F, 4.0F, 6.0F, 4.0F, new CubeDeformation(-0.2F)), PartPose.offset(0.0F, 7.0F, 0.0F));
+				.texOffs(112, 37).addBox(-2.0F, 0.0F, -2.0F, 4.0F, 6.0F, 4.0F, new CubeDeformation(-0.2F)), PartPose.offset(0.0F, 7.0F, 0.0F));
 
 		return LayerDefinition.create(meshdefinition, 128, 128);
 	}
