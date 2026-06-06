@@ -313,7 +313,27 @@ public class Verfalldrachen extends Calamity implements TrueCalamity, RangedAtta
         this.goalSelector.addGoal(8,new SporeBurstSupport(this));
     }
 
+    @Override
+    public boolean doHurtTarget(Entity entity) {
+        this.playSound(Ssounds.VERFALL_ATTACK.value());
+        return super.doHurtTarget(entity);
+    }
 
+    @Override
+    public void playAmbientSound() {
+        if (getTarHeadSegment() == TAR_HEAD_SEGMENT && Math.random() < 0.75){
+            this.tarHead.playSound(Ssounds.VERFALL_TAR_HEAD_AMBIENT.value());
+        }
+        if (getSonicHeadSegment() == SONIC_HEAD_SEGMENT && Math.random() < 0.75){
+            this.soundHead.playSound(Ssounds.VERFALL_SONIC_HEAD_AMBIENT.value());
+        }
+        if (getElectricalHeadSegment() == ELECTRICAL_SEGMENT && Math.random() < 0.75){
+            this.lightningHead.playSound(Ssounds.ELECTRIC.value());
+        }
+        if (getTarHeadSegment() != TAR_HEAD_SEGMENT && getSonicHeadSegment() != SONIC_HEAD_SEGMENT && getElectricalHeadSegment() != ELECTRICAL_SEGMENT){
+            playSound(Ssounds.VERFALL_AMBIENT.value());
+        }
+    }
 
     public int getWingData(){
         if (getRightWing() <= 0 && getLeftWing() <= 0){
@@ -511,6 +531,7 @@ public class Verfalldrachen extends Calamity implements TrueCalamity, RangedAtta
                 this.setLeftWing(this.getLeftWing() +1);
             }
             if (getTarHeadSegment() < TAR_HEAD_SEGMENT){
+                this.playSound(getTarHeadSegment() < (TAR_HEAD_SEGMENT-2) ? Ssounds.VERFALL_NECK_REGROW.value() : Ssounds.VERFALL_HEAD_REGROW.value());
                 setTarHeadSegment(getTarHeadSegment()+1);
             }else {
                 if (getTarHead() < headsMaxHp){
@@ -518,6 +539,7 @@ public class Verfalldrachen extends Calamity implements TrueCalamity, RangedAtta
                 }
             }
             if (getElectricalHeadSegment() < ELECTRICAL_SEGMENT){
+                this.playSound(getElectricalHeadSegment() < (ELECTRICAL_SEGMENT-2) ? Ssounds.VERFALL_NECK_REGROW.value() : Ssounds.VERFALL_HEAD_REGROW.value());
                 setElectricalHeadSegment(getElectricalHeadSegment()+1);
             }else {
                 if (getElectricalHead() < headsMaxHp){
@@ -525,6 +547,7 @@ public class Verfalldrachen extends Calamity implements TrueCalamity, RangedAtta
                 }
             }
             if (getSonicHeadSegment() < SONIC_HEAD_SEGMENT){
+                this.playSound(getSonicHeadSegment() < (SONIC_HEAD_SEGMENT-2) ? Ssounds.VERFALL_NECK_REGROW.value() : Ssounds.VERFALL_HEAD_REGROW.value());
                 setSonicHeadSegment(getSonicHeadSegment()+1);
             }else {
                 if (getSonicHead() < headsMaxHp){
@@ -741,6 +764,7 @@ public class Verfalldrachen extends Calamity implements TrueCalamity, RangedAtta
 
         setTarCharge(getTarCharge() - 1);
         setTarTargetId(-1);
+        this.playSound(Ssounds.VERFALL_TAR_ATTACK.value());
     }
 
     private void spewTar(){
@@ -780,19 +804,6 @@ public class Verfalldrachen extends Calamity implements TrueCalamity, RangedAtta
         applySonicKnockback(target);
         setSonicCharge(getSonicCharge() - 5);
         setSonicTargetId(-1);
-    }
-    @Override
-    public void playAmbientSound() {
-        if (getTarHead() > 0 && getTarHeadSegment() == TAR_HEAD_SEGMENT && Math.random() < 0.5){
-            this.tarHead.playSound(Ssounds.VERFALL_TAR_HEAD_AMBIENT.value());
-        }
-        if (getSonicHead() > 0 && getSonicHeadSegment() == SONIC_HEAD_SEGMENT && Math.random() < 0.5){
-            this.soundHead.playSound(Ssounds.VERFALL_SONIC_HEAD_AMBIENT.value());
-        }
-        if (getElectricalHead() > 0 && getElectricalHeadSegment() == ELECTRICAL_SEGMENT && Math.random() < 0.5){
-            this.lightningHead.playSound(Ssounds.ELECTRIC.value());
-        }
-        playSound(Ssounds.VERFALL_AMBIENT.value());
     }
 
 // ==================== VALIDATION METHODS ====================
@@ -1031,6 +1042,7 @@ public class Verfalldrachen extends Calamity implements TrueCalamity, RangedAtta
             if (target == null){
                 return;
             }
+            dragon.level().playSound(dragon,target.blockPosition(),Ssounds.VERFALL_SPECIAL_ATTACK.value(),SoundSource.MASTER,1f,1f);
             dragon.getLookControl().setLookAt(
                     target,360,360
             );
