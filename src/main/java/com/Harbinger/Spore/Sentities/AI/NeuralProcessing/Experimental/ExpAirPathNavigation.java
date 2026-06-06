@@ -1,4 +1,5 @@
 package com.Harbinger.Spore.Sentities.AI.NeuralProcessing.Experimental;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Mob;
@@ -10,6 +11,7 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
+
 public class ExpAirPathNavigation extends FlyingPathNavigation {
 
     static final float EPSILON = 1.0E-8F;
@@ -24,6 +26,7 @@ public class ExpAirPathNavigation extends FlyingPathNavigation {
         this.nodeEvaluator.setCanPassDoors(true);
         return new ExpPathFinder(this.nodeEvaluator, maxVisitedNodes);
     }
+
     @Deprecated
     public void hardStop() {
         this.path = null;
@@ -104,6 +107,10 @@ public class ExpAirPathNavigation extends FlyingPathNavigation {
         final float[] tDelta = new float[3];
         final float[] tNext = new float[3];
         final float[] normed = new float[3];
+
+        // Create PathfindingContext once with the mob
+        PathfindingContext context = new PathfindingContext(this.mob.level(), this.mob);
+
         for (int i = 0; i < 3; i++) {
             float value = element(vec, i);
             boolean dir = value >= 0.0F;
@@ -146,15 +153,11 @@ public class ExpAirPathNavigation extends FlyingPathNavigation {
                         if (!block.isPathfindable(PathComputationType.AIR))
                             return false;
                     }
-                    PathType below = this.nodeEvaluator.getPathType(
-                            new PathfindingContext(mob.level(), mob),
-                            x,
-                            y0 - 1,
-                            z
-                    );
+                    // Use the pre-created context instead of creating new ones
+                    PathType below = this.nodeEvaluator.getPathType(context, x, y0 - 1, z);
                     if (below == PathType.WATER || below == PathType.LAVA || below == PathType.OPEN)
                         return false;
-                    PathType in = this.nodeEvaluator.getPathType(new PathfindingContext(mob.level(), mob), x, y0, z);
+                    PathType in = this.nodeEvaluator.getPathType(context, x, y0, z);
                     float priority = this.mob.getPathfindingMalus(in);
                     if (priority < 0.0F || priority >= 8.0F)
                         return false;

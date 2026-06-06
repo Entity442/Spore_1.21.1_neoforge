@@ -81,7 +81,7 @@ public class DespawnSystem {
         if (players.isEmpty()) {
             for (int i = 0; i < toRemove; i++) {
                 T entity = entities.get(i);
-                entity.discard();
+                entity.remove(Entity.RemovalReason.DISCARDED);
                 despawns++;
             }
         } else {
@@ -89,7 +89,7 @@ public class DespawnSystem {
                     level.getNearestPlayer(e, -1) != null ? e.distanceToSqr(Objects.requireNonNull(level.getNearestPlayer(e, -1))) : Double.MAX_VALUE).reversed());
             for (int i = 0; i < toRemove; i++) {
                 T entity = entities.get(i);
-                entity.discard();
+                entity.remove(Entity.RemovalReason.DISCARDED);
                 despawns++;
             }
         }
