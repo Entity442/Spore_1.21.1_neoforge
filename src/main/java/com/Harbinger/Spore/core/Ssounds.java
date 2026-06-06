@@ -408,6 +408,10 @@ public class Ssounds {
 
     public static final Holder<SoundEvent> FIRE_EXPLOSION = soundRegistry("fire_explosion");
 
+    public static final Holder<SoundEvent> SPITTER_SPIT = soundRegistry("spitter_spit");
+
+    public static final Holder<SoundEvent> SPITTER_VOMIT = soundRegistry("spitter_vomit");
+
     ///SONGS///
 
     public static final Holder<SoundEvent> BANE_OF_SETTLEMENT = soundRegistry("bane_of_settlement");

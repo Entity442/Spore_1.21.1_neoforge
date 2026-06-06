@@ -4,6 +4,7 @@ import com.Harbinger.Spore.ExtremelySusThings.Utilities;
 import com.Harbinger.Spore.core.Seffects;
 import com.Harbinger.Spore.core.Sentities;
 import com.Harbinger.Spore.core.Sitems;
+import com.Harbinger.Spore.core.Ssounds;
 import net.minecraft.core.Holder;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -61,7 +62,7 @@ public class Vomit extends AbstractArrow implements ItemSupplier {
         entityarrow.shoot(dx, dy - entityarrow.getY() + Math.hypot(dx, dz) * 0.1F, dz, 1f * 2, 12.0F);
         entityarrow.setBaseDamage(damage);
         entity.level().addFreshEntity(entityarrow);
-
+        entity.playSound(Ssounds.SPITTER_VOMIT.value());
         return entityarrow;
     }
 
@@ -75,7 +76,7 @@ public class Vomit extends AbstractArrow implements ItemSupplier {
 
     @Override
     protected ItemStack getPickupItem() {
-        return ItemStack.EMPTY;
+        return new ItemStack(Sitems.BILE.get());
     }
 
     @Override
@@ -93,7 +94,7 @@ public class Vomit extends AbstractArrow implements ItemSupplier {
     }
 
     protected SoundEvent getDefaultHitGroundSoundEvent() {
-        return SoundEvents.SLIME_JUMP_SMALL;
+        return Ssounds.SPITTER_VOMIT.value();
     }
 
     @Override

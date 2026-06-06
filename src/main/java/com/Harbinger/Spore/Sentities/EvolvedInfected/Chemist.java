@@ -5,6 +5,7 @@ import com.Harbinger.Spore.Sentities.AI.CustomMeleeAttackGoal;
 import com.Harbinger.Spore.Sentities.BaseEntities.EvolvedInfected;
 import com.Harbinger.Spore.Sentities.BaseEntities.IkUtil.IkDragonHead;
 import com.Harbinger.Spore.Sentities.BaseEntities.UtilityEntity;
+import com.Harbinger.Spore.Sentities.ColdEndurance;
 import com.Harbinger.Spore.Sentities.Projectile.AcidBall;
 import com.Harbinger.Spore.Sentities.Projectile.TarBall;
 import com.Harbinger.Spore.Sentities.VariantKeeper;
@@ -196,6 +197,16 @@ public class Chemist extends EvolvedInfected implements VariantKeeper {
         if (this.attackAnimationTick > 0) {
             --this.attackAnimationTick;
         }
+    }
+
+    @Override
+    public ColdEndurance getEndurance() {
+        return ColdEndurance.HYPER;
+    }
+
+    @Override
+    public boolean fireImmune() {
+        return super.fireImmune() || getVariant() == ChemistVariants.FUMING;
     }
 
     public void explodeChemist(){

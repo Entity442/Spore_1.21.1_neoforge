@@ -438,9 +438,7 @@ public class PyroChemistModel<T extends Chemist> extends EntityModel<T> implemen
 		float v3 = Mth.sin(ageInTicks/6)/6;
 		if (entity.getAttackAnimationTick() <= 0){
 			this.RightArm.xRot =  !(limbSwingAmount > -0.15F && limbSwingAmount < 0.15F) ? 90F + v1 : 0.7f + v2;
-			this.LeftArm.xRot =  !(limbSwingAmount > -0.15F && limbSwingAmount < 0.15F) ? 90F - v1 : 0.7f - v2;
 			this.RightArm.yRot = 0;
-			this.LeftArm.yRot = 0;
 		}
 		this.LeftLeg.xRot = Mth.cos(limbSwing * 0.8F) * 0.8F * limbSwingAmount;
 		this.RightLeg.xRot = Mth.cos(limbSwing * 0.8F) * -0.8F * limbSwingAmount;
@@ -456,10 +454,18 @@ public class PyroChemistModel<T extends Chemist> extends EntityModel<T> implemen
 		this.animateTentacleY(HeadTendril2,Mth.sin(ageInTicks/6)/7);
 		this.animateTentacleX(HeadTendril3,Mth.cos(ageInTicks/5)/6);
 		this.animateTentacleY(HeadSmallTendril,-Mth.sin(ageInTicks/6)/5);
+		this.animateTentacleX(LeftArm,Mth.cos(ageInTicks/5)/6);
 		animateBackTentacle(BackTendril1,ageInTicks);
 		animateBackTentacle(BackTendril2,-ageInTicks);
 	}
-
+	@Override
+	public void prepareMobModel(T entity, float value1, float value2, float value3) {
+		super.prepareMobModel(entity, value1, value2, value3);
+		int attackAnimationTick = entity.getAttackAnimationTick();
+		if (attackAnimationTick > 0) {
+			this.RightArm.yRot = 1.5F - 3F * Mth.triangleWave((float)attackAnimationTick - value3, 20.0F);
+		}
+	}
 	@Override
 	public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int alpha) {
 		ChemistFull.render(poseStack, vertexConsumer, packedLight, packedOverlay, alpha);

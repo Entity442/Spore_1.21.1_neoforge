@@ -1,10 +1,7 @@
 package com.Harbinger.Spore.Sentities.Projectile;
 
 import com.Harbinger.Spore.ExtremelySusThings.Utilities;
-import com.Harbinger.Spore.core.Sblocks;
-import com.Harbinger.Spore.core.Seffects;
-import com.Harbinger.Spore.core.Sentities;
-import com.Harbinger.Spore.core.Sitems;
+import com.Harbinger.Spore.core.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -64,7 +61,7 @@ public class AcidBall extends AbstractArrow implements ItemSupplier {
         entityarrow.shoot(dx, dy - entityarrow.getY() + Math.hypot(dx, dz) * 0.2F, dz, 1f * 2, 12.0F);
         entityarrow.setBaseDamage(damage);
         entity.level().addFreshEntity(entityarrow);
-
+        entity.playSound(Ssounds.SPITTER_SPIT.value());
         return entityarrow;
     }
 
@@ -76,7 +73,7 @@ public class AcidBall extends AbstractArrow implements ItemSupplier {
 
     @Override
     protected ItemStack getPickupItem() {
-        return ItemStack.EMPTY;
+        return new ItemStack(Sitems.BILE.get());
     }
 
     @Override
@@ -108,7 +105,7 @@ public class AcidBall extends AbstractArrow implements ItemSupplier {
         living.addEffect(new MobEffectInstance(Seffects.CORROSION,300,level));
     }
     protected SoundEvent getDefaultHitGroundSoundEvent() {
-        return SoundEvents.SLIME_JUMP_SMALL;
+        return Ssounds.SPITTER_SPIT.value();
     }
 
     @Override
