@@ -114,7 +114,11 @@ public class TarBall extends AbstractArrow {
     protected void onHitEntity(EntityHitResult hitResult) {
         if (hitResult.getEntity() instanceof LivingEntity living && target.test(living)){
             spreadTar(living.blockPosition(),range);
-            living.addEffect(new MobEffectInstance(Seffects.IGNITABLE,200,0));
+            if (!entityData.get(IGNITED)){
+                living.addEffect(new MobEffectInstance(Seffects.IGNITABLE,200,0));
+            }else {
+                living.setRemainingFireTicks(200);
+            }
             super.onHitEntity(hitResult);
         }
     }

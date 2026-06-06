@@ -4,6 +4,8 @@ import com.Harbinger.Spore.ExtremelySusThings.Utilities;
 import com.Harbinger.Spore.Sentities.AI.CustomMeleeAttackGoal;
 import com.Harbinger.Spore.Sentities.BaseEntities.EvolvedInfected;
 import com.Harbinger.Spore.Sentities.BaseEntities.IkUtil.IkDragonHead;
+import com.Harbinger.Spore.Sentities.BaseEntities.UtilityEntity;
+import com.Harbinger.Spore.Sentities.Projectile.AcidBall;
 import com.Harbinger.Spore.Sentities.Projectile.TarBall;
 import com.Harbinger.Spore.Sentities.VariantKeeper;
 import com.Harbinger.Spore.Sentities.Variants.ChemistVariants;
@@ -35,6 +37,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.event.EventHooks;
 import org.jetbrains.annotations.NotNull;
@@ -154,19 +157,38 @@ public class Chemist extends EvolvedInfected implements VariantKeeper {
         }
         if (tickCount % 20 == 0){
             LivingEntity living = getTarget();
-            if (this.getVariant() == ChemistVariants.MECHANIC && living != null && this.hasLineOfSight(living)){
-                shootTar(living);
+            if ((this.getVariant() == ChemistVariants.MECHANIC || this.getVariant() == ChemistVariants.FUMING) && living != null && this.hasLineOfSight(living)){
+                shootTar(living,this.getVariant() == ChemistVariants.FUMING);
+                if (Math.random() < 0.5f && this.getVariant() == ChemistVariants.FUMING){
+                    shootAcid(living);
+                }
+            }
+        }
+        if (tickCount % 100 == 0){
+            extinguishTeammates();
+        }
+    }
+    public void extinguishTeammates(){
+        AABB aabb = getBoundingBox().inflate(8,4,8);
+        List<Entity> entities = level().getEntities(this,aabb);
+        for (Entity entity : entities){
+            if (entity instanceof UtilityEntity && entity.isOnFire()){
+                entity.extinguishFire();
             }
         }
     }
-    public void shootTar(LivingEntity livingEntity){
+    public void shootTar(LivingEntity livingEntity ,boolean ignited){
         TarBall projectile = new TarBall(this, level(), TARGET_SELECTOR,1f,1);
         double dx = livingEntity.getX() - this.getX();
         double dy = livingEntity.getY() + livingEntity.getEyeHeight() - 1;
         double dz = livingEntity.getZ() - this.getZ();
+        projectile.setIgnited(ignited);
         projectile.moveTo(this.getX(),this.getY()+1.5,this.getZ());
         projectile.shoot(dx, dy - projectile.getY() + Math.hypot(dx, dz) * 0.05F, dz, 1f * 2, 12.0F);
         level().addFreshEntity(projectile);
+    }
+    public void shootAcid(LivingEntity livingEntity){
+        AcidBall.shoot(this, livingEntity, 1);
     }
     @Override
     public void aiStep() {
