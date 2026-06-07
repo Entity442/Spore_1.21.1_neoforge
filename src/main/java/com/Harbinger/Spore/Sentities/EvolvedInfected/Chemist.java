@@ -50,6 +50,7 @@ public class Chemist extends EvolvedInfected implements VariantKeeper {
     private int attackAnimationTick;
     private static final EntityDataAccessor<Integer> BLOW_TIME = SynchedEntityData.defineId(Chemist.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> DATA_ID_TYPE_VARIANT = SynchedEntityData.defineId(Chemist.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Float> CHAR_SWELL = SynchedEntityData.defineId(Chemist.class, EntityDataSerializers.FLOAT);
     public Chemist(EntityType<? extends EvolvedInfected> p_33002_, Level p_33003_) {
         super(p_33002_, p_33003_);
     }
@@ -118,6 +119,38 @@ public class Chemist extends EvolvedInfected implements VariantKeeper {
         super.defineSynchedData(builder);
         builder.define(BLOW_TIME, 0);
         builder.define(DATA_ID_TYPE_VARIANT,0);
+        builder.define(CHAR_SWELL, 0f);
+    }
+    public void handleChar(){
+        float val = entityData.get(CHAR_SWELL);
+        if (isAggressive()){
+            if (val < 40){
+                entityData.set(CHAR_SWELL,val+0.2f);
+            }
+        }else {
+            if (val > 0){
+                entityData.set(CHAR_SWELL,val-0.1f);
+            }
+        }
+        float range = (val/4);
+        if (range < 1.5){
+            return;
+        }
+        for (int i = 0;i<10;i++){
+            float randomX = (float) (position().x + (random.nextFloat() -random.nextFloat()) * range);
+            float randomY = (float) (position().y + 1 + (random.nextFloat() -random.nextFloat()) * range);
+            float randomZ = (float) (position().z + (random.nextFloat() -random.nextFloat()) * range);
+            this.level().addParticle(ParticleTypes.SMALL_FLAME,randomX,randomY,randomZ,0,0,0);
+        }
+        if (tickCount % 20 == 0){
+            AABB aabb = this.getBoundingBox().inflate(1 + range);
+            List<Entity> entities = level().getEntities(this,aabb);
+            for (Entity entity : entities){
+                if (entity instanceof LivingEntity living && Utilities.TARGET_SELECTOR.Test(living)){
+                    living.setRemainingFireTicks(40);
+                }
+            }
+        }
     }
     @Override
     public void addAdditionalSaveData(CompoundTag tag) {
@@ -135,14 +168,18 @@ public class Chemist extends EvolvedInfected implements VariantKeeper {
     public boolean doHurtTarget(Entity entity) {
         this.attackAnimationTick = 10;
         this.level().broadcastEntityEvent(this, (byte)4);
-        if (getVariant() != ChemistVariants.MECHANIC){
+        if (getVariant() == ChemistVariants.DEFAULT){
+            entity.setRemainingFireTicks(200);
+            this.playSound(SoundEvents.FLINTANDSTEEL_USE);
+        }
+        if (getVariant() == ChemistVariants.BURST){
+            return super.doHurtTarget(entity);
+        }
+        if (getVariant() == ChemistVariants.MECHANIC){
             if (Math.random() > 0.3){
                 entity.setRemainingFireTicks(100);
                 this.playSound(SoundEvents.FLINTANDSTEEL_USE);
             }
-        }else {
-            entity.setRemainingFireTicks(200);
-            this.playSound(SoundEvents.FLINTANDSTEEL_USE);
         }
         return super.doHurtTarget(entity);
     }
@@ -167,6 +204,9 @@ public class Chemist extends EvolvedInfected implements VariantKeeper {
         }
         if (tickCount % 100 == 0){
             extinguishTeammates();
+        }
+        if (getTypeVariant() == 3){
+            handleChar();
         }
     }
     public void extinguishTeammates(){

@@ -450,8 +450,8 @@ public class FireChemistModel<T extends Chemist> extends EntityModel<T> implemen
 		}
 		this.LeftLeg.xRot = Mth.cos(limbSwing * 0.8F) * 0.8F * limbSwingAmount;
 		this.RightLeg.xRot = Mth.cos(limbSwing * 0.8F) * -0.8F * limbSwingAmount;
-		this.LeftForLeg.xRot = LeftLeg.xRot < 0 ? -LeftLeg.xRot : 0;
-		this.RightForLeg.xRot = RightLeg.xRot < 0 ? -RightLeg.xRot : 0;
+		this.LeftForLeg.xRot = LeftLeg.xRot > 0 ? -LeftLeg.xRot : 0;
+		this.RightForLeg.xRot = RightLeg.xRot > 0 ? -RightLeg.xRot : 0;
 		this.Head.yRot = netHeadYaw / (180F / (float) Math.PI);
 		this.Head.xRot = headPitch * ((float) Math.PI / 180F);
 		this.animateTentacleX(IntakeTubeRight,v3);
@@ -469,7 +469,15 @@ public class FireChemistModel<T extends Chemist> extends EntityModel<T> implemen
 		this.animateTentacleZ(Tendril1,-v3);
 		this.animateTentacleX(Tendril1,v3 * 1.25f);
 	}
-
+	@Override
+	public void prepareMobModel(T entity, float value1, float value2, float value3) {
+		super.prepareMobModel(entity, value1, value2, value3);
+		int attackAnimationTick = entity.getAttackAnimationTick();
+		if (attackAnimationTick > 0) {
+			this.LeftArm.yRot = -1.5F + 3F * Mth.triangleWave((float)attackAnimationTick - value3, 20.0F);
+			this.RightArm.yRot = 1.5F - 3F * Mth.triangleWave((float)attackAnimationTick - value3, 20.0F);
+		}
+	}
 	@Override
 	public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int alpha) {
 		ChemistFull.render(poseStack, vertexConsumer, packedLight, packedOverlay,
