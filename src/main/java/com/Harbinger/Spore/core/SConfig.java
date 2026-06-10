@@ -475,6 +475,7 @@ public class SConfig {
         public final ModConfigSpec.ConfigValue<Double> spit_damage_c;
 
         public final ModConfigSpec.ConfigValue<Integer> evolution_age_human;
+        public final ModConfigSpec.ConfigValue<Integer> evolution_age_hyper;
         public final ModConfigSpec.ConfigValue<Integer> min_kills;
         public final ModConfigSpec.ConfigValue<Integer> min_kills_hyper;
 
@@ -803,6 +804,7 @@ public class SConfig {
                             "spore:nuclea","spore:protector","spore:gargoyle") , o -> o instanceof String);
 
             this.evolution_age_human = builder.comment("Default 300").define("Evolution Timer in seconds",300);
+            this.evolution_age_hyper = builder.comment("Default 600").define("Evolution Timer in seconds for hyper evolution",600);
             this.min_kills = builder.comment("Default 1").define("Minimum amount of kills to start the evolution",1);
             this.min_kills_hyper = builder.comment("Default 7").define("Minimum amount of kills to start the hyper evolution",7);
             builder.pop();

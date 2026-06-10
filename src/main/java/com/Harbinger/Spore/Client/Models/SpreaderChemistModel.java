@@ -447,8 +447,8 @@ public class SpreaderChemistModel<T extends Chemist> extends EntityModel<T> impl
 		}
 		this.LeftLeg.xRot = Mth.cos(limbSwing * 0.8F) * 0.8F * limbSwingAmount;
 		this.RightLeg.xRot = Mth.cos(limbSwing * 0.8F) * -0.8F * limbSwingAmount;
-		this.LeftForLeg.xRot = LeftLeg.xRot < 0 ? -LeftLeg.xRot : 0;
-		this.RightForLeg.xRot = RightLeg.xRot < 0 ? -RightLeg.xRot : 0;
+		this.LeftForLeg.xRot = LeftLeg.xRot > 0 ? -LeftLeg.xRot : 0;
+		this.RightForLeg.xRot = RightLeg.xRot > 0 ? -RightLeg.xRot : 0;
 		this.Head.yRot = netHeadYaw / (180F / (float) Math.PI);
 		this.Head.xRot = headPitch * ((float) Math.PI / 180F);
 		this.animateTentacleX(IntakeTubeRight,v3);
