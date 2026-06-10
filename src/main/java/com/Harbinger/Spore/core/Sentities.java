@@ -131,6 +131,10 @@ public class Sentities {
             () -> EntityType.Builder.of(Jagdhund::new, INFECTED).sized(1.3f, 1.1f)
                     .build(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "jagd").toString()));
 
+    public static final Supplier<EntityType<Hollenhund>> HOLLEN = SPORE_ENTITIES.register("hollen",
+            () -> EntityType.Builder.of(Hollenhund::new, INFECTED).sized(2f, 1.1f)
+                    .build(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "hollen").toString()));
+
     public static final Supplier<EntityType<Scavenger>> SCAVENGER = SPORE_ENTITIES.register("scavenger",
             () -> EntityType.Builder.of(Scavenger::new, INFECTED).sized(1.3f, 1.1f)
                     .build(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "scavenger").toString()));

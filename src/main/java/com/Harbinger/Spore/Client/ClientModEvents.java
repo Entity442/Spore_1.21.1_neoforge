@@ -328,6 +328,7 @@ public class ClientModEvents {
         event.registerEntityRenderer(Sentities.GORGON.get(), GorgonRenderer::new);
         event.registerEntityRenderer(Sentities.VERFALL.get(), DrakeRenderer::new);
         event.registerEntityRenderer(Sentities.VERFALL_HEAD.get(), VerfallHeadRenderer::new);
+        event.registerEntityRenderer(Sentities.HOLLEN.get(), HollenhundRenderer::new);
     }
     public static void renderBlockEntities(EntityRenderersEvent.RegisterRenderers event){
         event.registerBlockEntityRenderer(SblockEntities.OVERGROWN_SPAWNER.get(), new OvergrownSpawnerRenderer());

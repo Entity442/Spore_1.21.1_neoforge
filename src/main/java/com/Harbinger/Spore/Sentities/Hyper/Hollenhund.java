@@ -1,4 +1,4 @@
-package com.Harbinger.Spore.Sentities.EvolvedInfected;
+package com.Harbinger.Spore.Sentities.Hyper;
 
 
 import com.Harbinger.Spore.Sentities.AI.CustomMeleeAttackGoal;
@@ -34,11 +34,11 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class Jagdhund extends EvolvedInfected {
-    private static final EntityDataAccessor<Boolean> UNDERGROUND = SynchedEntityData.defineId(Jagdhund.class, EntityDataSerializers.BOOLEAN);
-    public static final EntityDataAccessor<Integer> BORROW = SynchedEntityData.defineId(Jagdhund.class, EntityDataSerializers.INT);
-    public static final EntityDataAccessor<Integer> EMERGE = SynchedEntityData.defineId(Jagdhund.class, EntityDataSerializers.INT);
-    public Jagdhund(EntityType<? extends Infected> type, Level level) {
+public class Hollenhund extends EvolvedInfected {
+    private static final EntityDataAccessor<Boolean> UNDERGROUND = SynchedEntityData.defineId(Hollenhund.class, EntityDataSerializers.BOOLEAN);
+    public static final EntityDataAccessor<Integer> BORROW = SynchedEntityData.defineId(Hollenhund.class, EntityDataSerializers.INT);
+    public static final EntityDataAccessor<Integer> EMERGE = SynchedEntityData.defineId(Hollenhund.class, EntityDataSerializers.INT);
+    public Hollenhund(EntityType<? extends Infected> type, Level level) {
         super(type, level);
     }
 
@@ -249,6 +249,6 @@ public class Jagdhund extends EvolvedInfected {
         if (isUnderground()){
             this.playSound(state.getSoundType(level(),pos,this).getBreakSound(), 0.15F, 0.5F);
         }else
-        this.playSound(this.getStepSound(), 0.15F, 1.0F);
+             this.playSound(this.getStepSound(), 0.15F, 1.0F);
     }
 }
