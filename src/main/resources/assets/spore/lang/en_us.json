@@ -497,6 +497,10 @@
   "spore.entity.variant.valkyrie" : "Valkyrie Mutation",
   "spore.entity.variant.madcap" : "Madcap Mutation",
   "spore.entity.variant.ichor" : "Ichor Mutation",
+  "spore.entity.variant.mechanic" : "Mechanic Mutation",
+  "spore.entity.variant.fuming" : "Pyro Mutation",
+  "spore.entity.variant.ember" : "Ember Mutation",
+  "spore.entity.variant.spreader" : "Spreader Mutation",
 
   "spore.scanner.danger.calamity" : "RUN",
   "spore.scanner.danger.hyper" : "Very High",
