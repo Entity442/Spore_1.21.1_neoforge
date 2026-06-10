@@ -10,10 +10,7 @@ import com.Harbinger.Spore.Sentities.Projectile.AcidBall;
 import com.Harbinger.Spore.Sentities.Projectile.TarBall;
 import com.Harbinger.Spore.Sentities.VariantKeeper;
 import com.Harbinger.Spore.Sentities.Variants.ChemistVariants;
-import com.Harbinger.Spore.core.SConfig;
-import com.Harbinger.Spore.core.SdamageTypes;
-import com.Harbinger.Spore.core.Sparticles;
-import com.Harbinger.Spore.core.Ssounds;
+import com.Harbinger.Spore.core.*;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleType;
@@ -29,6 +26,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -152,6 +150,27 @@ public class Chemist extends EvolvedInfected implements VariantKeeper {
             }
         }
     }
+    public void handleNetherGas(){
+        for (int i = 0;i<30;i++){
+            float randomX = (float) (position().x + (random.nextFloat() -random.nextFloat()) * 5);
+            float randomY = (float) (position().y + 1 + (random.nextFloat() -random.nextFloat()) * 5);
+            float randomZ = (float) (position().z + (random.nextFloat() -random.nextFloat()) * 5);
+            this.level().addParticle(Math.random() < 0.33 ? ParticleTypes.SOUL : Math.random() < 0.33 ? ParticleTypes.MYCELIUM : Sparticles.SPORE_PARTICLE.get(),randomX,randomY,randomZ,0,0,0);
+        }
+        AABB aabb = this.getBoundingBox().inflate(8);
+        List<Entity> entities = level().getEntities(this,aabb);
+        for (Entity entity : entities){
+            if (entity instanceof UtilityEntity utilityEntity){
+                utilityEntity.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE,600,0));
+            }else {
+                if (entity instanceof LivingEntity living && Utilities.TARGET_SELECTOR.Test(living) && !Utilities.helmetList().contains(living.getItemBySlot(EquipmentSlot.HEAD).getItem())){
+                    living.addEffect(new MobEffectInstance(Seffects.MYCELIUM,400,1));
+                    living.addEffect(new MobEffectInstance(MobEffects.WEAKNESS,600,0));
+                }
+            }
+        }
+    }
+
     @Override
     public void addAdditionalSaveData(CompoundTag tag) {
         super.addAdditionalSaveData(tag);
@@ -267,8 +286,12 @@ public class Chemist extends EvolvedInfected implements VariantKeeper {
     }
     @Override
     public boolean hurt(DamageSource source, float amount) {
-        if (source.getEntity() != null && Math.random() < 0.2){
-            tickExplosion();
+        if (getVariant() == ChemistVariants.SPREADER){
+            handleNetherGas();
+        }else {
+            if (source.getEntity() != null && Math.random() < 0.2){
+                tickExplosion();
+            }
         }
         return super.hurt(source, amount);
     }
