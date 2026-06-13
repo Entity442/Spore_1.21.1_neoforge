@@ -22,6 +22,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -158,6 +159,9 @@ public class Commands {
                             long getDefaultTicks = request.getTickAmount();
                             long ticks = request.getTicksUntilExpiration();
                             player.displayClientMessage(Component.literal("Loaded chunk "+id + " "+ticks +"/"+getDefaultTicks),false);
+                        }
+                        for (MobCategory category : MobCategory.values()){
+                            player.displayClientMessage(Component.literal("Loaded categories "+category.getName()),false);
                         }
                     }
                     return 1;

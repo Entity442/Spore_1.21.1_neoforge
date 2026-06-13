@@ -1,7 +1,6 @@
 package com.Harbinger.Spore.Sevents;
 
 
-import com.Harbinger.Spore.ExtremelySusThings.CustomJsonReader.SporeConversionData;
 import com.Harbinger.Spore.ExtremelySusThings.CustomJsonReader.SporeMobConversionData;
 import com.Harbinger.Spore.ExtremelySusThings.SporeSavedData;
 import com.Harbinger.Spore.ExtremelySusThings.Utilities;
@@ -35,7 +34,6 @@ import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 
@@ -43,7 +41,7 @@ import java.util.List;
 
 public class Infection {
     public static void setItemBySlot(Player player, EquipmentSlot slot, Mob entity) {
-        entity.setItemSlot(slot, player.getItemBySlot(slot));
+        entity.setItemSlot(slot, player.getItemBySlot(slot).copy());
         entity.setDropChance(slot, 0);
     }
 
