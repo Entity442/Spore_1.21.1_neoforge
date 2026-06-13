@@ -174,9 +174,9 @@ public class HollenhundModel<T extends Hollenhund> extends EntityModel<T> {
 		PartDefinition spine3 = upperbody.addOrReplaceChild("spine3", CubeListBuilder.create(), PartPose.offset(-0.25F, -4.0F, 0.0F));
 
 		PartDefinition cube_r2 = spine3.addOrReplaceChild("cube_r2", CubeListBuilder.create().texOffs(100, 107).addBox(-1.5F, -0.5F, -0.5F, 3.0F, 3.0F, 1.0F, new CubeDeformation(-0.025F))
-		.texOffs(44, 85).addBox(-1.5F, -0.5F, -8.5F, 3.0F, 3.0F, 1.0F, new CubeDeformation(-0.025F))
-		.texOffs(0, 40).addBox(0.0F, -6.5F, -8.0F, 0.0F, 6.0F, 8.0F, new CubeDeformation(0.0F))
-		.texOffs(56, 65).addBox(-1.5F, -0.5F, -8.0F, 3.0F, 1.0F, 8.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, -0.0873F, 0.0F));
+				.texOffs(44, 85).addBox(-1.5F, -0.5F, -8.5F, 3.0F, 3.0F, 1.0F, new CubeDeformation(-0.025F))
+				.texOffs(0, 40).addBox(0.0F, -6.5F, -8.0F, 0.0F, 6.0F, 8.0F, new CubeDeformation(0.0F))
+				.texOffs(56, 65).addBox(-1.5F, -0.5F, -8.0F, 3.0F, 1.0F, 8.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, -0.0873F, 0.0F));
 
 		PartDefinition cube_r3 = spine3.addOrReplaceChild("cube_r3", CubeListBuilder.create().texOffs(108, 53).addBox(-0.5F, -0.5F, -0.5F, 4.0F, 1.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-4.8173F, 7.9848F, -0.6842F, -0.0527F, 0.2614F, -0.0085F));
 
@@ -209,7 +209,7 @@ public class HollenhundModel<T extends Hollenhund> extends EntityModel<T> {
 		PartDefinition cube_r17 = spine3.addOrReplaceChild("cube_r17", CubeListBuilder.create().texOffs(108, 55).addBox(0.0F, -0.5F, -0.5F, 4.0F, 1.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(1.625F, 0.0F, -1.3636F, 0.0F, 0.2182F, 0.0F));
 
 		PartDefinition head = upperbody.addOrReplaceChild("head", CubeListBuilder.create().texOffs(32, 34).addBox(-4.0F, 0.0F, -6.0F, 8.0F, 5.0F, 8.0F, new CubeDeformation(0.0F))
-		.texOffs(74, 0).addBox(-4.0F, -4.0F, 0.0F, 8.0F, 4.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, -8.0F, 0.9163F, 0.0F, 0.0F));
+				.texOffs(74, 0).addBox(-4.0F, -4.0F, 0.0F, 8.0F, 4.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, -8.0F, 0.9163F, 0.0F, 0.0F));
 
 		PartDefinition rightjaw = head.addOrReplaceChild("rightjaw", CubeListBuilder.create().texOffs(98, 49).addBox(-2.0F, -6.0F, -0.25F, 4.0F, 6.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-3.0F, -3.0F, 1.0F, 0.2182F, 0.0F, -0.7854F));
 
@@ -309,11 +309,11 @@ public class HollenhundModel<T extends Hollenhund> extends EntityModel<T> {
 
 		PartDefinition cube_r60 = leftsidejaw.addOrReplaceChild("cube_r60", CubeListBuilder.create().texOffs(110, 26).addBox(-2.0F, -1.5F, 0.0F, 4.0F, 2.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -1.0F, -3.0F, 0.0F, 0.3491F, 0.0F));
 
-		PartDefinition tongue = head.addOrReplaceChild("tongue", CubeListBuilder.create().texOffs(18, 76).addBox(-2.0F, -7.0F, -0.5F, 4.0F, 7.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, -2.0F, 0.48F, 0.0F, 0.0F));
+		PartDefinition tongue = head.addOrReplaceChild("tongue", CubeListBuilder.create().texOffs(18, 76).addBox(-2.0F, -7.0F, -0.5F, 4.0F, 7.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, -2.0F, 0.9163F, 0.0F, 0.0F));
 
-		PartDefinition tongue2 = tongue.addOrReplaceChild("tongue2", CubeListBuilder.create().texOffs(24, 99).addBox(-1.5F, -7.0F, -0.5F, 3.0F, 7.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, -7.0F, 0.0F));
+		PartDefinition tongue2 = tongue.addOrReplaceChild("tongue2", CubeListBuilder.create().texOffs(24, 99).addBox(-1.5F, -7.0F, -0.5F, 3.0F, 7.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -7.0F, 0.0F, -0.3927F, 0.0F, 0.0F));
 
-		PartDefinition tongue3 = tongue2.addOrReplaceChild("tongue3", CubeListBuilder.create().texOffs(106, 38).addBox(-1.0F, -6.0F, -0.5F, 2.0F, 6.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, -7.0F, 0.0F));
+		PartDefinition tongue3 = tongue2.addOrReplaceChild("tongue3", CubeListBuilder.create().texOffs(106, 38).addBox(-1.0F, -6.0F, -0.5F, 2.0F, 6.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -7.0F, 0.0F, 0.48F, 0.0F, 0.0F));
 
 		PartDefinition crown2 = head.addOrReplaceChild("crown2", CubeListBuilder.create(), PartPose.offsetAndRotation(0.8899F, 5.1674F, -2.7461F, -1.7453F, -0.3927F, 0.0F));
 
@@ -390,8 +390,8 @@ public class HollenhundModel<T extends Hollenhund> extends EntityModel<T> {
 		PartDefinition spine2 = body2.addOrReplaceChild("spine2", CubeListBuilder.create(), PartPose.offset(0.0F, -4.0F, -4.0F));
 
 		PartDefinition cube_r64 = spine2.addOrReplaceChild("cube_r64", CubeListBuilder.create().texOffs(58, 89).addBox(-1.5F, -1.0F, -5.5F, 3.0F, 4.0F, 2.0F, new CubeDeformation(-0.05F))
-		.texOffs(0, 45).addBox(0.0F, -7.0F, -5.0F, 0.0F, 6.0F, 9.0F, new CubeDeformation(0.0F))
-		.texOffs(0, 76).addBox(-1.5F, -1.0F, -5.0F, 3.0F, 1.0F, 6.0F, new CubeDeformation(-0.025F)), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, 0.0436F, 0.0F));
+				.texOffs(0, 45).addBox(0.0F, -7.0F, -5.0F, 0.0F, 6.0F, 9.0F, new CubeDeformation(0.0F))
+				.texOffs(0, 76).addBox(-1.5F, -1.0F, -5.0F, 3.0F, 1.0F, 6.0F, new CubeDeformation(-0.025F)), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, 0.0436F, 0.0F));
 
 		PartDefinition cube_r65 = spine2.addOrReplaceChild("cube_r65", CubeListBuilder.create().texOffs(68, 49).addBox(-5.5F, -0.5F, -0.5F, 6.0F, 1.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(5.4948F, 8.5F, 2.8466F, 0.0F, 0.0873F, 0.0F));
 
@@ -448,8 +448,8 @@ public class HollenhundModel<T extends Hollenhund> extends EntityModel<T> {
 		PartDefinition spine = body.addOrReplaceChild("spine", CubeListBuilder.create(), PartPose.offset(0.0F, -4.0F, -2.0F));
 
 		PartDefinition cube_r81 = spine.addOrReplaceChild("cube_r81", CubeListBuilder.create().texOffs(108, 45).addBox(-1.5F, -0.5F, 1.5F, 3.0F, 3.0F, 1.0F, new CubeDeformation(-0.025F))
-		.texOffs(0, 58).addBox(0.0F, -4.5F, -4.0F, 0.0F, 4.0F, 6.0F, new CubeDeformation(0.0F))
-		.texOffs(70, 74).addBox(-1.5F, -0.5F, -4.0F, 3.0F, 1.0F, 6.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, -0.2618F, 0.0F));
+				.texOffs(0, 58).addBox(0.0F, -4.5F, -4.0F, 0.0F, 4.0F, 6.0F, new CubeDeformation(0.0F))
+				.texOffs(70, 74).addBox(-1.5F, -0.5F, -4.0F, 3.0F, 1.0F, 6.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, -0.2618F, 0.0F));
 
 		PartDefinition cube_r82 = spine.addOrReplaceChild("cube_r82", CubeListBuilder.create().texOffs(106, 22).addBox(-3.5F, -0.5F, -0.5F, 4.0F, 1.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(4.8318F, 7.9924F, -0.1664F, -0.0057F, 0.0001F, 0.0433F));
 
