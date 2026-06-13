@@ -261,7 +261,7 @@ public class Verfalldrachen extends Calamity implements TrueCalamity, RangedAtta
             moveControl = flightMoveControl;
             navigation = undergroundPathNavigation;
             setNoGravity(true);
-        }else if (this.isInFluidType()
+        } else if (this.isInFluidType()
         ){
             moveControl = waterMoveControl;
             navigation = undergroundPathNavigation;
@@ -277,7 +277,7 @@ public class Verfalldrachen extends Calamity implements TrueCalamity, RangedAtta
     public void travel(Vec3 vec) {
         if (this.isEffectiveAi() && isNoGravity()) {
             this.moveRelative(0.1F, vec);
-            this.move(MoverType.SELF, this.getDeltaMovement().scale(isInWater() ? 0.75 : 1f));
+            this.move(MoverType.SELF, this.getDeltaMovement().scale(isInWater() ? 0.5 : 1f));
             this.setDeltaMovement(this.getDeltaMovement().scale(0.85D).add(0,-0.01,0));
         } else {
             super.travel(vec);
