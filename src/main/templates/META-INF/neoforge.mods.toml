@@ -14,7 +14,6 @@ loaderVersion="${loader_version_range}" #mandatory
 # Review your options at https://choosealicense.com/. All rights reserved is the default copyright stance, and is thus the default here.
 license="${mod_license}"
 
-enumExtensions="META-INF/enumextensions.json"
 # A URL to refer people to when problems occur with this mod
 #issueTrackerURL="https://change.me.to.your.issue.tracker.example.invalid/" #optional
 
@@ -30,6 +29,7 @@ version="2.2.0" #mandatory
 # A display name for the mod
 displayName="Spore" #mandatory
 
+enumExtensions="META-INF/enumextensions.json"
 # A URL to query for updates for this mod. See the JSON update specification https://docs.neoforged.net/docs/misc/updatechecker/
 #updateJSONURL="https://change.me.example.invalid/updates.json" #optional
 

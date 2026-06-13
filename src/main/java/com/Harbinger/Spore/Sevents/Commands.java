@@ -160,9 +160,6 @@ public class Commands {
                             long ticks = request.getTicksUntilExpiration();
                             player.displayClientMessage(Component.literal("Loaded chunk "+id + " "+ticks +"/"+getDefaultTicks),false);
                         }
-                        for (MobCategory category : MobCategory.values()){
-                            player.displayClientMessage(Component.literal("Loaded categories "+category.getName()),false);
-                        }
                     }
                     return 1;
                 }).requires(s -> s.hasPermission(1)));

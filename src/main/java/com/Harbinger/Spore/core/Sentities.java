@@ -39,9 +39,9 @@ public class Sentities {
     private static <T extends Entity> Supplier<EntityType<T>> register(String registryname, EntityType.Builder<T> entityTypeBuilder) {
         return SPORE_ENTITIES.register(registryname, () -> entityTypeBuilder.build(registryname));
     }
-    public static final MobCategory BASIC_INFECTED = MobCategory.MONSTER;
-    public static final MobCategory INFECTED = MobCategory.MISC;//MobCategory.create("infected","infected",SConfig.SERVER.mob_cap.get(),false,false,128);
-    public static final MobCategory ORGANOID = MobCategory.MISC;//MobCategory.create("organoid","organoid",20,false,false,64);
+    public static final MobCategory BASIC_INFECTED = MobCategory.valueOf("SPORE_INFECTED");
+    public static final MobCategory INFECTED = MobCategory.valueOf("SPORE_INFECTED");
+    public static final MobCategory ORGANOID = MobCategory.valueOf("SPORE_ORGANOIDS");
 
     public static final Supplier<EntityType<InfectedHuman>> INF_HUMAN = SPORE_ENTITIES.register("inf_human",
             () -> EntityType.Builder.of(InfectedHuman::new, BASIC_INFECTED).sized(0.6f, 1.9f)
