@@ -1,5 +1,6 @@
 package com.Harbinger.Spore.Sentities.Calamities;
 
+import com.Harbinger.Spore.Sentities.MovementControls.UndergroundMovementControl;
 import com.Harbinger.Spore.core.*;
 import com.Harbinger.Spore.ExtremelySusThings.Utilities;
 import com.Harbinger.Spore.Sentities.AI.AOEMeleeAttackGoal;
@@ -43,6 +44,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.entity.PartEntity;
@@ -88,6 +90,7 @@ public class Verfalldrachen extends Calamity implements TrueCalamity, RangedAtta
     protected final UndergroundPathNavigation undergroundPathNavigation;
     protected final ExperimentalGroundMovementController groundMovementController;
     protected final DragonFlightMoveControl flightMoveControl;
+    protected final UndergroundMovementControl waterMoveControl;
     private int flapAnimationTicks;
     private int beamTicks;
     public Verfalldrachen(EntityType<? extends PathfinderMob> type, Level level) {
@@ -108,7 +111,7 @@ public class Verfalldrachen extends Calamity implements TrueCalamity, RangedAtta
 
         calamityPathNavigation = new CalamityPathNavigation(this,level);
         undergroundPathNavigation = new UndergroundPathNavigation(this,level);
-
+        waterMoveControl = new UndergroundMovementControl(this);
         this.navigation = calamityPathNavigation;
         this.moveControl = groundMovementController;
         this.setId(ENTITY_COUNTER.getAndAdd(this.subEntities.length + 1) + 1);
@@ -258,6 +261,11 @@ public class Verfalldrachen extends Calamity implements TrueCalamity, RangedAtta
             moveControl = flightMoveControl;
             navigation = undergroundPathNavigation;
             setNoGravity(true);
+        }else if (this.isInFluidType()
+        ){
+            moveControl = waterMoveControl;
+            navigation = undergroundPathNavigation;
+            setNoGravity(true);
         } else {
             moveControl = groundMovementController;
             navigation = calamityPathNavigation;
@@ -269,7 +277,7 @@ public class Verfalldrachen extends Calamity implements TrueCalamity, RangedAtta
     public void travel(Vec3 vec) {
         if (this.isEffectiveAi() && isNoGravity()) {
             this.moveRelative(0.1F, vec);
-            this.move(MoverType.SELF, this.getDeltaMovement().scale(isInWater() ? 0.2 : 1f));
+            this.move(MoverType.SELF, this.getDeltaMovement().scale(isInWater() ? 0.75 : 1f));
             this.setDeltaMovement(this.getDeltaMovement().scale(0.85D).add(0,-0.01,0));
         } else {
             super.travel(vec);
@@ -294,6 +302,9 @@ public class Verfalldrachen extends Calamity implements TrueCalamity, RangedAtta
 
             @Override
             public boolean canUse() {
+                if (mob.isInFluidType()){
+                    return super.canUse();
+                }
                 if (isNoGravity() && (getTarHead() > 0 || getElectricalHead() > 0 || getSonicHead() > 0)){
                     return false;
                 }
@@ -321,16 +332,26 @@ public class Verfalldrachen extends Calamity implements TrueCalamity, RangedAtta
 
     @Override
     public void playAmbientSound() {
-        if (getTarHeadSegment() == TAR_HEAD_SEGMENT && Math.random() < 0.75){
-            this.tarHead.playSound(Ssounds.VERFALL_TAR_HEAD_AMBIENT.value());
+        int o = 0;
+        if (getTarHeadSegment() == TAR_HEAD_SEGMENT){
+            if (Math.random() < 0.75){
+                this.tarHead.playSound(Ssounds.VERFALL_TAR_HEAD_AMBIENT.value());
+            }
+            o++;
         }
-        if (getSonicHeadSegment() == SONIC_HEAD_SEGMENT && Math.random() < 0.75){
-            this.soundHead.playSound(Ssounds.VERFALL_SONIC_HEAD_AMBIENT.value());
+        if (getSonicHeadSegment() == SONIC_HEAD_SEGMENT){
+            if (Math.random() < 0.75){
+                this.soundHead.playSound(Ssounds.VERFALL_SONIC_HEAD_AMBIENT.value());
+            }
+            o++;
         }
-        if (getElectricalHeadSegment() == ELECTRICAL_SEGMENT && Math.random() < 0.75){
-            this.lightningHead.playSound(Ssounds.ELECTRIC.value());
+        if (getElectricalHeadSegment() == ELECTRICAL_SEGMENT){
+            if (Math.random() < 0.75){
+                this.lightningHead.playSound(Ssounds.ELECTRIC.value());
+            }
+            o++;
         }
-        if (getTarHeadSegment() != TAR_HEAD_SEGMENT && getSonicHeadSegment() != SONIC_HEAD_SEGMENT && getElectricalHeadSegment() != ELECTRICAL_SEGMENT){
+        if (o<=1){
             playSound(Ssounds.VERFALL_AMBIENT.value());
         }
     }
@@ -483,7 +504,7 @@ public class Verfalldrachen extends Calamity implements TrueCalamity, RangedAtta
         LivingEntity livingEntity = getTarget();
         boolean checkAir = checkFloot();
         boolean searchFar = getSearchArea() != BlockPos.ZERO && getSearchArea().getY() > this.getY();
-        setFlying(livingEntity != null || checkAir || searchFar);
+        setFlying((livingEntity != null && !livingEntity.isEyeInFluidType(Fluids.WATER.getFluidType())) || checkAir || searchFar);
     }
     boolean checkFloot(){
         boolean val = true;
@@ -921,6 +942,9 @@ public class Verfalldrachen extends Calamity implements TrueCalamity, RangedAtta
 
         @Override
         public boolean canUse() {
+            if (mob.isInFluidType()){
+                return false;
+            }
             if (mob.getDragonFireCharge() || (getTarHead() <= 0 && getElectricalHead() <= 0 && getSonicHead() <= 0)){
                 return false;
             }
@@ -930,6 +954,9 @@ public class Verfalldrachen extends Calamity implements TrueCalamity, RangedAtta
 
         @Override
         public boolean canContinueToUse() {
+            if (mob.isInFluidType()){
+                return false;
+            }
             if (mob.getDragonFireCharge() || (getTarHead() <= 0 && getElectricalHead() <= 0 && getSonicHead() <= 0)){
                 return false;
             }
