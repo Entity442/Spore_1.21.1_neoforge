@@ -573,7 +573,7 @@ public class Hollenhund extends Hyper implements RangedAttackMob {
                 mob.startEmerging();
             }
 
-            if (distanceSq > 64
+            if (distanceSq > 100
                     && !mob.isRanged()
                     && mob.getRandom().nextFloat() < 0.01F) {
 
@@ -604,7 +604,7 @@ public class Hollenhund extends Hyper implements RangedAttackMob {
                             rangedPosition.getCenter()
                     );
 
-            if (mob.isUnderground()) {
+            if (mob.isUnderground() && !mob.isEmerging()) {
 
                 mob.teleportTo(
                         rangedPosition.getX() + 0.5D,
