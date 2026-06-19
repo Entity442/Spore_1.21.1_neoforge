@@ -28,9 +28,9 @@ public interface SporeArmorData {
     }
 
     default double calculateTrueToughness(ItemStack stack, double defense) {
-        double value = getAdditionalToughness(stack) * 0.01;
+        double value = getAdditionalToughness(stack);
         if (value > 0) {
-            return defense + (defense * value);
+            return defense + value;
         }
         return defense;
     }

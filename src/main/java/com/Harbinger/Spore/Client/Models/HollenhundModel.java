@@ -11,8 +11,9 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 
-public class HollenhundModel<T extends Hollenhund> extends EntityModel<T> {
+public class HollenhundModel<T extends Hollenhund> extends EntityModel<T> implements TentacledModel{
 	// This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
 	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "hollenhundmodel"), "main");
 	private final ModelPart worm;
@@ -486,7 +487,52 @@ public class HollenhundModel<T extends Hollenhund> extends EntityModel<T> {
 
 	@Override
 	public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-
+		worm.getAllParts().forEach(ModelPart::resetPose);
+		float moveValue  = Mth.cos(limbSwing * 0.3F) * 0.8F * limbSwingAmount;
+		float neckMovement = netHeadYaw / (360F / (float) Math.PI)/3;
+		float attackAnimationTick = entity.getAttackAnimationTick();
+		float r1 = Mth.sin(ageInTicks/6)/8;
+		float r2 = Mth.cos(ageInTicks/7)/6;
+		float r3 = Mth.sin(ageInTicks/8)/5;
+		if (entity.isBurrowing() || entity.isEmerging()){
+			float digValue = Mth.sin(ageInTicks/3)/2;
+			animateTentacleZ(rightarm,digValue);
+			animateTentacleZ(leftarm,digValue);
+		} else{
+			animateTentacleZ(rightarm,moveValue);
+			animateTentacleZ(leftarm,moveValue);
+		}
+		animateTumor(tumors,r2);
+		animateTentacleY(tail,moveValue+r1);
+		animateTentacleY(tail2,moveValue+r1);
+		animateTentacleY(tail3,moveValue+r1);
+		animateTentacleZ(head,neckMovement);
+		animateTentacleX(tongue,r1);
+		animateTentacleX(tongue2,r1);
+		animateTentacleX(tongue3,r1);
+		animateTentacleX(jaw,r2);
+		animateTentacleX(rightsidejaw,-r2);
+		animateTentacleX(leftsidejaw,r2);
+		animateTentacleX(leftjaw,-r2);
+		animateTentacleX(rightjaw,-r2);
+		animateTentacleX(midjaw,-r2);
+		animateTumor(tumors,r3);
+		if (attackAnimationTick > 0){
+			float swing = 2.0F - 1.5F * Mth.triangleWave(attackAnimationTick, 20.0F);
+			animateTentacleZ(leftgrabelbow,-swing);
+			animateTentacleZ(rightgrabelbow,swing);
+			animateTentacleZ(leftgrabhand,swing);
+			animateTentacleZ(rightgrabhand,-swing);
+			animateTentacleZ(leftgrabber,-swing);
+			animateTentacleZ(rightgrabber,swing);
+		}else {
+			animateTentacleZ(leftgrabelbow,r1);
+			animateTentacleZ(rightgrabelbow,r3);
+			animateTentacleZ(leftgrabhand,-r1);
+			animateTentacleZ(rightgrabhand,-r2);
+			animateTentacleZ(leftgrabber,r3);
+			animateTentacleZ(rightgrabber,r2);
+		}
 	}
 
 	@Override

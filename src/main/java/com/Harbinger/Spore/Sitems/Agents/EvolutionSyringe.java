@@ -36,10 +36,11 @@ public class EvolutionSyringe extends BaseItem2 {
             case Infected infected when infected instanceof EvolvingInfected -> {
                 if (infected instanceof EvolvedInfected) {
                     infected.setEvoPoints(infected.getEvoPoints() + SConfig.SERVER.min_kills_hyper.get());
+                    infected.setEvolution(SConfig.SERVER.evolution_age_hyper.get());
                 } else {
                     infected.setEvoPoints(infected.getEvoPoints() + SConfig.SERVER.min_kills.get());
+                    infected.setEvolution(SConfig.SERVER.evolution_age_human.get());
                 }
-                infected.setEvolution(SConfig.SERVER.evolution_age_human.get());
                 return InteractionResult.SUCCESS;
             }
             case Mound mound -> {

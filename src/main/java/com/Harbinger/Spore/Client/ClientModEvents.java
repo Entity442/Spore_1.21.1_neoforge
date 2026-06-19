@@ -234,6 +234,7 @@ public class ClientModEvents {
         event.registerLayerDefinition(SpreaderChemistModel.LAYER_LOCATION, SpreaderChemistModel::createBodyLayer);
         event.registerLayerDefinition(FireChemistModel.LAYER_LOCATION, FireChemistModel::createBodyLayer);
         event.registerLayerDefinition(HollenhundModel.LAYER_LOCATION, HollenhundModel::createBodyLayer);
+        event.registerLayerDefinition(HollenhundRangedModel.LAYER_LOCATION, HollenhundRangedModel::createBodyLayer);
     }
     @SubscribeEvent
     public static void registerRenderers(final EntityRenderersEvent.RegisterRenderers event) {

@@ -412,6 +412,10 @@ public class Ssounds {
 
     public static final Holder<SoundEvent> SPITTER_VOMIT = soundRegistry("spitter_vomit");
 
+    public static final Holder<SoundEvent> HOLLEN_AMBIENT = soundRegistry("hollen_ambient");
+
+    public static final Holder<SoundEvent> HOLLEN_SPIT = soundRegistry("hollen_spit");
+
     ///SONGS///
 
     public static final Holder<SoundEvent> BANE_OF_SETTLEMENT = soundRegistry("bane_of_settlement");

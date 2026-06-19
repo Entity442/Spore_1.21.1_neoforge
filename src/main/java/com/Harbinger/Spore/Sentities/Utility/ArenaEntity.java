@@ -244,7 +244,7 @@ public class ArenaEntity extends UtilityEntity {
     }
     public boolean checkForInfected(){
         AABB aabb = this.getBoundingBox().inflate(8);
-        List<Entity> list = level().getEntities(this,aabb,entity -> {return (entity instanceof Infected || entity instanceof UtilityEntity) && !(entity instanceof ArenaEntity);});
+        List<Entity> list = level().getEntities(this,aabb,entity -> {return (entity instanceof UtilityEntity) && !(entity instanceof ArenaEntity);});
         return list.size() < 4;
     }
 
