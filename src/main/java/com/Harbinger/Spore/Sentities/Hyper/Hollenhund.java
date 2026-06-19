@@ -145,7 +145,7 @@ public class Hollenhund extends Hyper implements RangedAttackMob {
         if (attackAnimationTick > 0){
             attackAnimationTick--;
         }
-        if (tickCount % 10 == 0 && isUnderground() && onGround() && claws.size() < 2){
+        if (tickCount % 10 == 0 && isUnderground() && !isEmerging() && onGround() && claws.size() < 2){
             claws.add(new spikeClaw(random.nextInt(-20,21),random.nextInt(360),this,random.nextInt(20,41)));
         }
 
@@ -365,7 +365,6 @@ public class Hollenhund extends Hyper implements RangedAttackMob {
             if (entities.isEmpty()){
                 return;
             }
-            parent.playSound(Ssounds.REAPER_ATTACK.value());
             for (Entity entity : entities){
                 if (entity instanceof LivingEntity living && Utilities.TARGET_SELECTOR.Test(living)){
                     parent.doHurtTarget(living);
@@ -558,7 +557,7 @@ public class Hollenhund extends Hyper implements RangedAttackMob {
 
         private void tickMelee(LivingEntity target, double distanceSq) {
 
-            if (distanceSq > 100
+            if (distanceSq > 150
                     && !mob.isUnderground()
                     && !mob.isBurrowing()
                     && mob.isSoftEnough(mob.blockPosition())) {
@@ -566,14 +565,14 @@ public class Hollenhund extends Hyper implements RangedAttackMob {
                 mob.startBurrowing();
             }
 
-            if (distanceSq < 50
+            if (distanceSq < 75
                     && mob.isUnderground()
                     && !mob.isEmerging()) {
 
                 mob.startEmerging();
             }
 
-            if (distanceSq > 100
+            if (distanceSq > 200
                     && !mob.isRanged()
                     && mob.getRandom().nextFloat() < 0.01F) {
 
