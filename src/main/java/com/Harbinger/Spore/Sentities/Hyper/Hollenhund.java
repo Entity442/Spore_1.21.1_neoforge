@@ -237,17 +237,22 @@ public class Hollenhund extends Hyper implements RangedAttackMob {
     }
     @Override
     public boolean doHurtTarget(Entity entity) {
-        if (Math.random() < 0.5){
-            entity.moveTo(entity.position().add(0,-(entity.getBbHeight() * 0.5),0));
+        if (Math.random() < 0.25) {
+            entity.teleportTo(
+                    entity.getX(),
+                    entity.getY() - entity.getBbHeight() * 1.25,
+                    entity.getZ()
+            );
         }
         if (entity instanceof LivingEntity living){
-            living.addEffect(new MobEffectInstance(MobEffects.HUNGER,1200,0));
+            living.addEffect(new MobEffectInstance(MobEffects.HUNGER, 1200, 0));
         }
         this.attackAnimationTick = 10;
         this.level().broadcastEntityEvent(this, (byte)4);
         this.playSound(Ssounds.REAPER_ATTACK.value());
         return super.doHurtTarget(entity);
     }
+
     public void handleEntityEvent(byte value) {
         if (value == 4) {
             this.attackAnimationTick = 10;
