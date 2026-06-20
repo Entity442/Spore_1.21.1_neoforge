@@ -67,33 +67,31 @@ public class HollenhundRenderer<Type extends Hollenhund> extends BaseInfectedRen
             super.render(type, p_115456_, p_115457_, stack, bufferSource, light);
         }
         stack.popPose();
-        if (type.isUnderground()){
-            List<Hollenhund.spikeClaw> claws = type.getClaws();
-            if (claws.isEmpty() || type.isEmerging()){
-                return;
-            }
+        List<Hollenhund.spikeClaw> claws = type.getClaws();
+        if (claws.isEmpty() || type.isEmerging()){
+            return;
+        }
+        stack.pushPose();
+        {
+            stack.translate(0, 3, 0);
+            stack.mulPose(Axis.ZP.rotationDegrees(-180F));
             stack.pushPose();
-            {
-                stack.translate(0, 3, 0);
-                stack.mulPose(Axis.ZP.rotationDegrees(-180F));
+            for (Hollenhund.spikeClaw claw : claws){
                 stack.pushPose();
-                for (Hollenhund.spikeClaw claw : claws){
-                    stack.pushPose();
-                    {
-                        float b =(3.5f / (claw.getMaxLife() - claw.getLife()));
-                        stack.mulPose(Axis.ZP.rotationDegrees(claw.getZspin()));
-                        stack.mulPose(Axis.YP.rotationDegrees(claw.getYspin()));
-                        stack.translate(claw.getOffset().x(), b, claw.getOffset().z());
-                        stack.scale(2f, 2f, 2f);
-                        VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityCutout(SPIKE));
-                        spike.renderToBuffer(stack, consumer, light, OverlayTexture.NO_OVERLAY, -1);
-                    }
-                    stack.popPose();
+                {
+                    float b =(3.5f / (claw.getMaxLife() - claw.getLife()));
+                    stack.mulPose(Axis.ZP.rotationDegrees(claw.getZspin()));
+                    stack.mulPose(Axis.YP.rotationDegrees(claw.getYspin()));
+                    stack.translate(claw.getOffset().x(), b, claw.getOffset().z());
+                    stack.scale(2f, 2f, 2f);
+                    VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityCutout(SPIKE));
+                    spike.renderToBuffer(stack, consumer, light, OverlayTexture.NO_OVERLAY, -1);
                 }
                 stack.popPose();
             }
             stack.popPose();
         }
+        stack.popPose();
     }
 
     @Override

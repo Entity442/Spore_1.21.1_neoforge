@@ -64,7 +64,7 @@ public class Hollenhund extends Hyper implements RangedAttackMob {
     public static AttributeSupplier.Builder createAttributes() {
         return Mob.createMobAttributes()
                 .add(Attributes.MAX_HEALTH, SConfig.SERVER.hollen_hp.get() * SConfig.SERVER.global_health.get())
-                .add(Attributes.MOVEMENT_SPEED, 0.2)
+                .add(Attributes.MOVEMENT_SPEED, 0.25)
                 .add(Attributes.ATTACK_DAMAGE, SConfig.SERVER.hollen_damage.get() * SConfig.SERVER.global_damage.get())
                 .add(Attributes.ARMOR, SConfig.SERVER.hollen_armor.get() * SConfig.SERVER.global_armor.get())
                 .add(Attributes.FOLLOW_RANGE, 64)
@@ -112,7 +112,7 @@ public class Hollenhund extends Hyper implements RangedAttackMob {
     @Override
     protected void addRegularGoals() {
         super.addRegularGoals();
-        this.goalSelector.addGoal(3,new HollenAoeMeleeRangedAattack(this,1.2,true,3,entity -> TARGET_SELECTOR.test(entity)));
+        this.goalSelector.addGoal(3,new HollenAoeMeleeRangedAattack(this,true,3,entity -> TARGET_SELECTOR.test(entity)));
         this.goalSelector.addGoal(5, new RandomStrollGoal(this, 0.8));
         this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
     }
@@ -145,8 +145,8 @@ public class Hollenhund extends Hyper implements RangedAttackMob {
         if (attackAnimationTick > 0){
             attackAnimationTick--;
         }
-        if (tickCount % 10 == 0 && isUnderground() && !isEmerging() && onGround() && claws.size() < 2){
-            claws.add(new spikeClaw(random.nextInt(-20,21),random.nextInt(360),this,random.nextInt(20,41)));
+        if (tickCount % 5 == 0 && isUnderground() && !isEmerging() && onGround() && claws.size() < 2){
+            claws.add(new spikeClaw(random.nextInt(-20,21),random.nextInt(360),this,random.nextInt(15,26)));
         }
 
         if (!claws.isEmpty()){
@@ -237,8 +237,8 @@ public class Hollenhund extends Hyper implements RangedAttackMob {
     }
     @Override
     public boolean doHurtTarget(Entity entity) {
-        if (Math.random() < 0.25 && entity.getBbHeight() < 4){
-            entity.moveTo(entity.position().add(0,-(entity.getBbHeight() * 1.25),0));
+        if (Math.random() < 0.5){
+            entity.moveTo(entity.position().add(0,-(entity.getBbHeight() * 0.5),0));
         }
         if (entity instanceof LivingEntity living){
             living.addEffect(new MobEffectInstance(MobEffects.HUNGER,1200,0));
@@ -291,11 +291,11 @@ public class Hollenhund extends Hyper implements RangedAttackMob {
     public int getBorrow(){return entityData.get(BORROW);}
 
     public int getBorrow_tick() {
-        return 60;
+        return 40;
     }
 
     public int getEmerge_tick() {
-        return 60;
+        return 40;
     }
 
     protected SoundEvent getAmbientSound() {
@@ -362,7 +362,7 @@ public class Hollenhund extends Hyper implements RangedAttackMob {
         public void hurtEntities(){
             AABB aabb = parent.getBoundingBox();
             List<Entity> entities = parent.level().getEntities(parent,aabb);
-            if (entities.isEmpty()){
+            if (entities.isEmpty() || parent.level().isClientSide()){
                 return;
             }
             for (Entity entity : entities){
@@ -387,7 +387,6 @@ public class Hollenhund extends Hyper implements RangedAttackMob {
         protected final Hollenhund mob;
         protected Predicate<LivingEntity> victims;
 
-        private final double speedModifier;
         private final boolean followingTargetEvenIfNotSeen;
 
         private Path path;
@@ -406,13 +405,11 @@ public class Hollenhund extends Hyper implements RangedAttackMob {
 
         public HollenAoeMeleeRangedAattack(
                 Hollenhund mob,
-                double speed,
                 boolean follow,
                 double hitbox,
                 Predicate<LivingEntity> targets
         ) {
             this.mob = mob;
-            this.speedModifier = speed;
             this.followingTargetEvenIfNotSeen = follow;
             this.box = hitbox;
             this.victims = targets;
@@ -483,7 +480,7 @@ public class Hollenhund extends Hyper implements RangedAttackMob {
             ticksUntilNextPathRecalculation = 0;
             ticksUntilNextAttack = 0;
 
-            mob.getNavigation().moveTo(path, speedModifier);
+            mob.getNavigation().moveTo(path, 1.5);
         }
 
         @Override
@@ -603,25 +600,12 @@ public class Hollenhund extends Hyper implements RangedAttackMob {
                             rangedPosition.getCenter()
                     );
 
-            if (mob.isUnderground() && !mob.isEmerging()) {
-
-                mob.teleportTo(
-                        rangedPosition.getX() + 0.5D,
-                        rangedPosition.getY(),
-                        rangedPosition.getZ() + 0.5D
-                );
-
-                mob.startEmerging();
-
-                mode = AttackMode.RANGED;
-                return;
-            }
             if (mob.tickCount % 10 == 0){
                 mob.getNavigation().moveTo(
                         rangedPosition.getX(),
                         rangedPosition.getY(),
                         rangedPosition.getZ(),
-                        speedModifier
+                        mob.isRanged() ? 2 : 1.5
                 );
             }
             if (distanceToPos < 4D) {
@@ -700,7 +684,7 @@ public class Hollenhund extends Hyper implements RangedAttackMob {
 
                 mob.getNavigation().moveTo(
                         target,
-                        speedModifier
+                        1.5
                 );
             }
         }
