@@ -7,6 +7,7 @@ import com.Harbinger.Spore.Sitems.BaseWeapons.SporeToolsMutations;
 import com.Harbinger.Spore.Sitems.Guns.AcidicAssasin;
 import com.Harbinger.Spore.Sitems.Guns.BileBlaster;
 import com.Harbinger.Spore.Sitems.Guns.MistMaker;
+import com.Harbinger.Spore.Sitems.Guns.ToxicTerroriser;
 import com.Harbinger.Spore.Spore;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -442,6 +443,8 @@ public class Sitems {
             BileBlaster::new);
     public  static final DeferredItem<Item> ACIDIC_ASSASSIN = ITEMS.register("acidic_assassin",
             AcidicAssasin::new);
+    public  static final DeferredItem<Item> TERRORISER = ITEMS.register("terroriser",
+            ToxicTerroriser::new);
     public  static final DeferredItem<Item> VIGIL_EYE = ITEMS.register("vigil_eye",
             VigilEye::new);
     public static final DeferredItem<Item> SYMBIOTIC_REAGENT = ITEMS.register("symbiotic_reagent",

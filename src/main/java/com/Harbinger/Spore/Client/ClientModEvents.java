@@ -451,6 +451,7 @@ public class ClientModEvents {
         event.registerItem(SItemProperties.SporeGunItem.INSTANCE, Sitems.MISTMAKER.get());
         event.registerItem(SItemProperties.SporeGunItem.INSTANCE, Sitems.BILE_BLASTER.get());
         event.registerItem(SItemProperties.SporeGunItem.INSTANCE, Sitems.ACIDIC_ASSASSIN.get());
+        event.registerItem(SItemProperties.SporeGunItem.INSTANCE, Sitems.TERRORISER.get());
         event.registerFluidType(SItemProperties.BileClientExtension.INSTANCE, Sfluids.BILE_FLUID_TYPE);
     }
     @SubscribeEvent
