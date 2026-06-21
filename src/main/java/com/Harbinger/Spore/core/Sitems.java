@@ -536,6 +536,8 @@ public class Sitems {
             () -> new BaseItem2(new Item.Properties()));
     public  static final DeferredItem<Item> ACID_VIAL = ITEMS.register("acid_vial",
             () -> new BaseItem2(new Item.Properties()));
+    public  static final DeferredItem<Item> TOXIN_VIAL = ITEMS.register("toxin_vial",
+            () -> new BaseItem2(new Item.Properties()));
     public  static final DeferredItem<Item> MUTATION_SYRINGE = ITEMS.register("mutation_syringe",
             MutationSyringe::new);
     public  static final DeferredItem<Item> EVOLUTION_SYRINGE = ITEMS.register("evo_syringe",

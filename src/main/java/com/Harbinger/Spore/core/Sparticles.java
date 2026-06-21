@@ -41,6 +41,8 @@ public class Sparticles {
             PARTICLE_TYPES.register("gore_bullet", () -> new SimpleParticleType(true));
     public static final Supplier<SimpleParticleType> BILE_BULLET =
             PARTICLE_TYPES.register("bile_bullet", () -> new SimpleParticleType(true));
+    public static final Supplier<SimpleParticleType> TOXIN_BULLET =
+            PARTICLE_TYPES.register("toxin_bullet", () -> new SimpleParticleType(true));
 
     public static final Supplier<SimpleParticleType> TAR =
             PARTICLE_TYPES.register("tar", () -> new SimpleParticleType(true));
