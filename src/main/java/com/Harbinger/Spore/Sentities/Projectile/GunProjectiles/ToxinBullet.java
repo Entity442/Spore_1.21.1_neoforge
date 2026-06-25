@@ -51,7 +51,7 @@ public class ToxinBullet extends AbstractGunProjectile {
         SporeToolsMutations mutations = this.getMutationVariant();
         for (Entity entity : entityList){
             if (entity instanceof LivingEntity livingEntity){
-                livingEntity.addEffect(mutations == SporeToolsMutations.ROTTEN ? new MobEffectInstance(MobEffects.POISON,200,3) : new MobEffectInstance(MobEffects.POISON,100,1));
+                livingEntity.addEffect(mutations == SporeToolsMutations.ROTTEN ? new MobEffectInstance(MobEffects.WITHER,200,3) : new MobEffectInstance(MobEffects.WITHER,100,1));
                 livingEntity.addEffect(new MobEffectInstance(MobEffects.WEAKNESS,100,1));
                 if (mutations == SporeToolsMutations.ROTTEN){
                     livingEntity.addEffect(new MobEffectInstance(MobEffects.POISON,100,1));
