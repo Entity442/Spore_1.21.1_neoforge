@@ -61,7 +61,7 @@ public class ToxicTerroriserModel<T extends LivingEntity> extends EntityModel<T>
 		PartDefinition Terrorrizer = partdefinition.addOrReplaceChild("Terrorrizer", CubeListBuilder.create(), PartPose.offset(0.0F, 24.0F, 0.0F));
 
 		PartDefinition barrel = Terrorrizer.addOrReplaceChild("barrel", CubeListBuilder.create().texOffs(98, 105).addBox(0.0F, -8.0F, -11.0F, 0.0F, 5.0F, 11.0F, new CubeDeformation(0.0F))
-		.texOffs(0, 60).addBox(-1.0F, -12.0F, -19.0F, 2.0F, 1.0F, 25.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 0.0F, 0.0F));
+				.texOffs(0, 60).addBox(-1.0F, -12.0F, -19.0F, 2.0F, 1.0F, 25.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 0.0F, 0.0F));
 
 		PartDefinition cube_r1 = barrel.addOrReplaceChild("cube_r1", CubeListBuilder.create().texOffs(62, 126).addBox(0.0F, -2.0F, 0.0F, 1.0F, 2.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-0.5F, -12.0F, -2.5F, -0.1745F, 0.0F, 0.0F));
 
@@ -104,18 +104,18 @@ public class ToxicTerroriserModel<T extends LivingEntity> extends EntityModel<T>
 		PartDefinition cube_r20 = barrel.addOrReplaceChild("cube_r20", CubeListBuilder.create().texOffs(92, 91).addBox(0.0F, 0.0F, -10.0F, 6.0F, 0.0F, 14.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(2.0F, -10.0F, -3.0F, 0.0F, 0.0F, 1.0472F));
 
 		PartDefinition cube_r21 = barrel.addOrReplaceChild("cube_r21", CubeListBuilder.create().texOffs(0, 0).addBox(-1.0F, -2.0F, -21.0F, 3.0F, 3.0F, 27.0F, new CubeDeformation(0.0F))
-		.texOffs(92, 59).addBox(-1.0F, -2.0F, -36.0F, 3.0F, 3.0F, 15.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -9.25F, 0.0F, 0.0F, 0.0F, -0.7854F));
+				.texOffs(92, 59).addBox(-1.0F, -2.0F, -36.0F, 3.0F, 3.0F, 15.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -9.25F, 0.0F, 0.0F, 0.0F, -0.7854F));
 
 		PartDefinition cube_r22 = barrel.addOrReplaceChild("cube_r22", CubeListBuilder.create().texOffs(120, 105).addBox(-2.0F, -2.0F, -8.0F, 4.0F, 4.0F, 5.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -10.0F, -33.0F, 0.0F, 0.0F, -0.7854F));
 
 		PartDefinition skull = barrel.addOrReplaceChild("skull", CubeListBuilder.create().texOffs(38, 97).addBox(-7.0F, -6.0F, -7.0F, 8.0F, 6.0F, 8.0F, new CubeDeformation(0.0F))
-		.texOffs(0, 104).addBox(-6.5F, 0.0F, -6.5F, 7.0F, 3.0F, 7.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(3.0F, -11.0F, -20.0F, -0.3491F, 0.0F, 0.0F));
+				.texOffs(0, 104).addBox(-6.5F, 0.0F, -6.5F, 7.0F, 3.0F, 7.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(3.0F, -11.0F, -20.0F, -0.3491F, 0.0F, 0.0F));
 
 		PartDefinition s_jaw = skull.addOrReplaceChild("s_jaw", CubeListBuilder.create().texOffs(100, 28).addBox(-7.09F, 0.1391F, -8.122F, 8.0F, 2.0F, 8.0F, new CubeDeformation(0.0F))
-		.texOffs(70, 105).addBox(-6.59F, -2.8609F, -7.622F, 7.0F, 3.0F, 7.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.1F, -0.75F, 0.5F, 1.0472F, 0.0F, 0.0F));
+				.texOffs(70, 105).addBox(-6.59F, -2.8609F, -7.622F, 7.0F, 3.0F, 7.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.1F, -0.75F, 0.5F, 1.0472F, 0.0F, 0.0F));
 
 		PartDefinition body = Terrorrizer.addOrReplaceChild("body", CubeListBuilder.create().texOffs(100, 38).addBox(-1.0F, -15.25F, 5.5F, 2.0F, 2.0F, 11.0F, new CubeDeformation(0.0F))
-		.texOffs(54, 60).addBox(-2.0F, -13.4F, 5.65F, 4.0F, 4.0F, 15.0F, new CubeDeformation(-0.01F)), PartPose.offset(0.0F, 0.0F, 0.0F));
+				.texOffs(54, 60).addBox(-2.0F, -13.4F, 5.65F, 4.0F, 4.0F, 15.0F, new CubeDeformation(-0.01F)), PartPose.offset(0.0F, 0.0F, 0.0F));
 
 		PartDefinition cube_r23 = body.addOrReplaceChild("cube_r23", CubeListBuilder.create().texOffs(60, 21).addBox(0.0F, -3.0F, -8.0F, 7.0F, 6.0F, 13.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.25F, -15.25F, 12.0F, 0.0F, 0.0F, 0.48F));
 
@@ -132,12 +132,12 @@ public class ToxicTerroriserModel<T extends LivingEntity> extends EntityModel<T>
 		PartDefinition cube_r29 = body.addOrReplaceChild("cube_r29", CubeListBuilder.create().texOffs(60, 40).addBox(-3.0F, -3.5F, -7.0F, 7.0F, 6.0F, 13.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-3.3581F, -14.3083F, 11.0F, 0.0F, 0.0F, 2.6616F));
 
 		PartDefinition head = body.addOrReplaceChild("head", CubeListBuilder.create().texOffs(100, 14).addBox(-5.0F, -6.0F, -1.0F, 8.0F, 6.0F, 8.0F, new CubeDeformation(0.0F))
-		.texOffs(28, 111).addBox(-4.5F, -7.0F, -0.5F, 7.0F, 2.0F, 7.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(1.0F, -9.0F, 20.0F, -0.2182F, 0.0F, 0.0F));
+				.texOffs(28, 111).addBox(-4.5F, -7.0F, -0.5F, 7.0F, 2.0F, 7.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(1.0F, -9.0F, 20.0F, -0.2182F, 0.0F, 0.0F));
 
 		PartDefinition h_jaw = head.addOrReplaceChild("h_jaw", CubeListBuilder.create().texOffs(0, 114).addBox(-3.5F, -2.0F, -0.5F, 7.0F, 2.0F, 7.0F, new CubeDeformation(0.0F))
-		.texOffs(100, 51).addBox(-3.0F, -1.0F, 0.0F, 6.0F, 2.0F, 6.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-1.0F, -6.0F, 0.0F, 2.0944F, 0.0F, 0.0F));
+				.texOffs(100, 51).addBox(-3.0F, -1.0F, 0.0F, 6.0F, 2.0F, 6.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-1.0F, -6.0F, 0.0F, 2.0944F, 0.0F, 0.0F));
 
-		PartDefinition vial = head.addOrReplaceChild("vial", CubeListBuilder.create().texOffs(160, 0).addBox(-7.0F, -12.0F, -1.0F, 16.0F, 16.0F, 0.0F, new CubeDeformation(-3.0F)), PartPose.offsetAndRotation(-2.0F, -7.0F, -1.25F, -0.3927F, 0.0F, 0.0F));
+		PartDefinition vial = head.addOrReplaceChild("vial", CubeListBuilder.create().texOffs(160, 0).addBox(-7.0F, -12.0F, -1.0F, 16.0F, 16.0F, 0.0F, new CubeDeformation(-3.0F)), PartPose.offsetAndRotation(0.0F, -6.0F, 2.75F, -2.7486F, 0.0403F, -3.1249F));
 
 		PartDefinition LeftLung = body.addOrReplaceChild("LeftLung", CubeListBuilder.create(), PartPose.offset(3.25F, -13.25F, 5.0F));
 
@@ -148,9 +148,9 @@ public class ToxicTerroriserModel<T extends LivingEntity> extends EntityModel<T>
 		PartDefinition cube_r31 = RightLung.addOrReplaceChild("cube_r31", CubeListBuilder.create().texOffs(0, 86).addBox(-3.0F, -2.5F, -7.0F, 6.0F, 5.0F, 13.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, 6.0F, 0.0F, 0.0F, 2.6616F));
 
 		PartDefinition grip = Terrorrizer.addOrReplaceChild("grip", CubeListBuilder.create().texOffs(0, 30).addBox(-1.0F, -9.5F, -16.0F, 2.0F, 2.0F, 28.0F, new CubeDeformation(0.0F))
-		.texOffs(60, 0).addBox(-1.5F, -10.0F, 1.0F, 3.0F, 4.0F, 17.0F, new CubeDeformation(-0.01F))
-		.texOffs(100, 0).addBox(-1.99F, -9.0F, 5.75F, 4.0F, 2.0F, 12.0F, new CubeDeformation(0.0F))
-		.texOffs(18, 123).addBox(0.0F, -7.0F, 10.0F, 0.0F, 4.0F, 5.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 0.0F, 0.0F));
+				.texOffs(60, 0).addBox(-1.5F, -10.0F, 1.0F, 3.0F, 4.0F, 17.0F, new CubeDeformation(-0.01F))
+				.texOffs(100, 0).addBox(-1.99F, -9.0F, 5.75F, 4.0F, 2.0F, 12.0F, new CubeDeformation(0.0F))
+				.texOffs(18, 123).addBox(0.0F, -7.0F, 10.0F, 0.0F, 4.0F, 5.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 0.0F, 0.0F));
 
 		PartDefinition cube_r32 = grip.addOrReplaceChild("cube_r32", CubeListBuilder.create().texOffs(28, 104).addBox(-1.0F, -3.0F, -1.0F, 2.0F, 5.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -4.0F, 8.0F, 0.2182F, 0.0F, 0.0F));
 
@@ -208,7 +208,7 @@ public class ToxicTerroriserModel<T extends LivingEntity> extends EntityModel<T>
 			float reloadAnim = TerroriserReloadAnimationTracker.getProgress(player,0);
 			this.Terrorrizer.xRot = reloadAnim * 0.25f;
 			this.Terrorrizer.y = this.Terrorrizer.getInitialPose().y +(reloadAnim * 3f);
-			this.vial.visible = reloadAnim > 0;
+
 			if (reloadAnim > 0){
 				animateTentacleX(h_jaw,Mth.sin(ageInTicks)/4);
 			}

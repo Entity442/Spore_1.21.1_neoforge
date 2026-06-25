@@ -36,7 +36,7 @@ public class ToxinBullet extends AbstractGunProjectile {
 
     @Override
     public float getMaxBlockRange() {
-        return 16;
+        return 32;
     }
 
     @Override
