@@ -15,7 +15,6 @@ import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ToxinBullet extends AbstractGunProjectile {
@@ -49,14 +48,13 @@ public class ToxinBullet extends AbstractGunProjectile {
     public void doHitAfterEffects(LivingEntity living, LivingEntity owner) {
         AABB aabb = this.getBoundingBox().inflate(4);
         List<Entity> entityList = level().getEntities(this,aabb,entity -> {return entity != getOwner() && entity instanceof LivingEntity;});
-        List<MobEffectInstance> effects = createInstances();
-        if(effects.isEmpty()){
-            return;
-        }
+        SporeToolsMutations mutations = this.getMutationVariant();
         for (Entity entity : entityList){
             if (entity instanceof LivingEntity livingEntity){
-                for (MobEffectInstance instance : effects){
-                    livingEntity.addEffect(instance);
+                livingEntity.addEffect(mutations == SporeToolsMutations.ROTTEN ? new MobEffectInstance(MobEffects.POISON,200,3) : new MobEffectInstance(MobEffects.POISON,100,1));
+                livingEntity.addEffect(new MobEffectInstance(MobEffects.WEAKNESS,100,1));
+                if (mutations == SporeToolsMutations.ROTTEN){
+                    livingEntity.addEffect(new MobEffectInstance(MobEffects.POISON,100,1));
                 }
             }
         }
@@ -72,16 +70,6 @@ public class ToxinBullet extends AbstractGunProjectile {
                 level().addParticle(getParticle(),this.getX()+x,this.getY(),this.getZ()+z,r,g,b);
             }
         }
-    }
-    public List<MobEffectInstance> createInstances(){
-        SporeToolsMutations mutations = this.getMutationVariant();
-        List<MobEffectInstance> values = new ArrayList<>();
-        values.add(mutations == SporeToolsMutations.ROTTEN ? new MobEffectInstance(MobEffects.POISON,200,3) : new MobEffectInstance(MobEffects.POISON,100,1));
-        values.add(new MobEffectInstance(MobEffects.WEAKNESS,100,1));
-        if (mutations == SporeToolsMutations.ROTTEN){
-            values.add(new MobEffectInstance(MobEffects.POISON,100,1));
-        }
-        return values;
     }
 
 

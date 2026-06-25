@@ -10,6 +10,7 @@
     { "slot": 8, "item": { "item": "spore:spine" } },
     { "slot": 9, "item": { "item": "spore:alveolic_sack" } },
     { "slot": 10, "item": { "item": "spore:reforged_biomass_w" } },
+    { "slot": 11, "item": { "item": "spore:rotten_syringe" } },
     { "slot": 12, "item": { "item": "spore:skull_soup" } },
     { "slot": 13, "item": { "item": "spore:reforged_biomass_a" } }
   ],
