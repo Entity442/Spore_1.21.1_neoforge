@@ -1,8 +1,8 @@
 package com.Harbinger.Spore.Sitems.Guns;
 
-import com.Harbinger.Spore.Client.AnimationTrackers.BileBlasterReloadAnimationTracker;
-import com.Harbinger.Spore.Client.AnimationTrackers.BileBlasterShootAnimationTracker;
-import com.Harbinger.Spore.Sentities.Projectile.GunProjectiles.BileBullet;
+import com.Harbinger.Spore.Client.AnimationTrackers.TerroriserReloadAnimationTracker;
+import com.Harbinger.Spore.Client.AnimationTrackers.TerroriserShootAnimationTracker;
+import com.Harbinger.Spore.Sentities.Projectile.GunProjectiles.ToxinBullet;
 import com.Harbinger.Spore.Sitems.CustomModelArmorData;
 import com.Harbinger.Spore.core.SConfig;
 import com.Harbinger.Spore.core.Sentities;
@@ -22,7 +22,7 @@ import net.minecraft.world.phys.Vec3;
 public class ToxicTerroriser extends AbstractSporeGun implements CustomModelArmorData {
     private static final ResourceLocation TEXTURE = ResourceLocation.parse("spore:textures/item/terroriser.png");
     public ToxicTerroriser() {
-        super(SConfig.SERVER.bile_blaster_durability.get());
+        super(SConfig.SERVER.terroriser_durability.get());
     }
 
     @Override
@@ -37,37 +37,37 @@ public class ToxicTerroriser extends AbstractSporeGun implements CustomModelArmo
 
     @Override
     public int getTimeBeforeChangingClip(ItemStack stack) {
-        return 5;
+        return 10;
     }
 
     @Override
     public int timeBeforeStomachContentsConvertIntoAmmo() {
-        return 80;
+        return 40;
     }
 
     @Override
     public int getClipSize() {
-        return 16;
+        return 8;
     }
 
     @Override
     public Item getAmmoItem() {
-        return Sitems.BILE_VIAL.asItem();
+        return Sitems.TOXIN_VIAL.asItem();
     }
 
     @Override
     public void clientShoot(Player player, InteractionHand interactionHand) {
-        BileBlasterShootAnimationTracker.trigger(player);
+        TerroriserShootAnimationTracker.trigger(player);
     }
 
     @Override
     public void serverShoot(ItemStack stack, ServerPlayer player, InteractionHand hand, Vec3 vec3) {
         super.serverShoot(stack, player, hand, vec3);
         int getVar = this.getTypeVariant(stack);
-        BileBullet bullet = new BileBullet(Sentities.BILE_BULLET.get(),player.level());
+        ToxinBullet bullet = new ToxinBullet(Sentities.TOXIN_BULLET.get(),player.level());
         bullet.setVariant(getVar);
         bullet.moveTo(player.getX()+vec3.x, player.getY()+1.25D ,player.getZ()+vec3.z);
-        bullet.shootFrom(player,2.5f,2,(float) calculateTrueDamage(stack,SConfig.SERVER.bile_blaster_damage.get()));
+        bullet.shootFrom(player,2.5f,2,(float) calculateTrueDamage(stack,SConfig.SERVER.terroriser_damage.get()));
         player.level().addFreshEntity(bullet);
         player.level().playSound(null, player.getX(), player.getY(), player.getZ(),
                 Ssounds.BILE_BLASTER_SHOT, SoundSource.PLAYERS, 1.0f, 1.0f);
@@ -76,7 +76,7 @@ public class ToxicTerroriser extends AbstractSporeGun implements CustomModelArmo
     @Override
     public void triggerReloadAnimation(Player player) {
         super.triggerReloadAnimation(player);
-        BileBlasterReloadAnimationTracker.trigger(player);
+        TerroriserReloadAnimationTracker.trigger(player);
     }
     @Override
     public Component extraTips() {

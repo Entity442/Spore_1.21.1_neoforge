@@ -622,10 +622,12 @@ public class SConfig {
         public final ModConfigSpec.ConfigValue<Integer> mistmaker_durability;
         public final ModConfigSpec.ConfigValue<Integer> bile_blaster_durability;
         public final ModConfigSpec.ConfigValue<Integer> acidic_assassin_durability;
+        public final ModConfigSpec.ConfigValue<Integer> terroriser_durability;
         public final ModConfigSpec.ConfigValue<Integer> mistmaker_damage;
         public final ModConfigSpec.ConfigValue<Integer> mistmaker_melee_damage;
         public final ModConfigSpec.ConfigValue<Integer> bile_blaster_damage;
         public final ModConfigSpec.ConfigValue<Integer> acidic_assassin_damage;
+        public final ModConfigSpec.ConfigValue<Integer> terroriser_damage;
 
         public final ModConfigSpec.ConfigValue<Integer> flesh_h_protection;
         public final ModConfigSpec.ConfigValue<Integer> plate_h_protection;
@@ -1744,10 +1746,12 @@ public class SConfig {
             this.mistmaker_durability = builder.comment("Default 300").defineInRange("Mist Maker Durability", 300, 1, Integer.MAX_VALUE);
             this.bile_blaster_durability = builder.comment("Default 300").defineInRange("Bile Blaster Durability", 300, 1, Integer.MAX_VALUE);
             this.acidic_assassin_durability = builder.comment("Default 300").defineInRange("Acidic Assassin Durability", 300, 1, Integer.MAX_VALUE);
+            this.terroriser_durability = builder.comment("Default 300").defineInRange("Toxic Terroriser Durability", 300, 1, Integer.MAX_VALUE);
             this.mistmaker_damage = builder.comment("Default 5").defineInRange("Mist Maker Pallet Damage", 5, 1, Integer.MAX_VALUE);
             this.mistmaker_melee_damage = builder.comment("Default 5").defineInRange("Mist Maker Saw Damage", 5, 1, Integer.MAX_VALUE);
             this.bile_blaster_damage = builder.comment("Default 8").defineInRange("Bile Blaster Damage", 8, 1, Integer.MAX_VALUE);
             this.acidic_assassin_damage = builder.comment("Default 15").defineInRange("Acidic Assassin Damage", 15, 1, Integer.MAX_VALUE);
+            this.terroriser_damage = builder.comment("Default 5").defineInRange("Toxic Terroriser Damage", 5, 1, Integer.MAX_VALUE);
             builder.pop();
         }
     }

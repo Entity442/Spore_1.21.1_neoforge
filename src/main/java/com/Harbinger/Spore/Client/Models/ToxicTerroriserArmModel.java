@@ -1,6 +1,8 @@
 package com.Harbinger.Spore.Client.Models;// Made with Blockbench 5.1.4
 // Exported for Minecraft version 1.17 or later with Mojang mappings
 // Paste this class into your mod and generate all required imports
+import com.Harbinger.Spore.Client.AnimationTrackers.TerroriserReloadAnimationTracker;
+import com.Harbinger.Spore.Client.AnimationTrackers.TerroriserShootAnimationTracker;
 import com.Harbinger.Spore.Spore;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -10,10 +12,11 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 
-public class ToxicTerroriserArmModel<T extends LivingEntity> extends EntityModel<T> {
+public class ToxicTerroriserArmModel<T extends LivingEntity> extends EntityModel<T> implements TentacledModel{
 	// This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
 	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "toxicterroriserarmmodel"), "main");
 	public final ModelPart Terrorrizer;
@@ -180,7 +183,24 @@ public class ToxicTerroriserArmModel<T extends LivingEntity> extends EntityModel
 
 	@Override
 	public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-
+		Terrorrizer.getAllParts().forEach(ModelPart::resetPose);
+		float lungVal = Mth.sin(ageInTicks/7)/16;
+		float tum1 = Mth.sin(ageInTicks/6)/7;
+		float tum2 = Mth.cos(ageInTicks/7)/6;
+		float tum3 = Mth.sin(ageInTicks/7)/8;
+		animateTumor(tumorE1,tum1);
+		animateTumor(tumorE2,tum2);
+		animateTumor(tumorE3,tum3);
+		this.RightLung.xScale = 1 + lungVal;
+		this.LeftLung.xScale = 1 + lungVal;
+		animateTentacleX(h_jaw,Mth.sin(ageInTicks/6)/8);
+		if (entity instanceof Player player){
+			float anim = TerroriserShootAnimationTracker.getProgress(player, 0);
+			this.Terrorrizer.zRot = -anim * 0.025f;
+			this.barrel.z = barrel.z - anim * 2;
+			this.animateTentacleX(this.s_jaw,anim * 0.025f);
+			this.Terrorrizer.z = this.Terrorrizer.getInitialPose().z +(anim * 3);
+		}
 	}
 
 	@Override

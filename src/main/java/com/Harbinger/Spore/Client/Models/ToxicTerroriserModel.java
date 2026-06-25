@@ -1,6 +1,8 @@
 package com.Harbinger.Spore.Client.Models;// Made with Blockbench 5.1.4
 // Exported for Minecraft version 1.17 or later with Mojang mappings
 // Paste this class into your mod and generate all required imports
+import com.Harbinger.Spore.Client.AnimationTrackers.TerroriserReloadAnimationTracker;
+import com.Harbinger.Spore.Client.AnimationTrackers.TerroriserShootAnimationTracker;
 import com.Harbinger.Spore.Spore;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -10,10 +12,11 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 
-public class ToxicTerroriserModel<T extends LivingEntity> extends EntityModel<T> {
+public class ToxicTerroriserModel<T extends LivingEntity> extends EntityModel<T> implements TentacledModel{
 	// This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
 	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "toxicterroriserarmmodel"), "main");
 	public final ModelPart Terrorrizer;
@@ -23,6 +26,7 @@ public class ToxicTerroriserModel<T extends LivingEntity> extends EntityModel<T>
 	private final ModelPart body;
 	private final ModelPart head;
 	private final ModelPart h_jaw;
+	private final ModelPart vial;
 	private final ModelPart LeftLung;
 	private final ModelPart RightLung;
 	private final ModelPart grip;
@@ -40,6 +44,7 @@ public class ToxicTerroriserModel<T extends LivingEntity> extends EntityModel<T>
 		this.body = this.Terrorrizer.getChild("body");
 		this.head = this.body.getChild("head");
 		this.h_jaw = this.head.getChild("h_jaw");
+		this.vial = this.head.getChild("vial");
 		this.LeftLung = this.body.getChild("LeftLung");
 		this.RightLung = this.body.getChild("RightLung");
 		this.grip = this.Terrorrizer.getChild("grip");
@@ -132,6 +137,8 @@ public class ToxicTerroriserModel<T extends LivingEntity> extends EntityModel<T>
 		PartDefinition h_jaw = head.addOrReplaceChild("h_jaw", CubeListBuilder.create().texOffs(0, 114).addBox(-3.5F, -2.0F, -0.5F, 7.0F, 2.0F, 7.0F, new CubeDeformation(0.0F))
 		.texOffs(100, 51).addBox(-3.0F, -1.0F, 0.0F, 6.0F, 2.0F, 6.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-1.0F, -6.0F, 0.0F, 2.0944F, 0.0F, 0.0F));
 
+		PartDefinition vial = head.addOrReplaceChild("vial", CubeListBuilder.create().texOffs(160, 0).addBox(-7.0F, -12.0F, -1.0F, 16.0F, 16.0F, 0.0F, new CubeDeformation(-3.0F)), PartPose.offsetAndRotation(-2.0F, -7.0F, -1.25F, -0.3927F, 0.0F, 0.0F));
+
 		PartDefinition LeftLung = body.addOrReplaceChild("LeftLung", CubeListBuilder.create(), PartPose.offset(3.25F, -13.25F, 5.0F));
 
 		PartDefinition cube_r30 = LeftLung.addOrReplaceChild("cube_r30", CubeListBuilder.create().texOffs(54, 79).addBox(0.0F, -3.0F, -8.0F, 6.0F, 5.0F, 13.0F, new CubeDeformation(0.1F)), PartPose.offsetAndRotation(-2.75F, -1.25F, 7.0F, 0.0F, 0.0F, 0.48F));
@@ -180,7 +187,32 @@ public class ToxicTerroriserModel<T extends LivingEntity> extends EntityModel<T>
 
 	@Override
 	public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+		Terrorrizer.getAllParts().forEach(ModelPart::resetPose);
+		float lungVal = Mth.sin(ageInTicks/7)/16;
+		float tum1 = Mth.sin(ageInTicks/6)/7;
+		float tum2 = Mth.cos(ageInTicks/7)/6;
+		float tum3 = Mth.sin(ageInTicks/7)/8;
+		animateTumor(tumorE1,tum1);
+		animateTumor(tumorE2,tum2);
+		animateTumor(tumorE3,tum3);
+		this.RightLung.xScale = 1 + lungVal;
+		this.LeftLung.xScale = 1 + lungVal;
+		animateTentacleX(h_jaw,Mth.sin(ageInTicks/6)/8);
+		if (entity instanceof Player player){
+			float anim = TerroriserShootAnimationTracker.getProgress(player, 0);
+			this.Terrorrizer.zRot = -anim * 0.025f;
+			this.barrel.z = barrel.z - anim * 2;
+			this.animateTentacleX(this.s_jaw,anim * 0.025f);
+			this.Terrorrizer.z = this.Terrorrizer.getInitialPose().z +(anim * 3);
 
+			float reloadAnim = TerroriserReloadAnimationTracker.getProgress(player,0);
+			this.Terrorrizer.xRot = reloadAnim * 0.25f;
+			this.Terrorrizer.y = this.Terrorrizer.getInitialPose().y +(reloadAnim * 3f);
+			this.vial.visible = reloadAnim > 0;
+			if (reloadAnim > 0){
+				animateTentacleX(h_jaw,Mth.sin(ageInTicks)/4);
+			}
+		}
 	}
 
 	@Override

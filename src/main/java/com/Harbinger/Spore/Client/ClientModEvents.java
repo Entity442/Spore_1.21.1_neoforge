@@ -373,6 +373,7 @@ public class ClientModEvents {
         event.registerEntityRenderer(Sentities.GORE_BULLET.get(), GoreBulletRenderer::new);
         event.registerEntityRenderer(Sentities.ASSASSIN_BULLET.get(), AcidBulletRenderer::new);
         event.registerEntityRenderer(Sentities.BILE_BULLET.get(), BileBulletRenderer::new);
+        event.registerEntityRenderer(Sentities.TOXIN_BULLET.get(), ToxinBulletRenderer::new);
         event.registerEntityRenderer(Sentities.TAR_BALL.get(), TarRenderer::new);
     }
 
@@ -514,6 +515,8 @@ public class ClientModEvents {
         BileBlasterReloadAnimationTracker.tickAll();
         AssassinShootAnimationTracker.tickAll();
         AssassinReloadAnimationTracker.tickAll();
+        TerroriserShootAnimationTracker.tickAll();
+        TerroriserReloadAnimationTracker.tickAll();
         Minecraft mc = Minecraft.getInstance();
         if (SConfig.SERVER.disable_vanilla.get()){
             Minecraft.getInstance().getMusicManager().stopPlaying();

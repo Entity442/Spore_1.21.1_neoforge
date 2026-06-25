@@ -34,7 +34,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.pathfinder.Path;
 import net.minecraft.world.phys.AABB;
@@ -249,7 +248,7 @@ public class Hollenhund extends Hyper implements RangedAttackMob {
         }
         this.attackAnimationTick = 10;
         this.level().broadcastEntityEvent(this, (byte)4);
-        this.playSound(Ssounds.REAPER_ATTACK.value());
+        this.playSound(Ssounds.HOLLEN_STAB.value());
         return super.doHurtTarget(entity);
     }
 

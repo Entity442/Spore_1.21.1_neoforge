@@ -1,0 +1,17 @@
+{
+  "type": "spore:surgery",
+  "ingredients": [
+    { "slot": 2, "item": { "item": "spore:skull_soup" } },
+    { "slot": 3, "item": { "item": "spore:voracious_reagent" } },
+    { "slot": 4, "item": { "item": "spore:tumor" } },
+    { "slot": 5, "item": { "item": "spore:alveolic_sack" } },
+    { "slot": 6, "item": { "item": "spore:amalgamated_heart" } },
+    { "slot": 7, "item": { "item": "spore:reforged_biomass_t" } },
+    { "slot": 8, "item": { "item": "spore:spine" } },
+    { "slot": 9, "item": { "item": "spore:alveolic_sack" } },
+    { "slot": 10, "item": { "item": "spore:reforged_biomass_w" } },
+    { "slot": 12, "item": { "item": "spore:skull_soup" } },
+    { "slot": 13, "item": { "item": "spore:reforged_biomass_a" } }
+  ],
+  "result": { "id": "spore:terroriser" }
+}

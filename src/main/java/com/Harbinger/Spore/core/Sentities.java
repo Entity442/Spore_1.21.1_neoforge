@@ -16,6 +16,7 @@ import com.Harbinger.Spore.Sentities.Projectile.*;
 import com.Harbinger.Spore.Sentities.Projectile.GunProjectiles.AssassinBullet;
 import com.Harbinger.Spore.Sentities.Projectile.GunProjectiles.BileBullet;
 import com.Harbinger.Spore.Sentities.Projectile.GunProjectiles.GoreBullet;
+import com.Harbinger.Spore.Sentities.Projectile.GunProjectiles.ToxinBullet;
 import com.Harbinger.Spore.Sentities.Utility.*;
 import com.Harbinger.Spore.Spore;
 import net.minecraft.core.registries.Registries;
@@ -319,6 +320,10 @@ public class Sentities {
 
     public static final Supplier<EntityType<BileBullet>> BILE_BULLET = register("bile_bullet",
             EntityType.Builder.of(BileBullet::new, MobCategory.MISC)
+                    .setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(1).sized(0.5f, 0.5f));
+
+    public static final Supplier<EntityType<ToxinBullet>> TOXIN_BULLET = register("toxin_bullet",
+            EntityType.Builder.of(ToxinBullet::new, MobCategory.MISC)
                     .setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(1).sized(0.5f, 0.5f));
 
     public static final Supplier<EntityType<AcidBall>> ACID_BALL = register("acid_ball",

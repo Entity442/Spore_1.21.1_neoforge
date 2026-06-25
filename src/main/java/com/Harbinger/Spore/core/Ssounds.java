@@ -416,6 +416,8 @@ public class Ssounds {
 
     public static final Holder<SoundEvent> HOLLEN_SPIT = soundRegistry("hollen_spit");
 
+    public static final Holder<SoundEvent> HOLLEN_STAB = soundRegistry("hollen_stab");
+
     ///SONGS///
 
     public static final Holder<SoundEvent> BANE_OF_SETTLEMENT = soundRegistry("bane_of_settlement");

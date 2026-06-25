@@ -1,8 +1,8 @@
 {
   "textures": [
-    "spore:toxin_trail1",
-    "spore:toxin_trail2",
-    "spore:toxin_trail3",
-    "spore:toxin_trail4"
+    "spore:toxic_trail1",
+    "spore:toxic_trail2",
+    "spore:toxic_trail3",
+    "spore:toxic_trail4"
   ]
 }
