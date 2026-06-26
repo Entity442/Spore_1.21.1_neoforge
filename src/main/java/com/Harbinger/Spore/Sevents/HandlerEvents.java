@@ -251,19 +251,10 @@ public class HandlerEvents {
             }
         }
     }
-    private static List<EntityType<?>> blacklist(){
-        List<EntityType<?>> values = new ArrayList<>();
-        values.add(Sentities.PLAGUED.get());
-        values.add(Sentities.LACERATOR.get());
-        values.add(Sentities.BIOBLOOB.get());
-        values.add(Sentities.SAUGLING.get());
-        return values;
-    }
     @SubscribeEvent
     public static void SpawnPlacement(RegisterSpawnPlacementsEvent event){
         for (DeferredHolder<?,?> type : Sentities.SPORE_ENTITIES.getEntries()){
             EntityType<?> entityType = (EntityType<?>) type.get();
-            if (blacklist().contains(entityType)){continue;}
             try {
                 event.register((EntityType<UtilityEntity>) entityType, SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,UtilityEntity::checkMonsterInfectedRules, RegisterSpawnPlacementsEvent.Operation.AND);
             } catch (Exception e) {
