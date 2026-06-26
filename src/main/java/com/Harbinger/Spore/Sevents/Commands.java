@@ -5,7 +5,6 @@ import com.Harbinger.Spore.ExtremelySusThings.SporeSavedData;
 import com.Harbinger.Spore.SBlockEntities.CDUBlockEntity;
 import com.Harbinger.Spore.SBlockEntities.LivingStructureBlocks;
 import com.Harbinger.Spore.Sentities.BaseEntities.*;
-import com.Harbinger.Spore.Sentities.BaseEntities.IkUtil.IkKrakenLeg;
 import com.Harbinger.Spore.Sentities.Calamities.*;
 import com.Harbinger.Spore.Sentities.EvolvedInfected.Naiad;
 import com.Harbinger.Spore.Sentities.EvolvedInfected.Scamper;
@@ -22,12 +21,10 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.util.FakePlayerFactory;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 
@@ -309,13 +306,11 @@ public class Commands {
                                 player.displayClientMessage(Component.literal("Buffs " + umarmer.getActiveEffects()),false);
                                 player.displayClientMessage(Component.literal("Shielded? " + umarmer.isShielding()),false);
                                 player.displayClientMessage(Component.literal("Pins? " + umarmer.isPinned()),false);
-                                player.displayClientMessage(Component.literal("Time until it leaves " + umarmer.getTimer()+"/2400"),false);
                                 player.displayClientMessage(Component.literal("-------------------------"),false);
                             }else if(entity1 instanceof Brauerei brauerei) {
                                 player.displayClientMessage(Component.literal("Entity "+ brauerei.getEncodeId() + " " + brauerei.getCustomName()),false);
                                 player.displayClientMessage(Component.literal("Current Health " + brauerei.getHealth()),false);
                                 player.displayClientMessage(Component.literal("Buffs " + brauerei.getActiveEffects()),false);
-                                player.displayClientMessage(Component.literal("Time until it leaves " + brauerei.getTimer()+"/300"),false);
                                 player.displayClientMessage(Component.literal("-------------------------"),false);
                             }
                             else if(entity1 instanceof Delusionare delusionare) {

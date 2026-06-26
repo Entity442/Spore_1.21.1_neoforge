@@ -41,7 +41,6 @@ import java.util.function.Predicate;
 
 public class Umarmer extends Organoid implements VariantKeeper {
     private static final EntityDataAccessor<Integer> DATA_ID_TYPE_VARIANT = SynchedEntityData.defineId(Umarmer.class, EntityDataSerializers.INT);
-    private static final EntityDataAccessor<Integer> TIMER = SynchedEntityData.defineId(Umarmer.class, EntityDataSerializers.INT);
     public static final EntityDataAccessor<Boolean> ATTACKING = SynchedEntityData.defineId(Umarmer.class, EntityDataSerializers.BOOLEAN);
     public static final EntityDataAccessor<Boolean> HARD_ATTACK = SynchedEntityData.defineId(Umarmer.class, EntityDataSerializers.BOOLEAN);
     public static final EntityDataAccessor<Boolean> PINNED = SynchedEntityData.defineId(Umarmer.class, EntityDataSerializers.BOOLEAN);
@@ -103,7 +102,6 @@ public class Umarmer extends Organoid implements VariantKeeper {
     @Override
     public void addAdditionalSaveData(CompoundTag tag) {
         super.addAdditionalSaveData(tag);
-        tag.putInt("timer",entityData.get(TIMER));
         tag.putBoolean("pinned",entityData.get(PINNED));
         tag.putBoolean("shielded",entityData.get(SHIELDING));
         tag.putInt("Variant",this.getTypeVariant());
@@ -112,13 +110,9 @@ public class Umarmer extends Organoid implements VariantKeeper {
     @Override
     public void readAdditionalSaveData(CompoundTag tag) {
         super.readAdditionalSaveData(tag);
-        entityData.set(TIMER, tag.getInt("timer"));
         entityData.set(PINNED, tag.getBoolean("pinned"));
         entityData.set(SHIELDING, tag.getBoolean("shielded"));
         this.entityData.set(DATA_ID_TYPE_VARIANT, tag.getInt("Variant"));
-    }
-    public int getTimer(){
-        return entityData.get(TIMER);
     }
 
     @Override
@@ -130,11 +124,6 @@ public class Umarmer extends Organoid implements VariantKeeper {
         if (!this.level().isClientSide){
             if (this.getTarget() != null && this.chargeWave < 61){
                 this.chargeWave++;
-            }
-            if (this.getTarget() == null && this.entityData.get(TIMER) < 2400){
-                this.entityData.set(TIMER,this.entityData.get(TIMER) + 1);
-            }else if (this.entityData.get(TIMER) >= 2400){
-                tickBurrowing();
             }
         }
         if (!this.isVehicle() && this.isPinned()){
@@ -261,7 +250,6 @@ public class Umarmer extends Organoid implements VariantKeeper {
         builder.define(HARD_ATTACK,false);
         builder.define(PINNED,false);
         builder.define(SHIELDING,false);
-        builder.define(TIMER,0);
         builder.define(DATA_ID_TYPE_VARIANT, 0);
     }
 

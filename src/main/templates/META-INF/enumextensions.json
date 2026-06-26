@@ -23,6 +23,18 @@
         false,
         64
       ]
+    },
+    {
+      "enum": "net/minecraft/world/entity/MobCategory",
+      "name": "SPORE_EXPERIMENTS",
+      "constructor": "(Ljava/lang/String;IZZI)V",
+      "parameters": [
+        "spore:spore_experiments",
+        15,
+        false,
+        false,
+        32
+      ]
     }
   ]
 }

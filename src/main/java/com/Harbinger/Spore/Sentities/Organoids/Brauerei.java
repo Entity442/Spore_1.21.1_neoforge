@@ -50,7 +50,6 @@ import java.util.List;
 
 public class Brauerei extends Organoid implements RangedAttackMob, VariantKeeper {
     private static final EntityDataAccessor<Integer> DATA_ID_TYPE_VARIANT = SynchedEntityData.defineId(Brauerei.class, EntityDataSerializers.INT);
-    private static final EntityDataAccessor<Integer> TIMER = SynchedEntityData.defineId(Brauerei.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> COLOR = SynchedEntityData.defineId(Brauerei.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<ParticleOptions> DATA_PARTICLE = SynchedEntityData.defineId(Brauerei.class, EntityDataSerializers.PARTICLE);
 
@@ -74,7 +73,6 @@ public class Brauerei extends Organoid implements RangedAttackMob, VariantKeeper
     @Override
     public void addAdditionalSaveData(CompoundTag tag) {
         super.addAdditionalSaveData(tag);
-        tag.putInt("timer",entityData.get(TIMER));
         tag.putInt("color",entityData.get(COLOR));
         tag.putInt("Variant", this.getTypeVariant());
     }
@@ -82,7 +80,6 @@ public class Brauerei extends Organoid implements RangedAttackMob, VariantKeeper
     @Override
     public void readAdditionalSaveData(CompoundTag tag) {
         super.readAdditionalSaveData(tag);
-        entityData.set(TIMER, tag.getInt("timer"));
         entityData.set(COLOR, tag.getInt("color"));
         this.entityData.set(DATA_ID_TYPE_VARIANT, tag.getInt("Variant"));
     }
@@ -90,7 +87,6 @@ public class Brauerei extends Organoid implements RangedAttackMob, VariantKeeper
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
-        builder.define(TIMER,0);
         builder.define(COLOR,0);
         builder.define(DATA_PARTICLE, ParticleTypes.WITCH);
         builder.define(DATA_ID_TYPE_VARIANT, 0);
@@ -104,22 +100,10 @@ public class Brauerei extends Organoid implements RangedAttackMob, VariantKeeper
         this.effect = effect;
     }
 
-    public int getTimer(){
-        return entityData.get(TIMER);
-    }
 
     @Override
     public void tick() {
         super.tick();
-        if (!this.level().isClientSide){
-            if (this.tickCount % 20 == 0){
-                if (this.getTarget() == null && this.entityData.get(TIMER) < 300){
-                    this.entityData.set(TIMER,this.entityData.get(TIMER) + 1);
-                }else if (this.entityData.get(TIMER) >= 300){
-                    tickBurrowing();
-                }
-            }
-        }
         if (this.tickCount % 300 == 0){
             if (this.getVariant() == BraureiVariants.HAZARD){
                 this.setEffect(debuff_List().get(this.random.nextInt(debuff_List().size())));

@@ -43,6 +43,7 @@ public class Sentities {
     public static final MobCategory BASIC_INFECTED = MobCategory.valueOf("SPORE_INFECTED");
     public static final MobCategory INFECTED = MobCategory.valueOf("SPORE_INFECTED");
     public static final MobCategory ORGANOID = MobCategory.valueOf("SPORE_ORGANOIDS");
+    public static final MobCategory EXPERIMENTS = MobCategory.valueOf("SPORE_EXPERIMENTS");
 
     public static final Supplier<EntityType<InfectedHuman>> INF_HUMAN = SPORE_ENTITIES.register("inf_human",
             () -> EntityType.Builder.of(InfectedHuman::new, BASIC_INFECTED).sized(0.6f, 1.9f)
@@ -69,7 +70,7 @@ public class Sentities {
                     .build(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "inebriater").toString()));
 
     public static final Supplier<EntityType<Saugling>> SAUGLING = SPORE_ENTITIES.register("saugling",
-            () -> EntityType.Builder.of(Saugling::new, BASIC_INFECTED).sized(0.9f, 0.9f)
+            () -> EntityType.Builder.of(Saugling::new, EXPERIMENTS).sized(0.9f, 0.9f)
                     .build(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "saugling").toString()));
 
     public static final Supplier<EntityType<Griefer>> GRIEFER = SPORE_ENTITIES.register("griefer",
@@ -157,7 +158,7 @@ public class Sentities {
                     .build(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "inf_pillager").toString()));
 
     public static final Supplier<EntityType<Plagued>> PLAGUED = SPORE_ENTITIES.register("plagued",
-            () -> EntityType.Builder.of(Plagued::new, BASIC_INFECTED).sized(0.6f, 1.9f)
+            () -> EntityType.Builder.of(Plagued::new, EXPERIMENTS).sized(0.6f, 1.9f)
                     .build(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "plagued").toString()));
 
     public static final Supplier<EntityType<Gargoyl>> GARGOYLE = SPORE_ENTITIES.register("gargoyle",
@@ -165,7 +166,7 @@ public class Sentities {
                     .build(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "gargoyle").toString()));
 
     public static final Supplier<EntityType<Lacerator>> LACERATOR = SPORE_ENTITIES.register("lacerator",
-            () -> EntityType.Builder.of(Lacerator::new, BASIC_INFECTED).sized(0.6f, 1.9f)
+            () -> EntityType.Builder.of(Lacerator::new, EXPERIMENTS).sized(0.6f, 1.9f)
                     .build(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "lacerator").toString()));
 
     public static final Supplier<EntityType<Conductor>> CONDUCTOR = SPORE_ENTITIES.register("conductor",
@@ -173,7 +174,7 @@ public class Sentities {
                     .build(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "conductor").toString()));
 
     public static final Supplier<EntityType<Biobloob>> BIOBLOOB = SPORE_ENTITIES.register("biobloob",
-            () -> EntityType.Builder.of(Biobloob::new, BASIC_INFECTED).sized(2.6f, 1.9f)
+            () -> EntityType.Builder.of(Biobloob::new, EXPERIMENTS).sized(2.6f, 1.9f)
                     .build(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "biobloob").toString()));
 
     public static final Supplier<EntityType<InfectedHazmat>> INF_HAZMAT = SPORE_ENTITIES.register("inf_hazmat",
