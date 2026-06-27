@@ -237,6 +237,7 @@ public class ClientModEvents {
         event.registerLayerDefinition(HollenhundRangedModel.LAYER_LOCATION, HollenhundRangedModel::createBodyLayer);
         event.registerLayerDefinition(CactusVervaModel.LAYER_LOCATION, CactusVervaModel::createBodyLayer);
         event.registerLayerDefinition(RollerVervaModel.LAYER_LOCATION, RollerVervaModel::createBodyLayer);
+        event.registerLayerDefinition(RollerRollingVervaModel.LAYER_LOCATION, RollerRollingVervaModel::createBodyLayer);
         event.registerLayerDefinition(SpikyThornModel.LAYER_LOCATION, SpikyThornModel::createBodyLayer);
     }
     @SubscribeEvent

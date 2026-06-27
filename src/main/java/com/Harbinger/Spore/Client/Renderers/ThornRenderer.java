@@ -1,9 +1,6 @@
 package com.Harbinger.Spore.Client.Renderers;
 
-import com.Harbinger.Spore.Client.Models.CactusVervaModel;
-import com.Harbinger.Spore.Client.Models.RollerVervaModel;
-import com.Harbinger.Spore.Client.Models.SpikyThornModel;
-import com.Harbinger.Spore.Client.Models.ThornModel;
+import com.Harbinger.Spore.Client.Models.*;
 import com.Harbinger.Spore.Client.Special.BaseInfectedRenderer;
 import com.Harbinger.Spore.Sentities.EvolvedInfected.Thorn;
 import com.Harbinger.Spore.Sentities.Variants.ThornVariants;
@@ -26,6 +23,7 @@ public class ThornRenderer<Type extends Thorn> extends BaseInfectedRenderer<Type
     private final EntityModel<Type> cactusModel;
     private final EntityModel<Type> spikyModel;
     private final EntityModel<Type> roller;
+    private final EntityModel<Type> rollingRoller;
     public static final Map<ThornVariants, ResourceLocation> TEXTURE =
             Util.make(Maps.newEnumMap(ThornVariants.class), (p_114874_) -> {
                 p_114874_.put(ThornVariants.DEFAULT,
@@ -50,7 +48,7 @@ public class ThornRenderer<Type extends Thorn> extends BaseInfectedRenderer<Type
             return spikyModel;
         }
         if (entity.getVariant() == ThornVariants.ROLLER){
-            return roller;
+            return entity.getRolling() ? rollingRoller : roller;
         }
         return defaultModel;
     }
@@ -60,6 +58,7 @@ public class ThornRenderer<Type extends Thorn> extends BaseInfectedRenderer<Type
         cactusModel = new CactusVervaModel<>(context.bakeLayer(CactusVervaModel.LAYER_LOCATION));
         spikyModel = new SpikyThornModel<>(context.bakeLayer(SpikyThornModel.LAYER_LOCATION));
         roller = new RollerVervaModel<>(context.bakeLayer(RollerVervaModel.LAYER_LOCATION));
+        rollingRoller = new RollerRollingVervaModel<>(context.bakeLayer(RollerRollingVervaModel.LAYER_LOCATION));
     }
 
 

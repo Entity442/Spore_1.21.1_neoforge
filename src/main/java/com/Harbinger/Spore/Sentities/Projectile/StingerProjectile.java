@@ -22,6 +22,7 @@ import net.minecraft.world.phys.EntityHitResult;
 
 public class StingerProjectile extends AbstractArrow {
     private static final EntityDataAccessor<Float> DAMAGE = SynchedEntityData.defineId(StingerProjectile.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Boolean> POISON = SynchedEntityData.defineId(StingerProjectile.class, EntityDataSerializers.BOOLEAN);
     public StingerProjectile(Level level) {
         super(Sentities.STINGER.get(), level);
     }
@@ -37,11 +38,18 @@ public class StingerProjectile extends AbstractArrow {
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
         builder.define(DAMAGE, 0f);
+        builder.define(POISON, true);
     }
 
     @Override
     protected ItemStack getPickupItem() {
         return ItemStack.EMPTY;
+    }
+    public void setPoison(boolean value){
+        entityData.set(POISON,value);
+    }
+    public boolean getPoison(){
+        return entityData.get(POISON);
     }
 
     @Override
@@ -53,12 +61,14 @@ public class StingerProjectile extends AbstractArrow {
     public void readAdditionalSaveData(CompoundTag tag) {
         super.readAdditionalSaveData(tag);
         this.setDamage(tag.getFloat("damage"));
+        entityData.set(POISON,tag.getBoolean("poison"));
     }
 
     @Override
     public void addAdditionalSaveData(CompoundTag tag) {
         super.addAdditionalSaveData(tag);
         tag.putFloat("damage",this.getDamage());
+        tag.putBoolean("poison",entityData.get(POISON));
     }
 
     @Override
@@ -66,8 +76,10 @@ public class StingerProjectile extends AbstractArrow {
         super.onHitEntity(result);
         if (result.getEntity() instanceof LivingEntity living){
             hurt(level().damageSources().mobProjectile(this,(LivingEntity) this.getOwner()),getDamage());
-            living.addEffect(new MobEffectInstance(Seffects.CORROSION,200,0));
-            living.addEffect(new MobEffectInstance(MobEffects.POISON,200,0));
+            if (entityData.get(POISON)){
+                living.addEffect(new MobEffectInstance(Seffects.CORROSION,200,0));
+                living.addEffect(new MobEffectInstance(MobEffects.POISON,200,0));
+            }
             living.setArrowCount(living.getArrowCount() - 1);
         }
         this.discard();

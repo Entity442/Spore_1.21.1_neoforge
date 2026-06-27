@@ -240,10 +240,7 @@ public class Mound extends Organoid implements FoliageSpread {
                 alertNearbyProtos(source);
             }
         }
-
-        for (int i = 0; i <= this.getAge(); i++) {
-            super.die(source);
-        }
+        super.die(source);
     }
 
     private boolean isFrozen() {
