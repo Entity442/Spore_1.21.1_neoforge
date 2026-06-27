@@ -235,6 +235,9 @@ public class ClientModEvents {
         event.registerLayerDefinition(FireChemistModel.LAYER_LOCATION, FireChemistModel::createBodyLayer);
         event.registerLayerDefinition(HollenhundModel.LAYER_LOCATION, HollenhundModel::createBodyLayer);
         event.registerLayerDefinition(HollenhundRangedModel.LAYER_LOCATION, HollenhundRangedModel::createBodyLayer);
+        event.registerLayerDefinition(CactusVervaModel.LAYER_LOCATION, CactusVervaModel::createBodyLayer);
+        event.registerLayerDefinition(RollerVervaModel.LAYER_LOCATION, RollerVervaModel::createBodyLayer);
+        event.registerLayerDefinition(SpikyThornModel.LAYER_LOCATION, SpikyThornModel::createBodyLayer);
     }
     @SubscribeEvent
     public static void registerRenderers(final EntityRenderersEvent.RegisterRenderers event) {

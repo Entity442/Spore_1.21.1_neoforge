@@ -84,7 +84,8 @@ public class Thorn extends EvolvedInfected implements VariantKeeper {
                livingEntity.addEffect(new MobEffectInstance(MobEffects.POISON,200,0));
                livingEntity.addEffect(new MobEffectInstance(Seffects.CORROSION,200,0));
            }
-            livingEntity.hurt(this.level().damageSources().thorns(this),amount * 0.4f);
+           float damage = this.getVariant() == ThornVariants.CACTUS ? amount : amount * 0.4f;
+           livingEntity.hurt(this.level().damageSources().thorns(this),damage);
         }
         return super.hurt(source, amount);
     }
