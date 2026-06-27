@@ -251,7 +251,7 @@ public class Thorn extends EvolvedInfected implements VariantKeeper {
         public RollingChargeGoal(Thorn entity, double speed) {
             this.entity = entity;
             this.speed = speed;
-            this.maxChargeTime = 200;
+            this.maxChargeTime = 100;
             this.hitCooldown = 0;
         }
 
