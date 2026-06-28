@@ -420,6 +420,8 @@ public class Ssounds {
 
     public static final Holder<SoundEvent> TERRORISER_SHOT = soundRegistry("terroriser_shot");
 
+    public static final Holder<SoundEvent> TERRORISER_PROJECTILE = soundRegistry("terroriser_projectile");
+
     ///SONGS///
 
     public static final Holder<SoundEvent> BANE_OF_SETTLEMENT = soundRegistry("bane_of_settlement");
