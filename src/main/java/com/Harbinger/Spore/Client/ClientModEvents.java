@@ -445,7 +445,7 @@ public class ClientModEvents {
         Minecraft.getInstance().particleEngine.register(Sparticles.BILE_BULLET.get(),
                 BileBulletParticle.Provider::new);
         Minecraft.getInstance().particleEngine.register(Sparticles.TOXIN_BULLET.get(),
-                ToxinBulletParticle.Provider::new);
+                ReversedVomitParticle.Provider::new);
     }
 
     @SubscribeEvent
