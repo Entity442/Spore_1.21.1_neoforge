@@ -48,6 +48,7 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.entity.PartEntity;
+import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -288,6 +289,11 @@ public class Verfalldrachen extends Calamity implements TrueCalamity, RangedAtta
         return 0;
     }
 
+
+    @Override
+    public boolean canDrownInFluidType(FluidType type) {
+        return false;
+    }
 
     @Override
     public void registerGoals() {
