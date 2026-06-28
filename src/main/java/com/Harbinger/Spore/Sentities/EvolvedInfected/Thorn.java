@@ -19,6 +19,7 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -29,6 +30,8 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.phys.AABB;
@@ -53,22 +56,6 @@ public class Thorn extends EvolvedInfected implements VariantKeeper {
         super.addRegularGoals();
         this.goalSelector.addGoal(2, new RollingChargeGoal(this, 2D));
         this.goalSelector.addGoal(3, new CustomMeleeAttackGoal(this, 1.5, false) {
-            @Override
-            public boolean canUse() {
-                if (getRolling()){
-                    return false;
-                }
-                return super.canUse();
-            }
-
-            @Override
-            public boolean canContinueToUse() {
-                if (getRolling()){
-                    return false;
-                }
-                return super.canContinueToUse();
-            }
-
             @Override
             protected double getAttackReachSqr(LivingEntity entity) {
                 return 3.0 + entity.getBbWidth() * entity.getBbWidth();}});
@@ -144,7 +131,11 @@ public class Thorn extends EvolvedInfected implements VariantKeeper {
                livingEntity.addEffect(new MobEffectInstance(MobEffects.POISON,200,0));
                livingEntity.addEffect(new MobEffectInstance(Seffects.CORROSION,200,0));
            }
-           float damage = this.getVariant() == ThornVariants.CACTUS ? amount : amount * 0.4f;
+           boolean cactus = this.getVariant() == ThornVariants.CACTUS;
+           float damage = cactus ? amount : amount * 0.4f;
+           if(cactus && livingEntity instanceof Player player){
+               player.getCooldowns().addCooldown(player.getItemInHand(InteractionHand.MAIN_HAND).getItem(),40);
+           }
            livingEntity.hurt(this.level().damageSources().thorns(this),damage);
         }
         return super.hurt(source, amount);
@@ -242,7 +233,6 @@ public class Thorn extends EvolvedInfected implements VariantKeeper {
     public static class RollingChargeGoal extends Goal {
         private final Thorn entity;
         private LivingEntity target;
-        private Vec3 targetPosition;
         private int chargeTimer;
         private int hitCooldown;
         private final double speed;
@@ -279,7 +269,7 @@ public class Thorn extends EvolvedInfected implements VariantKeeper {
 
         @Override
         public boolean canContinueToUse() {
-            if (targetPosition.distanceToSqr(entity.position()) < 4){
+            if (target == null || target.distanceToSqr(entity.position()) < 4){
                 return false;
             }
             return this.chargeTimer < this.maxChargeTime;
@@ -290,18 +280,11 @@ public class Thorn extends EvolvedInfected implements VariantKeeper {
             this.chargeTimer = 0;
             this.hitCooldown = 0;
             this.entity.setRolling(true);
-            if (this.target != null) {
-                Vec3 targetPos = this.target.position();
-                Vec3 direction = targetPos.subtract(this.entity.position()).normalize();
-                this.targetPosition = targetPos.add(direction.scale(5.0));
-            }
-
         }
 
         @Override
         public void stop() {
             this.target = null;
-            this.targetPosition = null;
             this.chargeTimer = 0;
             this.hitCooldown = 0;
             this.entity.setRolling(false);
@@ -314,19 +297,14 @@ public class Thorn extends EvolvedInfected implements VariantKeeper {
             this.chargeTimer++;
             this.hitCooldown = Math.max(0, this.hitCooldown - 1);
 
-            if (this.targetPosition != null) {
-                if (entity.tickCount % 10 == 0){
-                    entity.navigation.moveTo(targetPosition.x(),targetPosition.y(),targetPosition.z(),speed);
-                }
-                this.entity.lookAt(this.target, 30.0F, 30.0F);
+            if (entity.tickCount % 10 == 0){
+                entity.navigation.moveTo(target,speed);
             }
+            this.entity.lookAt(this.target, 30.0F, 30.0F);
 
             if (this.chargeTimer % 10 == 0 && this.hitCooldown == 0) {
                 damageNearbyEntities();
                 this.hitCooldown = 10;
-            }
-            if (this.targetPosition != null) {
-                this.entity.distanceToSqr(this.targetPosition);
             }
 
             spawnRollingParticles();
