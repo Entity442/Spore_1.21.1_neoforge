@@ -25,7 +25,7 @@ public class DespawnSystem {
     public static void tickMobCleaner(MinecraftServer server){
         tickCounter++;
         if (tickCounter >= CHECK_INTERVAL) {
-            if (server != null) {
+            if (server != null && !SConfig.SERVER.dissableDespawnSystem.get()) {
                 for (ServerLevel level : server.getAllLevels()) {
                     cleanUpMobs(level);
                 }
