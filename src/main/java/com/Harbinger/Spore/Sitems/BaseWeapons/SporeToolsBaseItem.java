@@ -27,6 +27,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.component.Tool;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.common.extensions.IItemExtension;
@@ -44,7 +46,7 @@ public class SporeToolsBaseItem extends BaseItem implements SporeWeaponData , II
     public static final ResourceLocation BASE_ATTACK_REACH_ID = ResourceLocation.withDefaultNamespace("base_attack_reach");
     public SporeToolsBaseItem(double meleeDamage, double meleeReach, double meleeRecharge, int durability, int miningLevel, Tool toolComponentData, String desc) {
         super(new Item.Properties().stacksTo(1).durability(durability).component(DataComponents.TOOL,toolComponentData));
-        this.meleeDamage = meleeDamage;
+        this.meleeDamage = meleeDamage-1;
         this.meleeReach = meleeReach;
         this.meleeRecharge = meleeRecharge;
         this.miningLevel = miningLevel;
@@ -147,6 +149,16 @@ public class SporeToolsBaseItem extends BaseItem implements SporeWeaponData , II
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> components, TooltipFlag tooltipFlag) {
         super.appendHoverText(stack, context, components, tooltipFlag);
+        final int[] sharpnessLevel = {0};
+        EnchantmentHelper.runIterationOnItem(stack, (enchantment, level) -> {
+            if (enchantment.is(Enchantments.SHARPNESS)) {
+                sharpnessLevel[0] = level;
+            }
+        });
+        if (sharpnessLevel[0] > 0){
+            float sharpness = sharpnessLevel[0] * 0.5f + 0.5f;
+            components.add(Component.literal(Component.translatable("spore.item.damage_increase").getString() + sharpness).withStyle(ChatFormatting.GRAY));
+        }
         if (!tooHurt(stack)) {
             components.add(Component.translatable("spore.item.hurt").withStyle(ChatFormatting.RED));
         }

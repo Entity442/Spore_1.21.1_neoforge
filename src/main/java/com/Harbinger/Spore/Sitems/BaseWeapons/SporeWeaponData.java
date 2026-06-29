@@ -132,18 +132,7 @@ public interface SporeWeaponData {
     }
 
     default double modifyDamage(ItemStack stack, double value) {
-        final int[] sharpnessLevel = {0};
-
-        // Iterate over all enchantments on the item
-        EnchantmentHelper.runIterationOnItem(stack, (enchantment, level) -> {
-            if (enchantment.is(Enchantments.SHARPNESS)) {
-                sharpnessLevel[0] = level;
-            }
-        });
-
-        float sharpnessBonus = sharpnessLevel[0] > 0 ? sharpnessLevel[0] * 0.5f + 1f : 0f;
-
-        return sharpnessBonus + (getVariant(stack) == SporeToolsMutations.VAMPIRIC
+        return (getVariant(stack) == SporeToolsMutations.VAMPIRIC
                 ? (calculateTrueDamage(stack, value) * -0.2)
                 : 0);
     }
