@@ -36,7 +36,6 @@ import net.minecraft.world.entity.ai.goal.OpenDoorGoal;
 import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
 import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
 import net.minecraft.world.entity.ai.navigation.WallClimberNavigation;
-import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
@@ -73,11 +72,6 @@ public class Charger extends EvolvedInfected implements VibrationSystem , SporeV
             @Override
             public boolean canUse() {
                 return super.canUse() && SConfig.SERVER.higher_thinking.get();
-            }
-            @Override
-            public void start() {
-                playMeleeAnimation();
-                super.start();
             }
         });
         this.goalSelector.addGoal(2, new HurtTargetGoal(this , livingEntity -> {return TARGET_SELECTOR.test(livingEntity);}, Infected.class).setAlertOthers(Infected.class));
@@ -344,7 +338,7 @@ public class Charger extends EvolvedInfected implements VibrationSystem , SporeV
 
     @Override
     public void setTargetedLocation(ServerLevel serverLevel, BlockPos blockPos) {
-        if (blockPos != BlockPos.ZERO){
+        if (blockPos != BlockPos.ZERO && getVibrationLife() <= 0){
             this.earAnimationTick = 10;
             setVibrationLife(100);
             this.level().broadcastEntityEvent(this, (byte)6);
