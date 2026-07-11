@@ -457,13 +457,14 @@ public class Charger extends EvolvedInfected implements VibrationSystem , SporeV
                 );
 
                 if (!entities.isEmpty()) {
-                    charger.setTarget(entities.get(0));
+                    charger.setTarget(entities.getFirst());
                     stop();
                 }
             }
 
             if (charger.blockPosition().closerThan(charger.getTargetLocation(), 2.0)) {
                 charger.getEntityData().set(Charger.ATTACK_POSITION, BlockPos.ZERO);
+                charger.playMeleeAnimation();
                 stop();
             }
         }
@@ -471,7 +472,6 @@ public class Charger extends EvolvedInfected implements VibrationSystem , SporeV
         @Override
         public void stop() {
             charger.getNavigation().stop();
-            charger.playMeleeAnimation();
             List<LivingEntity> entities = charger.level().getEntitiesOfClass(
                     LivingEntity.class,
                     charger.getBoundingBox().inflate(2),
