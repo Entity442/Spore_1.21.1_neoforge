@@ -225,6 +225,9 @@ public class Charger extends EvolvedInfected implements VibrationSystem , SporeV
     }
     @Override
     public boolean hurt(DamageSource source, float amount) {
+        if (source.getEntity() instanceof LivingEntity living && level() instanceof ServerLevel serverLevel){
+            setTargetedLocation(serverLevel,living.getOnPos());
+        }
         if (source.is(DamageTypes.IN_WALL)){
             int variant = getTypeVariant();
             setVariant(variant < 3 ? variant+1 : 2);

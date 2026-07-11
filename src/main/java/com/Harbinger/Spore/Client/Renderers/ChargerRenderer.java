@@ -131,7 +131,7 @@ public class ChargerRenderer<Type extends Charger> extends BaseInfectedRenderer<
             if (material.layers().isEmpty()){
                 return EYES_TEXTURE;
             }
-            return  ClientHooks.getArmorTexture(entity, stack, material.layers().getFirst(),false, slot);
+            return ClientHooks.getArmorTexture(entity, stack, material.layers().getFirst(),slot == EquipmentSlot.LEGS, slot);
         }
     }
 

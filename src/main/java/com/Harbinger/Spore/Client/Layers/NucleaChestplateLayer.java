@@ -124,7 +124,7 @@ public class NucleaChestplateLayer<T extends Nuclealave> extends RenderLayer<T, 
         if (material.layers().isEmpty()){
             return EMPTY;
         }
-        return  ClientHooks.getArmorTexture(entity, stack, material.layers().getFirst(),false, slot);
+        return  ClientHooks.getArmorTexture(entity, stack, material.layers().getFirst(),slot == EquipmentSlot.LEGS, slot);
     }
     private void renderBloodLayer(ModelPart part,EquipmentSlot slot, PoseStack stack, MultiBufferSource bufferSource, int packedLight){
         VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityTranslucent(slot == EquipmentSlot.LEGS ? BLOOD_LAYER2 : BLOOD_LAYER1));
