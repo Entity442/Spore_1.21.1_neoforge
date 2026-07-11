@@ -422,6 +422,11 @@ public class Ssounds {
 
     public static final Holder<SoundEvent> TERRORISER_PROJECTILE = soundRegistry("terroriser_projectile");
 
+    public static final Holder<SoundEvent> CHARGER_AMBIENT = soundRegistry("charger_ambient");
+
+    public static final Holder<SoundEvent> CHARGER_EARS = soundRegistry("charger_ears");
+
+    public static final Holder<SoundEvent> CHARGER_ECO = soundRegistry("charger_eco");
     ///SONGS///
 
     public static final Holder<SoundEvent> BANE_OF_SETTLEMENT = soundRegistry("bane_of_settlement");

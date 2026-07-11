@@ -101,6 +101,10 @@ public class Sentities {
             () -> EntityType.Builder.of(Leaper::new, INFECTED).sized(0.6f, 2.3f)
                     .build(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "leaper").toString()));
 
+    public static final Supplier<EntityType<Charger>> CHARGER = SPORE_ENTITIES.register("charger",
+            () -> EntityType.Builder.of(Charger::new, INFECTED).sized(0.6f, 0.85f)
+                    .build(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "charger").toString()));
+
     public static final Supplier<EntityType<Slasher>> SLASHER = SPORE_ENTITIES.register("slasher",
             () -> EntityType.Builder.of(Slasher::new, INFECTED).sized(0.6f, 2.2f)
                     .build(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "slasher").toString()));
@@ -314,6 +318,9 @@ public class Sentities {
             EntityType.Builder.of(GoreBullet::new, MobCategory.MISC)
                     .setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(1).sized(0.5f, 0.5f));
 
+    public static final Supplier<EntityType<Echo>> ECHO = SPORE_ENTITIES.register("echo",
+            () -> EntityType.Builder.of(Echo::new, MobCategory.MISC).sized(0.4f, 0.4f)
+                    .build(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "echo").toString()));
 
     public static final Supplier<EntityType<TarBall>> TAR_BALL = register("tar_ball",
             EntityType.Builder.<TarBall>of(TarBall::new, MobCategory.MISC)

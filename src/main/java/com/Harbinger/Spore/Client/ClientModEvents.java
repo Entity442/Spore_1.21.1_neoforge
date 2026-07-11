@@ -239,6 +239,7 @@ public class ClientModEvents {
         event.registerLayerDefinition(RollerVervaModel.LAYER_LOCATION, RollerVervaModel::createBodyLayer);
         event.registerLayerDefinition(RollerRollingVervaModel.LAYER_LOCATION, RollerRollingVervaModel::createBodyLayer);
         event.registerLayerDefinition(SpikyThornModel.LAYER_LOCATION, SpikyThornModel::createBodyLayer);
+        event.registerLayerDefinition(ChargerModel.LAYER_LOCATION, ChargerModel::createBodyLayer);
     }
     @SubscribeEvent
     public static void registerRenderers(final EntityRenderersEvent.RegisterRenderers event) {
@@ -335,6 +336,7 @@ public class ClientModEvents {
         event.registerEntityRenderer(Sentities.VERFALL.get(), DrakeRenderer::new);
         event.registerEntityRenderer(Sentities.VERFALL_HEAD.get(), VerfallHeadRenderer::new);
         event.registerEntityRenderer(Sentities.HOLLEN.get(), HollenhundRenderer::new);
+        event.registerEntityRenderer(Sentities.CHARGER.get(), ChargerRenderer::new);
     }
     public static void renderBlockEntities(EntityRenderersEvent.RegisterRenderers event){
         event.registerBlockEntityRenderer(SblockEntities.OVERGROWN_SPAWNER.get(), new OvergrownSpawnerRenderer());
@@ -379,6 +381,7 @@ public class ClientModEvents {
         event.registerEntityRenderer(Sentities.BILE_BULLET.get(), BileBulletRenderer::new);
         event.registerEntityRenderer(Sentities.TOXIN_BULLET.get(), ToxinBulletRenderer::new);
         event.registerEntityRenderer(Sentities.TAR_BALL.get(), TarRenderer::new);
+        event.registerEntityRenderer(Sentities.ECHO.get(), EchoRender::new);
     }
 
 

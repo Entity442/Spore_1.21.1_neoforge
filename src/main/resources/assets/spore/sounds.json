@@ -60,6 +60,25 @@
     "spore:reaper_idle2",
     "spore:reaper_idle3"
   ]
+},"charger_ambient" :{
+  "subtitle": "sounds.spore.growl",
+  "sounds": [
+    "spore:charger_ambient1",
+    "spore:charger_ambient2",
+    "spore:charger_ambient3"
+  ]
+},"charger_ears" :{
+  "subtitle": "sounds.spore.growl",
+  "sounds": [
+    "spore:charger_ears",
+    "spore:charger_ears2"
+  ]
+},"charger_eco" :{
+  "subtitle": "sounds.spore.growl",
+  "sounds": [
+    "spore:charger_echolocation_1",
+    "spore:charger_echolocation_2"
+  ]
 },"reaper_attack" :{
   "subtitle": "sounds.spore.growl",
   "sounds": [

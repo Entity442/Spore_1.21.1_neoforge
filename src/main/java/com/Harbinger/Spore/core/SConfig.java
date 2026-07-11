@@ -194,6 +194,10 @@ public class SConfig {
         public final ModConfigSpec.ConfigValue<Double> bloater_hp;
         public final ModConfigSpec.ConfigValue<Double> bloater_melee_damage;
 
+        public final ModConfigSpec.ConfigValue<Double> charger_hp;
+        public final ModConfigSpec.ConfigValue<Double> charger_damage;
+        public final ModConfigSpec.ConfigValue<Double> charger_armor;
+
         public final ModConfigSpec.ConfigValue<Double> griefer_armor;
         public final ModConfigSpec.ConfigValue<Double> griefer_hp;
         public final ModConfigSpec.ConfigValue<Double> griefer_damage;
@@ -811,7 +815,7 @@ public class SConfig {
                             "spore:bloater","spore:naiad") , o -> o instanceof String);
             this.player_ev = builder.defineList("Infected Adventurer Evolutions",
                     Lists.newArrayList(
-                            "spore:nuclea","spore:protector","spore:gargoyle") , o -> o instanceof String);
+                            "spore:nuclea","spore:protector","spore:gargoyle","spore:charger") , o -> o instanceof String);
 
             this.evolution_age_human = builder.comment("Default 300").define("Evolution Timer in seconds",300);
             this.evolution_age_hyper = builder.comment("Default 600").define("Evolution Timer in seconds for hyper evolution",600);
@@ -1362,7 +1366,11 @@ public class SConfig {
             this.knight_damage = builder.comment("Default 7").defineInRange("Sets Knight Damage", 7, 1, Double.MAX_VALUE);
             this.knight_armor = builder.comment("Default 7").defineInRange("Sets Knight Armor", 7, 1, Double.MAX_VALUE);
             builder.pop();
-
+            builder.push("Charger");
+            this.charger_hp = builder.comment("Default 55").defineInRange("Sets Charger Max health", 55, 1, Double.MAX_VALUE);
+            this.charger_damage = builder.comment("Default 8").defineInRange("Sets Charger Damage", 8, 1, Double.MAX_VALUE);
+            this.charger_armor = builder.comment("Default 6").defineInRange("Sets Charger Armor", 6, 1, Double.MAX_VALUE);
+            builder.pop();
             builder.push("Gorgon");
             this.gorgon_hp = builder.comment("Default 50 ").defineInRange("Sets Gorgon Max health", 50 , 1, Double.MAX_VALUE);
             this.gorgon_damage = builder.comment("Default 8").defineInRange("Sets Gorgon Damage", 8, 1, Double.MAX_VALUE);
@@ -1771,6 +1779,7 @@ public class SConfig {
         public final ModConfigSpec.ConfigValue<List<? extends String>> inf_evoker_loot;
         public final ModConfigSpec.ConfigValue<List<? extends String>> inf_braio_loot;
         public final ModConfigSpec.ConfigValue<List<? extends String>> inf_knight_loot;
+        public final ModConfigSpec.ConfigValue<List<? extends String>> charger_loot;
         public final ModConfigSpec.ConfigValue<List<? extends String>> inf_gorgon_loot;
         public final ModConfigSpec.ConfigValue<List<? extends String>> inf_griefer_loot;
         public final ModConfigSpec.ConfigValue<List<? extends String>> inf_leap_loot;
@@ -1955,6 +1964,8 @@ public class SConfig {
                     Lists.newArrayList("spore:mutated_fiber|80|3|12","spore:mutated_heart|25|1|1","spore:armor_fragment|80|3|8","spore:shield_fragment|100|1|4") , o -> o instanceof String);
             this.gargoyle_loot = builder.defineList("Gargoyle",
                     Lists.newArrayList("spore:mutated_fiber|80|3|13","spore:armor_fragment|50|2|4","spore:claw_fragment|80|1|3","spore:mutated_heart|10|1|1","spore:wing_membrane|60|1|4") , o -> o instanceof String);
+            this.charger_loot = builder.defineList("Charger",
+                    Lists.newArrayList("spore:mutated_fiber|70|1|5","spore:armor_fragment|80|4|9","spore:mutated_heart|10|1|1","spore:claw_fragment|80|6|9") , o -> o instanceof String);
 
 
             this.gastgaber_loot = builder.defineList("Gastgaber",

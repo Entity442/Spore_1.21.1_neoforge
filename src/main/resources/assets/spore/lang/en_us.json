@@ -366,6 +366,7 @@
   "item.spore.gorgon_spawnegg": "Gorgon",
   "item.spore.verfall_spawnegg": "Verfalldrache",
   "item.spore.hollen_spawnegg": "Hollenhund",
+  "item.spore.charger_spawnegg": "Charger",
 
   "entity.spore.knight": "Knight",
   "entity.spore.griefer": "Griefer",
@@ -457,6 +458,8 @@
   "entity.spore.verfall": "Verfalldrache",
   "entity.spore.verfall_head": "Verfalldrache",
   "entity.spore.hollen": "Hollenhund",
+  "entity.spore.charger": "Charger",
+  "entity.spore.echo": "Echo",
 
   "spore.entity.variant.kidnapper" : "Kidnapper Mutation",
   "spore.entity.variant.kamikaze": "Kamikaze Mutation",

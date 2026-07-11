@@ -292,6 +292,8 @@ public class Sitems {
             () -> new SporeSpawnEgg(Sentities.PROTECTOR,-965262544,SpawnEggType.EVOLVED));
     public  static final DeferredItem<Item> GARG_SPAWNEGG = ITEMS.register("garg_spawnegg",
             () -> new SporeSpawnEgg(Sentities.GARGOYLE,-923123323,SpawnEggType.EVOLVED));
+    public  static final DeferredItem<Item> CHARGER_SPAWNEGG = ITEMS.register("charger_spawnegg",
+            () -> new SporeSpawnEgg(Sentities.CHARGER,-235435433,SpawnEggType.EVOLVED));
 
     public  static final DeferredItem<Item> SCENT_SPAWNEGG = ITEMS.register("scent_spawnegg",
             () -> new SporeSpawnEgg(Sentities.SCENT,-1,SpawnEggType.UNKNOWN));
