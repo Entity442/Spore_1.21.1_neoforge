@@ -72,7 +72,9 @@ public class Biobloob extends Experiment implements RangedAttackMob {
     @Override
     public void awardKillScore(Entity entity, int i, DamageSource damageSource) {
         super.awardKillScore(entity, i, damageSource);
-        grow();
+        if (getScale() < 2){
+            grow();
+        }
     }
     private void grow() {
         if (getScale() < maxScale) {
