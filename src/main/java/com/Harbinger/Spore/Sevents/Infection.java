@@ -137,6 +137,9 @@ public class Infection {
                             if (result instanceof Infected converted) {
                                 converted.setOrigin(entity.getEncodeId());
                             }
+                            if (event.getSource().getEntity() instanceof LivingEntity livingEntity){
+                                livingEntity.awardKillScore(entity,1,event.getSource());
+                            }
                             serverLevel.addFreshEntity(result);
                             entity.discard();
                             break;

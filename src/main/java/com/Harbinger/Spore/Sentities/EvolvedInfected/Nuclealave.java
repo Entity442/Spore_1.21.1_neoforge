@@ -85,8 +85,15 @@ public class Nuclealave extends EvolvedInfected implements RangedAttackMob , Arm
         if (entity instanceof LivingEntity living){
             for (EquipmentSlot slot : EquipmentSlot.values()){
                 ItemStack stack = living.getItemBySlot(slot);
-                if (this.getItemBySlot(slot) == ItemStack.EMPTY && stack != ItemStack.EMPTY){
-                    this.setItemSlot(slot,stack);
+                ItemStack owned = this.getItemBySlot(slot);
+                if (owned.getItem() instanceof ArmorItem firstArmor){
+                    if (stack.getItem() instanceof ArmorItem secondArmor){
+                        if (secondArmor.getDefense() > firstArmor.getDefense()){
+                            this.setItemSlot(slot,stack);
+                        }
+                    }else {
+                        this.setItemSlot(slot,stack);
+                    }
                 }
             }
             ItemStack stack = living.getMainHandItem();

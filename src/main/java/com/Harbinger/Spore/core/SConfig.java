@@ -755,7 +755,7 @@ public class SConfig {
             this.attack = builder.defineList("Mobs that will target infected",
                     Lists.newArrayList(
                             "minecraft:iron_golem", "minecraft:snow_golem",
-                            "guardvillagers:guard" , "roamers:roamer") , o -> o instanceof String);
+                            "guardvillagers:guard" , "roamers:roamer", "minecraft:pillager", "minecraft:vindicator", "minecraft:evoker") , o -> o instanceof String);
 
             this.flee = builder.defineList("Mobs that will run from infected",
                     Lists.newArrayList(
