@@ -2,6 +2,7 @@ package com.Harbinger.Spore.Sentities;
 
 import com.Harbinger.Spore.ExtremelySusThings.Utilities;
 import com.Harbinger.Spore.Sentities.EvolvedInfected.Charger;
+import com.Harbinger.Spore.Sentities.Projectile.Echo;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerLevel;
@@ -42,6 +43,9 @@ public class SporeVibrationUser implements VibrationSystem.User {
     @Override
     public boolean canReceiveVibration(ServerLevel serverLevel, BlockPos blockPos, Holder<GameEvent> holder, GameEvent.Context context) {
         if (charger.getMeleeTicks() > 0){
+            return false;
+        }
+        if (context.sourceEntity() instanceof Echo){
             return false;
         }
         if (context.sourceEntity() instanceof Projectile){

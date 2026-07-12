@@ -102,6 +102,7 @@ public class Charger extends EvolvedInfected implements VibrationSystem , SporeV
 
     @Override
     public boolean doHurtTarget(Entity entity) {
+        setVibrationLife(0);
         playMeleeAnimation();
         return super.doHurtTarget(entity);
     }

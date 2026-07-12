@@ -1,8 +1,6 @@
 package com.Harbinger.Spore.Sentities.Projectile;
 
 import com.Harbinger.Spore.Sentities.EvolvedInfected.Charger;
-import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
@@ -18,8 +16,6 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
 public class Echo extends Projectile {
-    private BlockPos pos;
-    private boolean returning = false;
     private static final double SPEED = 0.25;
     private int life;
 
@@ -47,76 +43,32 @@ public class Echo extends Projectile {
         if (level().isClientSide  || !isAlive())
             return;
 
-        if (!returning) {
-            flyForward();
-        } else {
-            returnToOwner();
-        }
+        flyForward();
     }
     public int getLife(){return life;}
 
     private void flyForward() {
         HitResult hit = ProjectileUtil.getHitResultOnMoveVector(this, this::canHitEntity);
-
         if (hit.getType() != HitResult.Type.MISS) {
             onHit(hit);
             return;
         }
-
         move(MoverType.SELF, getDeltaMovement());
-    }
-
-    private void returnToOwner() {
-        Entity owner = getOwner();
-
-        if (owner == null || !owner.isAlive()) {
-            discard();
-            return;
-        }
-        Vec3 dir = owner.getEyePosition()
-                .subtract(position())
-                .normalize();
-
-        setDeltaMovement(dir.scale(SPEED));
-
-        move(MoverType.SELF, getDeltaMovement());
-
-        if (owner instanceof Charger charger && level() instanceof ServerLevel serverLevel){
-            if (pos != null){
-                charger.setTargetedLocation(serverLevel,pos);
-            }
-            if (this.distanceTo(owner) < 2){
-                discard();
-            }
-        }
     }
 
     @Override
     protected void onHitEntity(EntityHitResult result) {
         Entity entity = result.getEntity();
-        if (entity != getOwner() && entity instanceof LivingEntity) {
-            pos = entity.getOnPos();
-            returning = true;
+        if (entity != getOwner() && entity instanceof LivingEntity && getOwner() instanceof Charger charger && level() instanceof ServerLevel serverLevel) {
+            charger.setTargetedLocation(serverLevel,entity.getOnPos());
         }
+        discard();
     }
 
     @Override
     protected void onHitBlock(BlockHitResult result) {
         super.onHitBlock(result);
-        if (Math.random() < 0.2){
-            pos = result.getBlockPos();
-            returning = true;
-        }
+        discard();
     }
 
-
-    @Override
-    protected void readAdditionalSaveData(CompoundTag tag) {
-        returning = tag.getBoolean("Returning");
-    }
-
-    @Override
-    protected void addAdditionalSaveData(CompoundTag tag) {
-        tag.putBoolean("Returning", returning);
-    }
 }
