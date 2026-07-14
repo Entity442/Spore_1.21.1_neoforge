@@ -1,6 +1,8 @@
 package com.Harbinger.Spore.Sentities.Utility;
 
 
+import com.Harbinger.Spore.ExtremelySusThings.Package.SpecterJumpscarePacket;
+import com.Harbinger.Spore.ExtremelySusThings.SporePacketHandler;
 import com.Harbinger.Spore.ExtremelySusThings.SporeSavedData;
 import com.Harbinger.Spore.ExtremelySusThings.Utilities;
 import com.Harbinger.Spore.Sentities.AI.CustomMeleeAttackGoal;
@@ -18,6 +20,7 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
@@ -48,6 +51,7 @@ import net.neoforged.neoforge.event.EventHooks;
 import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.Nullable;
 
+import java.time.LocalTime;
 import java.util.*;
 
 import static com.Harbinger.Spore.ExtremelySusThings.Utilities.biomass;
@@ -56,6 +60,7 @@ public class Specter extends UtilityEntity implements Enemy, ArmorPersentageBypa
     public static final EntityDataAccessor<Boolean> INVISIBLE = SynchedEntityData.defineId(Specter.class, EntityDataSerializers.BOOLEAN);
     public static final EntityDataAccessor<Integer> BIOMASS = SynchedEntityData.defineId(Specter.class, EntityDataSerializers.INT);
     public static final EntityDataAccessor<Integer> STOMACH = SynchedEntityData.defineId(Specter.class, EntityDataSerializers.INT);
+    public static final EntityDataAccessor<Integer> JUMPSCARE = SynchedEntityData.defineId(Specter.class, EntityDataSerializers.INT);
     public static final List<BlockState> states = new ArrayList<>(){{add(Blocks.TORCH.defaultBlockState());add(Blocks.REDSTONE_TORCH.defaultBlockState());add(Blocks.TNT.defaultBlockState());add(Sblocks.CDU.get().defaultBlockState());}};
     @Nullable
     private BlockPos Targetpos;
@@ -141,6 +146,16 @@ public class Specter extends UtilityEntity implements Enemy, ArmorPersentageBypa
     }
 
     public void setInvisible(boolean value){
+        if (!value && getJumpscare() <= 0 && isInvisible() && getTarget() instanceof ServerPlayer serverPlayer){
+            LocalTime currentTime = LocalTime.now();
+            LocalTime startTime = LocalTime.of(20, 0);
+            LocalTime endTime = LocalTime.of(6, 0);
+
+            if (currentTime.isAfter(startTime) || currentTime.isBefore(endTime)) {
+                SporePacketHandler.sendToClient(new SpecterJumpscarePacket(), serverPlayer);
+            }
+            setJumpscare(30);
+        }
         entityData.set(INVISIBLE,value);
     }
     public boolean isInvisible(){
@@ -172,14 +187,21 @@ public class Specter extends UtilityEntity implements Enemy, ArmorPersentageBypa
         builder.define(INVISIBLE,false);
         builder.define(STOMACH,0);
         builder.define(BIOMASS,0);
+        builder.define(JUMPSCARE,0);
     }
-
+    public void setJumpscare(int i){
+        entityData.set(JUMPSCARE,i);
+    }
+    public int getJumpscare(){
+        return entityData.get(JUMPSCARE);
+    }
     @Override
     public void readAdditionalSaveData(CompoundTag tag) {
         super.readAdditionalSaveData(tag);
         setInvisible(tag.getBoolean("invisible"));
         setBiomass(tag.getInt("biomass"));
         setStomach(tag.getInt("stomach"));
+        setJumpscare(tag.getInt("jumpscare"));
     }
 
     @Override
@@ -188,6 +210,7 @@ public class Specter extends UtilityEntity implements Enemy, ArmorPersentageBypa
         tag.putBoolean("invisible",isInvisible());
         tag.putInt("biomass",getBiomass());
         tag.putInt("stomach",getStomach());
+        tag.putInt("jumpscare",getJumpscare());
     }
     private boolean food(Container container){
         return container.hasAnyMatching(item -> (

@@ -476,7 +476,7 @@ public class Charger extends EvolvedInfected implements VibrationSystem , SporeV
                 charger.getEntityData().set(Charger.ATTACK_POSITION, BlockPos.ZERO);
                 charger.playMeleeAnimation();
                 if (Math.random() < 0.3){
-                    charger.Locate(3,5);
+                    charger.Locate(3,2);
                 }
                 stop();
             }

@@ -625,6 +625,12 @@ public class ClientModEvents {
     public static final ResourceLocation MADNESS_OVERLAY = ResourceLocation.fromNamespaceAndPath(Spore.MODID,"textures/gui/icons/madness_overlay.png");
     public static final ResourceLocation MYCELIUM_INFECTION_OVERLAY = ResourceLocation.fromNamespaceAndPath(Spore.MODID,"textures/gui/icons/mycelium_infection_overlay.png");
     public static final ResourceLocation TAR_OVERLAY = ResourceLocation.fromNamespaceAndPath(Spore.MODID,"textures/gui/icons/tar_overlay.png");
+
+    public static final ResourceLocation SPECTER = ResourceLocation.fromNamespaceAndPath(Spore.MODID,"textures/gui/icons/specter.png");
+    private static int specterTicks = 0;
+    public static void setSpecterTicks(){
+        specterTicks = 20;
+    }
     @SubscribeEvent
     public static void onRenderOverlay(RenderGuiEvent.Pre event) {
         Minecraft mc = Minecraft.getInstance();
@@ -641,6 +647,10 @@ public class ClientModEvents {
             if (player.isShiftKeyDown()) {
                 renderOverlay(event,screenWidth,screenHeight,ASSASIN_SCOPE,false,0);
             }
+        }
+        if (specterTicks > 0){
+            renderOverlay(event,screenWidth,screenHeight,SPECTER,false,0);
+            specterTicks--;
         }
         MobEffectInstance biled = player.getEffect(Seffects.BILED);
         MobEffectInstance corroded = player.getEffect(Seffects.CORROSION);
