@@ -30,7 +30,7 @@ public class EchoRender extends EntityRenderer<Echo> {
             stack.mulPose(Axis.YP.rotationDegrees(180.0F));
             stack.translate(0,-1,0);
             VertexConsumer vertexconsumer = bufferSource.getBuffer(SporeRenderTypes.glowingTranslucent(this.getTextureLocation(adaptableProjectile)));
-            float alpha = 1.0f - ((float)adaptableProjectile.getLife() / 200.0f);
+            float alpha = 1.0f - ((float)adaptableProjectile.getLife() / Echo.LIFE);
             alpha = Math.max(0, Math.min(1, alpha));
             int color = (int)(alpha * 255) << 24 | 0xFFFFFF;
             this.model.setupAnim(adaptableProjectile,0,0,adaptableProjectile.tickCount+p_114486_,0,0);

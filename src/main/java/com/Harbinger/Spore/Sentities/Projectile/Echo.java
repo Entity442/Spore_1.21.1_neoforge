@@ -17,6 +17,7 @@ import net.minecraft.world.phys.Vec3;
 
 public class Echo extends Projectile {
     private static final double SPEED = 0.25;
+    public static final int LIFE = 120;
     private int life;
 
     public Echo(EntityType<? extends Projectile> type, Level level) {
@@ -35,7 +36,7 @@ public class Echo extends Projectile {
     @Override
     public void tick() {
         super.tick();
-        if (life > 200){
+        if (life > LIFE){
             this.remove(RemovalReason.DISCARDED);
         }else {
             life++;

@@ -86,6 +86,12 @@ public class Charger extends EvolvedInfected implements VibrationSystem , SporeV
             public boolean canContinueToUse() {
                 return super.canContinueToUse() && meleeAttackTicks > 0;
             }
+
+            @Override
+            public void stop() {
+                super.stop();
+                mob.setTarget(null);
+            }
         });
         this.goalSelector.addGoal(3, new RushToSoundGoal(this));
         this.goalSelector.addGoal(4 ,new BufferAI(this ));
@@ -93,7 +99,6 @@ public class Charger extends EvolvedInfected implements VibrationSystem , SporeV
             @Override
             public void start() {
                 super.start();
-                playSound(Ssounds.CHARGER_ECO.value());
                 Locate(random.nextInt(2,7),4);
             }
         });
@@ -108,6 +113,7 @@ public class Charger extends EvolvedInfected implements VibrationSystem , SporeV
     }
     private void Locate(int count, float spread) {
         Level level = this.level();
+        playSound(Ssounds.CHARGER_ECO.value());
         if (level.isClientSide()) return;
         for (int i = 0; i < count; i++) {
             Echo echo = new Echo(Sentities.ECHO.get(), level);
@@ -469,6 +475,9 @@ public class Charger extends EvolvedInfected implements VibrationSystem , SporeV
             if (charger.blockPosition().closerThan(charger.getTargetLocation(), 2.0)) {
                 charger.getEntityData().set(Charger.ATTACK_POSITION, BlockPos.ZERO);
                 charger.playMeleeAnimation();
+                if (Math.random() < 0.3){
+                    charger.Locate(3,5);
+                }
                 stop();
             }
         }
