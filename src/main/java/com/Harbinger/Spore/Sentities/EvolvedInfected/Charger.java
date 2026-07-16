@@ -1,21 +1,20 @@
 package com.Harbinger.Spore.Sentities.EvolvedInfected;
 
-import com.Harbinger.Spore.core.SConfig;
-import com.Harbinger.Spore.core.SdamageTypes;
-import com.Harbinger.Spore.core.Sentities;
-import com.Harbinger.Spore.core.Ssounds;
+
 import com.Harbinger.Spore.ExtremelySusThings.Utilities;
 import com.Harbinger.Spore.Sentities.AI.CustomMeleeAttackGoal;
 import com.Harbinger.Spore.Sentities.AI.FloatDiveGoal;
-import com.Harbinger.Spore.Sentities.AI.HurtTargetGoal;
 import com.Harbinger.Spore.Sentities.AI.LocHiv.BufferAI;
 import com.Harbinger.Spore.Sentities.ArmedInfected;
 import com.Harbinger.Spore.Sentities.BaseEntities.EvolvedInfected;
-import com.Harbinger.Spore.Sentities.BaseEntities.Infected;
 import com.Harbinger.Spore.Sentities.BasicInfected.InfectedPlayer;
 import com.Harbinger.Spore.Sentities.Projectile.Echo;
 import com.Harbinger.Spore.Sentities.SporeVibrationParameters;
 import com.Harbinger.Spore.Sentities.SporeVibrationUser;
+import com.Harbinger.Spore.core.SConfig;
+import com.Harbinger.Spore.core.SdamageTypes;
+import com.Harbinger.Spore.core.Sentities;
+import com.Harbinger.Spore.core.Ssounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -36,6 +35,7 @@ import net.minecraft.world.entity.ai.goal.OpenDoorGoal;
 import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
 import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
 import net.minecraft.world.entity.ai.navigation.WallClimberNavigation;
+import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
@@ -57,11 +57,11 @@ public class Charger extends EvolvedInfected implements VibrationSystem , SporeV
     public static final EntityDataAccessor<BlockPos> ATTACK_POSITION = SynchedEntityData.defineId(Charger.class, EntityDataSerializers.BLOCK_POS);
     private static final EntityDataAccessor<Integer> DATA_ID_TYPE_VARIANT = SynchedEntityData.defineId(Charger.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> VIBRATION_LIFE = SynchedEntityData.defineId(Charger.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Integer> MELEE_ATTACK_TICKS = SynchedEntityData.defineId(Charger.class, EntityDataSerializers.INT);
     private int earAnimationTick;
-    private int meleeAttackTicks;
     private int meleeAttackTicksAnimation;
 
-    public Charger(EntityType<? extends EvolvedInfected> p_33002_, Level p_33003_) {
+    public Charger(EntityType<? extends Monster> p_33002_, Level p_33003_) {
         super(p_33002_, p_33003_);
         this.navigation = new WallClimberNavigation(this, level());
     }
@@ -74,28 +74,34 @@ public class Charger extends EvolvedInfected implements VibrationSystem , SporeV
                 return super.canUse() && SConfig.SERVER.higher_thinking.get();
             }
         });
-        this.goalSelector.addGoal(2, new HurtTargetGoal(this , livingEntity -> {return TARGET_SELECTOR.test(livingEntity);}, Infected.class).setAlertOthers(Infected.class));
         this.goalSelector.addGoal(2,new CustomMeleeAttackGoal(this,1.5,true)
         {
             @Override
             public boolean canUse() {
-                return super.canUse() && meleeAttackTicks > 0;
+                if (getMeleeTicks() <= 0){
+                    return false;
+                }
+                return super.canUse();
             }
 
             @Override
             public boolean canContinueToUse() {
-                return super.canContinueToUse() && meleeAttackTicks > 0;
+                if (getMeleeTicks() <= 0){
+                    return false;
+                }
+                return super.canContinueToUse();
             }
 
             @Override
             public void stop() {
                 super.stop();
                 mob.setTarget(null);
+                path = null;
             }
         });
         this.goalSelector.addGoal(3, new RushToSoundGoal(this));
         this.goalSelector.addGoal(4 ,new BufferAI(this ));
-        this.goalSelector.addGoal(1,new RandomStrollGoal(this,1){
+        this.goalSelector.addGoal(5,new RandomStrollGoal(this,1){
             @Override
             public void start() {
                 super.start();
@@ -109,11 +115,12 @@ public class Charger extends EvolvedInfected implements VibrationSystem , SporeV
     public boolean doHurtTarget(Entity entity) {
         setVibrationLife(0);
         playMeleeAnimation();
+        setMeleeAttackTicks(20);
         return super.doHurtTarget(entity);
     }
     private void Locate(int count, float spread) {
-        Level level = this.level();
         playSound(Ssounds.CHARGER_ECO.value());
+        Level level = this.level();
         if (level.isClientSide()) return;
         for (int i = 0; i < count; i++) {
             Echo echo = new Echo(Sentities.ECHO.get(), level);
@@ -136,13 +143,13 @@ public class Charger extends EvolvedInfected implements VibrationSystem , SporeV
         this.level().broadcastEntityEvent(this, (byte)4);
     }
 
-    public int getMeleeAttackTicks(){return meleeAttackTicksAnimation;}
+    public int getMeleeAttackTicksAnimation(){return meleeAttackTicksAnimation;}
 
     @Override
     public void setTarget(@Nullable LivingEntity living) {
         super.setTarget(living);
-        if (living != null && living.isAlive()){
-            meleeAttackTicks = 40;
+        if (living != null && living.isAlive() && getMeleeTicks() < 10){
+            setMeleeAttackTicks(20);
         }
     }
 
@@ -194,8 +201,12 @@ public class Charger extends EvolvedInfected implements VibrationSystem , SporeV
         if (earAnimationTick > 0){
             earAnimationTick--;
         }
+        int meleeAttackTicks = getMeleeTicks();
         if (meleeAttackTicks > 0){
-            meleeAttackTicks--;
+            if (meleeAttackTicks == 1){
+                setTarget(null);
+            }
+            setMeleeAttackTicks(meleeAttackTicks-1);
         }
         if (meleeAttackTicksAnimation > 0){
             meleeAttackTicksAnimation--;
@@ -219,6 +230,9 @@ public class Charger extends EvolvedInfected implements VibrationSystem , SporeV
         }
     }
     public void attackNearby(){
+        if (getMeleeTicks() > 0){
+            return;
+        }
         List<LivingEntity> entities = this.level().getEntitiesOfClass(
                 LivingEntity.class,
                 this.getBoundingBox().inflate(1.3),
@@ -233,6 +247,7 @@ public class Charger extends EvolvedInfected implements VibrationSystem , SporeV
     @Override
     public boolean hurt(DamageSource source, float amount) {
         if (source.getEntity() instanceof LivingEntity living && level() instanceof ServerLevel serverLevel){
+            setMeleeAttackTicks(20);
             setTargetedLocation(serverLevel,living.getOnPos());
         }
         if (source.is(DamageTypes.IN_WALL)){
@@ -249,6 +264,7 @@ public class Charger extends EvolvedInfected implements VibrationSystem , SporeV
         builder.define(ATTACK_POSITION, BlockPos.ZERO);
         builder.define(DATA_ID_TYPE_VARIANT, 0);
         builder.define(VIBRATION_LIFE, 0);
+        builder.define(MELEE_ATTACK_TICKS, 0);
     }
 
     public void setVibrationLife(int val){
@@ -368,12 +384,20 @@ public class Charger extends EvolvedInfected implements VibrationSystem , SporeV
     }
 
     @Override
+    public int getDelay() {
+        return getMeleeTicks();
+    }
+
+    @Override
     public boolean hasUsableSlot(EquipmentSlot slot) {
         return slot != EquipmentSlot.FEET;
     }
 
     public int getMeleeTicks(){
-        return meleeAttackTicks;
+        return entityData.get(MELEE_ATTACK_TICKS);
+    }
+    public void setMeleeAttackTicks(int va){
+        entityData.set(MELEE_ATTACK_TICKS,va);
     }
 
     public enum CHARGER_WALK_MODIFIER{
@@ -405,7 +429,6 @@ public class Charger extends EvolvedInfected implements VibrationSystem , SporeV
         }
     }
 
-
     @Override
     protected EntityDimensions getDefaultDimensions(Pose pose) {
         return getVariant().getDimensions();
@@ -423,11 +446,17 @@ public class Charger extends EvolvedInfected implements VibrationSystem , SporeV
 
         @Override
         public boolean canUse() {
+            if (charger.getMeleeTicks() > 0){
+                return false;
+            }
             return !charger.getTargetLocation().equals(BlockPos.ZERO);
         }
 
         @Override
         public boolean canContinueToUse() {
+            if (charger.getMeleeTicks() > 0){
+                return false;
+            }
             return !charger.getTargetLocation().equals(BlockPos.ZERO) && charger.getVibrationLife() > 0;
         }
 
@@ -467,17 +496,17 @@ public class Charger extends EvolvedInfected implements VibrationSystem , SporeV
                 );
 
                 if (!entities.isEmpty()) {
-                    charger.setTarget(entities.getFirst());
+                    charger.setTarget(entities.get(0));
                     stop();
                 }
             }
 
             if (charger.blockPosition().closerThan(charger.getTargetLocation(), 2.0)) {
                 charger.getEntityData().set(Charger.ATTACK_POSITION, BlockPos.ZERO);
-                charger.playMeleeAnimation();
                 if (Math.random() < 0.3){
                     charger.Locate(3,2);
                 }
+                charger.playMeleeAnimation();
                 stop();
             }
         }

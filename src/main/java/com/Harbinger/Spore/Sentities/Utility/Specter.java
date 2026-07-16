@@ -276,8 +276,14 @@ public class Specter extends UtilityEntity implements Enemy, ArmorPersentageBypa
             setStomach(getStomach()-10);
         }
         }
-        if (tickCount % 20 == 0 && getBiomass() > 0){
-            this.buffAI();
+        if (tickCount % 20 == 0){
+            if (getBiomass() > 0){
+                this.buffAI();
+            }
+            int i = getJumpscare();
+            if (i>0){
+                setJumpscare(i-1);
+            }
         }
         if (tickCount % 40 == 0 && horizontalCollision && EventHooks.canEntityGrief(this.level(), this)){
             griefBlocks(this.getTarget());

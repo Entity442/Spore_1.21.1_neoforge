@@ -8,4 +8,5 @@ public interface SporeVibrationParameters {
     void setTargetedLocation(ServerLevel serverLevel, BlockPos blockPos);
     BlockPos getTargetLocation();
     PositionSource getPositionSource();
+    int getDelay();
 }

@@ -18,7 +18,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class SporeVibrationUser implements VibrationSystem.User {
     private final SporeVibrationParameters living;
-    private final Charger charger;
+    private final LivingEntity charger;
     private final PositionSource positionSource;
 
     public SporeVibrationUser(SporeVibrationParameters living, Charger charger) {
@@ -42,7 +42,7 @@ public class SporeVibrationUser implements VibrationSystem.User {
 
     @Override
     public boolean canReceiveVibration(ServerLevel serverLevel, BlockPos blockPos, Holder<GameEvent> holder, GameEvent.Context context) {
-        if (charger.getMeleeTicks() > 0){
+        if (living.getDelay() > 0){
             return false;
         }
         if (context.sourceEntity() instanceof Echo){
@@ -54,7 +54,7 @@ public class SporeVibrationUser implements VibrationSystem.User {
         if (context.sourceEntity() instanceof LivingEntity living1) {
             return Utilities.TARGET_SELECTOR.Test(living1);
         }
-        return charger.isAlive() && charger.getTargetLocation().equals(BlockPos.ZERO);
+        return charger.isAlive() && living.getTargetLocation().equals(BlockPos.ZERO);
     }
 
     @Override

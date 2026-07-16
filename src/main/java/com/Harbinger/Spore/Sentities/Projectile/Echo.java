@@ -6,7 +6,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.level.Level;
@@ -14,6 +13,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.event.EventHooks;
 
 public class Echo extends Projectile {
     private static final double SPEED = 0.25;
@@ -49,12 +49,16 @@ public class Echo extends Projectile {
     public int getLife(){return life;}
 
     private void flyForward() {
-        HitResult hit = ProjectileUtil.getHitResultOnMoveVector(this, this::canHitEntity);
-        if (hit.getType() != HitResult.Type.MISS) {
-            onHit(hit);
-            return;
+        HitResult hitresult = ProjectileUtil.getHitResultOnMoveVector(this, this::canHitEntity);
+        Vec3 vec3 = this.getDeltaMovement();
+        double d0 = this.getX() + vec3.x;
+        double d1 = this.getY() + vec3.y;
+        double d2 = this.getZ() + vec3.z;
+        this.setPos(d0, d1, d2);
+
+        if (hitresult.getType() != HitResult.Type.MISS && !EventHooks.onProjectileImpact(this, hitresult)) {
+            this.onHit(hitresult);
         }
-        move(MoverType.SELF, getDeltaMovement());
     }
 
     @Override
