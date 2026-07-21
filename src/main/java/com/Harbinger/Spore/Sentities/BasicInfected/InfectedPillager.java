@@ -146,7 +146,7 @@ public class InfectedPillager extends Infected implements CrossbowAttackMob , Ev
     @Override
     public @Nullable SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType spawnType, @Nullable SpawnGroupData spawnGroupData) {
         this.populateDefaultEquipmentSlots(this.random, difficulty);
-        setVariant(Math.random() < 0.2 ? InfPillagerSkins.CAPTAIN : InfPillagerSkins.DEFAULT);
+        setVariant(Math.random() < 0.06 ? InfPillagerSkins.CAPTAIN : InfPillagerSkins.DEFAULT);
         return super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData);
     }
 

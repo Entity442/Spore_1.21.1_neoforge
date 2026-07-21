@@ -9,7 +9,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
 
 public class IkDragonHead {
-    public static final int RANGE = 12 * 12;
+    public static final int RANGE = 10 * 10;
     protected final RandomSource randomSource = RandomSource.create();
     protected final Verfalldrachen owner;
     protected final CalamityMultipart multipart;

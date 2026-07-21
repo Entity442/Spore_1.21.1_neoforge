@@ -807,13 +807,12 @@ public class Verfalldrachen extends Calamity implements TrueCalamity, RangedAtta
 
     private void performElectricalHeadAttack(LivingEntity target) {
         if (!canPerformElectricalAttack()) return;
-
         int voltageModifier = (target instanceof IronGolem) ? 3 : 1;
-        float damage = (float) (SConfig.SERVER.verfa_elec_damage.get() *
-                SConfig.SERVER.global_damage.get() *
-                voltageModifier);
+        float initialDamage = (float) (SConfig.SERVER.verfa_elec_damage.get() * SConfig.SERVER.global_damage.get() * voltageModifier);
+        float hp = target.getMaxHealth()/4;
+        float secondCalculation = Math.max(hp, initialDamage);
         this.level().broadcastEntityEvent(this, (byte)7);
-        target.hurt(level().damageSources().lightningBolt(), damage);
+        target.hurt(level().damageSources().lightningBolt(), secondCalculation);
         target.setRemainingFireTicks(100);
         spawnLightningEffect(target);
         beamTicks = 40;
@@ -828,8 +827,10 @@ public class Verfalldrachen extends Calamity implements TrueCalamity, RangedAtta
         playSonicBoomSound();
 
         spawnSonicBoomParticles(target);
-
-        target.hurt(this.damageSources().sonicBoom(this), (float) (SConfig.SERVER.verfa_sound_damage.get() * SConfig.SERVER.global_damage.get()));
+        float initialDamage = (float) (SConfig.SERVER.verfa_sound_damage.get() * SConfig.SERVER.global_damage.get());
+        float hp = target.getMaxHealth()/4;
+        float secondCalculation = Math.max(hp, initialDamage);
+        target.hurt(this.damageSources().sonicBoom(this), secondCalculation);
         applySonicKnockback(target);
         setSonicCharge(getSonicCharge() - 5);
         setSonicTargetId(-1);
