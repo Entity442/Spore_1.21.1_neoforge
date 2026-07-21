@@ -501,7 +501,7 @@ public class ChargerModel<T extends Charger> extends EntityModel<T> implements T
 
 		animateTentacleZ(RightArm,val);
 		animateTentacleZ(LeftArm,-val);
-		int attackAnimationTick = entity.getMeleeAttackTicks();
+		int attackAnimationTick = entity.getMeleeAttackTicksAnimation();
 		this.LeftLeg.xRot = moveVal;
 		this.RightLeg.xRot = -moveVal;
 		this.RightArm.xRot = - moveVal;

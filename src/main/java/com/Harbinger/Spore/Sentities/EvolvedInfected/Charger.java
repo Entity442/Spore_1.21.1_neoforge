@@ -35,7 +35,6 @@ import net.minecraft.world.entity.ai.goal.OpenDoorGoal;
 import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
 import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
 import net.minecraft.world.entity.ai.navigation.WallClimberNavigation;
-import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
@@ -61,7 +60,7 @@ public class Charger extends EvolvedInfected implements VibrationSystem , SporeV
     private int earAnimationTick;
     private int meleeAttackTicksAnimation;
 
-    public Charger(EntityType<? extends Monster> p_33002_, Level p_33003_) {
+    public Charger(EntityType<? extends EvolvedInfected> p_33002_, Level p_33003_) {
         super(p_33002_, p_33003_);
         this.navigation = new WallClimberNavigation(this, level());
     }

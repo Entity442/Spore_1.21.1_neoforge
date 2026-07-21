@@ -1020,6 +1020,7 @@ public class Verfalldrachen extends Calamity implements TrueCalamity, RangedAtta
         private Vec3 attackDirection;
         private Vec3 flyDestination;
         private Vec3 climbPoint;
+        private int timer;
 
         private boolean reachedClimbHeight;
 
@@ -1056,7 +1057,9 @@ public class Verfalldrachen extends Calamity implements TrueCalamity, RangedAtta
 
         @Override
         public boolean canContinueToUse() {
-
+            if (timer > 200){
+                return false;
+            }
             if (dragon.getTarHead() <= 0
                     || dragon.getElectricalHead() <= 0) {
                 return false;
@@ -1074,6 +1077,7 @@ public class Verfalldrachen extends Calamity implements TrueCalamity, RangedAtta
 
         @Override
         public void start() {
+            timer = 0;
             LivingEntity target = dragon.getTarget();
             if (target == null){
                 return;
@@ -1105,6 +1109,7 @@ public class Verfalldrachen extends Calamity implements TrueCalamity, RangedAtta
 
         @Override
         public void tick() {
+            timer++;
             if (!reachedClimbHeight) {
 
                 Vec3 toClimb = climbPoint.subtract(dragon.position());
