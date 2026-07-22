@@ -107,5 +107,6 @@ public class MobAttributes {
         event.put(Sentities.VERFALL_HEAD.get(), DragonHead.createAttributes().build());
         event.put(Sentities.HOLLEN.get(), Hollenhund.createAttributes().build());
         event.put(Sentities.CHARGER.get(), Charger.createAttributes().build());
+        event.put(Sentities.BERSERKER.get(), Berserker.createAttributes().build());
     }
 }

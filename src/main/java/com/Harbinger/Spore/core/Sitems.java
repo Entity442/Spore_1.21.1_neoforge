@@ -376,6 +376,9 @@ public class Sitems {
     public  static final DeferredItem<Item> HOLLEN_SPAWNEGG = ITEMS.register("hollen_spawnegg",
             () -> new SporeSpawnEgg(Sentities.HOLLEN,-124354364,SpawnEggType.HYPER));
 
+    public  static final DeferredItem<Item> BERSERKER_SPAWNEGG = ITEMS.register("berserker_spawnegg",
+            () -> new SporeSpawnEgg(Sentities.BERSERKER,-765355,SpawnEggType.HYPER));
+
     public  static final DeferredItem<Item> SIEGER_SPAWNEGG = ITEMS.register("sieger_spawnegg",
             () -> new SporeSpawnEgg(Sentities.SIEGER,244208,SpawnEggType.CALAMITY));
 

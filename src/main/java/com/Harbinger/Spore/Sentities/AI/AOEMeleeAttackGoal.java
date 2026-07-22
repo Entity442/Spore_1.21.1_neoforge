@@ -18,7 +18,7 @@ public class AOEMeleeAttackGoal extends Goal {
     protected Predicate<LivingEntity> victims;
     private final double speedModifier;
     private final boolean followingTargetEvenIfNotSeen;
-    private Path path;
+    public Path path;
     private double pathedTargetX;
     private double pathedTargetY;
     private double pathedTargetZ;

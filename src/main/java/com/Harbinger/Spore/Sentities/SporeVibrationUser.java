@@ -21,7 +21,7 @@ public class SporeVibrationUser implements VibrationSystem.User {
     private final LivingEntity charger;
     private final PositionSource positionSource;
 
-    public SporeVibrationUser(SporeVibrationParameters living, Charger charger) {
+    public SporeVibrationUser(SporeVibrationParameters living, LivingEntity charger) {
         this.living = living;
         positionSource = living.getPositionSource();
         this.charger = charger;

@@ -240,6 +240,7 @@ public class ClientModEvents {
         event.registerLayerDefinition(RollerRollingVervaModel.LAYER_LOCATION, RollerRollingVervaModel::createBodyLayer);
         event.registerLayerDefinition(SpikyThornModel.LAYER_LOCATION, SpikyThornModel::createBodyLayer);
         event.registerLayerDefinition(ChargerModel.LAYER_LOCATION, ChargerModel::createBodyLayer);
+        event.registerLayerDefinition(BeserkerModel.LAYER_LOCATION, BeserkerModel::createBodyLayer);
     }
     @SubscribeEvent
     public static void registerRenderers(final EntityRenderersEvent.RegisterRenderers event) {
@@ -337,6 +338,7 @@ public class ClientModEvents {
         event.registerEntityRenderer(Sentities.VERFALL_HEAD.get(), VerfallHeadRenderer::new);
         event.registerEntityRenderer(Sentities.HOLLEN.get(), HollenhundRenderer::new);
         event.registerEntityRenderer(Sentities.CHARGER.get(), ChargerRenderer::new);
+        event.registerEntityRenderer(Sentities.BERSERKER.get(), BerserkerRenderer::new);
     }
     public static void renderBlockEntities(EntityRenderersEvent.RegisterRenderers event){
         event.registerBlockEntityRenderer(SblockEntities.OVERGROWN_SPAWNER.get(), new OvergrownSpawnerRenderer());

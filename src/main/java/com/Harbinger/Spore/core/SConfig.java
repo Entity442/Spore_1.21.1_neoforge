@@ -109,6 +109,10 @@ public class SConfig {
         public final ModConfigSpec.ConfigValue<Double> inquisitor_damage;
         public final ModConfigSpec.ConfigValue<Double> inquisitor_armor;
 
+        public final ModConfigSpec.ConfigValue<Double> berserker_hp;
+        public final ModConfigSpec.ConfigValue<Double> berserker_damage;
+        public final ModConfigSpec.ConfigValue<Double> berserker_armor;
+
         public final ModConfigSpec.ConfigValue<Double> grober_hp;
         public final ModConfigSpec.ConfigValue<Double> grober_damage;
         public final ModConfigSpec.ConfigValue<Double> grober_armor;
@@ -925,6 +929,12 @@ public class SConfig {
             this.ogre_hp = builder.comment("Default 100").defineInRange("Sets Ogre Max health", 100, 1, Double.MAX_VALUE);
             this.ogre_damage = builder.comment("Default 20").defineInRange("Sets Ogre Damage", 20, 1, Double.MAX_VALUE);
             this.ogre_armor = builder.comment("Default 12").defineInRange("Sets Ogre Armor", 12, 1, Double.MAX_VALUE);
+            builder.pop();
+
+            builder.push("Berserker");
+            this.berserker_hp = builder.comment("Default 110").defineInRange("Sets Berserker Max health", 110, 1, Double.MAX_VALUE);
+            this.berserker_damage = builder.comment("Default 20").defineInRange("Sets Berserker Damage", 20, 1, Double.MAX_VALUE);
+            this.berserker_armor = builder.comment("Default 10").defineInRange("Sets Berserker Armor", 10, 1, Double.MAX_VALUE);
             builder.pop();
 
             builder.push("Brotkatze");
@@ -1836,6 +1846,7 @@ public class SConfig {
         public final ModConfigSpec.ConfigValue<List<? extends String>> hollen_loot;
         public final ModConfigSpec.ConfigValue<List<? extends String>> construct_loot;
         public final ModConfigSpec.ConfigValue<List<? extends String>> bloater_loot;
+        public final ModConfigSpec.ConfigValue<List<? extends String>> berserker_loot;
         public final ModConfigSpec.ConfigValue<List<? extends String>> scavenger_loot;
         public final ModConfigSpec.ConfigValue<List<? extends String>> gargoyle_loot;
         public final ModConfigSpec.ConfigValue<List<? extends String>> nucke_loot;
@@ -2080,6 +2091,10 @@ public class SConfig {
 
             this.grober_loot = builder.defineList("Groberfub",
                     Lists.newArrayList("spore:mutated_fiber|70|5|16","spore:armor_fragment|80|6|12","spore:mutated_heart|50|1|1","spore:claw_fragment|80|5|15","spore:tendons|60|3|7") , o -> o instanceof String);
+
+            this.berserker_loot = builder.defineList("Berserker",
+                    Lists.newArrayList("spore:mutated_fiber|70|5|16","spore:armor_fragment|80|6|12","spore:mutated_heart|50|1|1","spore:claw_fragment|80|5|15","spore:spine_fragment|15|1|3") , o -> o instanceof String);
+
 
             this.ogre_loot = builder.defineList("Ogre",
                     Lists.newArrayList("spore:mutated_fiber|70|12|34","spore:armor_fragment|80|12|22","spore:mutated_heart|50|1|1","spore:claw_fragment|80|5|15") , o -> o instanceof String);

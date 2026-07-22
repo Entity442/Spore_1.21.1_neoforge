@@ -8,6 +8,8 @@ import com.Harbinger.Spore.Sentities.AI.LocHiv.BufferAI;
 import com.Harbinger.Spore.Sentities.ArmedInfected;
 import com.Harbinger.Spore.Sentities.BaseEntities.EvolvedInfected;
 import com.Harbinger.Spore.Sentities.BasicInfected.InfectedPlayer;
+import com.Harbinger.Spore.Sentities.EvolvingInfected;
+import com.Harbinger.Spore.Sentities.Hyper.Berserker;
 import com.Harbinger.Spore.Sentities.Projectile.Echo;
 import com.Harbinger.Spore.Sentities.SporeVibrationParameters;
 import com.Harbinger.Spore.Sentities.SporeVibrationUser;
@@ -27,6 +29,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -49,7 +52,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.function.BiConsumer;
 
-public class Charger extends EvolvedInfected implements VibrationSystem , SporeVibrationParameters, ArmedInfected,HasUsableSlot {
+public class Charger extends EvolvedInfected implements VibrationSystem , SporeVibrationParameters, ArmedInfected,HasUsableSlot, EvolvingInfected {
     private final DynamicGameEventListener<Listener> dynamicGameEventListener = new DynamicGameEventListener<>(new Listener(this));
     private final User vibrationUser = new SporeVibrationUser(this,this);
     private final Data vibrationData = new Data();
@@ -227,6 +230,7 @@ public class Charger extends EvolvedInfected implements VibrationSystem , SporeV
                 }
             }
         }
+        this.tickHyperEvolution(this);
     }
     public void attackNearby(){
         if (getMeleeTicks() > 0){
@@ -256,7 +260,28 @@ public class Charger extends EvolvedInfected implements VibrationSystem , SporeV
         }
         return super.hurt(source, amount);
     }
-
+    @Override
+    public void HyperEvolve(LivingEntity living) {
+        Berserker inquisitor = new Berserker(Sentities.BERSERKER.get(),this.level());
+        Collection<MobEffectInstance> collection = this.getActiveEffects();
+        for(MobEffectInstance mobeffectinstance : collection) {
+            inquisitor.addEffect(new MobEffectInstance(mobeffectinstance));
+        }
+        inquisitor.setKills(this.getKills());
+        inquisitor.setEvoPoints(this.getEvoPoints()-SConfig.SERVER.min_kills_hyper.get());
+        inquisitor.setCustomName(this.getCustomName());
+        inquisitor.setPos(this.getX(),this.getY(),this.getZ());
+        for (EquipmentSlot slot : EquipmentSlot.values()) {
+            if (((HasUsableSlot) inquisitor).hasUsableSlot(slot)) {
+                inquisitor.setItemSlot(slot, this.getItemBySlot(slot));
+            }
+        }
+        if (this.level() instanceof ServerLevel serverLevel)
+            inquisitor.finalizeSpawn(serverLevel,serverLevel.getCurrentDifficultyAt(this.getOnPos()), MobSpawnType.CONVERSION,null);
+        this.level().addFreshEntity(inquisitor);
+        this.discard();
+        EvolvingInfected.super.HyperEvolve(living);
+    }
     @Override
     protected void defineSynchedData(SynchedEntityData.@NotNull Builder builder) {
         super.defineSynchedData(builder);

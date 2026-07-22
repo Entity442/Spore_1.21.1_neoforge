@@ -144,7 +144,7 @@ public class Hyper extends Infected{
         return this.getLastDamageSource() == this.damageSources().inWall();
     }
 
-    static class GoBackToTheNest extends Goal {
+    public static class GoBackToTheNest extends Goal {
         protected Hyper hyper;
         public  int tryTicks;
         public GoBackToTheNest(Hyper hyper){
