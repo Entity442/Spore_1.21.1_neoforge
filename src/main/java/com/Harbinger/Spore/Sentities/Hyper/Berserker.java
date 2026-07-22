@@ -82,19 +82,54 @@ public class Berserker extends Hyper implements VibrationSystem, SporeVibrationP
         playSound(Ssounds.CHARGER_ECO.value());
         Level level = this.level();
         if (level.isClientSide()) return;
+        AABB searchBox = this.getBoundingBox().inflate(8);
+        List<LivingEntity> targets = level.getEntitiesOfClass(
+                LivingEntity.class,
+                searchBox,
+                entity -> entity != this && entity.isAlive() && Utilities.TARGET_SELECTOR.Test(entity)
+        );
         for (int i = 0; i < count; i++) {
             Echo echo = new Echo(Sentities.ECHO.get(), level);
-            float yaw = this.random.nextFloat() * 360.0F;
-            float pitch = (this.random.nextFloat() - 0.5F) * spread * 2;
-            float radYaw = (float)Math.toRadians(yaw);
-            float radPitch = (float)Math.toRadians(pitch);
-            double x = Math.cos(radPitch) * Math.cos(radYaw);
-            double y = Math.sin(radPitch);
-            double z = Math.cos(radPitch) * Math.sin(radYaw);
+            float yaw;
+            float pitch;
+            if (!targets.isEmpty()) {
+                LivingEntity target = targets.getFirst();
+
+                double dx = target.getX() - this.getX();
+                double dy = target.getY() + target.getEyeHeight() / 2 - (this.getY() + 1.25);
+                double dz = target.getZ() - this.getZ();
+
+                float spreadOffset = (this.random.nextFloat() - 0.5F) * spread * 0.5F;
+                float yawOffset = (this.random.nextFloat() - 0.5F) * spread * 0.5F;
+
+                double horizontalDistance = Math.sqrt(dx * dx + dz * dz);
+                yaw = (float) Math.toDegrees(Math.atan2(dz, dx)) + yawOffset;
+                pitch = (float) -Math.toDegrees(Math.atan2(dy, horizontalDistance)) + spreadOffset;
+
+                float radYaw = (float) Math.toRadians(yaw);
+                float radPitch = (float) Math.toRadians(pitch);
+
+                double x = Math.cos(radPitch) * Math.cos(radYaw);
+                double y = Math.sin(radPitch);
+                double z = Math.cos(radPitch) * Math.sin(radYaw);
+
+                Vec3 direction = new Vec3(x, y, z).normalize();
+                echo.shoot(direction);
+            } else {
+                yaw = this.random.nextFloat() * 360.0F;
+                pitch = (this.random.nextFloat() - 0.5F) * spread * 2;
+                float radYaw = (float) Math.toRadians(yaw);
+                float radPitch = (float) Math.toRadians(pitch);
+
+                double x = Math.cos(radPitch) * Math.cos(radYaw);
+                double y = Math.sin(radPitch);
+                double z = Math.cos(radPitch) * Math.sin(radYaw);
+
+                Vec3 direction = new Vec3(x, y, z).normalize();
+                echo.shoot(direction);
+            }
             echo.setOwner(this);
-            echo.moveTo(this.getX(),this.getY()+1.25,this.getZ());
-            Vec3 direction = new Vec3(x, y, z).normalize();
-            echo.shoot(direction);
+            echo.moveTo(this.getX(), this.getY() + 1.25, this.getZ());
             level.addFreshEntity(echo);
         }
     }
@@ -401,10 +436,10 @@ public class Berserker extends Hyper implements VibrationSystem, SporeVibrationP
                 tryToLayCorpsesAround();
             }
         });
-        this.goalSelector.addGoal(5,new RandomStrollGoal(this,1){
+        this.goalSelector.addGoal(5,new RandomStrollGoal(this,1,200,true){
             @Override
-            public void start() {
-                super.start();
+            public void stop() {
+                super.stop();
                 Locate(random.nextInt(2,7),4);
             }
         });

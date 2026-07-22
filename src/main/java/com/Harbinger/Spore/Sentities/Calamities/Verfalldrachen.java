@@ -451,14 +451,17 @@ public class Verfalldrachen extends Calamity implements TrueCalamity, RangedAtta
     protected float cutHead(int i){
         this.playSound(Ssounds.LIMB_SLASH.value());
         if (i == 0){
+            setTarTargetId(-1);
             setTarHeadSegment(0);
             summonHead(getIkTarHead(),DragonHeadVariants.TAR);
         }
         if (i == 1){
+            setSonicTargetId(-1);
             setSonicHeadSegment(0);
             summonHead(getIkSoundHead(),DragonHeadVariants.SONIC);
         }
         if (i == 2){
+            setElectricalTargetId(-1);
             setElectricalHeadSegment(0);
             summonHead(getIkLightningHead(),DragonHeadVariants.ELECTRIC);
         }
@@ -736,7 +739,9 @@ public class Verfalldrachen extends Calamity implements TrueCalamity, RangedAtta
         if (canPerformSonicAttack()){
             setSonicTargetId(validTargets.get(sonicTargetIndex).getId());
         }
-        setElectricalTargetId(validTargets.get(electricalTargetIndex).getId());
+        if (getElectricalHead() > 0 && getElectricalHeadSegment() == ELECTRICAL_SEGMENT){
+            setElectricalTargetId(validTargets.get(electricalTargetIndex).getId());
+        }
     }
 
     public static AttributeSupplier.Builder createAttributes() {
