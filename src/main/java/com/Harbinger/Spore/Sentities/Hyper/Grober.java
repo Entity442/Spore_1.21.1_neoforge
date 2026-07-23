@@ -28,7 +28,6 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.Goal;
-import net.minecraft.world.entity.ai.goal.LeapAtTargetGoal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
 import net.minecraft.world.entity.ai.navigation.WallClimberNavigation;
@@ -51,7 +50,8 @@ public class Grober extends Hyper implements ArmorPersentageBypass {
         this.navigation = new WallClimberNavigation(this,level);
     }
     private int attackAnimationTick;
-    public AnimationState kickAnimation = new AnimationState();
+    public final AnimationState kickAnimation = new AnimationState();
+    public final AnimationState ravageAnimation = new AnimationState();
     @Override
     public List<? extends String> getDropList() {
         return SConfig.DATAGEN.grober_loot.get();
@@ -209,6 +209,13 @@ public class Grober extends Hyper implements ArmorPersentageBypass {
         if (entityData.get(RAVAGE_COOLDOWN) > 0){
             entityData.set(RAVAGE_COOLDOWN,entityData.get(RAVAGE_COOLDOWN) -1);
         }
+        if (getRavageTime() <= 0 && ravageAnimation.isStarted()){
+            ravageAnimation.stop();
+        }else {
+            if (getRavageTime() == 1){
+                ravageAnimation.start(this.tickCount);
+            }
+        }
     }
 
     protected SoundEvent getAmbientSound() {
@@ -324,7 +331,7 @@ public class Grober extends Hyper implements ArmorPersentageBypass {
                     target.getZ() - mob.getZ()
             ).normalize();
 
-            mob.setDeltaMovement(direction.scale(CHARGE_SPEED));
+            mob.setDeltaMovement(mob.getDeltaMovement().add(direction.scale(CHARGE_SPEED)));
 
             AABB hitbox = mob.getBoundingBox().inflate(1.0);
             List<LivingEntity> victims = mob.level().getEntitiesOfClass(
