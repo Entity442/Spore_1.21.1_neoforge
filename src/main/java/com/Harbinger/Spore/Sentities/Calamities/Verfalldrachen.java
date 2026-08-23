@@ -257,7 +257,13 @@ public class Verfalldrachen extends Calamity implements TrueCalamity, RangedAtta
             super.handleEntityEvent(value);
         }
     }
-
+    @Override
+    protected void positionRider(Entity entity, MoveFunction function) {
+        if (this.hasPassenger(entity)) {
+            Vec3 vec3 = tail.getEntities()[tail.getEntities().length-1];
+            function.accept(entity,vec3.x, vec3.y-1, vec3.z);
+        }
+    }
     public void setFlying(boolean value){
         boolean shouldFly = value && getRightWing() > 0 && getLeftWing() > 0;
         if (shouldFly){
@@ -335,6 +341,9 @@ public class Verfalldrachen extends Calamity implements TrueCalamity, RangedAtta
     @Override
     public boolean doHurtTarget(Entity entity) {
         this.playSound(Ssounds.VERFALL_ATTACK.value());
+        if (Math.random() < 0.2){
+            entity.startRiding(this,true);
+        }
         return super.doHurtTarget(entity);
     }
 
