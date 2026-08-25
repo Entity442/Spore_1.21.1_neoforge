@@ -33,7 +33,8 @@
     "spore:fang_lump",
     "spore:bile_lump",
     "spore:exploding_lump",
-    "spore:poisoning_lump"
-
+    "spore:poisoning_lump",
+    "spore:rotten_pumpkin",
+    "spore:rotten_melon"
   ]
 }

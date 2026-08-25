@@ -110,6 +110,10 @@ public class Sblocks {
     public static final DeferredBlock<Block> FROST_BURNED_BIOMASS = BLOCKS.register("freeze_burned_biomass", () -> new FrozenBiomass(BlockBehaviour.Properties.of().strength(2f,2f).sound(SoundType.SLIME_BLOCK).randomTicks()));
     public static final DeferredBlock<LiquidBlock> BILE = BLOCKS.register("bile", () -> new BileLiquidBlock());
     public static final DeferredBlock<Block> CRUSTED_BILE = BLOCKS.register("crusted_bile", CrustedBile::new);
+    public static final DeferredBlock<Block> ROTTEN_PUMPKIN = BLOCKS.register("rotten_pumpkin", () -> new Block(BlockBehaviour.Properties.of().sound(SoundType.AZALEA).strength(1f, 1f)));
+    public static final DeferredBlock<Block> ROTTEN_MELON = BLOCKS.register("rotten_melon", () -> new Block(BlockBehaviour.Properties.of().sound(SoundType.AZALEA).strength(1f, 1f)));
+    public static final DeferredBlock<Block> DEPLETED_ORE = BLOCKS.register("depleted_ore", () -> new Block(BlockBehaviour.Properties.of().sound(SoundType.STONE).strength(3f, 3f)));
+    public static final DeferredBlock<Block> DEPLETED_DEEPSLATE_ORE = BLOCKS.register("depleted_deepslate_ore", () -> new Block(BlockBehaviour.Properties.of().sound(SoundType.STONE).strength(3f, 5f)));
 
 
     public static final DeferredBlock<Block> REMAINS = BLOCKS.register("remains", Remains::new);
@@ -124,6 +128,8 @@ public class Sblocks {
     public static final DeferredBlock<Block> FANG_LUMP = BLOCKS.register("fang_lump", FangLump::new);
     public static final DeferredBlock<Block> EXPLODING_LUMP = BLOCKS.register("exploding_lump", ExplodingLump::new);
     public static final DeferredBlock<Block> POISONING_LUMP = BLOCKS.register("poisoning_lump", CorrosiveDrownedLump::new);
+    public static final DeferredBlock<Block> DROWNED_LIGHT = BLOCKS.register("drowned_light", DrownedShroomlight::new);
+
 
     public static final DeferredBlock<Block> ROTTEN_LOG = BLOCKS.register("rotten_log", () -> new FlamableRotatingBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_LOG).sound(SoundType.WOOD).randomTicks()));
     public static final DeferredBlock<Block> ROTTEN_PLANKS = BLOCKS.register("rotten_planks", () -> new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS).sound(SoundType.WOOD).ignitedByLava()));

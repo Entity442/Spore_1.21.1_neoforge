@@ -641,6 +641,10 @@ public class Sitems {
     public static final DeferredItem<Item> ROTTEN_GRASS = block(Sblocks.ROTTEN_GRASS);
     public static final DeferredItem<Item> ROTTEN_FERN = block(Sblocks.ROTTEN_FERN);
     public static final DeferredItem<Item> ROTTEN_CROPS = block(Sblocks.ROTTEN_CROPS);
+    public static final DeferredItem<Item> ROTTEN_PUMPKIN = block(Sblocks.ROTTEN_PUMPKIN);
+    public static final DeferredItem<Item> ROTTEN_MELON = block(Sblocks.ROTTEN_MELON);
+    public static final DeferredItem<Item> DEPLETED_ORE = block(Sblocks.DEPLETED_ORE);
+    public static final DeferredItem<Item> DEPLETED_DEEPSLATE_ORE = block(Sblocks.DEPLETED_DEEPSLATE_ORE);
     public static final DeferredItem<Item> ROOTED_BIOMASS = block(Sblocks.ROOTED_BIOMASS);
     public static final DeferredItem<Item> BIOMASS_BLOCK = block(Sblocks.BIOMASS_BLOCK);
     public static final DeferredItem<Item> CALCIFIED_BIOMASS_BLOCK = block(Sblocks.CALCIFIED_BIOMASS_BLOCK);
@@ -691,5 +695,6 @@ public class Sitems {
     public static final DeferredItem<Item> LUNGS = block(Sblocks.LUNGS);
     public static final DeferredItem<Item> ACIDIC_SACK = block(Sblocks.ACIDIC_SACK);
     public static final DeferredItem<Item> GLOWSHROOM = block(Sblocks.GLOWSHROOM);
+    public static final DeferredItem<Item> DROWNED_LIGHT = block(Sblocks.DROWNED_LIGHT);
     public static final DeferredItem<Item> HIVE_SPAWN = block(Sblocks.HIVE_SPAWN);
 }

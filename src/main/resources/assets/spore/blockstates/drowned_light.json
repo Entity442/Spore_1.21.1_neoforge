@@ -1,0 +1,21 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "spore:block/fungal_vent"
+      },
+      {
+        "model": "spore:block/fungal_vent",
+        "y": 90
+      },
+      {
+        "model": "spore:block/fungal_vent",
+        "y": 180
+      },
+      {
+        "model": "spore:block/fungal_vent",
+        "y": 270
+      }
+    ]
+  }
+}

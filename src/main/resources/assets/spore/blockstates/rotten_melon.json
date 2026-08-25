@@ -1,0 +1,21 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "spore:block/rotten_melon"
+      },
+      {
+        "model": "spore:block/rotten_melon",
+        "y": 90
+      },
+      {
+        "model": "spore:block/rotten_melon",
+        "y": 180
+      },
+      {
+        "model": "spore:block/rotten_melon",
+        "y": 270
+      }
+    ]
+  }
+}

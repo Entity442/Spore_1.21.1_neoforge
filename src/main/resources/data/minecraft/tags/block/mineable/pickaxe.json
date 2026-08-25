@@ -30,6 +30,8 @@
     "spore:cdu",
     "spore:surgery_table",
     "spore:frozen_remains",
+    "spore:depleted_ore",
+    "spore:depleted_deepslate_ore",
 
     "spore:crusted_bile",
     "spore:vent_plate",

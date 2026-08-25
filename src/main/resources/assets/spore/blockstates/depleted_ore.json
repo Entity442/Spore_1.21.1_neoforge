@@ -1,0 +1,21 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "spore:block/depleted_ore"
+      },
+      {
+        "model": "spore:block/depleted_ore",
+        "y": 90
+      },
+      {
+        "model": "spore:block/depleted_ore",
+        "y": 180
+      },
+      {
+        "model": "spore:block/depleted_ore",
+        "y": 270
+      }
+    ]
+  }
+}

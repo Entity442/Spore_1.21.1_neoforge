@@ -10,7 +10,7 @@
   "block.spore.wall_growths_fleshy": "Fleshy Growths",
   "block.spore.fang_lump": "Fang Lump",
   "block.spore.acidic_sack": "Corrosive Tumor",
-  "block.spore.lungs": "Cancerous Lungs",
+  "block.spore.lungs": "Cancerous Cavity",
   "block.spore.glowshroom": "Glowshroom",
   "block.spore.vocals": "Vocal Growth",
   "block.spore.hand": "Cancerous Claw",
@@ -116,6 +116,12 @@
   "block.spore.broken_halogen_light": "Shattered Halogen Light",
   "block.spore.broken_halogen_light_on": "Shattered Halogen Light",
   "block.spore.fungal_clamp": "Fungal Clamp",
+  "block.spore.rotten_pumpkin": "Rotten Pumpkin",
+  "block.spore.rotten_melon": "Rotten Melon",
+  "block.spore.depleted_ore": "Depleted Ore",
+  "block.spore.depleted_deepslate_ore": "Depleted Deepslate Ore",
+  "block.spore.drowned_light": "Fungal Vent",
+
 
   "item.spore.fungal_bonemeal": "Fungal Bonemeal",
   "item.spore.acidic_gland": "Acidimetric Gland",

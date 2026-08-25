@@ -1,0 +1,21 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "spore:block/rotten_pumpkin"
+      },
+      {
+        "model": "spore:block/rotten_pumpkin",
+        "y": 90
+      },
+      {
+        "model": "spore:block/rotten_pumpkin",
+        "y": 180
+      },
+      {
+        "model": "spore:block/rotten_pumpkin",
+        "y": 270
+      }
+    ]
+  }
+}

@@ -1,0 +1,119 @@
+{
+	"format_version": "1.9.0",
+	"credit": "Made with Blockbench",
+	"render_type": "cutout",
+	"texture_size": [64, 64],
+	"textures": {
+		"0": "spore:block/fungal_vent",
+		"particle": "spore:block/fungal_vent"
+	},
+	"elements": [
+		{
+			"name": "hole",
+			"from": [4.8, 0.1156, 4],
+			"to": [12.8, 0.1156, 12],
+			"rotation": {"angle": 0, "axis": "x", "origin": [8.41985, 3.99335, 8]},
+			"faces": {
+				"north": {"uv": [0, 0, 2, 0], "texture": "#0"},
+				"east": {"uv": [0, 0, 2, 0], "texture": "#0"},
+				"south": {"uv": [0, 0, 2, 0], "texture": "#0"},
+				"west": {"uv": [0, 0, 2, 0], "texture": "#0"},
+				"up": {"uv": [2, 10, 0, 8], "texture": "#0"},
+				"down": {"uv": [10, 0, 8, 2], "texture": "#0"}
+			}
+		},
+		{
+			"name": "biomass",
+			"from": [2.96315, -0.7844, 9.50539],
+			"to": [11.96315, 1.2156, 13.50539],
+			"rotation": {"angle": 22.5, "axis": "y", "origin": [7.61985, 3.99335, 6.5]},
+			"faces": {
+				"north": {"uv": [8, 6.75, 10.25, 7.25], "texture": "#0"},
+				"east": {"uv": [6.5, 9.25, 7.5, 9.75], "texture": "#0"},
+				"south": {"uv": [8, 7.25, 10.25, 7.75], "texture": "#0"},
+				"west": {"uv": [7.5, 9.25, 8.5, 9.75], "texture": "#0"},
+				"up": {"uv": [4.25, 9, 2, 8], "texture": "#0"},
+				"down": {"uv": [10.25, 2, 8, 3], "texture": "#0"}
+			}
+		},
+		{
+			"name": "biomass",
+			"from": [0.77902, -1.17817, 2.47011],
+			"to": [4.77902, 0.82183, 11.47011],
+			"rotation": {"angle": 22.5, "axis": "y", "origin": [8.61985, 0.99335, 8]},
+			"faces": {
+				"north": {"uv": [2, 9.5, 3, 10], "texture": "#0"},
+				"east": {"uv": [6.5, 8.75, 8.75, 9.25], "texture": "#0"},
+				"south": {"uv": [8.5, 9.25, 9.5, 9.75], "texture": "#0"},
+				"west": {"uv": [8.75, 7.75, 11, 8.25], "texture": "#0"},
+				"up": {"uv": [10.25, 4, 8, 3], "rotation": 90, "texture": "#0"},
+				"down": {"uv": [10.25, 4, 8, 5], "rotation": 270, "texture": "#0"}
+			}
+		},
+		{
+			"name": "biomass",
+			"from": [10.11335, -0.3812, 2.22323],
+			"to": [13.11335, 1.6188, 11.22323],
+			"rotation": {"angle": 22.5, "axis": "y", "origin": [5.61985, 1.99335, 6]},
+			"faces": {
+				"north": {"uv": [5.75, 9.5, 6.5, 10], "texture": "#0"},
+				"east": {"uv": [8.75, 8.25, 11, 8.75], "texture": "#0"},
+				"south": {"uv": [5, 9.5, 5.75, 10], "texture": "#0"},
+				"west": {"uv": [8.75, 8.75, 11, 9.25], "texture": "#0"},
+				"up": {"uv": [10.25, 6.75, 8, 6], "rotation": 90, "texture": "#0"},
+				"down": {"uv": [8.75, 8, 6.5, 8.75], "rotation": 270, "texture": "#0"}
+			}
+		},
+		{
+			"name": "biomass",
+			"from": [4.87682, -0.84648, 0.00784],
+			"to": [13.87682, 1.15352, 4.00784],
+			"rotation": {"angle": 45, "axis": "y", "origin": [9.61985, 1.99335, 8]},
+			"faces": {
+				"north": {"uv": [2, 9, 4.25, 9.5], "texture": "#0"},
+				"east": {"uv": [3, 9.5, 4, 10], "texture": "#0"},
+				"south": {"uv": [4.25, 9, 6.5, 9.5], "texture": "#0"},
+				"west": {"uv": [4, 9.5, 5, 10], "texture": "#0"},
+				"up": {"uv": [6.5, 9, 4.25, 8], "texture": "#0"},
+				"down": {"uv": [10.25, 5, 8, 6], "texture": "#0"}
+			}
+		},
+		{
+			"name": "cordyceps",
+			"from": [7.88866, 0, -0.26881],
+			"to": [7.88866, 16, 15.73119],
+			"rotation": {"angle": -45, "axis": "y", "origin": [7.61985, 3.99335, 8]},
+			"faces": {
+				"north": {"uv": [0, 0, 0, 4], "texture": "#0"},
+				"east": {"uv": [0, 0, 4, 4], "texture": "#0"},
+				"south": {"uv": [0, 0, 0, 4], "texture": "#0"},
+				"west": {"uv": [0, 4, 4, 8], "texture": "#0"},
+				"up": {"uv": [0, 4, 0, 0], "texture": "#0"},
+				"down": {"uv": [0, 0, 0, 4], "texture": "#0"}
+			}
+		},
+		{
+			"name": "cordyceps",
+			"from": [7.88866, 0, 0.26881],
+			"to": [7.88866, 16, 16.26881],
+			"rotation": {"angle": 45, "axis": "y", "origin": [7.61985, 3.99335, 8]},
+			"faces": {
+				"north": {"uv": [0, 0, 0, 4], "texture": "#0"},
+				"east": {"uv": [4, 0, 8, 4], "texture": "#0"},
+				"south": {"uv": [0, 0, 0, 4], "texture": "#0"},
+				"west": {"uv": [4, 4, 8, 8], "texture": "#0"},
+				"up": {"uv": [0, 4, 0, 0], "texture": "#0"},
+				"down": {"uv": [0, 0, 0, 4], "texture": "#0"}
+			}
+		}
+	],
+	"groups": [
+		{
+			"name": "vent",
+			"origin": [8, 8, 8],
+			"scope": 0,
+			"color": 0,
+			"children": [0, 1, 2, 3, 4, 5, 6]
+		}
+	]
+}

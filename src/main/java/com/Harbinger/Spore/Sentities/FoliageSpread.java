@@ -9,9 +9,10 @@ import com.Harbinger.Spore.core.Sblocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.item.FallingBlockEntity;
@@ -28,6 +29,7 @@ import java.util.Map;
 
 public interface FoliageSpread {
     RandomSource source = RandomSource.create();
+    public static final TagKey<Block> ORE_TAG = TagKey.create(Registries.BLOCK,ResourceLocation.parse("c:ores"));
     private List<Holder<Block>> GROUND_FOLIAGE(Level level){
         return Utilities.tryToCreateBlockFromTag(level,ResourceLocation.parse("spore:ground_foliage"));
     }
@@ -119,6 +121,13 @@ public interface FoliageSpread {
     default void placeCropsFoliage(Level level,BlockPos blockpos,BlockState blockstate){
         if (blockstate.getBlock() instanceof CropBlock){
             level.setBlock(blockpos, Sblocks.ROTTEN_CROPS.get().defaultBlockState(),3);
+        }
+        if (blockstate.is(Blocks.PUMPKIN) || blockstate.is(Blocks.CARVED_PUMPKIN)){
+            level.setBlock(blockpos,Sblocks.ROTTEN_PUMPKIN.get().defaultBlockState(),3);
+        }
+        if (blockstate.is(ORE_TAG)){
+            Block block = blockpos.getY() <= 0 ? Sblocks.DEPLETED_DEEPSLATE_ORE.get() : Sblocks.DEPLETED_ORE.get();
+            level.setBlock(blockpos,block.defaultBlockState(),3);
         }
     }
     default void placeRottenBush(BlockState above,Level level,BlockPos blockpos,BlockState blockstate){
