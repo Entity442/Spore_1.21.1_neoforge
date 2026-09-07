@@ -3,7 +3,8 @@
 	"credit": "Made with Blockbench",
 	"render_type": "cutout",
 	"textures": {
-		"1": "spore:block/clamp"
+		"1": "spore:block/clamp",
+		"particle": "spore:block/clamp"
 	},
 	"elements": [
 		{

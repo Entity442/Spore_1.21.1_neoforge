@@ -130,7 +130,7 @@ public class Sitems {
             () -> new BaseItem(new Item.Properties().stacksTo(16).food(new FoodProperties.Builder().nutrition(8).saturationModifier(0.8F).effect(()-> new MobEffectInstance(Seffects.MYCELIUM,200,0),0.4f)
                     .effect(()-> new MobEffectInstance(MobEffects.ABSORPTION,300,1),1f).build())));
     public  static final DeferredItem<Item> FIBER_STEW = ITEMS.register("fiber_stew",
-            () -> new BowlItem(new Item.Properties().stacksTo(16).food(new FoodProperties.Builder().nutrition(6).saturationModifier(1.5F).effect(()-> new MobEffectInstance(Seffects.MYCELIUM,200,0),0.4f)
+            () -> new BowlItem(new Item.Properties().stacksTo(16).food(new FoodProperties.Builder().nutrition(6).saturationModifier(0.8F).effect(()-> new MobEffectInstance(Seffects.MYCELIUM,200,0),0.4f)
                     .effect(()-> new MobEffectInstance(MobEffects.REGENERATION,300,0),1f).build())));
     public  static final DeferredItem<Item> HEART_KEBAB = ITEMS.register("heart_kebab",
             () -> new BaseItem(new Item.Properties().stacksTo(16).food(new FoodProperties.Builder().nutrition(2).saturationModifier(0.4F).effect(()-> new MobEffectInstance(Seffects.MYCELIUM,200,0),0.4f)
@@ -139,7 +139,7 @@ public class Sitems {
             () -> new BaseItem(new Item.Properties().stacksTo(16).food(new FoodProperties.Builder().nutrition(8).saturationModifier(1.2F).effect(()-> new MobEffectInstance(Seffects.MYCELIUM,200,0),0.4f)
                     .effect(()-> new MobEffectInstance(MobEffects.HEALTH_BOOST,300,1),1f).build())));
     public  static final DeferredItem<Item> ROASTED_TUMOR = ITEMS.register("roasted_tumor",
-            () -> new BaseItem(new Item.Properties().stacksTo(16).food(new FoodProperties.Builder().nutrition(10).saturationModifier(1.8F).effect(()-> new MobEffectInstance(Seffects.MYCELIUM,200,0),0.4f)
+            () -> new BaseItem(new Item.Properties().stacksTo(16).food(new FoodProperties.Builder().nutrition(10).saturationModifier(1).effect(()-> new MobEffectInstance(Seffects.MYCELIUM,200,0),0.4f)
                     .effect(()-> new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE,300,1),1f).build())));
     public  static final DeferredItem<Item> VIGIL_EYE_SOUP = ITEMS.register("vigil_eye_soup",
             () -> new BowlItem(new Item.Properties().stacksTo(16).food(new FoodProperties.Builder().nutrition(12).saturationModifier(1.2F).effect(()-> new MobEffectInstance(Seffects.MYCELIUM,200,0),0.4f)
@@ -147,10 +147,10 @@ public class Sitems {
     public  static final DeferredItem<Item> MILKY_SACK = ITEMS.register("milky_sack",
             () -> new BaseItem(new Item.Properties().stacksTo(8).food(new FoodProperties.Builder().nutrition(4).saturationModifier(1.2F).alwaysEdible().build())));
     public  static final DeferredItem<Item> BRAIN_NOODLES = ITEMS.register("brain_noodles",
-            () -> new BowlItem(new Item.Properties().stacksTo(16).food(new FoodProperties.Builder().nutrition(10).saturationModifier(2F).effect(()-> new MobEffectInstance(Seffects.MYCELIUM,200,0),0.4f)
+            () -> new BowlItem(new Item.Properties().stacksTo(16).food(new FoodProperties.Builder().nutrition(5).saturationModifier(1.2f).effect(()-> new MobEffectInstance(Seffects.MYCELIUM,200,0),0.4f)
                     .effect(()-> new MobEffectInstance(MobEffects.DIG_SPEED,300,1),1f).build())));
     public  static final DeferredItem<Item> FRIED_WING_MEMBRANE = ITEMS.register("fried_wing_membrane",
-            () -> new BaseItem(new Item.Properties().stacksTo(16).food(new FoodProperties.Builder().nutrition(10).saturationModifier(3F).effect(()-> new MobEffectInstance(Seffects.MYCELIUM,200,0),0.4f)
+            () -> new BaseItem(new Item.Properties().stacksTo(16).food(new FoodProperties.Builder().nutrition(10).saturationModifier(0.75f).effect(()-> new MobEffectInstance(Seffects.MYCELIUM,200,0),0.4f)
                     .effect(()-> new MobEffectInstance(MobEffects.SLOW_FALLING,300,1),1f).build())));
     public  static final DeferredItem<Item> BIOMASS_BACON = ITEMS.register("biomass_bacon",
             () -> new BaseItem(new Item.Properties().food(new FoodProperties.Builder().nutrition(4).saturationModifier(0.5F).effect(()-> new MobEffectInstance(Seffects.MYCELIUM,200,0),0.4f)
@@ -162,9 +162,9 @@ public class Sitems {
             () -> new BowlItem(new Item.Properties().food(new FoodProperties.Builder().nutrition(4).saturationModifier(4F).effect(()-> new MobEffectInstance(Seffects.MYCELIUM,200,0),0.4f)
                     .effect(()-> new MobEffectInstance(MobEffects.REGENERATION,400,2),1f).build()).stacksTo(16)));
     public  static final DeferredItem<Item> FUNGAL_SAUCE = ITEMS.register("fungal_sauce",
-            () -> new BowlItem(new Item.Properties().food(new FoodProperties.Builder().nutrition(6).saturationModifier(6F).effect(()-> new MobEffectInstance(Seffects.MYCELIUM,400,0),1f).build()).stacksTo(16)));
+            () -> new BowlItem(new Item.Properties().food(new FoodProperties.Builder().nutrition(6).saturationModifier(2).effect(()-> new MobEffectInstance(Seffects.MYCELIUM,400,0),1f).build()).stacksTo(16)));
     public  static final DeferredItem<Item> SLICE_OF_HEARTPIE = ITEMS.register("slice_of_heartpie",
-            () -> new BaseItem(new Item.Properties().food(new FoodProperties.Builder().nutrition(6).saturationModifier(3F).effect(()-> new MobEffectInstance(Seffects.MYCELIUM,200,0),0.4f)
+            () -> new BaseItem(new Item.Properties().food(new FoodProperties.Builder().nutrition(6).saturationModifier(1.2f).effect(()-> new MobEffectInstance(Seffects.MYCELIUM,200,0),0.4f)
                     .effect(()-> new MobEffectInstance(MobEffects.HEALTH_BOOST,100,1),1f)
                     .effect(()-> new MobEffectInstance(MobEffects.REGENERATION,200,1),1f).build())));
     public  static final DeferredItem<Item> FUNGAL_BURGER = ITEMS.register("fungal_burger",
@@ -199,7 +199,7 @@ public class Sitems {
     public  static final DeferredItem<Item> STUFFED_TORSO = ITEMS.register("stuffed_torso",
             () -> new BaseItem(new Item.Properties()));
     public  static final DeferredItem<Item> DECAYED_LIMBS = ITEMS.register("decayed_limbs",
-            () -> new DecayedLimbs(new Item.Properties().food(new FoodProperties.Builder().nutrition(4).saturationModifier(1F).effect(()-> new MobEffectInstance(Seffects.MYCELIUM,200,0),0.4f)
+            () -> new DecayedLimbs(new Item.Properties().food(new FoodProperties.Builder().nutrition(4).saturationModifier(1F).effect(()-> new MobEffectInstance(Seffects.MYCELIUM,200,1),0.4f)
                     .effect(()-> new MobEffectInstance(MobEffects.ABSORPTION,300,1),1f).build())));
 
     public  static final DeferredItem<Item> INFECTED_HUMAN_SPAWNEGG = ITEMS.register("infected_human_spawnegg",

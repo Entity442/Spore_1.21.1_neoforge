@@ -1,7 +1,6 @@
 package com.Harbinger.Spore.Sitems;
 
 import com.Harbinger.Spore.core.Seffects;
-import net.minecraft.core.Holder;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
@@ -13,8 +12,8 @@ import net.minecraft.world.level.block.Block;
 
 public class SkullSoupItem extends BlockItemBase2{
     public SkullSoupItem(Block block) {
-        super(block, new Properties().food(new FoodProperties.Builder().nutrition(4).saturationModifier(2F)
-                .effect(()-> new MobEffectInstance(Seffects.MYCELIUM,200,0),0.4f)
+        super(block, new Properties().food(new FoodProperties.Builder().nutrition(4).saturationModifier(1F)
+                .effect(()-> new MobEffectInstance(Seffects.MYCELIUM,200,1),0.4f)
                 .effect(()-> new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE,200,0),1f).build()));
     }
 

@@ -1,11 +1,11 @@
 package com.Harbinger.Spore.Sentities;
 
 
+import com.Harbinger.Spore.core.Sblocks;
 import com.Harbinger.Spore.ExtremelySusThings.CustomJsonReader.SporeConversionData;
 import com.Harbinger.Spore.ExtremelySusThings.Utilities;
 import com.Harbinger.Spore.Sblocks.GenericFoliageBlock;
 import com.Harbinger.Spore.core.SConfig;
-import com.Harbinger.Spore.core.Sblocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
@@ -124,6 +124,9 @@ public interface FoliageSpread {
         }
         if (blockstate.is(Blocks.PUMPKIN) || blockstate.is(Blocks.CARVED_PUMPKIN)){
             level.setBlock(blockpos,Sblocks.ROTTEN_PUMPKIN.get().defaultBlockState(),3);
+        }
+        if (blockstate.is(Blocks.MELON)){
+            level.setBlock(blockpos, Sblocks.ROTTEN_MELON.get().defaultBlockState(),3);
         }
         if (blockstate.is(ORE_TAG)){
             Block block = blockpos.getY() <= 0 ? Sblocks.DEPLETED_DEEPSLATE_ORE.get() : Sblocks.DEPLETED_ORE.get();

@@ -232,9 +232,9 @@ public class DamageHandeling {
                 unWavering(unwavering,target);
             }
             if (Senchantments.hasEnchant(living.level(),living.getItemBySlot(EquipmentSlot.HEAD),Senchantments.VORACIOUS_MAW)){
-                if (Math.random() < 0.1f && living instanceof Player player){
+                if (Math.random() < 0.5f && living instanceof Player player){
                     player.playNotifySound(SoundEvents.GENERIC_EAT, SoundSource.AMBIENT,1,1);
-                    player.getFoodData().eat(6,0);
+                    player.getFoodData().eat(3,0);
                 }
             }
             if (Senchantments.hasEnchant(living.level(),living.getItemBySlot(EquipmentSlot.MAINHAND),Senchantments.CORROSIVE_POTENCY)){
