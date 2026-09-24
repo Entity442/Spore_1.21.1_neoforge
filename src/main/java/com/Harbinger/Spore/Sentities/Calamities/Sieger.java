@@ -14,10 +14,7 @@ import com.Harbinger.Spore.Sentities.FallenMultipart.SiegerTail;
 import com.Harbinger.Spore.Sentities.HitboxesForParts;
 import com.Harbinger.Spore.Sentities.Projectile.ThrownTumor;
 import com.Harbinger.Spore.Sentities.TrueCalamity;
-import com.Harbinger.Spore.core.SAttributes;
-import com.Harbinger.Spore.core.SConfig;
-import com.Harbinger.Spore.core.Sentities;
-import com.Harbinger.Spore.core.Ssounds;
+import com.Harbinger.Spore.core.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
@@ -52,19 +49,24 @@ public class Sieger extends Calamity implements RangedAttackMob, TrueCalamity {
     public static final EntityDataAccessor<Float> TAIL_HP = SynchedEntityData.defineId(Sieger.class, EntityDataSerializers.FLOAT);
     public static final EntityDataAccessor<Integer> ADAPTATION = SynchedEntityData.defineId(Sieger.class, EntityDataSerializers.INT);
     public static final EntityDataAccessor<Integer> TARGET = SynchedEntityData.defineId(Sieger.class, EntityDataSerializers.INT);
-    private final CalamityMultipart[] subEntities;
+    public final IkSiegerTail siegerTail;
     public final CalamityMultipart lowerbody;
     public final CalamityMultipart head;
-    public final IkSiegerTail siegerTail;
     public final List<CalamityMultipart> parts = new ArrayList<>();
     public final List<CalamityMultipart> tail = new ArrayList<>();
+    private final CalamityMultipart[] subEntities;
     public Sieger(EntityType<? extends PathfinderMob> type, Level level) {
         super(type, level);
-        siegerTail = new IkSiegerTail(this,8,new Vec3(-2.5,1.1,0),new Vec3(0,5,0));
         this.lowerbody = new CalamityMultipart(this, "lowerbody", 3.0F, 3.0F);
         this.head = new CalamityMultipart(this, "head", 1.4F, 1.4F);
         parts.add(lowerbody);
         parts.add(head);
+        this.siegerTail = new IkSiegerTail(
+                this,
+                8,
+                new Vec3(-2.5, 1.1, 0),
+                new Vec3(1, 5, 0)
+        );
         this.subEntities = parts.toArray(new CalamityMultipart[0]);
         this.setId(ENTITY_COUNTER.getAndAdd(this.subEntities.length + 1) + 1);
     }
@@ -91,7 +93,6 @@ public class Sieger extends Calamity implements RangedAttackMob, TrueCalamity {
     @Override
     public void tick() {
         super.tick();
-        siegerTail.applyIK();
         if (this.getHealth() >= this.getMaxHealth() && this.getTailHp() < this.getMaxTailHp()){
             if (this.tickCount % 40 == 0){
                 this.setTailHp(this.getTailHp() +1);
@@ -105,6 +106,7 @@ public class Sieger extends Calamity implements RangedAttackMob, TrueCalamity {
 
     @Override
     public void aiStep() {
+        siegerTail.applyIK();
         float f14 = this.getYRot() * ((float)Math.PI / 180F);
         float f2 = Mth.sin(f14);
         float f15 = Mth.cos(f14);

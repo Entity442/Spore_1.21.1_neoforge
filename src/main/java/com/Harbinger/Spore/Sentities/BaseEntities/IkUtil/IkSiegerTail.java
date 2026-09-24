@@ -9,15 +9,11 @@ import net.minecraft.world.phys.Vec3;
 import java.util.Arrays;
 
 public class IkSiegerTail {
-    protected final RandomSource randomSource = RandomSource.create();
     protected final Sieger owner;
+    protected final RandomSource randomSource;
     protected final Vec3[] entities;
     protected final Vec3 defaultBodyOffset;
     protected final Vec3 defaultLimbOffset;
-    protected final float[] wiggleTimers;
-    protected final float[] wiggleSpeeds;
-    protected final float[] wiggleAmplitudes;
-    protected final float[] wiggleOffsets;
     protected final Vec3[] segmentVelocities;
     protected final float[] targetYaws; // Store target yaw for each segment
     protected final float[] currentYaws; // Store current yaw for smooth rotation
@@ -33,21 +29,15 @@ public class IkSiegerTail {
     public IkSiegerTail(Sieger owner, int amount, Vec3 defaultBodyOffset,
                         Vec3 defaultLimbOffset) {
         this.owner = owner;
+        this.randomSource = owner.getRandom();
         this.entities = new Vec3[amount];
-        this.wiggleTimers = new float[amount];
-        this.wiggleSpeeds = new float[amount];
-        this.wiggleAmplitudes = new float[amount];
-        this.wiggleOffsets = new float[amount];
+
         this.segmentVelocities = new Vec3[amount];
         this.targetYaws = new float[amount];
         this.currentYaws = new float[amount];
         this.hitboxes = new CalamityMultipart[amount];
         for(int i = 0; i < amount; i++){
             entities[i] = new Vec3(0,0,0);
-            wiggleSpeeds[i] = 0.5f + randomSource.nextFloat() * getWiggleSpeed();
-            wiggleAmplitudes[i] = 0.02f + randomSource.nextFloat() * getWiggleAmplitude();
-            wiggleOffsets[i] = randomSource.nextFloat() * (float)Math.PI * 2;
-            wiggleTimers[i] = randomSource.nextFloat() * 100;
             segmentVelocities[i] = new Vec3(0, 0, 0);
             float size = 0.3f + (i * 0.1f);
             hitboxes[i] = new CalamityMultipart(owner,"tail" + i,size,size);
@@ -60,43 +50,11 @@ public class IkSiegerTail {
         this.defaultLimbOffset = defaultLimbOffset;
     }
 
-    public float getWiggleSpeed(){
-        return 0.25f;
-    }
-
-    public float getWiggleAmplitude(){
-        return 0.03f;
-    }
-
-    protected void updateWiggleTimers() {
-        for (int i = 0; i < wiggleTimers.length; i++) {
-            wiggleTimers[i] += 0.05f * wiggleSpeeds[i];
-            if (wiggleTimers[i] > 1000) wiggleTimers[i] -= 1000;
-        }
-    }
 
     public Vec3 getSitPosition() {
         return sitPosition;
     }
 
-    protected void applyIdleWiggle() {
-        RandomSource rand = this.randomSource;
-        for (int i = 1; i < entities.length - 1; i++) {
-            Vec3 current = entities[i];
-            float time = wiggleTimers[i] + wiggleOffsets[i];
-            float xWiggle = (float)Math.sin(time * 0.7f) * wiggleAmplitudes[i];
-            float yWiggle = (float)Math.sin(time * 1.2f + 1.5f) * wiggleAmplitudes[i] * 0.8f;
-            float zWiggle = (float)Math.sin(time * 0.9f + 2.0f) * wiggleAmplitudes[i] * 0.6f;
-
-            if (rand.nextFloat() < 0.05f) {
-                xWiggle += (rand.nextFloat() - 0.5f) * 0.02f;
-                yWiggle += (rand.nextFloat() - 0.5f) * 0.01f;
-                zWiggle += (rand.nextFloat() - 0.5f) * 0.02f;
-            }
-
-            entities[i] = current.add(xWiggle, yWiggle, zWiggle);
-        }
-    }
 
     public Vec3[] getEntities() {
         return entities;
@@ -307,9 +265,6 @@ public class IkSiegerTail {
             moveSegmentTowards(i, solvedPos);
         }
 
-        applyIdleWiggle();
-        updateWiggleTimers();
-
         for (int i = 0;i<entities.length;i++){
             CalamityMultipart multipart = hitboxes[i];
             Vec3 vec3 = entities[i];
@@ -319,7 +274,7 @@ public class IkSiegerTail {
     public void setupPositionHitbox(CalamityMultipart multipart,Vec3 vec3) {
         Vec3 prev = new Vec3(
                 multipart.getX(),
-                multipart.getY(),
+                multipart.getY() + 0.45,
                 multipart.getZ()
         );
         multipart.setPos(

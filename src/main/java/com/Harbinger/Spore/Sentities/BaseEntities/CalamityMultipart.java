@@ -36,7 +36,6 @@ public class CalamityMultipart extends PartEntity<Calamity> {
     protected void addAdditionalSaveData(CompoundTag p_20139_) {
 
     }
-
     public boolean isPickable() {
         return true;
     }
