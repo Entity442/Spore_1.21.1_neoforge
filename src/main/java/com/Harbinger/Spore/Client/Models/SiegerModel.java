@@ -1435,19 +1435,6 @@ public class SiegerModel<T extends Sieger> extends EntityModel<T> implements Ten
 		animateTentacleX(BackLeftForLeg2,-BackRightForLeg.xRot);
 		animateTentacleY(smolleg,Mth.sin(limbSwing * 0.5F) * -0.5F * limbSwingAmount);
 		animateTentacleX(jaw,Mth.sin(ageInTicks/8)/10);
-		if (entity.getTailHp() > 0){
-			this.tail.visible = true;
-			float value = Mth.sin(ageInTicks/8)/10;
-			animateTentacleX(tail,value);
-			animateTentacleX(tail2,value);
-			animateTentacleX(tail3,value);
-			animateTentacleX(tail4,value);
-			animateTumor(tailTumor1,Mth.sin(ageInTicks/7)/6);
-			animateTumor(tailTumor2,Mth.cos(ageInTicks/6)/9);
-			animateTumor(tailTumor3,-Mth.sin(ageInTicks/7)/8);
-		}else {
-			this.tail.visible = false;
-		}
 	}
 
 	@Override
@@ -1455,7 +1442,6 @@ public class SiegerModel<T extends Sieger> extends EntityModel<T> implements Ten
 		smolleg.render(poseStack, vertexConsumer, packedLight, packedOverlay, alpha);
 		mainbody.render(poseStack, vertexConsumer, packedLight, packedOverlay,  alpha);
 		mainbody2.render(poseStack, vertexConsumer, packedLight, packedOverlay,  alpha);
-		tail.render(poseStack, vertexConsumer, packedLight, packedOverlay,alpha);
 		RightLegJointY.render(poseStack, vertexConsumer, packedLight, packedOverlay, alpha);
 		LeftLegJointY.render(poseStack, vertexConsumer, packedLight, packedOverlay, alpha);
 		jaw.render(poseStack, vertexConsumer, packedLight, packedOverlay, alpha);

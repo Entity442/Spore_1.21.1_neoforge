@@ -70,6 +70,7 @@ public class Verfalldrachen extends Calamity implements TrueCalamity, RangedAtta
     private final IkDragonHead ikLightningHead;
     private final IkDragonTail tail;
     protected List<AmbientSparks> sparks = new ArrayList<>();
+    public static final EntityDataAccessor<Integer> TARGET = SynchedEntityData.defineId(Verfalldrachen.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Float> CHARGE = SynchedEntityData.defineId(Verfalldrachen.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Float> SONIC_CHARGE = SynchedEntityData.defineId(Verfalldrachen.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Float> TAR_CHARGE = SynchedEntityData.defineId(Verfalldrachen.class, EntityDataSerializers.FLOAT);
@@ -130,6 +131,7 @@ public class Verfalldrachen extends Calamity implements TrueCalamity, RangedAtta
         float wingsMaxHp = (float) (SConfig.SERVER.verfa_hp.get() * SConfig.SERVER.global_health.get() * 0.25);
         float headsMaxHp = (float) (SConfig.SERVER.verfa_hp.get() * SConfig.SERVER.global_health.get() * 0.35);
         builder.define(CHARGE,0f);
+        builder.define(TARGET,-1);
         builder.define(SONIC_CHARGE,0f);
         builder.define(TAR_CHARGE,0f);
         builder.define(CHARGE_DATA_ID,-1);
@@ -145,7 +147,11 @@ public class Verfalldrachen extends Calamity implements TrueCalamity, RangedAtta
         builder.define(ELECTRICAL_SEGMENTS,ELECTRICAL_SEGMENT);
         builder.define(DRAGON_FIRE_CHARGE,false);
     }
-
+    @Override
+    public void setTarget(@Nullable LivingEntity living) {
+        super.setTarget(living);
+        entityData.set(TARGET,living == null ? -1 : living.getId());
+    }
     public void setDragonFireCharge(boolean va){
         entityData.set(DRAGON_FIRE_CHARGE,va);
     }
@@ -728,7 +734,9 @@ public class Verfalldrachen extends Calamity implements TrueCalamity, RangedAtta
                         TARGET_SELECTOR.test(entity) && this.hasLineOfSight(entity)
         );
 
-
+        if (level().getEntity(entityData.get(TARGET)) instanceof LivingEntity living){
+            validTargets.add(living);
+        }
         validTargets.sort(Comparator.comparingDouble(this::distanceToSqr));
 
         if (validTargets.isEmpty()) {

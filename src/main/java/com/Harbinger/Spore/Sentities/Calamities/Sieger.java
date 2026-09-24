@@ -9,6 +9,7 @@ import com.Harbinger.Spore.Sentities.AI.CalamitiesAI.SummonScentInCombat;
 import com.Harbinger.Spore.Sentities.AI.FloatDiveGoal;
 import com.Harbinger.Spore.Sentities.BaseEntities.Calamity;
 import com.Harbinger.Spore.Sentities.BaseEntities.CalamityMultipart;
+import com.Harbinger.Spore.Sentities.BaseEntities.IkUtil.IkSiegerTail;
 import com.Harbinger.Spore.Sentities.FallenMultipart.SiegerTail;
 import com.Harbinger.Spore.Sentities.HitboxesForParts;
 import com.Harbinger.Spore.Sentities.Projectile.ThrownTumor;
@@ -28,6 +29,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.*;
@@ -49,18 +51,21 @@ import java.util.List;
 public class Sieger extends Calamity implements RangedAttackMob, TrueCalamity {
     public static final EntityDataAccessor<Float> TAIL_HP = SynchedEntityData.defineId(Sieger.class, EntityDataSerializers.FLOAT);
     public static final EntityDataAccessor<Integer> ADAPTATION = SynchedEntityData.defineId(Sieger.class, EntityDataSerializers.INT);
+    public static final EntityDataAccessor<Integer> TARGET = SynchedEntityData.defineId(Sieger.class, EntityDataSerializers.INT);
     private final CalamityMultipart[] subEntities;
     public final CalamityMultipart lowerbody;
     public final CalamityMultipart head;
-    public final CalamityMultipart tail;
-    public final CalamityMultipart tail2;
+    public final IkSiegerTail siegerTail;
+    public final List<CalamityMultipart> parts = new ArrayList<>();
+    public final List<CalamityMultipart> tail = new ArrayList<>();
     public Sieger(EntityType<? extends PathfinderMob> type, Level level) {
         super(type, level);
+        siegerTail = new IkSiegerTail(this,8,new Vec3(-2.5,1.1,0),new Vec3(0,5,0));
         this.lowerbody = new CalamityMultipart(this, "lowerbody", 3.0F, 3.0F);
-        this.tail = new CalamityMultipart(this, "tail", 1.5F, 1.5F);
-        this.tail2 = new CalamityMultipart(this, "tail", 1.5F, 1.5F);
         this.head = new CalamityMultipart(this, "head", 1.4F, 1.4F);
-        this.subEntities = new CalamityMultipart[]{ this.lowerbody, this.tail, this.tail2,this.head};
+        parts.add(lowerbody);
+        parts.add(head);
+        this.subEntities = parts.toArray(new CalamityMultipart[0]);
         this.setId(ENTITY_COUNTER.getAndAdd(this.subEntities.length + 1) + 1);
     }
 
@@ -74,6 +79,9 @@ public class Sieger extends Calamity implements RangedAttackMob, TrueCalamity {
         for (int i = 0; i < this.subEntities.length; i++)
             this.subEntities[i].setId(p_20235_ + i + 1);
     }
+    public IkSiegerTail getSiegerTail(){
+        return siegerTail;
+    }
 
     @Override
     public double setInflation() {
@@ -83,6 +91,7 @@ public class Sieger extends Calamity implements RangedAttackMob, TrueCalamity {
     @Override
     public void tick() {
         super.tick();
+        siegerTail.applyIK();
         if (this.getHealth() >= this.getMaxHealth() && this.getTailHp() < this.getMaxTailHp()){
             if (this.tickCount % 40 == 0){
                 this.setTailHp(this.getTailHp() +1);
@@ -103,16 +112,6 @@ public class Sieger extends Calamity implements RangedAttackMob, TrueCalamity {
         for(int j = 0; j < this.subEntities.length; ++j) {
             avec3[j] = new Vec3(this.subEntities[j].getX(), this.subEntities[j].getY(), this.subEntities[j].getZ());
         }
-        if (this.getTailHp() > 0){
-            this.tickPart(this.tail, new Vec3(-1.5D,7.0D,0D));
-        }else{
-            this.tickPart(this.tail, (double)(f2 * 2.0F), 1.0D, (double)(-f15 * 2.0F));
-        }
-        if (this.getTailHp() > 0){
-            this.tickPart(this.tail2, new Vec3(-3D,4.0D,0D));
-        }else{
-            this.tickPart(this.tail2, (double)(f2 * 2.0F), 1.0D, (double)(-f15 * 2.0F));
-        }
         this.tickPart(this.head, (double)(f2 * -2.5F), 1.4D, (double)(-f15 * -2.5F));
         this.tickPart(this.lowerbody, (double)(f2 * 3.0F), 0.0D, (double)(-f15 * 3.0F));
         for(int l = 0; l < this.subEntities.length; ++l) {
@@ -130,17 +129,18 @@ public class Sieger extends Calamity implements RangedAttackMob, TrueCalamity {
     }
 
 
-    boolean calculateHeight(){
-        return this.getTarget() != null && this.getTarget().getY() > this.getY() && Math.abs(Math.abs(this.getTarget().getY()) - Math.abs(this.getY())) > 5;
+    public boolean calculateHeight(){
+        Entity living = getEntity();
+        return living != null && ((living.getY() > this.getY() && Math.abs(Math.abs(living.getY()) - Math.abs(this.getY())) > 5) || this.distanceToSqr(living) > 200.0D);
     }
 
-    boolean calculateDistance(){
-        return this.getTarget() != null && this.distanceToSqr(this.getTarget()) > 400.0D;
+    public Entity getEntity(){
+        return level().getEntity(entityData.get(TARGET));
     }
 
     @Override
     public boolean hasLineOfSight(Entity entity) {
-        if (calculateDistance() || calculateHeight()){
+        if (calculateHeight()){
             return true;
         }
         return super.hasLineOfSight(entity);
@@ -160,13 +160,51 @@ public class Sieger extends Calamity implements RangedAttackMob, TrueCalamity {
     @Override
     public void registerGoals() {
 
-        this.goalSelector.addGoal(3, new ScatterShotRangedGoal(this,1.5,80,48,ammoAmount()[0],ammoAmount()[1]){
+        this.goalSelector.addGoal(3, new ScatterShotRangedGoal(this,1.5,80,48,1,3){
             @Override
             public boolean canUse() {
                 if (Sieger.this.getTailHp() <= 0){
                     return false;
                 }
-                return super.canUse() && (calculateHeight() || calculateDistance());
+                return super.canUse() && calculateHeight();
+            }
+
+            @Override
+            public void tick() {
+                if (target == null){
+                    return;
+                }
+                double d0 = this.mob.distanceToSqr(this.target.getX(), this.target.getY(), this.target.getZ());
+                boolean flag = this.mob.getSensing().hasLineOfSight(this.target);
+                if (flag) {
+                    ++this.seeTime;
+                } else {
+                    this.seeTime = 0;
+                }
+
+                if (!(d0 > (double)this.attackRadiusSqr) && this.seeTime >= 5) {
+                    this.mob.getNavigation().stop();
+                } else {
+                    this.mob.getNavigation().moveTo(this.target, this.speedModifier);
+                }
+
+                this.mob.getLookControl().setLookAt(this.target, 30.0F, 30.0F);
+                if (--this.attackTime == 0) {
+                    if (!flag) {
+                        return;
+                    }
+                    RandomSource randomSource = RandomSource.create();
+                    int shot = randomSource.nextInt(Sieger.this.ammoAmount()[0],Sieger.this.ammoAmount()[1] + getExtraShots());
+
+                    float f = (float)Math.sqrt(d0) / this.attackRadius;
+                    float f1 = Mth.clamp(f, 0.1F, 1.0F);
+                    for (int i = 0; i<shot;++i){
+                        this.rangedAttackMob.performRangedAttack(this.target, f1);
+                    }
+                    this.attackTime = Mth.floor(f * (float)(attackInterval) + (float)this.attackInterval);
+                } else if (this.attackTime < 0) {
+                    this.attackTime = Mth.floor(Mth.lerp(Math.sqrt(d0) / (double)this.attackRadius, (double)this.attackInterval, (double)this.attackInterval));
+                }
             }
         });
         this.goalSelector.addGoal(4, new LeapAtTargetGoal(this,0.4F));
@@ -250,7 +288,11 @@ public class Sieger extends Calamity implements RangedAttackMob, TrueCalamity {
     public boolean hurt(DamageSource source, float amount) {
         return super.hurt(source,this.isAdapted() ? amount * 0.7f : amount);
     }
-
+    @Override
+    public void setTarget(@Nullable LivingEntity living) {
+        super.setTarget(living);
+        entityData.set(TARGET,living == null ? -1 : living.getId());
+    }
     @Override
     public double getDamageCap() {
         return SConfig.SERVER.sieger_dpsr.get();
@@ -273,7 +315,8 @@ public class Sieger extends Calamity implements RangedAttackMob, TrueCalamity {
                 }
             }
             tumor.setExplode(Level.ExplosionInteraction.MOB);
-            tumor.moveTo(this.getX(),this.getY()+8.2,this.getZ());
+            Vec3 vec3 = siegerTail.getEntities()[siegerTail.getEntities().length-1];
+            tumor.moveTo(vec3);
             tumor.shoot(dx, dy - tumor.getY() + Math.hypot(dx, dz) * 0.05F, dz, 1f * 2, 12.0F);
             level().addFreshEntity(tumor);
         }
@@ -299,6 +342,7 @@ public class Sieger extends Calamity implements RangedAttackMob, TrueCalamity {
         super.defineSynchedData(builder);
         builder.define(TAIL_HP, this.getMaxTailHp());
         builder.define(ADAPTATION, 0);
+        builder.define(TARGET, -1);
     }
 
     @Override
@@ -325,10 +369,14 @@ public class Sieger extends Calamity implements RangedAttackMob, TrueCalamity {
     }
 
     public boolean hurt(CalamityMultipart calamityMultipart, DamageSource source, float value) {
-        if (calamityMultipart == this.tail || calamityMultipart == this.tail2){
-            this.hurt(source,this.isAdapted() ? value:value * 2);
-            float lostHealth = getTailHp()-this.getDamageAfterArmorAbsorb(source,value);
-            this.setTailHp(lostHealth > 0 ? lostHealth : getTailHp() != 0 ? SummonDetashedTail() : 0f);
+        if (tail.contains(calamityMultipart)){
+            if (this.getTailHp() > 0){
+                float lostHealth = getTailHp()-this.getDamageAfterArmorAbsorb(source,value);
+                this.setTailHp(lostHealth > 0 ? lostHealth : getTailHp() != 0 ? SummonDetashedTail() : 0f);
+                this.hurt(source,value * 2);
+            }else {
+                return false;
+            }
         }if (calamityMultipart == this.head){
             this.hurt(source,value * 0.75f);
         }else{
