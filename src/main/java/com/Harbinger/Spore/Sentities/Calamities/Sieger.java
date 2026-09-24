@@ -21,7 +21,6 @@ import com.Harbinger.Spore.core.Ssounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -43,6 +42,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.entity.PartEntity;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -273,16 +273,6 @@ public class Sieger extends Calamity implements RangedAttackMob, TrueCalamity {
         return subEntities;
     }
 
-    public void recreateFromPacket(ClientboundAddEntityPacket p_218825_) {
-        super.recreateFromPacket(p_218825_);
-        if (true) return;
-        CalamityMultipart[] calamityMultiparts = this.getSubEntities();
-
-        for(int i = 0; i < calamityMultiparts.length; ++i) {
-            calamityMultiparts[i].setId(i + p_218825_.getId());
-        }
-
-    }
 
     @Override
     public boolean hurt(DamageSource source, float amount) {
@@ -299,7 +289,7 @@ public class Sieger extends Calamity implements RangedAttackMob, TrueCalamity {
     }
 
     @Override
-    public void performRangedAttack(LivingEntity livingEntity, float p_33318_) {
+    public void performRangedAttack(@NotNull LivingEntity livingEntity, float p_33318_) {
         if(!level().isClientSide){
             ThrownTumor tumor = new ThrownTumor(level(), this);
             double dx = livingEntity.getX() - this.getX();
