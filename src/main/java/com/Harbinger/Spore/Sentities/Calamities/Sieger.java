@@ -361,13 +361,14 @@ public class Sieger extends Calamity implements RangedAttackMob, TrueCalamity {
     }
 
     public boolean hurt(CalamityMultipart calamityMultipart, DamageSource source, float value) {
-        if (tail.contains(calamityMultipart)){
+        boolean lower = calamityMultipart == lowerbody;
+        if (lower || tail.contains(calamityMultipart)){
             if (this.getTailHp() > 0){
                 float lostHealth = getTailHp()-this.getDamageAfterArmorAbsorb(source,value);
                 this.setTailHp(lostHealth > 0 ? lostHealth : getTailHp() != 0 ? SummonDetashedTail() : 0f);
                 this.hurt(source,value * 2);
             }else {
-                return false;
+                return lower && this.hurt(source, value);
             }
         }if (calamityMultipart == this.head){
             this.hurt(source,value * 0.75f);

@@ -10,10 +10,7 @@ import com.Harbinger.Spore.Sentities.HitboxesForParts;
 import com.Harbinger.Spore.Sentities.Projectile.BileProjectile;
 import com.Harbinger.Spore.Sentities.TrueCalamity;
 import com.Harbinger.Spore.Sentities.WaterInfected;
-import com.Harbinger.Spore.core.SAttributes;
-import com.Harbinger.Spore.core.SConfig;
-import com.Harbinger.Spore.core.Sentities;
-import com.Harbinger.Spore.core.Ssounds;
+import com.Harbinger.Spore.core.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
@@ -28,10 +25,14 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
 import net.minecraft.world.entity.monster.RangedAttackMob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.LiquidBlock;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.entity.PartEntity;
@@ -44,6 +45,7 @@ import java.util.List;
 public class Gazenbrecher extends Calamity implements WaterInfected , RangedAttackMob , TrueCalamity {
     public static final EntityDataAccessor<Integer> ADAPTATION = SynchedEntityData.defineId(Gazenbrecher.class, EntityDataSerializers.INT);
     public static final EntityDataAccessor<Float> TONGUE = SynchedEntityData.defineId(Gazenbrecher.class, EntityDataSerializers.FLOAT);
+    public static final EntityDataAccessor<Integer> BILE = SynchedEntityData.defineId(Gazenbrecher.class, EntityDataSerializers.INT);
     private int radar;
     private final CalamityMultipart[] subEntities;
     public final CalamityMultipart lowerbody;
@@ -98,6 +100,11 @@ public class Gazenbrecher extends Calamity implements WaterInfected , RangedAtta
     @Override
     public void tick() {
         super.tick();
+        if (tickCount % 40 == 0){
+            if (getBile() < 120){
+                setBile(getBile()+1);
+            }
+        }
         if (this.getHealth() >= this.getMaxHealth() && this.getTongueHp() < this.getMaxTongueHp()){
             if (this.tickCount % 40 == 0){
                 this.setTongueHp(this.getTongueHp() +1);
@@ -137,6 +144,7 @@ public class Gazenbrecher extends Calamity implements WaterInfected , RangedAtta
         super.defineSynchedData(builder);
         builder.define(TONGUE, this.getMaxTongueHp());
         builder.define(ADAPTATION, 0);
+        builder.define(BILE, 0);
     }
 
     @Override
@@ -144,12 +152,14 @@ public class Gazenbrecher extends Calamity implements WaterInfected , RangedAtta
         super.addAdditionalSaveData(tag);
         tag.putFloat("tongue_hp", entityData.get(TONGUE));
         tag.putInt("adaptation",entityData.get(ADAPTATION));
+        tag.putInt("bile",entityData.get(BILE));
     }
     @Override
     public void readAdditionalSaveData(CompoundTag tag) {
         super.readAdditionalSaveData(tag);
         entityData.set(TONGUE, tag.getFloat("tongue_hp"));
         entityData.set(ADAPTATION,tag.getInt("adaptation"));
+        entityData.set(BILE,tag.getInt("bile"));
     }
     public float getTongueHp(){
         return entityData.get(TONGUE);
@@ -157,7 +167,10 @@ public class Gazenbrecher extends Calamity implements WaterInfected , RangedAtta
     public void setTongueHp(float i){
         entityData.set(TONGUE,i);
     }
-
+    public int getBile(){
+        return entityData.get(BILE);
+    }
+    public void setBile(int i){entityData.set(BILE,i);}
     public float getMaxTongueHp(){
         return (float) (SConfig.SERVER.gazen_hp.get()/4.0f);
     }
@@ -251,8 +264,7 @@ public class Gazenbrecher extends Calamity implements WaterInfected , RangedAtta
 
     @Override
     public void registerGoals() {
-
-
+        this.goalSelector.addGoal(1,new SpewBile(this));
         this.goalSelector.addGoal(3, new ScatterShotRangedGoal(this,1.3,60,32,1,3){
             @Override
             public boolean canUse() {
@@ -407,5 +419,59 @@ public class Gazenbrecher extends Calamity implements WaterInfected , RangedAtta
     @Override
     public ColdEndurance getEndurance() {
         return getAdaptation() ? ColdEndurance.ADAPTED_CALAMITY : super.getEndurance();
+    }
+
+    public static class SpewBile extends Goal {
+        private final Gazenbrecher gazenbrecher;
+        private int tickCheck = 0;
+
+        public SpewBile(Gazenbrecher gazenbrecher) {
+            this.gazenbrecher = gazenbrecher;
+        }
+
+        @Override
+        public boolean canUse() {
+            return gazenbrecher.getBile() > 40
+                    && gazenbrecher.getTarget() != null
+                    && gazenbrecher.onGround();
+        }
+
+        @Override
+        public boolean canContinueToUse() {
+            return gazenbrecher.getBile() > 0 && !(tickCheck == 40 && gazenbrecher.getTarget() == null);
+        }
+
+        @Override
+        public void tick() {
+            super.tick();
+            if (tickCheck <= 40){
+                tickCheck++;
+            }else {
+                tickCheck = 0;
+            }
+            if (gazenbrecher.tickCount % 20 != 0) return;
+
+            if (gazenbrecher.onGround()){
+                Level level = gazenbrecher.level();
+                if (level.isClientSide) return;
+
+                Vec3 look = gazenbrecher.getLookAngle();
+                Vec3 frontCenter = gazenbrecher.position().add(look.x * 5, 0, look.z * 5);
+                BlockPos origin = BlockPos.containing(frontCenter);
+
+                Block block = Sblocks.BILE.get();
+                for (int x = -1; x <= 0; x++) {
+                    for (int z = -1; z <= 0; z++) {
+                        BlockPos pos = origin.offset(x, 1, z);
+                        BlockState existing = level.getBlockState(pos);
+                        if (existing.isAir()) {
+                            level.setBlock(pos, block.defaultBlockState().setValue(LiquidBlock.LEVEL,8),3);
+                            level.updateNeighborsAt(pos, block);
+                            gazenbrecher.setBile(gazenbrecher.getBile() - 1);
+                        }
+                    }
+                }
+            }
+        }
     }
 }
