@@ -9,7 +9,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
 
 public class IkDragonHead {
-    public static final int RANGE = 10 * 10;
     protected final RandomSource randomSource = RandomSource.create();
     protected final Verfalldrachen owner;
     protected final CalamityMultipart multipart;
@@ -362,7 +361,11 @@ public class IkDragonHead {
         }
     }
     public Vec3 getHeadMovementOffsets(LivingEntity entity){
-        return entity.position().add(0,2,0);
+        Vec3 vec3 = getHeadBasePos();
+        boolean range = Math.abs(Math.abs(owner.getY())-Math.abs(entity.getY())) < 4;
+        boolean below = owner.getY() > entity.getY();
+        double y =  below ? -6 : 2;
+        return new Vec3(vec3.x,range ? entity.getY()+2 : vec3.y + y,vec3.z);
     }
     public void applyIK() {
         if (entities.length == 0) {
@@ -379,7 +382,7 @@ public class IkDragonHead {
 
         Vec3 root = getBodyOffset();
 
-        Vec3 target = this.target != null && this.target.distanceToSqr(owner) < RANGE
+        Vec3 target = this.target != null
                 ? getHeadMovementOffsets(this.target)
                 : getHeadBasePos();
 
@@ -400,7 +403,6 @@ public class IkDragonHead {
         setupPositionHitbox();
 
     }
-
 
     public void setupPositionHitbox() {
 
