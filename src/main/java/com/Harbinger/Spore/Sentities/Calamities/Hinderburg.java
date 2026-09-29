@@ -32,11 +32,13 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.LookControl;
 import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
+import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.monster.RangedAttackMob;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
@@ -45,13 +47,13 @@ import net.neoforged.neoforge.entity.PartEntity;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 
 public class Hinderburg extends Calamity implements FlyingInfected , TrueCalamity , RangedAttackMob {
     public static final EntityDataAccessor<Boolean> ADAPTATION = SynchedEntityData.defineId(Hinderburg.class, EntityDataSerializers.BOOLEAN);
     public static final EntityDataAccessor<Integer> DROPPED_BOMBS = SynchedEntityData.defineId(Hinderburg.class, EntityDataSerializers.INT);
     public static final EntityDataAccessor<Integer> BOMB = SynchedEntityData.defineId(Hinderburg.class, EntityDataSerializers.INT);
-    private int bomb_timer = -1;
     private final CalamityMultipart[] subEntities;
     public final CalamityMultipart lowerbody;
     public final CalamityMultipart forwardbody;
@@ -114,6 +116,9 @@ public class Hinderburg extends Calamity implements FlyingInfected , TrueCalamit
     public void tick() {
         super.tick();
         if (tickCount % 20 == 0){
+            if (isAdapted() && getHealth() < getMaxHealth()){
+                this.heal(1f);
+            }
             if (this.getKills() >= 50 && this.getDroppedBombs() >= 5 && !this.isAdapted()){
                 this.entityData.set(ADAPTATION,true);
             }
@@ -127,28 +132,10 @@ public class Hinderburg extends Calamity implements FlyingInfected , TrueCalamit
                 }
             }
         }
-        if(this.getBomb() < 2450){
+        if(!isArmed()){
             int value = this.isAdapted() ? 2 : 1;
             this.setBomb(this.getBomb() + value);
         }
-        if (this.getBombTimer() >= 0){
-            tickBomb();
-            if (this.getBombTimer() == 1){
-                Entity entity = this.getTarget() != null ? this.getTarget() : this;
-                entity.playSound(Ssounds.HINDEN_NUKE.value());
-            }
-            if (this.getBombTimer() >= 80){
-                this.SummonNuke();
-                this.bomb_timer = -1;
-            }
-        }
-    }
-
-    public int getBombTimer(){
-        return this.bomb_timer;
-    }
-    public void tickBomb(){
-        this.bomb_timer++;
     }
     public int getDroppedBombs(){
         return this.entityData.get(DROPPED_BOMBS);
@@ -208,13 +195,9 @@ public class Hinderburg extends Calamity implements FlyingInfected , TrueCalamit
 
     @Override
     public void registerGoals() {
+        this.goalSelector.addGoal(2, new HindenNukeGoal(this));
+        this.goalSelector.addGoal(3, new HindenBombAndRamGoal(this, 1.0D, 32.0F));
         this.goalSelector.addGoal(3, new AvoidEntityGoal<>(this, TumoroidNuke.class, 10.0F, 1.0D, 1.2D));
-        this.goalSelector.addGoal(5,new AerialRangedGoal(this,1.3,this.isAdapted() ? 20 : 40,16,5,10){
-            @Override
-            public boolean canUse() {
-                return super.canUse() && (this.target != null && (this.target.onGround() || this.target.isInFluidType()));
-            }
-        });
         this.goalSelector.addGoal(6, new AOEMeleeAttackGoal(this,1,true,2,6,livingEntity -> {return TARGET_SELECTOR.test(livingEntity);}));
         this.goalSelector.addGoal(6,new CalamityInfectedCommand(this));
         this.goalSelector.addGoal(7,new SummonScentInCombat(this));
@@ -419,7 +402,7 @@ public class Hinderburg extends Calamity implements FlyingInfected , TrueCalamit
 
 
     public boolean isArmed(){
-        return this.getBomb() >= 2400;
+        return this.getBomb() >= 1200;
     }
 
 
@@ -446,18 +429,15 @@ public class Hinderburg extends Calamity implements FlyingInfected , TrueCalamit
 
             if (SConfig.SERVER.hinden_explosive_effects != null){
                 List<? extends String> ev = SConfig.SERVER.hinden_explosive_effects.get();
-                for (int i = 0; i < 1; ++i) {
-                    int randomIndex = random.nextInt(ev.size());
-                    ResourceLocation randomElement1 = ResourceLocation.parse(ev.get(randomIndex));
-                     Holder<MobEffect> randomElement = Utilities.tryToCreateEffect(randomElement1);
-                    tumor.setMobEffect(randomElement);
-                }
+                int randomIndex = random.nextInt(ev.size());
+                ResourceLocation randomElement1 = ResourceLocation.parse(ev.get(randomIndex));
+                Holder<MobEffect> randomElement = Utilities.tryToCreateEffect(randomElement1);
+                tumor.setMobEffect(randomElement);
             }
             tumor.setExplode(Level.ExplosionInteraction.MOB);
             tumor.moveTo(this.getX() +vec3.x(),this.getY()+vec3.y(),this.getZ() + vec3.z());
             tumor.shoot(dx, dy - tumor.getY() + Math.hypot(dx, dz) * 0.05F, dz, 1f * 2, 12.0F);
             level().addFreshEntity(tumor);
-            this.setDeltaMovement(this.getDeltaMovement().add(new Vec3(dx, dy, dz).normalize().scale(0.2D)));
         }
     }
 
@@ -496,5 +476,311 @@ public class Hinderburg extends Calamity implements FlyingInfected , TrueCalamit
     @Override
     public ColdEndurance getEndurance() {
         return getAdaptation() ? ColdEndurance.ADAPTED_CALAMITY : super.getEndurance();
+    }
+
+    public class HindenBombAndRamGoal extends Goal {
+        private final Hinderburg mob;
+        private final double speedModifier;
+        private final float attackRadiusSqr;
+
+        private int clusterCooldown = 0;
+
+        private int targetAirborneTicks = 0;
+        private static final int AIRBORNE_THRESHOLD = 60;
+
+        private boolean ramming = false;
+        private int ramCooldown = 0;
+
+        private int orbitDirection = 1;
+        private int orbitSwitchTimer = 0;
+        private static final int ORBIT_SWITCH_TICKS = 200;
+
+        private static final double MIN_ALTITUDE = 10.0D;
+        private static final double IDEAL_ALTITUDE = 14.0D;
+        private static final double ORBIT_RADIUS = 12.0D;
+
+
+        public HindenBombAndRamGoal(Hinderburg mob, double speedModifier, float attackRadius) {
+            this.mob = mob;
+            this.speedModifier = speedModifier;
+            this.attackRadiusSqr = attackRadius * attackRadius;
+            this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
+        }
+
+        @Override
+        public boolean canUse() {
+            LivingEntity target = this.mob.getTarget();
+            if (target == null || !target.isAlive()) return false;
+            return !this.mob.isArmed();
+        }
+
+        @Override
+        public boolean canContinueToUse() {
+            LivingEntity target = this.mob.getTarget();
+            if (target == null || !target.isAlive()) return false;
+            return !this.mob.isArmed();
+        }
+
+        @Override
+        public void start() {
+            this.clusterCooldown = 0;
+            this.targetAirborneTicks = 0;
+            this.ramming = false;
+            this.ramCooldown = 0;
+            this.orbitDirection = this.mob.getRandom().nextBoolean() ? 1 : -1;
+            this.orbitSwitchTimer = 0;
+        }
+
+        @Override
+        public void stop() {
+            this.ramming = false;
+            this.mob.getNavigation().stop();
+        }
+
+        @Override
+        public void tick() {
+            LivingEntity target = this.mob.getTarget();
+            if (target == null) return;
+
+            this.mob.getLookControl().setLookAt(target, 30.0F, 30.0F);
+
+            if (!target.onGround() && !target.isInWater()) {
+                this.targetAirborneTicks++;
+            } else {
+                this.targetAirborneTicks = 0;
+            }
+
+            if (++this.orbitSwitchTimer >= ORBIT_SWITCH_TICKS) {
+                this.orbitSwitchTimer = 0;
+                if (Math.random() < 0.5f){
+                    this.orbitDirection *= -1;
+                }
+            }
+
+            if (this.ramCooldown > 0) this.ramCooldown--;
+
+            if (this.targetAirborneTicks > AIRBORNE_THRESHOLD && this.ramCooldown <= 0) {
+                this.ramming = true;
+            }
+
+            if (this.ramming) {
+                tickRam(target);
+                return;
+            }
+
+            tickOrbitAndBomb(target);
+
+        }
+
+        private void tickRam(LivingEntity target) {
+
+            Vec3 targetPos = target.position().add(0, target.getBbHeight() * 0.5D, 0);
+            Vec3 dir = targetPos.subtract(this.mob.position());
+
+            if (dir.lengthSqr() > 0.01D) {
+                Vec3 norm = dir.normalize();
+                this.mob.setDeltaMovement(this.mob.getDeltaMovement().add(norm.scale(0.35D)));
+            }
+
+            if (this.mob.getBoundingBox().inflate(1.5D).intersects(target.getBoundingBox())) {
+                performRamImpact(target);
+                this.ramCooldown = 80;
+            }
+
+            if (target.onGround() || target.isInWater()) {
+                this.ramming = false;
+                this.targetAirborneTicks = 0;
+            }
+
+            if (this.mob.tickCount % 200 == 0) {
+                this.ramming = false;
+            }
+        }
+
+        private void performRamImpact(LivingEntity target) {
+            this.mob.doHurtTarget(target);
+
+            var aabb = this.mob.getBoundingBox().inflate(3.0D);
+            for (var entity : this.mob.level().getEntities(this.mob, aabb)) {
+                if (entity == this.mob) continue;
+                if (!(entity instanceof LivingEntity living && Utilities.TARGET_SELECTOR.Test(living))) continue;
+
+                Vec3 away = living.position().subtract(this.mob.position());
+                if (away.lengthSqr() < 0.01D) {
+                    away = new Vec3(1, 0, 0);
+                }
+                away = away.normalize();
+
+                living.knockback(3.0D, -away.x, -away.z);
+                living.setDeltaMovement(living.getDeltaMovement().add(0, 0.4D, 0));
+                living.hurtMarked = true;
+            }
+
+            this.mob.playSound(Ssounds.SIEGER_BITE.value(), 2.0F, 0.8F);
+        }
+
+        public int extraShots(){
+            AttributeInstance instance = mob.getAttribute(SAttributes.BALLISTIC);
+            if (instance != null){
+                return (int) instance.getValue();
+            }
+            return 0;
+        }
+        private void tickOrbitAndBomb(LivingEntity target) {
+            double dy = this.mob.getY() - target.getY();
+
+            double angle = Math.atan2(this.mob.getZ() - target.getZ(), this.mob.getX() - target.getX());
+            angle += this.orbitDirection * 0.035D;
+
+            double orbitX = target.getX() + Math.cos(angle) * ORBIT_RADIUS;
+            double orbitZ = target.getZ() + Math.sin(angle) * ORBIT_RADIUS;
+            double orbitY = target.getY() + IDEAL_ALTITUDE;
+
+            if (dy < MIN_ALTITUDE) {
+                orbitY = this.mob.getY() + 8.0D;
+            }
+
+            this.mob.getMoveControl().setWantedPosition(orbitX, orbitY, orbitZ, this.speedModifier);
+
+            double distSqr = this.mob.distanceToSqr(target);
+            if (distSqr <= this.attackRadiusSqr && this.mob.hasLineOfSight(target) && clusterCooldown <= 0){
+                int extra = extraShots();
+                for (int i = 0;i<random.nextInt(6,13+extra);i++){
+                    this.mob.performRangedAttack(target, 1.0F);
+                }
+                this.clusterCooldown = mob.isAdapted() ? 20 : 40;
+            }else {
+                this.clusterCooldown--;
+            }
+        }
+    }
+
+
+    public class HindenNukeGoal extends Goal {
+        private final Hinderburg mob;
+        private static final double OVERSHOOT_DISTANCE = 25.0D;
+        private Vec3 savedTargetPos = null;
+        private int bombTimer = 0;
+        private int collateralCooldown = 0;
+
+        private static final int BOMB_RELEASE_TICKS = 40;
+        private static final double SAFE_ALTITUDE = 8.0D;
+
+        public HindenNukeGoal(Hinderburg mob) {
+            this.mob = mob;
+            this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
+        }
+
+        @Override
+        public boolean canUse() {
+            LivingEntity target = this.mob.getTarget();
+            return target != null
+                    && target.isAlive()
+                    && this.mob.isArmed();
+        }
+
+        @Override
+        public boolean canContinueToUse() {
+            return this.savedTargetPos != null && this.bombTimer < BOMB_RELEASE_TICKS * 2;
+        }
+
+        @Override
+        public void start() {
+            LivingEntity target = this.mob.getTarget();
+            if (target == null) return;
+
+            this.savedTargetPos = target.position();
+            Vec3 direction = savedTargetPos.subtract(mob.position()).multiply(1,0,1).normalize();
+            this.savedTargetPos = savedTargetPos.add(direction.scale(OVERSHOOT_DISTANCE));
+
+            this.bombTimer = 0;
+            this.collateralCooldown = 0;
+            target.playSound(Ssounds.HINDEN_NUKE.value());
+        }
+
+        @Override
+        public void stop() {
+            this.savedTargetPos = null;
+            this.bombTimer = 0;
+            this.collateralCooldown = 0;
+        }
+        public int extraShots(){
+            AttributeInstance instance = mob.getAttribute(SAttributes.BALLISTIC);
+            if (instance != null){
+                return (int) instance.getValue();
+            }
+            return 0;
+        }
+        @Override
+        public void tick() {
+            if (this.savedTargetPos == null) return;
+
+            this.bombTimer++;
+
+            double desiredY = this.savedTargetPos.y + SAFE_ALTITUDE;
+
+            double moveX = this.savedTargetPos.x;
+            double moveZ = this.savedTargetPos.z;
+            Vec3 vec3 = new Vec3(moveX, desiredY, moveZ);
+
+            this.mob.getMoveControl().setWantedPosition(vec3.x,vec3.y,vec3.z, 1.0D);
+
+            this.mob.getLookControl().setLookAt(vec3.x,vec3.y,vec3.z, 30.0F, 30.0F);
+
+            if (this.collateralCooldown > 0) {
+                this.collateralCooldown--;
+            } else if (this.bombTimer % 4 == 0) {
+                for (int e  = 0; e<random.nextInt(3,8+extraShots());e++){
+                    fireCollateralTumor();
+                }
+                this.collateralCooldown = 2;
+            }
+
+            if (this.bombTimer == BOMB_RELEASE_TICKS) {
+                releaseNuke();
+            }
+        }
+
+        private void fireCollateralTumor() {
+            if (this.mob.level().isClientSide) return;
+
+            Level level = this.mob.level();
+
+            boolean useRightCannon = this.mob.getRandom().nextBoolean();
+
+            double rx = (this.mob.getRandom().nextDouble() - 0.5D) * 2.0D;
+            double ry = -this.mob.getRandom().nextDouble() * 0.5D - 0.2D;
+            double rz = (this.mob.getRandom().nextDouble() - 0.5D) * 2.0D;
+            Vec3 dir = new Vec3(rx, ry, rz).normalize();
+
+            double sideOffset = useRightCannon ? 4.0D : -4.0D;
+            double cosYaw = Math.cos(-this.mob.getYRot() * ((float) Math.PI / 180F) - ((float) Math.PI / 2F));
+            double sinYaw = Math.sin(-this.mob.getYRot() * ((float) Math.PI / 180F) - ((float) Math.PI / 2F));
+
+            double spawnX = this.mob.getX() + (cosYaw * 2.0D) + (sinYaw * sideOffset);
+            double spawnY = this.mob.getY() + 0.3D;
+            double spawnZ = this.mob.getZ() + (sinYaw * 2.0D) - (cosYaw * sideOffset);
+
+            ThrownTumor tumor = new ThrownTumor(level, this.mob);
+            if (SConfig.SERVER.hinden_explosive_effects != null){
+                List<? extends String> ev = SConfig.SERVER.hinden_explosive_effects.get();
+                int randomIndex = random.nextInt(ev.size());
+                ResourceLocation randomElement1 = ResourceLocation.parse(ev.get(randomIndex));
+                Holder<MobEffect> randomElement = Utilities.tryToCreateEffect(randomElement1);
+                tumor.setMobEffect(randomElement);
+            }
+            tumor.moveTo(spawnX, spawnY, spawnZ);
+            tumor.setExplode(Level.ExplosionInteraction.MOB);
+
+            tumor.shoot(dir.x, dir.y, dir.z, 1.5F, 8.0F);
+
+            level.addFreshEntity(tumor);
+        }
+
+
+        private void releaseNuke() {
+            if (this.mob.level().isClientSide) return;
+            this.mob.SummonNuke();
+        }
     }
 }

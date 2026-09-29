@@ -5,6 +5,6 @@ import net.minecraft.world.effect.MobEffectCategory;
 
 public class Biled extends MobEffect{
     public Biled() {
-        super(MobEffectCategory.HARMFUL, -34534534);
+        super(MobEffectCategory.HARMFUL, 16351261);
     }
 }
