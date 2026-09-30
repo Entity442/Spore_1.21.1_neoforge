@@ -105,24 +105,15 @@ public class HohlSegRenderer<Type extends HohlMultipart> extends LivingEntityRen
     @Override
     public void render(Type type, float val1, float val2, PoseStack stack, MultiBufferSource source, int light) {
         model = type.isTail() ? type.isAdapted() ? adatailModel : tailModel : getSegmentModel(type);
-        Vec3 direction = null;
         ClientLevel level = Minecraft.getInstance().level;
         int i = type.getParentIntId();
         if (level != null && i != -1 && !type.isInvisible()){
             Entity parent = level.getEntity(i);
             if (parent != null){
                 renderConnection(type,parent,stack,source,val2);
-                direction = parent.getPosition(val2).subtract(type.getPosition(val2));
-                direction = direction.normalize();
             }
         }
-        stack.pushPose();
-        if (direction != null){
-            float pitch = (float) -Math.asin(direction.y);
-            stack.mulPose(Axis.XP.rotation(pitch));
-        }
         super.render(type, val1, val2, stack, source, light);
-        stack.popPose();
     }
 
     @Override

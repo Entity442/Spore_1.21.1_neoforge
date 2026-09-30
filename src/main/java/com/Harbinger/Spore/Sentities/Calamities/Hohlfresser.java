@@ -295,7 +295,6 @@ public class Hohlfresser extends Calamity implements TrueCalamity, RangedAttackM
 
     public void tick() {
         super.tick();
-
         // Handle vulnerability cooldown
         if (entityData.get(VULNERABLE) > 0) {
             entityData.set(VULNERABLE, entityData.get(VULNERABLE) - 1);
