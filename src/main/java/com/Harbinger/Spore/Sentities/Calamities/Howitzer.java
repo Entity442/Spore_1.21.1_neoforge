@@ -252,7 +252,7 @@ public class Howitzer extends Calamity implements TrueCalamity, RangedAttackMob 
             nukeEntity.setPos(this.getX(),this.getY(),this.getZ());
             level().addFreshEntity(nukeEntity);
             if (level() instanceof ServerLevel serverLevel){
-                Utilities.explodeCircle(serverLevel, this,this.getOnPos(), 15.0, (float) (SConfig.SERVER.howit_damage.get() * 1f),8, entity -> {return entity instanceof LivingEntity livingEntity && TARGET_SELECTOR.test(livingEntity);});
+                Utilities.explodeCircle(serverLevel, this,this.getOnPos(), 16, (float) (SConfig.SERVER.howit_damage.get() * 1f),8, entity -> {return entity instanceof LivingEntity livingEntity && TARGET_SELECTOR.test(livingEntity);});
             }
             discard();
         }else {
@@ -291,15 +291,7 @@ public class Howitzer extends Calamity implements TrueCalamity, RangedAttackMob 
         return subEntities;
     }
 
-    public void recreateFromPacket(ClientboundAddEntityPacket entityPacket) {
-        super.recreateFromPacket(entityPacket);
-        if (true) return;
-        CalamityMultipart[] calamityMultiparts = this.getSubEntities();
 
-        for(int i = 0; i < calamityMultiparts.length; ++i) {
-            calamityMultiparts[i].setId(i + entityPacket.getId());
-        }
-    }
     public boolean hurt(CalamityMultipart calamityMultipart, DamageSource source, float value) {
         if (calamityMultipart == this.mouth){
             this.hurt(source,value*2f);
@@ -475,7 +467,8 @@ public class Howitzer extends Calamity implements TrueCalamity, RangedAttackMob 
                                 BlockPos blockpos = pos.offset( i-(int)range,j-(int)range,k-(int)range);
                                 BlockState state = level.getBlockState(blockpos);
                                 boolean airBelow = level.getBlockState(blockpos.below()).isAir();
-                                    if (airBelow && state.getDestroySpeed(level,pos) >= 0 && Math.random() < 0.3 && !state.isAir()){
+                                float val = state.getDestroySpeed(level,pos);
+                                    if (airBelow && val >= 0 && val <= 4 && Math.random() < 0.3 && !state.isAir()){
                                         FallingBlockEntity.fall(serverLevel,blockpos,state);
                                         serverLevel.removeBlock(blockpos,false);
                                     }
