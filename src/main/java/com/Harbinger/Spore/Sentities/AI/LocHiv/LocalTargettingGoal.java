@@ -17,7 +17,10 @@ public class LocalTargettingGoal extends Goal {
     }
     @Override
     public boolean canUse() {
-        return (mob.getTarget() != null || mob.getSearchPos() != null) && mob.getLinked() && this.mob.getRandom().nextInt(10) == 0;
+        if (mob.tickCount != 15){
+            return false;
+        }
+        return (mob.getTarget() != null || mob.getSearchPos() != null) && mob.getLinked() && Math.random() < 0.75;
     }
 
     @Override

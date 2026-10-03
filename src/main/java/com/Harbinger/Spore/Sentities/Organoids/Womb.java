@@ -91,13 +91,13 @@ public class Womb extends Organoid implements MenuProvider {
             this.entityData.set(COUNTER,0);
             this.entityData.set(BIOMASS , this.entityData.get(BIOMASS) + 1);
         }
-        if (this.random.nextInt(100) == 0){
+        if (this.tickCount % 100 == 0){
             this.CallNearbyInfected();
         }
-        if (this.random.nextInt(40) == 0){
+        if (this.tickCount % 40 == 0){
             this.AssimilateNearbyInfected();
         }
-        if (this.random.nextInt(20) == 0 && isEating()){
+        if (this.tickCount % 20 == 0 && isEating()){
             this.playSound(SoundEvents.GENERIC_EAT);
         }
         if (this.eatingTicks > 0){

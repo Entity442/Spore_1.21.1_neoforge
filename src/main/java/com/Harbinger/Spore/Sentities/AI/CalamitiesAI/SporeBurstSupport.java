@@ -31,7 +31,7 @@ public class SporeBurstSupport extends Goal {
 
     @Override
     public boolean canUse() {
-        return this.calamity.isAlive() && this.calamity.getRandom().nextInt(300) == 0  && calamity.getTarget() != null && this.calamity.distanceToSqr(this.calamity.getTarget())<200.0D;
+        return this.calamity.tickCount % 20 == 0 && Math.random() < 0.04  && calamity.getTarget() != null && this.calamity.distanceToSqr(this.calamity.getTarget())<200.0D;
     }
 
     @Override

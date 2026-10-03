@@ -1,6 +1,7 @@
 package com.Harbinger.Spore.Sentities.AI.LocHiv;
 
 import com.Harbinger.Spore.Sentities.BaseEntities.Infected;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.ai.goal.Goal;
 
 import java.util.EnumSet;
@@ -17,10 +18,17 @@ public class SearchAreaGoal extends Goal {
     }
 
     protected void moveMobToBlock() {
-        this.infected.getNavigation().moveTo((double)((float)this.infected.getSearchPos().getX()) + 0.5D, (double)(this.infected.getSearchPos().getY() + 1), (double)((float)this.infected.getSearchPos().getZ()) + 0.5D, 1);
+        BlockPos pos = infected.getSearchPos();
+        if (pos == null){
+            return;
+        }
+        this.infected.getNavigation().moveTo((double)(pos.getX()) + 0.5D, (double)(pos.getY() + 1), (double)(pos.getZ()) + 0.5D, 1);
     }
     @Override
     public boolean canUse() {
+        if (infected.tickCount % 15 != 0){
+            return false;
+        }
         return this.infected.getSearchPos() != null && infected.getTarget() == null;
     }
 

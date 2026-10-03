@@ -134,14 +134,14 @@ public class Howler extends EvolvedInfected implements VariantKeeper, ArmorPerse
         for (Entity target : targets) {
             if (target instanceof LivingEntity player && Utilities.TARGET_SELECTOR.Test(player)) {
                 if (getVariant() == HowlerVariants.FORLORN) {
-                    player.addEffect(new MobEffectInstance(Seffects.UNEASY, 3600, 0));
-                    player.addEffect(new MobEffectInstance(Seffects.MADNESS, 3600, 1));
+                    player.addEffect(new MobEffectInstance(Seffects.UNEASY, 3600, 0,false,false));
+                    player.addEffect(new MobEffectInstance(Seffects.MADNESS, 3600, 1,false,false));
                 } else if (getVariant() == HowlerVariants.SWARMER) {
-                    player.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 100, 0));
-                    player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 200, 1));
+                    player.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 100, 0,false,false));
+                    player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 200, 1,false,false));
                 } else {
-                    player.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 100, 0));
-                    player.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 200, 0));
+                    player.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 100, 0,false,false));
+                    player.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 200, 0,false,false));
                 }
             }
         }
@@ -166,7 +166,7 @@ public class Howler extends EvolvedInfected implements VariantKeeper, ArmorPerse
         if (effect != null) {
             for (Entity ally : allies) {
                 if (ally instanceof Infected infected) {
-                    infected.addEffect(new MobEffectInstance(effect, duration, amplifier));
+                    infected.addEffect(new MobEffectInstance(effect, duration, amplifier,false,false));
                 }
             }
         }

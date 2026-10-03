@@ -109,7 +109,7 @@ public class Usurper extends Organoid implements RangedAttackMob , VariantKeeper
     @Override
     protected void registerGoals() {
         this.addTargettingGoals();
-        this.goalSelector.addGoal(1,new RangedAttackGoal(this,0,5,5,1.5f){
+        this.goalSelector.addGoal(1,new RangedAttackGoal(this,0,10,10,1.5f){
             @Override
             public boolean canUse() {
                 return super.canUse() &&  getVariant() == UsurperVariants.SPRAY;
@@ -169,7 +169,7 @@ public class Usurper extends Organoid implements RangedAttackMob , VariantKeeper
     @Override
     public void performRangedAttack(LivingEntity livingEntity, float p_33318_) {
         if (this.getVariant() == UsurperVariants.SPRAY){
-            VomitUsurperBall.shoot(this,livingEntity,(float) (1 * SConfig.SERVER.global_damage.get()));
+            VomitUsurperBall.shoot(this,livingEntity,(float) (2 * SConfig.SERVER.global_damage.get()));
         }else {
             BulletParameters parameters = Util.getRandom(BulletParameters.values(),this.random);
             AdaptableProjectile projectile = new AdaptableProjectile(parameters,this.level(),this);

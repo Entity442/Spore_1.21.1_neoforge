@@ -20,7 +20,7 @@ public class SummonScentInCombat extends Goal {
         if (!SConfig.SERVER.scent_spawn.get()){
             return false;
         }
-        return this.calamity.isAlive() && calamity.getRandom().nextInt(400) == 0 && calamity.isAggressive() && checkForScent();
+        return this.calamity.tickCount % 40 == 0 && Math.random() < 0.1 && calamity.isAggressive() && checkForScent();
     }
 
     @Override
