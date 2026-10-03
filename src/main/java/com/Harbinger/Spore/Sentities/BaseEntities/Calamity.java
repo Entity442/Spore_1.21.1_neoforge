@@ -378,7 +378,12 @@ public class Calamity extends UtilityEntity implements Enemy, ArmorPersentageByp
         }
         if (this.getHealth() < this.getMaxHealth() && !this.hasEffect(MobEffects.REGENERATION) && this.getKills() > 0){
             int level = this.getHealth() < this.getMaxHealth()/2 ? 1 : 0;
-            this.addEffect(new MobEffectInstance(MobEffects.REGENERATION,600,level + calculateHealing()));
+            int val = calculateHealing();
+            int extra = Math.min(val, 4);
+            this.addEffect(new MobEffectInstance(MobEffects.REGENERATION,600,level + extra));
+            if (val >= 5){
+                this.addEffect(new MobEffectInstance(MobEffects.ABSORPTION,1200,val-4));
+            }
             this.setKills(this.getKills()-1);
         }
     }
