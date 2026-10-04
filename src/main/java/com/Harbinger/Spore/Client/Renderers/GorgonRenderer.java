@@ -4,13 +4,11 @@ import com.Harbinger.Spore.Client.Layers.SporeRenderTypes;
 import com.Harbinger.Spore.Client.Models.GorgonSpookyModel;
 import com.Harbinger.Spore.Client.Models.gorgonModel;
 import com.Harbinger.Spore.Client.Special.BaseInfectedRenderer;
-import com.Harbinger.Spore.Client.SpecialEffects;
 import com.Harbinger.Spore.Sentities.EvolvedInfected.Gorgon;
 import com.Harbinger.Spore.Spore;
 import com.Harbinger.Spore.core.Sparticles;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -19,6 +17,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
@@ -51,7 +50,7 @@ public class GorgonRenderer<Type extends Gorgon> extends BaseInfectedRenderer<Ty
     }
     @Override
     public ResourceLocation getTextureLocation(Type entity) {
-        return entity.spooky() ? TEXTURE_SPOOK : TEXTURE;
+        return spooky(entity) ? TEXTURE_SPOOK : TEXTURE;
     }
 
     @Override
@@ -59,11 +58,18 @@ public class GorgonRenderer<Type extends Gorgon> extends BaseInfectedRenderer<Ty
         return EYES_TEXTURE;
     }
 
-
+    public static boolean spooky(Gorgon type){
+        Component component = type.getCustomName();
+        if (component == null){
+            return false;
+        }
+        String string = component.getString();
+        return string.equals("Spooky");
+    }
     @Override
     public void render(Type type, float value1, float value2, PoseStack stack, MultiBufferSource bufferSource, int light) {
+        model = spooky(type) ? spooky : def;
         super.render(type, value1, value2, stack, bufferSource, light);
-        model = type.spooky() ? spooky : def;
         Entity instance = type.level().getEntity(type.getTargetId());
         if (instance == null){
             return;
@@ -95,7 +101,7 @@ public class GorgonRenderer<Type extends Gorgon> extends BaseInfectedRenderer<Ty
         public void render(PoseStack matrixStack, MultiBufferSource buffer, int packedLight, T entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
             float alpha = 0.5F + 0.5F * Mth.sin(ageInTicks * 0.1F);
             int color = (int)(alpha * 255) << 24 | 0xFFFFFF;
-            VertexConsumer vertexConsumer = buffer.getBuffer(SporeRenderTypes.glowingTranslucent(entity.spooky() ? TEXTURE_SPOOKY : TEXTURE));
+            VertexConsumer vertexConsumer = buffer.getBuffer(SporeRenderTypes.glowingTranslucent(spooky(entity) ? TEXTURE_SPOOKY : TEXTURE));
             getParentModel().renderToBuffer(matrixStack, vertexConsumer, packedLight, OverlayTexture.NO_OVERLAY, color);
         }
     }

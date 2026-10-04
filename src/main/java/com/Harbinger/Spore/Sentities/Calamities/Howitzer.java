@@ -516,7 +516,7 @@ public class Howitzer extends Calamity implements TrueCalamity, RangedAttackMob 
     @Override
     public void performRangedAttack(LivingEntity entity, float val) {
         float damage = (float) (SConfig.SERVER.howit_ranged_damage.get() * SConfig.SERVER.global_damage.get());
-        FleshBomb bomb = new FleshBomb(level(),this,damage,compareEntity(entity, (int) val),random.nextInt(4,7));
+        FleshBomb bomb = new FleshBomb(level(),this,damage,compareEntity(entity, (int) val));
         bomb.setLivingEntityPredicate(TARGET_SELECTOR);
         bomb.setCarrier(Math.random() < 0.2f);
         bomb.setTarget(entity);

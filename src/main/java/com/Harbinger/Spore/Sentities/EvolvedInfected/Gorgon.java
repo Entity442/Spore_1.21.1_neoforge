@@ -96,15 +96,12 @@ public class Gorgon extends EvolvedInfected {
     protected SoundEvent getAmbientSound() {
         return Ssounds.WITCH_AMBIENT.value();
     }
-    public boolean spooky(){
-        return this.getName().equals(Component.literal("Spooky"));
-    }
 
     @Override
     public @Nullable SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType spawnType, @Nullable SpawnGroupData spawnGroupData) {
         LocalDate localdate = LocalDate.now();
         int j = localdate.get(ChronoField.MONTH_OF_YEAR);
-        if (j == 10 && Math.random() < 0.5){
+        if (j == 10 && Math.random() < 0.5 && !level.isClientSide()){
             setCustomName(Component.literal("Spooky"));
         }
         return super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData);

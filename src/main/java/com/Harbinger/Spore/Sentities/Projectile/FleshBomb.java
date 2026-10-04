@@ -24,21 +24,21 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
 
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.function.Predicate;
 
 public class FleshBomb extends AbstractArrow {
     private static final EntityDataAccessor<Float> DAMAGE = SynchedEntityData.defineId(FleshBomb.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Integer> BOMB_TYPE = SynchedEntityData.defineId(FleshBomb.class, EntityDataSerializers.INT);
-    private static final EntityDataAccessor<Integer> EXPLOSION = SynchedEntityData.defineId(FleshBomb.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Boolean> CARRIER = SynchedEntityData.defineId(FleshBomb.class, EntityDataSerializers.BOOLEAN);
     private Predicate<LivingEntity> livingEntityPredicate = (entity) -> {return true;};
     private Vec3 target;
 
-    public FleshBomb(Level level,LivingEntity entity,float damage,BombType type,int range) {
+    public FleshBomb(Level level,LivingEntity entity,float damage,BombType type) {
         super(Sentities.FLESH_BOMB.get(), level);
         setBombType(type.getValue());
-        setExplosion(range);
         setDamage(damage);
         setOwner(entity);
     }
@@ -71,7 +71,6 @@ public class FleshBomb extends AbstractArrow {
         super.defineSynchedData(builder);
         builder.define(DAMAGE, 2f);
         builder.define(BOMB_TYPE, 0);
-        builder.define(EXPLOSION, 5);
         builder.define(CARRIER, false);
     }
 
@@ -80,7 +79,6 @@ public class FleshBomb extends AbstractArrow {
         super.readAdditionalSaveData(tag);
         this.setDamage(tag.getFloat("damage"));
         this.setBombType(tag.getInt("bomb_type"));
-        this.setExplosion(tag.getInt("explosion"));
         this.setCarrier(tag.getBoolean("carrier"));
     }
 
@@ -89,7 +87,6 @@ public class FleshBomb extends AbstractArrow {
         super.addAdditionalSaveData(tag);
         tag.putFloat("damage",this.getDamage());
         tag.putInt("bomb_type",this.getBombType());
-        tag.putInt("explosion",this.getExplosion());
         tag.putBoolean("carrier",this.getCarrier());
     }
 
@@ -97,8 +94,6 @@ public class FleshBomb extends AbstractArrow {
     public void setDamage(float value){entityData.set(DAMAGE,value);}
     public int getBombType(){return entityData.get(BOMB_TYPE);}
     public void setBombType(int value){entityData.set(BOMB_TYPE,value);}
-    public int getExplosion(){return entityData.get(EXPLOSION);}
-    public void setExplosion(int value){entityData.set(EXPLOSION,value);}
     public boolean getCarrier(){return entityData.get(CARRIER);}
     public void setCarrier(boolean value){entityData.set(CARRIER,value);}
     @Override
@@ -110,12 +105,14 @@ public class FleshBomb extends AbstractArrow {
     protected void onHitEntity(EntityHitResult result) {
         if (result.getEntity() instanceof LivingEntity living){
             if (level() instanceof ServerLevel serverLevel){
-                Utilities.explodeCircle(serverLevel,this.getOwner(),result.getEntity().getOnPos(),getExplosion(),getDamage(),8,entity -> {return entity instanceof LivingEntity livingEntity && livingEntityPredicate.test(livingEntity);});
-                if (getBombType() == 1){
+                BombType type = getVariant();
+                if (type.explosion > 0){
+                    Utilities.explodeCircle(serverLevel,this.getOwner(),result.getEntity().getOnPos(),type.explosion,getDamage(),8,entity -> {return entity instanceof LivingEntity livingEntity && livingEntityPredicate.test(livingEntity);});
+                }if (getBombType() == 1){
                     living.setRemainingFireTicks(400);
-                    Utilities.convertBlocks(serverLevel,this.getOwner(),result.getEntity().getOnPos(),getExplosion(), Blocks.FIRE.defaultBlockState());
+                    Utilities.convertBlocks(serverLevel,this.getOwner(),result.getEntity().getOnPos(),type.explosion, Blocks.FIRE.defaultBlockState());
                 }if (getBombType() == 2){
-                    Utilities.convertBlocks(serverLevel,this.getOwner(),result.getEntity().getOnPos(),getExplosion(), Sblocks.BILE.get().defaultBlockState());
+                    Utilities.convertBlocks(serverLevel,this.getOwner(),result.getEntity().getOnPos(),5, Sblocks.BILE.get().defaultBlockState());
                 }if (getBombType() == 4){
                     NukeEntity nukeEntity = new NukeEntity(Sentities.NUKE.get(), level());
                     nukeEntity.setInitRange(1f);
@@ -176,15 +173,16 @@ public class FleshBomb extends AbstractArrow {
     @Override
     protected void onHitBlock(BlockHitResult result) {
         if (level() instanceof ServerLevel serverLevel){
-            if (getBombType() != 2){
-                Utilities.explodeCircle(serverLevel,this.getOwner(),result.getBlockPos(),getBombType() == 0 ? 3  : getBombType() == 4 ? 16 : getExplosion(),getDamage(),SConfig.SERVER.calamity_bd.get(),entity -> {return entity instanceof LivingEntity livingEntity && livingEntityPredicate.test(livingEntity);});
+            BombType type = getVariant();
+            if (type.explosion > 0){
+                Utilities.explodeCircle(serverLevel,this.getOwner(),result.getBlockPos(),type.explosion,getDamage(),SConfig.SERVER.calamity_bd.get(),entity -> {return entity instanceof LivingEntity livingEntity && livingEntityPredicate.test(livingEntity);});
             }
             if (getBombType() == 1){
-                Utilities.convertBlocks(serverLevel,this.getOwner(),result.getBlockPos(),getExplosion(), Blocks.FIRE.defaultBlockState());
+                Utilities.convertBlocks(serverLevel,this.getOwner(),result.getBlockPos(),type.explosion, Blocks.FIRE.defaultBlockState());
             }if (getBombType() == 2){
-                Utilities.convertBlocks(serverLevel,this.getOwner(),result.getBlockPos(),getExplosion(), Sblocks.BILE.get().defaultBlockState());
+                Utilities.convertBlocks(serverLevel,this.getOwner(),result.getBlockPos(),5, Sblocks.BILE.get().defaultBlockState());
             }if(getBombType() == 3){
-                summonAcid(this.getX(),this.getY()-(getExplosion()-2),this.getZ(),getExplosion());
+                summonAcid(this.getX(),this.getY()-(type.explosion-2),this.getZ(),type.explosion);
             }if(getBombType() == 4){
                 NukeEntity nukeEntity = new NukeEntity(Sentities.NUKE.get(), level());
                 nukeEntity.setInitRange(1f);
@@ -193,7 +191,7 @@ public class FleshBomb extends AbstractArrow {
                 nukeEntity.setDuration(SConfig.SERVER.nuke_time.get());
                 nukeEntity.setDamage((float) (SConfig.SERVER.nuke_damage.get()*1f));
                 nukeEntity.livingEntityPredicate = livingEntityPredicate;
-                nukeEntity.setPos(result.getBlockPos().getX(),result.getBlockPos().getY()-getExplosion()+1,result.getBlockPos().getZ());
+                nukeEntity.setPos(result.getBlockPos().getX(),result.getBlockPos().getY()-type.explosion+1,result.getBlockPos().getZ());
                 level().addFreshEntity(nukeEntity);
             }
             if (this.getCarrier()){
@@ -204,19 +202,31 @@ public class FleshBomb extends AbstractArrow {
         discard();
     }
     public enum BombType{
-        BASIC(0),
-        FLAME(1),
-        BILE(2),
-        ACID(3),
-        NUCLEAR(4);
+        BASIC(0,3),
+        FLAME(1,5),
+        BILE(2,0),
+        ACID(3,4),
+        NUCLEAR(4,16);
         private final int value;
-        BombType(int value1){
+        private final int explosion;
+        BombType(int value1, int explosion){
             value = value1;
+            this.explosion = explosion;
         }
         public int getValue() {
             return value;
         }
+        public int getExplosion(){return explosion;}
+        private static final BombType[] BY_ID = Arrays.stream(values()).sorted(Comparator.
+                comparingInt(BombType::getValue)).toArray(BombType[]::new);
+        public static BombType byId(int id) {
+            return BY_ID[id % BY_ID.length];
+        }
     }
+    public BombType getVariant() {
+        return BombType.byId(this.getBombType() & 255);
+    }
+
     private void summonAcid(double x,double y, double z,int range){
         AreaEffectCloud cloud = new AreaEffectCloud(this.level(),x,y,z);
         cloud.addEffect(new MobEffectInstance(Seffects.CORROSION,300,1));
