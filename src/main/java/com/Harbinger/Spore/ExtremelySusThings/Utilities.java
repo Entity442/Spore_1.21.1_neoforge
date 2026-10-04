@@ -73,8 +73,8 @@ public class Utilities {
                         BlockPos blockpos = pos.offset(i - (int) range, j - (int) range, k - (int) range);
                         BlockState state = level.getBlockState(blockpos);
                         float hardness = state.getDestroySpeed(level, blockpos);
-
-                        if (hardness >= 0 && hardness <= blockHardness && EventHooks.canEntityGrief(level, owner)) {
+                        boolean works = Math.random() < (1-(hardness * 0.2));
+                        if (works && hardness >= 0 && hardness <= blockHardness && EventHooks.canEntityGrief(level, owner)) {
                             level.removeBlock(blockpos, dropItems);
 
                             if (random.nextFloat() < 0.3F) {
