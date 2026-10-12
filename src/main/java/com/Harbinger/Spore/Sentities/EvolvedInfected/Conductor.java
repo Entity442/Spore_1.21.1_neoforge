@@ -27,6 +27,7 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
 import net.minecraft.world.entity.animal.IronGolem;
@@ -49,7 +50,7 @@ public class Conductor extends EvolvedInfected implements VariantKeeper {
     private static final EntityDataAccessor<Integer> DATA_ID_TYPE_VARIANT = SynchedEntityData.defineId(Conductor.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<String> ITEM_DATA = SynchedEntityData.defineId(Conductor.class, EntityDataSerializers.STRING);
     private int beamTicks;
-    private List<FloatingItem> itemVectors = new ArrayList<>();
+    private final List<FloatingItem> itemVectors = new ArrayList<>();
 
     public Conductor(EntityType<? extends EvolvedInfected> p_33002_, Level p_33003_) {
         super(p_33002_, p_33003_);
@@ -57,12 +58,12 @@ public class Conductor extends EvolvedInfected implements VariantKeeper {
     @Override
     protected void registerGoals() {
         super.registerGoals();
+        this.goalSelector.addGoal(2, new ConductorMagneticManipulation(this));
         this.goalSelector.addGoal(3, new CustomMeleeAttackGoal(this, 1.2, false) {
             @Override
             protected double getAttackReachSqr(LivingEntity entity) {
                 return 3.0 + entity.getBbWidth() * entity.getBbWidth();}
         });
-
         this.goalSelector.addGoal(4, new RandomStrollGoal(this, 0.8));
         this.goalSelector.addGoal(5, new RandomLookAroundGoal(this));
     }
@@ -590,5 +591,125 @@ public class Conductor extends EvolvedInfected implements VariantKeeper {
 
     private void setVariant(ConductorVariants variant) {
         this.entityData.set(DATA_ID_TYPE_VARIANT, variant.getId() & 255);
+    }
+
+    public static class ConductorMagneticManipulation extends Goal {
+        private final com.Harbinger.Spore.Sentities.EvolvedInfected.Conductor conductor;
+        private int timer = 0;
+        private int maxTimer = 0;
+        private int liftOff;
+        private BlockPos position;
+
+        public ConductorMagneticManipulation(com.Harbinger.Spore.Sentities.EvolvedInfected.Conductor conductor) {
+            this.conductor = conductor;
+        }
+
+        @Override
+        public boolean canUse() {
+            if (conductor.getTypeVariant() != 4) {
+                return false;
+            }
+
+            if (maxTimer <= 0) {
+                maxTimer = 20 * conductor.random.nextInt(15, 31);
+                timer = 0;
+                return false;
+            }
+
+            if (timer < maxTimer) {
+                timer++;
+                return false;
+            }
+
+            LivingEntity target = conductor.getTarget();
+            return target != null && (target instanceof IronGolem || isWearingIron(target));
+        }
+
+        private boolean isWearingIron(LivingEntity living) {
+            return living.getItemBySlot(EquipmentSlot.HEAD).is(Items.IRON_HELMET)
+                    || living.getItemBySlot(EquipmentSlot.CHEST).is(Items.IRON_CHESTPLATE)
+                    || living.getItemBySlot(EquipmentSlot.LEGS).is(Items.IRON_LEGGINGS)
+                    || living.getItemBySlot(EquipmentSlot.FEET).is(Items.IRON_BOOTS);
+        }
+
+        @Override
+        public boolean canContinueToUse() {
+            if (position == null || liftOff <= 0) {
+                return false;
+            }
+            LivingEntity living = conductor.getTarget();
+            return living != null && (living instanceof IronGolem || isWearingIron(living));
+        }
+
+        @Override
+        public void start() {
+            super.start();
+            timer = 0;
+            this.liftOff = 100;
+            LivingEntity target = conductor.getTarget();
+            if (target == null) {
+                this.position = null;
+                return;
+            }
+            this.position = target.getOnPos();
+        }
+
+        @Override
+        public void tick() {
+            super.tick();
+
+            if (liftOff > 0) {
+                liftOff--;
+            }
+            if (position == null) {
+                return;
+            }
+
+            LivingEntity target = conductor.getTarget();
+            if (target == null) {
+                return;
+            }
+
+            int targetLift = target instanceof IronGolem ? 5 : getLift(target);
+            double hoverY = position.getY() + targetLift;
+
+            double dy = hoverY - target.getY();
+            if (dy > 0.05D) {
+                double push = Math.min(dy * 0.3D, 0.5D);
+                Vec3 current = target.getDeltaMovement();
+                target.setDeltaMovement(current.x, push, current.z);
+                target.hurtMarked = true;
+            }
+        }
+
+        private int getLift(LivingEntity living) {
+            int o = 0;
+            if (living.getItemBySlot(EquipmentSlot.HEAD).is(Items.IRON_HELMET)) {
+                o++;
+            }
+            if (living.getItemBySlot(EquipmentSlot.CHEST).is(Items.IRON_CHESTPLATE)) {
+                o++;
+            }
+            if (living.getItemBySlot(EquipmentSlot.LEGS).is(Items.IRON_LEGGINGS)) {
+                o++;
+            }
+            if (living.getItemBySlot(EquipmentSlot.FEET).is(Items.IRON_BOOTS)) {
+                o++;
+            }
+            return o;
+        }
+
+        @Override
+        public void stop() {
+            super.stop();
+            timer = 0;
+            maxTimer = 0;
+            position = null;
+        }
+
+        @Override
+        public boolean requiresUpdateEveryTick() {
+            return true;
+        }
     }
 }
