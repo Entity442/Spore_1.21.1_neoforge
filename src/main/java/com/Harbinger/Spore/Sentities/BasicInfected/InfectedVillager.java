@@ -44,7 +44,10 @@ public class InfectedVillager extends Infected implements EvolvingInfected , Var
     public InfectedVillager(EntityType<? extends Infected> type, Level level) {
         super(type, level);
     }
-
+    @Override
+    public boolean isSkinOnly() {
+        return true;
+    }
 
     @Override
     protected void registerGoals() {

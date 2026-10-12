@@ -58,7 +58,10 @@ public class InfectedPlayer extends Infected implements RangedAttackMob , ArmedI
         super(type, level);
     }
 
-
+    @Override
+    public boolean isSkinOnly() {
+        return true;
+    }
     @Override
     protected void customServerAiStep() {
         this.setSprinting(isAggressive());

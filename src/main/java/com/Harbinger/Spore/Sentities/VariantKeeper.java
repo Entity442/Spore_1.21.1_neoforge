@@ -7,4 +7,5 @@ public interface VariantKeeper {
         setVariant(getTypeVariant()+1);
     }
     int amountOfMutations();
+    default boolean isSkinOnly(){return false;}
 }

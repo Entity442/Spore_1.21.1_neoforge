@@ -48,7 +48,10 @@ public class Scamper extends EvolvedInfected implements WaterInfected, VariantKe
         setPersistenceRequired();
         this.navigation = new HybridPathNavigation(this,this.level());
     }
-
+    @Override
+    public boolean isSkinOnly() {
+        return true;
+    }
     @Override
     public boolean removeWhenFarAway(double distanceToClosestPlayer) {
         return false;

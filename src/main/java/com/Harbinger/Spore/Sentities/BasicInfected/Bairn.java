@@ -63,7 +63,10 @@ public class Bairn extends Infected implements VariantKeeper {
         this.navigation = new HybridPathNavigation(this,this.level());
     }
     private static final EntityDataAccessor<Integer> DATA_ID_TYPE_VARIANT = SynchedEntityData.defineId(Bairn.class, EntityDataSerializers.INT);
-
+    @Override
+    public boolean isSkinOnly() {
+        return true;
+    }
     @Override
     protected void registerGoals() {
         this.goalSelector.addGoal(1, new LeapAtTargetGoal(this,0.4F));
