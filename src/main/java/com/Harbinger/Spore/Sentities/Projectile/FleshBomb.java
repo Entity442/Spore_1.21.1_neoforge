@@ -112,7 +112,7 @@ public class FleshBomb extends AbstractArrow {
                     living.setRemainingFireTicks(400);
                     Utilities.convertBlocks(serverLevel,this.getOwner(),result.getEntity().getOnPos(),type.explosion, Blocks.FIRE.defaultBlockState());
                 }if (getBombType() == 2){
-                    Utilities.convertBlocks(serverLevel,this.getOwner(),result.getEntity().getOnPos(),5, Sblocks.BILE.get().defaultBlockState());
+                    Utilities.spreadBile(serverLevel,this.getOwner(),result.getEntity().getOnPos(),5);
                 }if (getBombType() == 4){
                     NukeEntity nukeEntity = new NukeEntity(Sentities.NUKE.get(), level());
                     nukeEntity.setInitRange(1f);

@@ -15,7 +15,7 @@ import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
-public class ConductorModel<T extends Conductor> extends EntityModel<T>  implements TentacledModel {
+public class ConductorModel<T extends Conductor> extends EntityModel<T>  implements TentacledModel ,ConductorBrain{
 	// This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
 	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(Spore.MODID, "conductormodel"), "main");
 	private final ModelPart Conductor;
@@ -354,5 +354,10 @@ public class ConductorModel<T extends Conductor> extends EntityModel<T>  impleme
 		Conductor.render(poseStack, vertexConsumer, packedLight, packedOverlay, alpha);
 		Head.render(poseStack, vertexConsumer, packedLight, packedOverlay, alpha);
 		MainBrain.render(poseStack, vertexConsumer, packedLight, packedOverlay, alpha);
+	}
+
+	@Override
+	public ModelPart getBrain() {
+		return MainBrain;
 	}
 }

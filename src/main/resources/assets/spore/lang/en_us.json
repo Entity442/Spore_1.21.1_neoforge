@@ -518,6 +518,10 @@
   "spore.entity.variant.cactus" : "Cactus Mutation",
   "spore.entity.variant.skewer" : "Skewer Mutation",
   "spore.entity.variant.roller" : "Roller Mutation",
+  "spore.entity.variant.chained" : "Shackled Mutation",
+  "spore.entity.variant.surge" : "Surge Mutation",
+  "spore.entity.variant.chainer" : "Chainer Mutation",
+  "spore.entity.variant.magneto" : "Magnetic Mutation",
 
   "spore.scanner.danger.calamity" : "RUN",
   "spore.scanner.danger.hyper" : "Very High",

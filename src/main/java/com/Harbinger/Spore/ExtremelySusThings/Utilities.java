@@ -34,6 +34,7 @@ import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -140,7 +141,23 @@ public class Utilities {
             }
         }
     }
-
+    public static void spreadBile(ServerLevel level, Entity owner, BlockPos pos, double range){
+        for(int i = 0; i <= 2*range; ++i) {
+            for(int j = 0; j <= 2*range; ++j) {
+                for(int k = 0; k <= 2*range; ++k) {
+                    double distance = Mth.sqrt((float) ((i-range)*(i-range) + (j-range)*(j-range) + (k-range)*(k-range)));
+                    if (Math.abs(i) != 2 || Math.abs(j) != 2 || Math.abs(k) != 2) {
+                        if (distance<range+(0.5)){
+                            BlockPos blockpos = pos.offset( i-(int)range,j-(int)range,k-(int)range);
+                            if (EventHooks.canEntityGrief(level, owner) && Math.random() < 0.3){
+                                if (level.getBlockState(blockpos).isAir() && level.getBlockState(blockpos.below()).isSolidRender(level,blockpos)){
+                                    Block block = Sblocks.BILE.get();
+                                    level.setBlock(blockpos, block.defaultBlockState().setValue(LiquidBlock.LEVEL,8),3);
+                                    level.updateNeighborsAt(blockpos, block);
+                                }
+                            }
+                        }}}}}
+    }
     public static final Predicate<LivingEntity> TARGET_SELECTOR_PREDICATE = (entity) -> {
         if (entity instanceof UtilityEntity || entity instanceof TrueCalamity){
             return false;

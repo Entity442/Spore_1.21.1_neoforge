@@ -241,6 +241,10 @@ public class ClientModEvents {
         event.registerLayerDefinition(SpikyThornModel.LAYER_LOCATION, SpikyThornModel::createBodyLayer);
         event.registerLayerDefinition(ChargerModel.LAYER_LOCATION, ChargerModel::createBodyLayer);
         event.registerLayerDefinition(BeserkerModel.LAYER_LOCATION, BeserkerModel::createBodyLayer);
+        event.registerLayerDefinition(SurgeConductorModel.LAYER_LOCATION, SurgeConductorModel::createBodyLayer);
+        event.registerLayerDefinition(ChainerConductorModel.LAYER_LOCATION, ChainerConductorModel::createBodyLayer);
+        event.registerLayerDefinition(ChainedConductorModel.LAYER_LOCATION, ChainedConductorModel::createBodyLayer);
+        event.registerLayerDefinition(MagnetoConductorModel.LAYER_LOCATION, MagnetoConductorModel::createBodyLayer);
     }
     @SubscribeEvent
     public static void registerRenderers(final EntityRenderersEvent.RegisterRenderers event) {
@@ -384,6 +388,7 @@ public class ClientModEvents {
         event.registerEntityRenderer(Sentities.TOXIN_BULLET.get(), ToxinBulletRenderer::new);
         event.registerEntityRenderer(Sentities.TAR_BALL.get(), TarRenderer::new);
         event.registerEntityRenderer(Sentities.ECHO.get(), EchoRender::new);
+        event.registerEntityRenderer(Sentities.CHAIN_PROJECTILE.get(), ChainRenderer::new);
     }
 
 
