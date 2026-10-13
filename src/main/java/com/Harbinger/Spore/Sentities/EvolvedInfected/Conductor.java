@@ -32,10 +32,12 @@ import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
 import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.item.*;
+import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -206,7 +208,18 @@ public class Conductor extends EvolvedInfected implements VariantKeeper {
             this.attackTicks = 0;
             this.attackTargetPos = targetPos;
         }
-
+        boolean hasLineOfSight(Entity target){
+            if (position == null){
+                return false;
+            }
+            Vec3 vec3 = new Vec3(position.x, position.y, position.z);
+            Vec3 vec31 = new Vec3(target.getX(), target.getEyeY(), target.getZ());
+            if (vec31.distanceTo(vec3) > 128.0) {
+                return false;
+            } else {
+                return conductor.level().clip(new ClipContext(vec3, vec31, ClipContext.Block.COLLIDER, net.minecraft.world.level.ClipContext.Fluid.NONE, target)).getType() == HitResult.Type.MISS;
+            }
+        }
         public void tick(Vec3 ownerPos, int worldTick) {
             this.prevPosition = this.position;
             if (attacking) {
@@ -214,7 +227,7 @@ public class Conductor extends EvolvedInfected implements VariantKeeper {
                 float t = (float) attackTicks / ATTACK_DURATION;
                 float lerp = t < 0.5f ? (t * 2f) : (1f - (t - 0.5f) * 2f);
                 Vec3 start = ownerPos.add(0, orbitHeight, 0);
-                if (attackTargetPos != null){
+                if (attackTargetPos != null && hasLineOfSight(attackTargetPos)){
                     Vec3 target = attackTargetPos.position().add(0,attackTargetPos.getBbHeight() * 0.5,0);
                     this.position = start.lerp(target, lerp);
                     if (position.distanceTo(target) <= 0.5){
@@ -316,7 +329,7 @@ public class Conductor extends EvolvedInfected implements VariantKeeper {
             }else {
                 if (entity != null && !hasAttackingItem()) {
                     FloatingItem chosen = pickAttackItem();
-                    if (chosen != null && hasLineOfSight(entity)) {
+                    if (chosen != null) {
                         chosen.startAttack(entity);
 
                         if (!client) {
@@ -611,7 +624,7 @@ public class Conductor extends EvolvedInfected implements VariantKeeper {
             }
 
             if (maxTimer <= 0) {
-                maxTimer = 20 * conductor.random.nextInt(15, 31);
+                maxTimer = 20 * conductor.random.nextInt(7, 16);
                 timer = 0;
                 return false;
             }
