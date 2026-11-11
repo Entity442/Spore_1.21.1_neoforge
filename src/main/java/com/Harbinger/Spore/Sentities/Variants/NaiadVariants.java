@@ -5,7 +5,10 @@ import java.util.Comparator;
 
 public enum NaiadVariants {
     DEFAULT(0,"default"),
-    TRITON(1,"spore.entity.variant.triton");
+    TRITON(1,"spore.entity.variant.triton"),
+    TURTLE(2,"spore.entity.variant.turtle"),
+    HIPPO(3,"spore.entity.variant.hippo"),
+    BLOWING(4,"spore.entity.variant.blowing");
 
     private static final NaiadVariants[] BY_ID = Arrays.stream(values()).sorted(Comparator.
             comparingInt(NaiadVariants::getId)).toArray(NaiadVariants[]::new);

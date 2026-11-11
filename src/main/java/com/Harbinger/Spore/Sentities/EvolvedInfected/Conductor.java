@@ -260,7 +260,7 @@ public class Conductor extends EvolvedInfected implements VariantKeeper {
                 double z = ownerPos.z + Math.sin(angle) * orbitRadius;
                 double y = ownerPos.y + orbitHeight;
                 Vec3 vec3 = new Vec3(x, y, z);
-                this.position = comeBack ? position.lerp(vec3,0.25) : vec3;
+                this.position = comeBack && position != null ? position.lerp(vec3,0.25) : vec3;
             }
         }
 

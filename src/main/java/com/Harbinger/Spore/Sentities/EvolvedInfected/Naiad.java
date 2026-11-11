@@ -6,6 +6,7 @@ import com.Harbinger.Spore.Sentities.AI.HurtTargetGoal;
 import com.Harbinger.Spore.Sentities.AI.HybridPathNavigation;
 import com.Harbinger.Spore.Sentities.BaseEntities.EvolvedInfected;
 import com.Harbinger.Spore.Sentities.BaseEntities.Infected;
+import com.Harbinger.Spore.Sentities.BaseEntities.UtilityEntity;
 import com.Harbinger.Spore.Sentities.VariantKeeper;
 import com.Harbinger.Spore.Sentities.Variants.NaiadVariants;
 import com.Harbinger.Spore.Sentities.WaterInfected;
@@ -26,6 +27,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -56,6 +58,7 @@ public class Naiad extends EvolvedInfected implements WaterInfected , VariantKee
     private static final EntityDataAccessor<Integer> CHARGE_TICKS = SynchedEntityData.defineId(Naiad.class, EntityDataSerializers.INT);
     public int aggroTicks;
     private Vec3 chargeTarget;
+    private int singTicks = 0;
     public Naiad(EntityType<? extends EvolvedInfected> p_33002_, Level p_33003_) {
         super(p_33002_, p_33003_);
         this.moveControl = new NaiadSwimControl(this);
@@ -86,7 +89,9 @@ public class Naiad extends EvolvedInfected implements WaterInfected , VariantKee
     public boolean isNoGravity() {
         return isInWater();
     }
-
+    public int getSingTicks(){
+        return singTicks;
+    }
     @Override
     protected void addTargettingGoals(){
         this.goalSelector.addGoal(2, new HurtTargetGoal(this , livingEntity -> {return TARGET_SELECTOR.test(livingEntity);}, Infected.class).setAlertOthers(Infected.class));
@@ -207,7 +212,9 @@ public class Naiad extends EvolvedInfected implements WaterInfected , VariantKee
         double val = getVariant() == NaiadVariants.TRITON ? 1.2 : 1;
         double health = SConfig.SERVER.naiad_hp.get() * val * SConfig.SERVER.global_health.get();
         double armor = SConfig.SERVER.naiad_armor.get() * val * SConfig.SERVER.global_armor.get();
-
+        if (getVariant() == NaiadVariants.TURTLE){
+            armor = armor * 1.5f;
+        }
         AttributeInstance healthAttr = this.getAttribute(Attributes.MAX_HEALTH);
         AttributeInstance armorAttr = this.getAttribute(Attributes.ARMOR);
 
@@ -566,12 +573,64 @@ public class Naiad extends EvolvedInfected implements WaterInfected , VariantKee
 
         }
     }
+    @Override
+    public void aiStep() {
+        super.aiStep();
+        if (this.singTicks > 0) {
+            --this.singTicks;
+            for (int i = 0;i< random.nextInt(3,8);i++){
+                double val = (random.nextDouble() - random.nextDouble()) * 4;
+                Vec3 vec3 = this.position().add(val,0.5,val);
+                level().addParticle(
+                        ParticleTypes.NOTE,
+                        vec3.x, vec3.y, vec3.z, 0, 0.01, 0
+                );
+            }
+        }
+    }
+    public void handleEntityEvent(byte value) {
+        if (value == 4) {
+            this.singTicks = 10;
+        }else {
+            super.handleEntityEvent(value);
+        }
+    }
 
+    void handleSirenNaiad(LivingEntity target,ServerLevel serverLevel){
+        this.singTicks = 10;
+        this.level().broadcastEntityEvent(this, (byte)4);
+        target.addEffect(new MobEffectInstance(Seffects.MYCELIUM,100,1));
+        Vec3 end = target.position().add(0, target.getEyeHeight() * 0.5, 0);
+        Vec3 vec3 = position();
+        Vec3 direction = end.subtract(vec3);
+        for (int i = 0; i <= 20; i++) {
+            double progress = i / 20.0;
+            double px = vec3.x + direction.x * progress;
+            double py = vec3.y + direction.y * progress;
+            double pz = vec3.z + direction.z * progress;
+
+            serverLevel.sendParticles(
+                    ParticleTypes.BUBBLE,
+                    px, py, pz,1,0, 0, 0, 0
+            );
+        }
+    }
     @Override
     public void tick() {
         super.tick();
-        if (this.getTarget() != null) {
+        if (tickCount % 200 == 0 && getVariant() == NaiadVariants.TURTLE){
+            AABB aabb = getBoundingBox().inflate(8);
+            List<LivingEntity> entities  = level().getEntitiesOfClass(LivingEntity.class,aabb,entity -> entity instanceof UtilityEntity);
+            for (LivingEntity living : entities){
+                living.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE,200,0,false,false));
+            }
+        }
+        LivingEntity target = this.getTarget();
+        if (target != null) {
             aggroTicks = 300;
+            if (tickCount % 100 == 0 && getVariant() == NaiadVariants.BLOWING && hasLineOfSight(target) && !target.isBlocking() && level() instanceof ServerLevel serverLevel){
+                handleSirenNaiad(target,serverLevel);
+            }
         } else if (aggroTicks > 0) {
             aggroTicks--;
         }
@@ -583,7 +642,6 @@ public class Naiad extends EvolvedInfected implements WaterInfected , VariantKee
             if (isCharging() && chargeTarget != null) {
                 performChargeMovement();
             }
-            LivingEntity target = this.getTarget();
             Vec3 vec3 = target == null ? this.getDeltaMovement() : target.position();
 
             if (vec3.horizontalDistanceSqr() > 2.5E-7F) {
