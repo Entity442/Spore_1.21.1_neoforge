@@ -245,6 +245,9 @@ public class ClientModEvents {
         event.registerLayerDefinition(ChainerConductorModel.LAYER_LOCATION, ChainerConductorModel::createBodyLayer);
         event.registerLayerDefinition(ChainedConductorModel.LAYER_LOCATION, ChainedConductorModel::createBodyLayer);
         event.registerLayerDefinition(MagnetoConductorModel.LAYER_LOCATION, MagnetoConductorModel::createBodyLayer);
+        event.registerLayerDefinition(HippocampusNaiadModel.LAYER_LOCATION, HippocampusNaiadModel::createBodyLayer);
+        event.registerLayerDefinition(TurtleNaiadModel.LAYER_LOCATION, TurtleNaiadModel::createBodyLayer);
+        event.registerLayerDefinition(BlowingNaiadModel.LAYER_LOCATION, BlowingNaiadModel::createBodyLayer);
     }
     @SubscribeEvent
     public static void registerRenderers(final EntityRenderersEvent.RegisterRenderers event) {

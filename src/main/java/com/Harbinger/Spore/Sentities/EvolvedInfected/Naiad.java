@@ -595,6 +595,13 @@ public class Naiad extends EvolvedInfected implements WaterInfected , VariantKee
             super.handleEntityEvent(value);
         }
     }
+    @Override
+    protected void positionRider(Entity entity, MoveFunction p_19958_) {
+        super.positionRider(entity, p_19958_);
+        if (tickCount % 200 == 0 && entity instanceof LivingEntity living){
+            living.addEffect(new MobEffectInstance(MobEffects.WATER_BREATHING,600,0,false,false));
+        }
+    }
 
     void handleSirenNaiad(LivingEntity target,ServerLevel serverLevel){
         this.singTicks = 10;
